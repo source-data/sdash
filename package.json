@@ -1,0 +1,84 @@
+{
+	"name": "sdash",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint"
+	},
+	"dependencies": {
+		"axios": "^0.18.0",
+		"bootstrap-vue": "^2.0.0-rc.15",
+		"jquery": "^3.3.1",
+		"moment": "^2.24.0",
+		"vee-validate": "^2.2.0",
+		"vue": "^2.6.6",
+		"vue-awesome": "^3.4.0",
+		"vue-axios": "^2.1.4",
+		"vue-context": "^3.4.0",
+		"vue-i18n": "^8.9.0",
+		"vue-multiselect": "^2.1.4",
+		"vue-router": "^3.0.2",
+		"vue-snotify": "^3.2.1",
+		"vue-spinner": "^1.0.3",
+		"vuejs-datepicker": "^1.5.4",
+		"vuex": "^3.1.0",
+		"vuex-persistedstate": "^2.5.4"
+	},
+	"devDependencies": {
+		"@kazupon/vue-i18n-loader": "^0.3.0",
+		"@vue/cli-plugin-babel": "^3.5.0",
+		"@vue/cli-plugin-eslint": "^3.5.0",
+		"@vue/cli-service": "^3.5.0",
+		"@vue/eslint-config-standard": "^4.0.0",
+		"babel-eslint": "^10.0.1",
+		"eslint": "^5.8.0",
+		"eslint-plugin-lodash": "^5.1.0",
+		"eslint-plugin-vue": "^5.0.0",
+		"vue-template-compiler": "^2.5.21"
+	},
+	"eslintConfig": {
+		"root": true,
+		"env": {
+			"node": true
+		},
+		"extends": [
+			"plugin:vue/essential",
+			"@vue/standard",
+			"eslint:recommended"
+		],
+		"rules": {
+			"no-console": "off",
+			"no-multiple-empty-lines": [
+				2,
+				{
+					"max": 2,
+					"maxEOF": 10000,
+					"maxBOF": 10000
+				}
+			],
+			"indent": [
+				2,
+				"tab"
+			],
+			"no-tabs": 0
+		},
+		"parserOptions": {
+			"parser": "babel-eslint"
+		},
+		"globals": {
+			"_": true
+		}
+	},
+	"postcss": {
+		"plugins": {
+			"autoprefixer": {}
+		}
+	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not ie <= 8"
+	]
+}
