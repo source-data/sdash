@@ -13,7 +13,10 @@ import store from './store'
 import '@/filters/filters.js'
 import VueI18n from 'vue-i18n'
 import messages from '@/lang/messages'
-import VeeValidate from 'vee-validate';
+import VeeValidate from 'vee-validate'
+import ToggleButton from 'vue-js-toggle-button'
+ 
+Vue.use(ToggleButton)
 
 Vue.config.productionTip = false
 

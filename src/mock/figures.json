@@ -6,6 +6,7 @@
 	    "modified_date": "2019-03-26T10:30:07+01:00",
 	    "filename": "ex_1.dar",
 	    "projects": [],
+			"notifications": [],			
 	    "dar": {
 	        "id": "fig1",
 	        "caption": {
@@ -222,6 +223,7 @@
 	    "modified_date": "2019-03-26T10:30:35+01:00",
 	    "filename": "ex_2.dar",
 	    "projects": [],
+			"notifications": [],			
 	    "dar": {
 	        "id": "fig1",
 	        "caption": {
@@ -394,6 +396,7 @@
 	    "modified_date": "2019-03-26T10:30:49+01:00",
 	    "filename": "ex_3.dar",
 	    "projects": [],
+			"notifications": [],			
 	    "dar": {
 	        "id": "fig1",
 	        "caption": {
@@ -497,6 +500,7 @@
 	    "modified_date": "2019-03-26T10:31:03+01:00",
 	    "filename": "ex_4.dar",
 	    "projects": [],
+			"notifications": [],
 	    "dar": {
 	        "id": "fig1",
 	        "caption": {
@@ -678,6 +682,7 @@
 	    "modified_date": "2019-03-26T10:31:26+01:00",
 	    "filename": "ex_5.dar",
 	    "projects": [],
+			"notifications": [],
 	    "dar": {
 	        "id": "fig1",
 	        "caption": {

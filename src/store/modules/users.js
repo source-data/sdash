@@ -116,8 +116,8 @@ const mutations = {
 	LOGIN (state, user) {
 		let userIdx = _.findIndex(state.users, u => u.email === user.email);
 		if (userIdx === -1){
-			userIdx = state.users.length+1
-			user.user_id = userIdx
+			userIdx = state.users.length
+			user.user_id = userIdx+1
 			state.users.push(user);
 		} 
 		state.current.user_id = state.users[userIdx].user_id

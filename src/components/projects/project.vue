@@ -9,7 +9,7 @@
 		"downloadSeries": "Show download button",
 		"sendSeries": "Get figures / series",
 		"deleteSeries": "Remove figures / series",
-		"writeComments": "Write comments"
+		"writeComments": "Write notifications"
 
 	},
 	"fr": {
@@ -43,7 +43,7 @@
         <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
           <nav class="nav nav-pills nav-fill flex-column flex-lg-row text-center justify-content-lg-end">
             <a  class="nav-link"  :class="(view=='figures')?'active':''"  @click.stop="view='figures'"> Figures </a>
-            <a  class="nav-link"  :class="(view=='comments')?'active':''"  @click.stop="view='comments'"> Comments </a>
+            <a  class="nav-link"  :class="(view=='notifications')?'active':''"  @click.stop="view='notifications'"> Comments </a>
             <a  class="nav-link"  :class="(view=='settings')?'active':''"  @click.stop="view='settings'"> Settings </a>
           </nav>
         </div>
@@ -51,7 +51,7 @@
       </div>
     </div>
     <project-figures v-if="view=='figures'" />
-    <project-comments  v-if="view=='comments'"  :id="project.project_id"/>
+    <project-notifications  v-if="view=='notifications'" :id="project.project_id+''"/>
     <project-settings v-if="view=='settings'" />
   </div>
 </template>
@@ -59,12 +59,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import projectFigures from '@/components/projects/projectFigures'
-import projectComments from '@/components/projects/projectComments'
+import projectNotifications from '@/components/projects/projectNotifications'
 import projectSettings from '@/components/projects/projectSettings'
 
 export default {
 	name: 'Project',
-	components: { projectFigures, projectSettings, projectComments },
+	components: { projectFigures, projectSettings, projectNotifications },
 	data () {
 		return {
 			view: 'figures',

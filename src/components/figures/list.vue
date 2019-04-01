@@ -16,6 +16,7 @@
 		"includefiguresfromprojects": "include figures in projects",
 		"send": "send",
 		"delete": "delete",
+		"notifications": "notifications",
 		"comments": "comments",
 		"panels": "panels",
 		"figure": "figure",
@@ -43,7 +44,8 @@
 		"includefiguresfromprojets": "inclure des séries présentes dans les projets",
 		"send": "envoyer",
 		"delete": "supprimer",
-		"comments": "commentaire",
+		"notifications": "commentaires",
+		"comments": "commentaires",
 		"panels": "séries",
 		"figure": "étude",
 		"figuressharedsuccess": "études ont été envoyées avec succès",
@@ -59,7 +61,7 @@
 </i18n>
 
 <template>
-  <div v-if="!loading">
+  <div v-if="!loading" class="listContainer">
     <!--button Figure selected -->
     <div class="container-fluid my-3 selection-button-container">
       <span v-if="selectedFiguresNb" class="float-left">
@@ -99,6 +101,7 @@
     <form-get-user  v-if="form_send_figure && selectedFiguresNb"  @get-user="sendToUser"  @cancel-user="form_send_figure=false"/>
     <b-table
       class="container-fluid"
+			style="min-height: 500px"
       responsive
       striped
       :items="filteredFigures"
@@ -127,14 +130,14 @@
         {{ $t(data.label) }}
       </template>
 
-      <template  slot="HEAD_nbPanels"  slot-scope="data">
+      <template  slot="HEAD_title"  slot-scope="data">
         <div  v-if="showFilters"  @click.stop="">
-          <input  v-model="filters.nbPanels"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
+          <input  v-model="filters.title"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
         </div>
         {{ $t(data.label) }}
       </template>
 
-      <template  slot="HEAD_created"  slot-scope="data">
+      <template  slot="HEAD_create_date"  slot-scope="data">
         <div  v-if="showFilters"  class="form-row"  @click.stop="">
           <div class="col form-inline">
             <div class="form-group">
@@ -174,7 +177,7 @@
         <br v-if="showFilters">
         {{ $t(data.label) }}
 			</template>
-      <template  slot="HEAD_modified"  slot-scope="data">
+      <template  slot="HEAD_modified_date"  slot-scope="data">
         <div  v-if="showFilters"  class="form-row"  @click.stop="">
           <div class="col form-inline">
             <div class="form-group">
@@ -241,7 +244,7 @@
                 <a  class="nav-link"  :class="(row.item.view==='panels')?'active':''"  @click="row.item.view='panels'">
                   {{ $t('panels') }}
                 </a>
-                <a  class="nav-link"  :class="(row.item.view==='comments')?'active':''"  @click="loadFiguresComments(row.item)">
+                <a  class="nav-link"  :class="(row.item.view==='notifications')?'active':''"  @click="loadFiguresComments(row.item)">
                   {{ $t('comments') }}
                 </a>
               </nav>
@@ -254,8 +257,8 @@
               </div>
             </div>
 
-            <div  v-if="row.item.view=='comments'"  class="col-md-10">
-              <comments-and-notifications :id="row.item.id" scope="figures" />
+            <div  v-if="row.item.view=='notifications'"  class="col-md-10">
+              <comments-and-notifications :id="row.item.id+''" scope="figures" />
             </div>
 
             <div v-if="row.item.view=='figure'" class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
@@ -325,8 +328,9 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { mapGetters } from 'vuex'
-import commentsAndNotifications from '@/components/comments/commentsAndNotifications'
+import commentsAndNotifications from '@/components/notifications/commentsAndNotifications'
 import formGetUser from '@/components/user/getUser'
 import panelsSummary from '@/components/figures/panelsSummary'
 import figureMetadata from '@/components/figures/figureMetadata.vue'
@@ -423,8 +427,10 @@ export default {
 				filename: '',
 				figureLabel: '',
 				projects: '',
-				created: '',
-				modified: ''
+				createdFrom: '',
+				createdTo: '',
+				modifiedFrom: '',
+				modifiedTo: ''
 			},
 			loading: true,
 			send: {
@@ -442,11 +448,20 @@ export default {
 			user: 'currentUser'
 		}),
 		filteredFigures () {
+			let figures = this.figures;
+			_.forEach(this.filters, (value,filter) => {
+				if (value) figures = _.filter(figures, f => {
+					if (f[filter] !== undefined && f[filter].indexOf(value) > -1) {return true}
+					if (filter === 'createdFrom') {return moment(f.create_date).isSameOrAfter(value)} 
+					if (filter === 'createdTo') {return moment(f.create_date).isSameOrBefore(value)} 
+					if (filter === 'modifiedFrom') {return moment(f.modified_date).isSameOrAfter(value)} 
+					if (filter === 'modifiedTo') {return moment(f.modified_date).isSameOrBefore(value)} 
+				})
+			})
 			if (this.project && this.project.project_id){
-				let test = _.filter(this.figures, f => f.projects.indexOf(this.project.project_id) > -1)
-				return test
+				figures = _.filter(this.figures, f => f.projects.indexOf(this.project.project_id) > -1)
 			}
-			else return this.figures
+			return figures
 		},
 		totalRows () {
 			return this.figures.length
@@ -454,14 +469,24 @@ export default {
 		selectedFiguresNb () {
 			return _.filter(this.figures, f => f.is_selected ).length
 		},
-		disabledToDates: function () {
+		disabledToDatesCreated () {
 			let vm = this
 			return {
-				to: vm.filters.FigureDateFrom,
+				to: vm.filters.createdFrom || new Date()
+			}			
+		},
+		disabledFromDatesCreated () {
+			return {
 				from: new Date()
 			}
 		},
-		disabledFromDates: function () {
+		disabledToDatesModified () {
+			let vm = this
+			return {
+				to: vm.filters.modifiedFrom || new Date()
+			}			
+		},
+		disabledFromDatesModified () {
 			return {
 				from: new Date()
 			}
@@ -488,15 +513,15 @@ export default {
 			},
 			deep: true
 		},
-		filters: {
-			handler: function (filters) {
-				if (this.filterTimeout) {
-					clearTimeout(this.filterTimeout)
-				}
-				this.filterTimeout = setTimeout(() => this.searchOnline(filters), 300)
-			},
-			deep: true
-		},
+		// filters: {
+		// 	handler: function (filters) {
+		// 		if (this.filterTimeout) {
+		// 			clearTimeout(this.filterTimeout)
+		// 		}
+		// 		this.filterTimeout = setTimeout(() => this.searchOnline(filters), 300)
+		// 	},
+		// 	deep: true
+		// },
 		showFilters: {
 			handler: function (showFilters) {
 				if (!showFilters) {
@@ -505,8 +530,10 @@ export default {
 						filename: '',
 						figureLabel: '',
 						projects: '',
-						created: '',
-						modified: ''
+						createdFrom: '',
+						createdTo: '',
+						modifiedFrom: '',
+						modifiedTo: ''
 
 					}
 				}
@@ -561,7 +588,7 @@ export default {
 		},
 		handleComments (row) {
 			this.showPanels(row)
-			row.item.view = 'comments'
+			row.item.view = 'notifications'
 		},
 		selectAll (isSelected) {
 			this.$store.commit('SELECT_ALL_FIGURES', !isSelected)
@@ -572,7 +599,7 @@ export default {
 			var i;
 			for (i = this.figures.length - 1; i > -1; i--) {
 				if (this.figures[i].is_selected) {
-					vm.$store.dispatch('deleteFigure', { figure_id: this.figures[i].id, project_id: this.filters.project_id })
+					vm.$store.dispatch('deleteFigure', { figure_id: this.figures[i].id, project_id: this.filters.project_id, filename: this.figures[i].filename, origin_name: this.user.fullname })
 				}
 			}
 		},
@@ -595,7 +622,7 @@ export default {
 		addToProject (project_id) {
 			let figures = _.filter(this.figures, s => s.is_selected)
 			if (figures.length) {
-				this.$store.commit('PUT_FIGURES_IN_PROJECT',{figures: figures, project_id: project_id})
+				this.$store.commit('PUT_FIGURES_IN_PROJECT',{figures: figures, project_id: project_id, origin_name: this.user.fullname})
 				this.$snotify.success(this.$t('figureputtoproject'))
 			}
 		},
@@ -603,7 +630,7 @@ export default {
 			return _.map(_.filter(this.projects, p => +p.project_id === +project_id), p => p.name)[0]
 		},
 		loadFiguresComments (item) {
-			item.view = 'comments'
+			item.view = 'notifications'
 			// this.$store.dispatch('getFiguresComments',{FigureInstanceUID: item.FigureInstanceUID[0]})
 		},
 		sendToUser (userSub) {
@@ -640,6 +667,11 @@ export default {
 </script>
 
 <style scoped>
+
+div.listContainer{
+	min-height: 500px;
+}
+
 	table thead th {
 		text-transform: capitalize !important;
 	}

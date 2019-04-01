@@ -139,7 +139,7 @@ export default {
 				}
 				this.confirmQuit = true
 			} else {
-				this.$store.dispatch('remove_user_from_project',{project_id: this.project.project_id, id: this.user.user_id} ).then(() => {
+				this.$store.dispatch('removeUserFromProject',{project_id: this.project.project_id, id: this.user.user_id, origin_name: this.user.fullname} ).then(() => {
 					this.$snotify.success(this.$t('projectquitsuccess'))
 					this.$router.push('/projects')
 				}).catch(() => {

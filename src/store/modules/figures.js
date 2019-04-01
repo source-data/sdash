@@ -42,7 +42,27 @@ const actions = {
 	deleteFigure ({ commit }, params) {
 		if (params.project_id) { commit("REMOVE_FIGURE_FROM_PROJECT", params) }
 		else commit("DELETE_FIGURE",params)
+	},
+	getFigureComments ({commit, state}, params) {
+		
+		return new Promise ((resolve, reject) => {
+			let idx = _.findIndex(state.figures, f => +f.id === +params.id)
+			if (idx === -1) reject("Sorry, figure is unknown")
+			let notifications = []
+			if (params.type === 'comments') {
+				notifications = _.filter(state.figures[idx].notifications, n => n.event_type === 'comment')
+			}
+			else {
+				notifications = state.figures[idx].notifications
+			} 
+			commit("SET_NOTIFICATIONS",notifications)
+			resolve(notifications)
+		})
+	} ,
+	postFigureComment ({ commit, state, dispatch }, params){
+		commit('SET_FIGURE_COMMENT',params)
 	}
+	
 }
 
 // mutations
@@ -88,6 +108,37 @@ const mutations = {
 			state.figures[i].projects = _.remove(state.figures[i].projects, p => p == project_id)
 		})
 	},
+	REMOVE_FIGURE_FROM_PROJECT (state, params) {
+		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.figure_id);
+		if (figureIdx > -1) {
+			let projectIdx = state.figures[figureIdx].projects.indexOf(+params.project_id);
+			if (projectIdx > -1) state.figures[figureIdx].projects.splice(projectIdx,1);
+		}
+	},
+	SET_FIGURE_COMMENT (state, params) {
+		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.id)
+		if (params.post_date){
+			let idx = _.findIndex(state.figures[figureIdx].notifications, n => n.post_date === params.post_date && n.origin_name === params.origin_name)
+			if (idx > -1){
+				if (params.comment) {
+					state.figures[figureIdx].notifications[idx].comment = params.comment
+				}
+				else {
+					state.figures[figureIdx].notifications.splice(idx,1)
+				}
+			}
+		}
+		else {
+			state.figures[figureIdx].notifications.push({
+				origin_name: params.origin_name,
+				event_type: 'comment',
+				mutation_type: null,
+				comment: params.comment,
+				post_date: new Date()
+			})			
+		}
+		
+	}
 	
 }
 

@@ -57,7 +57,7 @@
       <template  slot="HEAD_number_of_users"  slot-scope="data">
         {{ $t(data.label) }}
       </template>
-      <template  slot="HEAD_number_of_comments"  slot-scope="data">
+      <template  slot="HEAD_number_of_notifications"  slot-scope="data">
         {{ $t(data.label) }}
       </template>
       <template  slot="HEAD_created_time"  slot-scope="data">
@@ -151,8 +151,8 @@
 			<template slot="number_of_users" slot-scope="data">
 				{{ data.item.users.length }}
 			</template>
-			<template slot="number_of_comments" slot-scope="data">
-				{{ data.item.comments.length }}
+			<template slot="number_of_notifications" slot-scope="data">
+				{{ data.item.notifications.length }}
 			</template>
       <template  slot="create_date"  slot-scope="data">
         {{ data.item.create_date | formatDate }}
@@ -203,7 +203,7 @@ export default {
 					tdClass: 'd-none d-md-table-cell'
 				},
 				{
-					key: 'number_of_comments',
+					key: 'number_of_notifications',
 					label: 'Messages #',
 					sortable: true,
 					thClass: 'd-none d-lg-table-cell capitalize',
@@ -234,7 +234,7 @@ export default {
 				name: '',
 				number_of_figures: '',
 				number_of_users: '',
-				number_of_comments: '',
+				number_of_notifications: '',
 				CreateDateFrom: '',
 				CreateDateTo: '',
 				EventDateFrom: '',

@@ -7,7 +7,7 @@
 		"download_series": "Show Download Button",
 		"send_series": "Add to project / inbox",
 		"delete_series": "Remove Figures / Series",
-		"write_comments": "Write Comments",
+		"write_notifications": "Write Comments",
 		"projectuseraddsuccess": "User successfully added to the project",
 		"Unknown user": "Unknown user",
     "usersettings": "Project user settings",
@@ -21,7 +21,7 @@
 		"download_series": "Télécharger une étude / série",
 		"send_series": "Ajouter à un projet / inbox",
 		"delete_series": "Supprimer une étude / série",
-		"write_comments": "Commenter",
+		"write_notifications": "Commenter",
 		"projetuseraddsuccess": "L'utilisateur a été ajouté avec succès à l'projet",
 		"Unknown user": "Utilisateur inconnu",
     "usersettings": "Réglages des utilisateurs de l'projet",
@@ -112,7 +112,7 @@ export default {
 			if (!this.form_add_user) this.form_add_user = true
 			else {
 				if (this.new_user_name && this.validEmail(this.new_user_name)) {
-					this.$store.dispatch('add_user_to_project', { email: this.new_user_name, firstname: this.new_firstname, lastname: this.new_lastname }).then(() => {
+					this.$store.dispatch('addUserToProject', { email: this.new_user_name, firstname: this.new_firstname, lastname: this.new_lastname, origin_name: this.loggedUser.fullname }).then(() => {
 						this.$snotify.success(this.$t('projectuseraddsuccess'))
 						// this.new_user_name = ''
 						this.new_firstname = ''

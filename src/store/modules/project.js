@@ -6,17 +6,18 @@ const state = {
 		description: '',
 		url: '',
 		users: [],
-		comments: [],
+		notifications: [],
 		figures: [],
 		is_admin: false
-	}
+	},
+	notifications: [] // filtered list
 }
 
 // getters
 const getters = {
 	project: state => state.project,
-	users: state => state.users,
-	projectComments: state => state.comments,
+	users: state => state.project.users,
+	projectNotifications: state => state.notifications,
 }
 
 // actions
@@ -72,7 +73,7 @@ const actions = {
 			commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
 		}
 	},
-	add_user_to_project ({ commit, rootState, state }, params){
+	addUserToProject ({ commit, rootState, state }, params){
 		return new Promise ((resolve, reject) => {
 			let userIdx = _.findIndex(state.project.users, u => u.email === params.email)
 			if (userIdx > -1){
@@ -88,7 +89,7 @@ const actions = {
 			return true;
 		})
 	},
-	remove_user_from_project ({ commit, state }, params){
+	removeUserFromProject ({ commit, state }, params){
 		return new Promise ((resolve, reject) => {
 			if (state.project.users.length === 1) {
 				reject("Sorry, you cannot delete the last member of the project");
@@ -101,9 +102,27 @@ const actions = {
 			}
 			commit("REMOVE_USER_FROM_PROJECT",{project_id: params.project_id, user_idx: idx})
 			resolve(true)
+		})	
+	},
+	getProjectComments ({commit, state}, params) {
+		return new Promise ((resolve, reject) => {
+			let notifications = []
+			if (params.type === 'comments') {
+				notifications = _.filter(state.project.notifications, n => n.event_type === 'comment')
+			}
+			else {
+				notifications = state.project.notifications
+			} 
+			commit("SET_NOTIFICATIONS",notifications)
+			resolve(notifications)
 		})
-		
+	} ,
+	postProjectComment ({ commit, state, dispatch }, params){
+		params.project_id = state.project.project_id
+		commit('SET_COMMENT',params)
+		dispatch('getProjectComments',{type: 'comments'})
 	}
+	
 }
 
 // mutations
@@ -114,7 +133,7 @@ const mutations = {
 		state.project.description = ''
 		state.project.url = ''
 		state.project.users = []
-		state.project.comments = []
+		state.project.notifications = []
 		state.project.figures = []
 		state.project.is_admin = false
 	},
@@ -123,11 +142,14 @@ const mutations = {
 	},
 	PATCH_PROJECT (state, params){
 		_.forEach(params, (v,k) => {
-			if (state.project[k] !== undefined) state.project[k] = v;
+			if (state.project[k] !== undefined && k !== 'origin_name') state.project[k] = v;
 		})
 	},
 	TOGGLE_PROJECT_USER_ADMIN (state, params){
 		state.project.users[params.user_idx].is_admin = !state.project.users[params.user_idx].is_admin
+	},
+	SET_NOTIFICATIONS (state, notifications) {
+		state.notifications = notifications
 	}
 }
 

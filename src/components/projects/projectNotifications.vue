@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import commentsAndNotifications from '@/components/comments/commentsAndNotifications'
+import commentsAndNotifications from '@/components/notifications/commentsAndNotifications'
 export default {
-	name: 'ProjectComments',
+	name: 'ProjectNotifications',
 	components: { commentsAndNotifications },
 	props: {
 		id: {

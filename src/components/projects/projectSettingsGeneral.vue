@@ -105,7 +105,8 @@ export default {
 	computed: {
 		...mapGetters({
 			project: 'project',
-			users: 'users'
+			users: 'users',
+			user: 'currentUser'
 		}),
 		formattedProjectDescription () {
 			return this.project.description.split('\n')
@@ -128,7 +129,7 @@ export default {
 					params[k] = v
 				}
 			})
-
+			params.origin_name = this.user.fullname
 			this.$store.dispatch('patchProject', params).then(() => {
 				this.$snotify.success(this.$t('projectupdatesuccess'))
 				this.edit.name = '-1' 
