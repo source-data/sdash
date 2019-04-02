@@ -61,6 +61,14 @@ const actions = {
 	} ,
 	postFigureComment ({ commit, state, dispatch }, params){
 		commit('SET_FIGURE_COMMENT',params)
+	},
+	addFigure({ commit, state, rootState }, figure){
+		let newId = 0;
+		_.forEach(state.figures, f => {
+			if (+f.id > newId) newId = +f.id;
+		})
+		figure.id = newId+1
+		commit('ADD_FIGURE',figure);
 	}
 	
 }
@@ -101,11 +109,12 @@ const mutations = {
 		})
 	},
 	DELETE_FIGURE (state, params) {
-		state.figures = _.remove(state.figures, f => +f.id === +params.figure_id);
+		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.figure_id)
+		if (figureIdx > -1) state.figures.splice(figureIdx,1);
 	},
 	DELETE_PROJECT (state,project_id){
 		_.forEach(state.figures, (f,i) => {
-			state.figures[i].projects = _.remove(state.figures[i].projects, p => p == project_id)
+			_.remove(state.figures[i].projects, p => p == project_id)
 		})
 	},
 	REMOVE_FIGURE_FROM_PROJECT (state, params) {
@@ -137,7 +146,9 @@ const mutations = {
 				post_date: new Date()
 			})			
 		}
-		
+	},
+	ADD_FIGURE (state, figure){
+		state.figures.push(figure)
 	}
 	
 }

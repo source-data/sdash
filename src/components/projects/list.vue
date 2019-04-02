@@ -152,7 +152,7 @@
 				{{ data.item.users.length }}
 			</template>
 			<template slot="number_of_notifications" slot-scope="data">
-				{{ data.item.notifications.length }}
+				{{ nbComments(data.item.notifications) }}
 			</template>
       <template  slot="create_date"  slot-scope="data">
         {{ data.item.create_date | formatDate }}
@@ -347,7 +347,11 @@ export default {
 			if (item.project_id) {
 				this.$router.push('/projects/' + item.project_id)
 			}
+		},
+		nbComments (notifications) {
+			return _.filter(notifications,n => n.event_type === 'comment').length
 		}
+		
 	}
 
 }

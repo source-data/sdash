@@ -19,6 +19,7 @@
     <div class="row justify-content-center">
       <div>
         <img class="cursor-img" :src="panel.graphic.imgsrc" width="250" @click="openViewer">
+				<p v-if = "supplementaryMaterial.length"><b-badge pill variant="secondary" v-for="(supp,idx) in supplementaryMaterial" :key="idx" class="badge" :title="supp.href" v-b-tooltip.hover>{{supp|mimeExtension}}</b-badge></p>
       </div>
       <div class="col col-mb-2 col-sm-10 col-md-8 col-lg-6 description">
         <table class="table table-striped table-sm">
@@ -29,11 +30,11 @@
             </tr>
             <tr v-if="panel.caption">
               <th>{{ $t('caption') }}</th>
-              <td class="tdcaption"><div class = "caption">{{ panel.caption }}</div><div class = 'backgroundcaption'></div></td>
+              <td class="tdcaption"><div class = "caption" v-html="panel.caption"></div><div class = 'backgroundcaption'></div></td>
             </tr>
-						<tr v-for="(kwg,idx) in kwdGroups" :key="idx">
-							<th>{{kwg.label}}</th>
-							<td>{{kwg.kwd}}</td>
+						<tr v-for="(kwd,label) in kwdGroups" :key="label">
+							<th>{{label}}</th>
+							<td v-html="kwd"></td>
 						</tr>
           </tbody>
         </table>
@@ -78,10 +79,26 @@ export default {
 					return this.figures[figureIndex].dar.fig[panelIndex]
 				} 
 			}
+
 			return {}
 		},
 		kwdGroups () {
-			return _.filter(this.panel['kwd-group'], k => k.kwd)
+			let kwdGroups = {};
+			_.forEach(this.panel['kwd-group'], k => {
+				if (!k.kwd) return
+				if (kwdGroups[k.label] === undefined){
+					kwdGroups[k.label] = k.kwd
+				} 
+				else kwdGroups[k.label] += ", "+k.kwd
+			})
+			return kwdGroups
+		},
+		supplementaryMaterial () {
+			let mat = [];
+			if (this.panel['supplementary-material'] === undefined) {
+				return mat
+			} 
+			return this.panel['supplementary-material']
 		}
 	},
 	methods: {

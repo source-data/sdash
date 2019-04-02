@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/css/bootstrap.css'
+import '@/assets/bootstrap.min.css'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
 import 'vue-snotify/styles/material.css'
 import Access from '@/directives/access'
@@ -15,6 +16,9 @@ import VueI18n from 'vue-i18n'
 import messages from '@/lang/messages'
 import VeeValidate from 'vee-validate'
 import ToggleButton from 'vue-js-toggle-button'
+import VueClip from 'vue-clip'
+
+Vue.use(VueClip)
  
 Vue.use(ToggleButton)
 

@@ -101,13 +101,13 @@ const mutations = {
 					post_date: new Date()
 				})
 			})
-			
+			state.projects[projectIdx].last_event = new Date();
 		}
 	},
 	DELETE_FIGURE (state, params) {
 		_.forEach(state.projects, (p,i) => {
 			let filename = _.first(_.filter(state.projects[i].figures, f => +f.id === +params.figure_id)).filename
-			state.projects[i].figures = _.remove(state.projects[i].figures, f => +f.id === +params.figure_id);
+			_.remove(state.projects[i].figures, f => +f.id === +params.figure_id);
 
 			state.projects[i].notifications.push({
 				origin_name: params.origin_name,
@@ -116,14 +116,14 @@ const mutations = {
 				comment: filename,
 				post_date: new Date()
 			})
-			
+			state.projects[i].last_event = new Date();
 		})
 	},
 	REMOVE_FIGURE_FROM_PROJECT (state, params) {
 		let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id);
 		if (projectIdx > -1) {
 			// let figureIdx = state.projects[projectIdx].figures.indexOf(params.figure_id);
-			state.projects[projectIdx].figures = _.remove(state.projects[projectIdx].figures, f => +f === +params.figure_id);
+			_.remove(state.projects[projectIdx].figures, f => +f === +params.figure_id);
 			state.projects[projectIdx].notifications.push({
 				origin_name: params.origin_name,
 				event_type: 'mutation',
@@ -131,7 +131,7 @@ const mutations = {
 				comment: params.filename,
 				post_date: new Date()
 			})
-
+			state.projects[projectIdx].last_event = new Date();
 		}
 	},
 	PATCH_PROJECT (state, params){
@@ -146,6 +146,7 @@ const mutations = {
 						comment: k+" edited to: "+v,
 						post_date: new Date()
 					})
+					state.projects[projectIdx].last_event = new Date();
 				}
 				if (k !== "project_id" && k !== 'origin_name') state.projects[projectIdx][k] = v;
 			})			
@@ -166,6 +167,7 @@ const mutations = {
 				comment: comment,
 				post_date: new Date()
 			})
+			state.projects[projectIdx].last_event = new Date();
 		}		
 	},
 	ADD_USER_TO_PROJECT (state, params){
@@ -179,7 +181,7 @@ const mutations = {
 				comment: params.user.name+" has been added to the project",
 				post_date: new Date()
 			})
-			
+			state.projects[projectIdx].last_event = new Date();
 		}
 	},
 	REMOVE_USER_FROM_PROJECT (state, params){
@@ -194,7 +196,7 @@ const mutations = {
 				comment: username+" has been removed from the project",
 				post_date: new Date()
 			})
-
+			state.projects[projectIdx].last_event = new Date();
 		}
 	},
 	SET_COMMENT (state, params){
@@ -219,7 +221,7 @@ const mutations = {
 				post_date: new Date()
 			})			
 		}
-
+		state.projects[projectIdx].last_event = new Date();
 	}
 		
 }

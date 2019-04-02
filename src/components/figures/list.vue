@@ -62,6 +62,9 @@
 
 <template>
   <div v-if="!loading" class="listContainer">
+		
+		<figure-upload v-if="!filters.project_id"></figure-upload>
+		
     <!--button Figure selected -->
     <div class="container-fluid my-3 selection-button-container">
       <span v-if="selectedFiguresNb" class="float-left">
@@ -75,7 +78,7 @@
           <b-dropdown-item  v-for="allowedProject in allowedProjects"  :key="allowedProject.id"  @click.stop="addToProject(allowedProject.project_id)">
             {{ allowedProject.name }}
           </b-dropdown-item>
-					<b-dropdown-divider />
+					<b-dropdown-divider v-if="allowedProjects.length" />
 					<b-dropdown-item>
 					<b-button v-b-modal.modalNewProject size="sm"> {{$t('newproject')}} </b-button>
 					</b-dropdown-item>
@@ -232,7 +235,14 @@
             <v-icon  v-else  class="align-middle"  name="chevron-right"  @click.stop="row.toggleDetails"/>
           </b-button>
           <b-form-checkbox  v-model="row.item.is_selected"  class="pt-2"  inline  @click.native.stop  @change="toggleSelected(row.item,'figure',!row.item.is_selected)"/>
-        </b-form-group>
+					<b-button variant="link" size="sm" class="mr-2" v-if="!filters.project_id || project.is_admin" @click.stop="downloadDar(row.item.id)">
+            <v-icon class="align-middle" style="margin-right:0" name="download" />					
+					</b-button>
+					<b-button variant="link" size="sm" class="mr-2"  @click.stop="handleComments(row)">
+            <v-icon v-if="nbComments(row.item.notifications)" class="align-middle" style="margin-right:0" name="comment-dots" />
+            <v-icon v-else class="align-middle" name="comment" color="grey" />
+					</b-button>
+        </b-form-group>				
       </template>
 
       <!--Infos figure (Panels / Comments / Figure Metadata) -->
@@ -261,9 +271,6 @@
               <comments-and-notifications :id="row.item.id+''" scope="figures" />
             </div>
 
-            <div v-if="row.item.view=='figure'" class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
-              <figure-metadata :id="row.item.id" scope="figures" />
-            </div>
           </div>
         </b-card>
       </template>
@@ -273,15 +280,6 @@
           <div class="row">
             <div class="col-md-auto">
 							<user-icon :name="row.item.owner"></user-icon>
-            </div>
-            <div class="ownerIcons col-md-auto">
-              <!-- <span :class="row.item.SumComments[0]?'selected':''" @click="handleComments(row)">
-                <v-icon v-if="row.item.SumComments[0]" class="align-middle" style="margin-right:0" name="comment-dots" />
-                <v-icon v-else class="align-middle" style="margin-right:0" name="comment" color="grey" />
-              </span> -->
-              <a v-if="!filters.project_id || (project.download_panels || project.is_admin)" @click="downloadDar(row.item.id)" class="download">
-                <v-icon class="align-middle" style="margin-right:0" name="download" />
-              </a>
             </div>
           </div>
         </div>
@@ -301,11 +299,11 @@
 			</template>
 
 			<template slot="create_date" slot-scope="data">
-				{{ data.value | formatDateTime }}
+				{{ data.value | formatDate }}
 			</template>
 
 			<template slot="modified_date" slot-scope="data">
-				{{ data.value | formatDateTime }}
+				{{ data.value | formatDate }}
 			</template>
 
     </b-table>
@@ -333,9 +331,9 @@ import { mapGetters } from 'vuex'
 import commentsAndNotifications from '@/components/notifications/commentsAndNotifications'
 import formGetUser from '@/components/user/getUser'
 import panelsSummary from '@/components/figures/panelsSummary'
-import figureMetadata from '@/components/figures/figureMetadata.vue'
 import newProject from '@/components/projects/newProject'
 import Datepicker from 'vuejs-datepicker'
+import figureUpload from '@/components/figures/figureUpload'
 
 // https://github.com/greyby/vue-spinner
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
@@ -344,7 +342,7 @@ import userIcon from '@/components/user/userIcon'
 
 export default {
 	name: 'Figures',
-	components: { panelsSummary, Datepicker, commentsAndNotifications, figureMetadata, formGetUser, PulseLoader, ConfirmButton, userIcon, newProject },
+	components: { panelsSummary, Datepicker, commentsAndNotifications, formGetUser, PulseLoader, ConfirmButton, userIcon, newProject, figureUpload },
 	props: {
 		project: {
 			type: Object,
@@ -425,6 +423,7 @@ export default {
 			filters: {
 				owner: '',
 				filename: '',
+				title: '',
 				figureLabel: '',
 				projects: '',
 				createdFrom: '',
@@ -452,6 +451,7 @@ export default {
 			_.forEach(this.filters, (value,filter) => {
 				if (value) figures = _.filter(figures, f => {
 					if (f[filter] !== undefined && f[filter].indexOf(value) > -1) {return true}
+					if (filter === 'title') {return f.dar.caption.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
 					if (filter === 'createdFrom') {return moment(f.create_date).isSameOrAfter(value)} 
 					if (filter === 'createdTo') {return moment(f.create_date).isSameOrBefore(value)} 
 					if (filter === 'modifiedFrom') {return moment(f.modified_date).isSameOrAfter(value)} 
@@ -528,6 +528,7 @@ export default {
 					this.filters = {
 						owner: '',
 						filename: '',
+						title: '',
 						figureLabel: '',
 						projects: '',
 						createdFrom: '',
@@ -589,6 +590,10 @@ export default {
 		handleComments (row) {
 			this.showPanels(row)
 			row.item.view = 'notifications'
+		},
+		nbComments (notifications) {
+			let idx = _.findIndex(notifications, n => n.event_type === 'comment')
+			return idx > -1
 		},
 		selectAll (isSelected) {
 			this.$store.commit('SELECT_ALL_FIGURES', !isSelected)
@@ -659,7 +664,7 @@ export default {
 			this.loading = val
 		},
 		downloadDar (figure_id) {
-			console.log('here we need to download something from '+figure_id)
+			this.$snotify.info("Something will be downloaded from here...")
 		}
 	}
 }
@@ -726,8 +731,9 @@ div.listContainer{
 /*		height: 60px;*/
 	}
 
-	.td_checkbox {
+	td.td_checkbox {
 		width: auto;
+		white-space: nowrap;
 	}
 
 	input.search-calendar{

@@ -13,8 +13,8 @@
   <!-- Navbar -->
   <b-navbar
     toggleable="md"
-    type="light"
-    variant="light"
+    type="dark"
+    variant="primary"
     fixed="top"
   >
     <b-navbar-toggle target="nav_collapse" />
