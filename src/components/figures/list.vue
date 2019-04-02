@@ -381,9 +381,8 @@ export default {
 					key: 'title',
 					label: 'title',
 					sortable: true,
-					// thClass: 'd-none d-md-table-cell d-lg-table-cell',
-					// tdClass: 'd-none d-md-table-cell d-lg-table-cell',
-					class: 'td_title'
+					thClass: 'd-none d-md-table-cell d-lg-table-cell capitalize',
+					tdClass: 'd-none d-md-table-cell d-lg-table-cell td_title',
 				},
 				{
 					key: 'nbPanels',
