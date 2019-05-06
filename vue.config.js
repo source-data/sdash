@@ -1,4 +1,7 @@
 module.exports = {
+publicPath: process.env.NODE_ENV === 'production'
+    ? '/sdash/'
+    : '/',
 	chainWebpack: config => {
 		config.module
 			.rule('i18n')

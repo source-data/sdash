@@ -35,7 +35,7 @@ export default {
 	data () {
 		return {
 			options: {
-				url: 'https://sourcedata-robin.vital-it.ch/sdash/parse_dar.php',
+				url: 'https://sourcedata-dev.vital-it.ch/sdash/api/parse_dar.php',
 				paramName: 'file'
 			}
 		}
