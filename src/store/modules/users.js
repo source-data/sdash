@@ -40,6 +40,7 @@ const actions = {
 		return state.users
 	},
 	getCredentials ({ commit, state }) {
+		console.log('here')
 		if (state.current.email) {
 			return state.current
 		} else {

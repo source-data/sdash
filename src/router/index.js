@@ -66,7 +66,7 @@ function requireAuth (to, from, next) {
 	store.dispatch('getCredentials').then(test => {
 		if (!test) {
 			next({
-				path: '/',
+				path: '/login',
 				query: { redirect: to.fullPath }
 			})
 		} else {
