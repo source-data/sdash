@@ -1,17 +1,21 @@
 // initial state
-const state = {
-	project: {
-		project_id: '',
-		name: '',
-		description: '',
-		url: '',
-		users: [],
-		notifications: [],
-		figures: [],
-		is_admin: false
-	},
-	notifications: [] // filtered list
+const getDefaultState = () => {
+	return {
+		project: {
+			project_id: '',
+			name: '',
+			description: '',
+			url: '',
+			users: [],
+			notifications: [],
+			figures: [],
+			is_admin: false
+		},
+		notifications: [] // filtered list
+	}
 }
+
+const state = getDefaultState()
 
 // getters
 const getters = {
@@ -150,6 +154,9 @@ const mutations = {
 	},
 	SET_NOTIFICATIONS (state, notifications) {
 		state.notifications = notifications
+	},
+	RESET_STATE (state) {
+		Object.assign(state, getDefaultState())
 	}
 }
 

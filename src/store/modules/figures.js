@@ -1,20 +1,24 @@
 // initial state
 import mockFigures from '@/mock/figures'
 
-const state = {
-	figures: [],
-	flags: {},
-	totalItems: null,
-	filterParams: {
-		sortBy: 'date',
-		sortDesc: true,
-		limit: 10,
-		pageNb: 1,
-		filters: {
-		}
-	},
-	request: ''
+const getDefaultState = () => {
+	return {
+		figures: [],
+		flags: {},
+		totalItems: null,
+		filterParams: {
+			sortBy: 'date',
+			sortDesc: true,
+			limit: 10,
+			pageNb: 1,
+			filters: {
+			}
+		},
+		request: ''
+	}
 }
+
+const state = getDefaultState()
 
 // getters
 const getters = {
@@ -149,6 +153,9 @@ const mutations = {
 	},
 	ADD_FIGURE (state, figure){
 		state.figures.push(figure)
+	},
+	RESET_STATE (state) {
+		Object.assign(state, getDefaultState())
 	}
 	
 }
