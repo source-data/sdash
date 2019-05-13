@@ -14,7 +14,7 @@
   <vue-clip :options="options" :on-complete="onComplete">
     <template slot="clip-uploader-action">
       <div>
-        <div class="dz-message"><h2> Click or Drag and Drop a <code><b>.dar</b></code> file here to upload </h2></div>
+        <div class="dz-message"><h2> Click or Drag and Drop a <code><b>.jpeg</b></code>, <code><b>.jpg</b></code>, <code><b>.tiff</b></code>, <code><b>.png</b></code> or <code><b>.dar</b></code> file here to upload </h2></div>
       </div>
     </template>
 
