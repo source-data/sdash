@@ -70,8 +70,9 @@ export default {
 div.dz-message {
 	padding: 20px;
 	margin: 20px auto;
-	width: 500px;
+	width: 600px;
 	border: 1px dashed red;
+	text-align: center;
 }
 h2 {
 	font-size: 14px;
