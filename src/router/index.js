@@ -11,6 +11,7 @@ import Login from '@/components/user/login'
 Vue.use(Router)
 
 const router = new Router({
+	base: 'sdash',
 	mode: 'history',
 	routes: [{
 		path: '/',
@@ -65,7 +66,7 @@ function requireAuth (to, from, next) {
 	store.dispatch('getCredentials').then(test => {
 		if (!test) {
 			next({
-				path: '/',
+				path: '/login',
 				query: { redirect: to.fullPath }
 			})
 		} else {

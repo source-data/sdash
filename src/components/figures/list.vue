@@ -286,7 +286,7 @@
       </template>
 
 			<template slot="title" slot-scope="data">
-				<small>{{data.item.dar.caption.title}}</small>
+				<small v-html="data.item.dar.caption.title"></small>
 			</template>
 
 			<template slot="projects" slot-scope="data">

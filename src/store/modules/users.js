@@ -1,17 +1,21 @@
 import { Bus } from '@/bus'
 import { HTTP } from '@/router/http'
 // initial state
-const state = {
-	users: [],
-	current: {
-		user_id: '',
-		username: '',
-		fullname: '',
-		permissions: [],
-		jwt: '',
-		email: ''
+const getDefaultState = () => {
+	return {
+		users: [],
+		current: {
+			user_id: '',
+			username: '',
+			fullname: '',
+			permissions: [],
+			jwt: '',
+			email: ''
+		}
 	}
 }
+
+const state = getDefaultState()
 
 // getters
 const getters = {
@@ -140,8 +144,10 @@ const mutations = {
 			jwt: null,
 			permissions: null
 		}
-		Bus.$emit('user.updated', true)
-		
+		Bus.$emit('user.updated', true)		
+	},
+	RESET_STATE (state) {
+		Object.assign(state, getDefaultState())
 	}
 }
 

@@ -1,23 +1,26 @@
 // initial state
-
-const state = {
-	projects: [],
-	flags: {},
-	totalItems: null,
-	filterParams: {
-		sortBy: 'created_time',
-		sortDesc: true,
-		limit: 100,
-		pageNb: 1,
-		filters: {
-			name: '',
-			number_of_figures: '',
-			number_of_users: '',
-			number_of_notifications: '',
-			created_time: ''
+const getDefaultState = () => {
+	return {
+		projects: [],
+		flags: {},
+		totalItems: null,
+		filterParams: {
+			sortBy: 'created_time',
+			sortDesc: true,
+			limit: 100,
+			pageNb: 1,
+			filters: {
+				name: '',
+				number_of_figures: '',
+				number_of_users: '',
+				number_of_notifications: '',
+				created_time: ''
+			}
 		}
 	}
 }
+
+const state = getDefaultState()
 
 // getters
 const getters = {
@@ -222,6 +225,9 @@ const mutations = {
 			})			
 		}
 		state.projects[projectIdx].last_event = new Date();
+	},
+	RESET_STATE (state) {
+		Object.assign(state, getDefaultState())
 	}
 		
 }
