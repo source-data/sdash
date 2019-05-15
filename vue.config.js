@@ -1,4 +1,9 @@
 module.exports = {
+  configureWebpack: {
+    devServer: {
+      host: 'localhost'
+    }
+  },
 	chainWebpack: config => {
 		config.module
 			.rule('i18n')

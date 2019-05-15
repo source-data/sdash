@@ -217,7 +217,7 @@ export default {
 				}
 				if (this.scope === 'project') {
 					this.$store.dispatch('postProjectComment', {comment: vm.newComment.comment, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date}).then(() => {
-						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletsuccess'))
+						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
 						else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
 						else this.$snotify.success(this.$t('commentpostsuccess'))
 						this.newComment.comment = ''
@@ -231,7 +231,7 @@ export default {
 					})
 				} else if (this.scope === 'figures') {
 					this.$store.dispatch('postFigureComment', { id: this.id, comment: vm.newComment.comment, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date }).then(() => {
-						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletsuccess'))
+						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
 						else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
 						else this.$snotify.success(this.$t('commentpostsuccess'))
 						this.newComment.comment = ''

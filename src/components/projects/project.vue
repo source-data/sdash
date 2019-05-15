@@ -13,8 +13,8 @@
 
 	},
 	"fr": {
-		"projectName": "Nom de l'project",
-		"projectDescription": "Description de l'project",
+		"projectName": "Nom du project",
+		"projectDescription": "Description du project",
 		"users": "Utilisateurs",
 		"addUser": "Ajouter un utilisateur",
 		"addSeries": "Ajouter une étude / série",
