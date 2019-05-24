@@ -130,22 +130,25 @@ export default {
 				return
 			}
 			user.is_admin = !user.is_admin
-			this.$store.dispatch('toggleProjectUserAdmin', {project_id: this.project.project_id, user: user, origin_name: this.user.fullname}).then(() => {
+			this.$store.dispatch('toggleProjectUserAdmin', {project_id: this.project.project_id, user: user}).then(() => {
 				let message = (user.is_admin) ? this.$t('usersettoadmin') : this.$t('usernotsettoadmin')
 				this.$snotify.success(message)
-			}).catch(() => {
-				this.$snotify.error(this.$t('sorryerror'))
+			})
+			.catch(err => {if (!_.isEmpty(err)){
+					this.$snotify.error(err) 
+					user.is_admin = !user.is_admin
+				} 
 			})
 		},
 		deleteUser (user) {
 			if (this.confirmDelete !== user.name) this.confirmDelete = user.name
 			else {
-				this.$store.dispatch('removeUserFromProject', { name: user.name, id: user.id, project_id: this.project.project_id, origin_name: this.user.fullname }).then(() => {
+				this.$store.dispatch('removeUserFromProject', { name: user.name, id: user.id, project_id: this.project.project_id }).then(() => {
 					this.$snotify.success(this.$t('projectuserdeletesuccess'))
 					this.confirmDelete = ''
-				}).catch(() => {
-					this.$snotify.error(this.$t('sorryerror'))
 				})
+				.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
+
 			}
 		}
 	}

@@ -55,7 +55,7 @@ export default {
 	name: 'panelsSummary',
 	props: {
 		panelID: {
-			type: String,
+			type: Number,
 			required: true
 		},
 		figureID: {
@@ -73,6 +73,7 @@ export default {
 		}),
 		panel () {
 			let figureIndex = _.findIndex(this.figures, s => { return s.id === this.figureID })
+
 			if (figureIndex > -1) {
 				let panelIndex = _.findIndex(this.figures[figureIndex].dar.fig, d => { return d.id === this.panelID })
 				if (panelIndex > -1){

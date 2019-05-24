@@ -33,35 +33,35 @@ import { mapGetters } from 'vuex'
 export default {
 
 	data () {
-		return {
-			options: {
-				url: 'https://sourcedata-dev.vital-it.ch/sdash/api/parse_dar.php',
-				paramName: 'file'
-			}
-		}
+		return {}
 	},
 	computed: {
 		...mapGetters({
 			figures: 'figures',
 			user: 'currentUser'
-		})
+		}),
+		options(){
+			var vm = this
+			return {
+				url: 'http://sdash/api/parse_dar.php',
+				headers:{'Authorization': 'Bearer '+vm.user.jwt},
+				paramName: 'file'
+			}
+		}
 	},
 	methods: {
+
 		onComplete (file, status, xhr) {
+			var vm = this
 			if (status === 'success'){
-				let figure = JSON.parse(xhr.response)
-				figure.owner = this.user.fullname
-				let idx = _.findIndex(this.figures, f => f.filename === figure.filename);
-				if (idx > -1) {
-					this.$snotify.error(this.$t("errorfigureloaded"))
-					return
-				}
-				this.$store.dispatch('addFigure',figure)
-				this.$snotify.success(this.$t('figuresuccess'))
+				var figure_id = xhr.response
+				vm.$store.dispatch('addFigure',figure_id).then(function(){
+					vm.$snotify.success(vm.$t('figuresuccess'))
+				})
 			}
 			else this.$snotify.error(this.$t('sorryerror'))
 		}
-	}
+	},
 
 }
 </script>

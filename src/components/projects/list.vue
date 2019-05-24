@@ -25,14 +25,11 @@
 
 <template>
   <div class="container-fluid">
+    <nav-bar />
     <div  class="my-3 selection-button-container"  style=" position: relative;">
       <h3>
-        <router-link  to="projects/new"  class="nav-link"  active-class="active"  style="display: inline">
-          <v-icon  name="plus"  class="mr-2"/>{{ $t('newproject') }}
-        </router-link>
-        <button  type="button"  class="btn btn-link btn-lg float-right"  style="position: absolute; right: 20px;top: 0"  @click="showFilters=!showFilters">
-          <v-icon  name="search"  scale="2"/>
-        </button>
+        <router-link to="projects/new" class="nav-link" active-class="active" style="display: inline"> <v-icon name="plus" class="mr-2"/>{{ $t('newproject') }} </router-link>
+        <button type="button" class="btn btn-link btn-lg float-right" style="position: absolute; right: 20px;top: 0" @click="showFilters=!showFilters"> <v-icon name="search" scale="2"/> </button>
       </h3>
     </div>
     <b-table
@@ -172,10 +169,11 @@
 
 import { mapGetters } from 'vuex'
 import Datepicker from 'vuejs-datepicker'
+import navBar from '@/components/navbar'
 
 export default {
 	name: 'Projects',
-	components: { Datepicker },
+	components: { Datepicker,navBar },
 	data () {
 		return {
 			pageNb: 1,
@@ -277,9 +275,10 @@ export default {
 		},
 		myprojects () {
 			let vm = this
-			return _.filter(this.projects, p => {
-				return _.findIndex(p.users, u => u.id === vm.user.user_id) > -1
+			var myprojects =  _.filter(this.projects, p => {
+				return _.findIndex(p.users, u => u.id === +vm.user.user_id) > -1
 			})
+			return myprojects;
 		}
 
 	},
@@ -303,7 +302,8 @@ export default {
 		}
 	},
 	created () {
-		this.$store.dispatch('getProjects', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
+		this.$store.dispatch('getProjects')
+		// this.$store.dispatch('getProjects', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
 	},
 	mounted () {
 		this.scroll()
@@ -349,7 +349,8 @@ export default {
 			}
 		},
 		nbComments (notifications) {
-			return _.filter(notifications,n => n.event_type === 'comment').length
+			var comment_notifications =_.filter(notifications,n => n.event_type === 'comment') 
+			return comment_notifications.length 
 		}
 		
 	}

@@ -1,80 +1,111 @@
 <i18n>
 {
 	"en": {
-		"firstname": "firstname",
-		"lastname": "lastname"
+		"welcome": "Welcome to",
+		"username": "username",
+		"password": "password",
+		"submit":"Login",
+		"register":"Register",
+		"reset":"Reset password"
 	},
 	"fr": {
-		"firstname": "prénom",
-		"lastname": "nom"
+		"welcome": "Bienvenue sur",
+		"username": "login",
+		"password": "mot de passe",
+		"submit":"Login",
+		"register":"Créer un compte",
+		"reset":"Mot de passe oublié ?"
+
 	}
 }
 </i18n>
 
 <template>
-	<div class = "login container">
-		<b-card header = 'Login'>
-			<form @submit.prevent="login">
-				<dl class = 'row'>
-					<dt class = 'col-3'>{{$t('firstname')}}</dt>
-					<dd class = 'col-6'><input type = 'text' placeholder='...' v-validate="'required'" class="form-control" v-model="user.firstname" name="firstname"/></dd>
-					<div class = 'col-3'><span>{{ errors.first('firstname') }}</span></div>
-				</dl>
-				<dl class = 'row'>
-					<dt class = 'col-3'>{{$t('lastname')}}</dt>
-					<dd class = 'col-6'><input type = 'text' placeholder='...' v-validate="'required'" class="form-control" v-model="user.lastname" name = "lastname"/></dd>
-					<div class = "col-3"><span>{{ errors.first('lastname') }}</span></div>
-				</dl>
-				<div class = 'offset-3'>
-					<button type = 'submit' class = 'btn btn-primary mr-3' :disabled="!isFormValid">login</button>
-					<button type = 'button' class = 'btn btn-danger' @click="resetStorage">{{(confirmReset)?"confirm reset ?":"reset data..."}}</button>
-					<button type = 'button' class = 'btn btn-default' @click="confirmReset=false" v-if="confirmReset">cancel</button>
+	<div class="login_container">
+		<div class="container">
+			<h4>{{$t('welcome')}} {{siteTitle}}</h4>
+
+			<div class="card" v-if='!show_ga'>
+				<div class="card-header"> Login </div>
+				<div class="card-block">
+
+					<form v-on:submit.prevent="loginUser()">
+						<div class="form-group row" :class="{ 'has-error': errors.has('username') }">
+							<div class="col-3"><label class="float-right" for="username">{{$t('username')}}</label> </div>
+							<div class="col-6"> <input type="text" v-validate="'required'" name="username" id="username" v-model="user.username" class="form-control" autofocus></div>
+							<div class='col-3'><small v-show="errors.has('username')"> {{ errors.first('username') }}</small></div>
+						</div>
+						<div class="form-group row" :class="{ 'has-error': errors.has('password') }">
+							<div class="col-3"> <label class="float-right" for="username">{{$t('password')}}</label> </div>
+							<div class="col-6"><input type="password" v-validate="'required'" name="password" id="password" v-model="user.password" class="form-control"></div>
+							<div class='col-3'><small v-show="errors.has('password')"> {{ errors.first('password') }}</small></div>
+						</div>
+
+						<div class="form-group row justify-content-center">
+							<button type="submit" class="btn btn-primary" :disabled='errors.any()'>{{$t('submit')}}</button>
+							<router-link to="/register" class="btn btn-link">{{$t('register')}}</router-link>
+							<router-link to="/forgetPassword" class="btn btn-link">{{$t('reset')}}</router-link>
+						</div>
+					</form>
 				</div>
-			</form>
-		</b-card>
+			</div>
+			
 	</div>
+</div>
 </template>
 
 <script>
+import {siteTitle} from '@/app_config';
+import {Bus} from '@/bus'
+
+
 export default {
-	name: "login",
+	name: 'login',
 	data () {
 		return {
-			user: {
-				firstname: 'Robin',
-				lastname: 'Liechti'
-			},
-			confirmReset: false			
+			siteTitle:siteTitle,
+			user:{username:'',password:'',ga_code: '',qr_img_src: '',user_id: '',ga_status: ''},
+			show_ga: false
 		}
 	},
-	created () {
-		this.$store.commit("LOGOUT");
-	},
-	computed: {
-		isFormValid () {
-			return this.user.firstname && this.user.lastname
-		}
-	},
-	methods: {
-		login () {
-			this.$store.dispatch('login',this.user).then(user => {
-				if (user) this.$router.push("/figures")
+
+	methods:{
+		loginUser () {
+			var vm = this;
+			vm.$validator.validateAll().then((result) => {
+				if (result){
+					vm.$store.dispatch('login',vm.user).then((user) => {
+						vm.$snotify.success('logged in successfully');
+						Bus.$emit('user.updated',true);
+						var nextPage = (user.is_password_reset=='Y') ? 'setnewpassword' : (vm.$route.query.redirect) ? vm.$route.query.redirect : '/';
+						vm.$router.push(nextPage);								
+					}).catch((err) => {
+						if (!_.isEmpty(err)) vm.$snotify.error(err);
+					});
+				}
 			})
 		},
-		resetStorage () {
-			if (!this.confirmReset) this.confirmReset = true;
-			else {
-				this.$store.commit("RESET_STATE");
-				this.$snotify.success('SDash data reset successfully');
-				this.confirmReset = false
-			}
-		}
+				
+	},
+	created (){
+		this.$store.dispatch('logout');
+		Bus.$emit('user.updated',true);
 	}
 }
 </script>
 
-<style scoped>
 
+<style scoped>
+	.login_container{
+		margin-top:100px;
+	}
+	form{
+		margin:20px 0;
+	}
+	.card{
+		margin:20px 0;
+	}
+	
 dt{
 	text-align: right;
 }

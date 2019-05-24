@@ -61,7 +61,7 @@ export default {
 
 <style scoped>
 #navbar_container{
-	margin-top: 125px;
+/*	margin-top: 125px;*/
 }
 
 li.nav-item {

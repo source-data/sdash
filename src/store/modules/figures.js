@@ -1,5 +1,6 @@
 // initial state
-import mockFigures from '@/mock/figures'
+import {HTTP} from '@/router/http';
+import {serverURL} from "@/app_config"
 
 const getDefaultState = () => {
 	return {
@@ -28,27 +29,61 @@ const getters = {
 
 // actions
 const actions = {
-	getFigures ({ commit, state }) {
-		return new Promise((resolve) => {
-			setTimeout(() => {
-				if (!state.figures.length) {
-					resolve(mockFigures)
-					commit('SET_FIGURES',mockFigures)
-				}
-				else resolve(state.figures)
-			})
+
+	downloadDar ({ commit, state }, params) {
+		self.location.href = serverURL+"/dar/"+params.figure_id+"?jwt="+params.jwt;
+	},
+	getFigures ({ commit, state }, params) {
+		return HTTP.get('figures',{params:params}).then(function(response){
+			commit('SET_FIGURES',response.data)
 		})
 	},
+	postFigureComment ({ commit, state, dispatch }, params){
+		HTTP.post('figure/'+params.id+"/comments",params).then(function(response){
+			response.data.existing = (params.note_id) ? true : false;
+			commit('SET_FIGURE_COMMENT',response.data)
+		});
+	},
+	
 	getPanels ({ commit }, params) {
-		// console.log(params)
+		//NOT PROCESS YET
 		return params
 	},
+	
+	removeFigureFromProject ({ commit, state }, params){
+		console.info(params);		
+		let figure_idx = _.findIndex(state.figures, f => +f.figure_id === +params.figure_id);
+		if (figure_idx === -1) { console.info("Sorry, the figure doesn't exist"); return; }
+
+		let project_idx = _.findIndex(state.figures[figure_idx].projects, p => +p === +params.project_id);
+		if (project_idx === -1) { console.info("Sorry, the figure is not in this project"); return; }
+
+		return HTTP.delete("/figures/"+params.figure_id+"/projects/"+params.project_id).then(function(response){		
+			commit("REMOVE_FIGURE_FROM_PROJECT",{project_idx: project_idx, figure_idx: figure_idx})
+			return response.data
+		})				
+	},
+	
 	deleteFigure ({ commit }, params) {
-		if (params.project_id) { commit("REMOVE_FIGURE_FROM_PROJECT", params) }
-		else commit("DELETE_FIGURE",params)
+		return HTTP.delete('figures/'+params.figure_id).then(function(response){
+			commit('DELETE_FIGURE',response.data)
+		})
+
+		// if (params.project_id) {
+		// 	 commit("REMOVE_FIGURE_FROM_PROJECT", params)
+		// }
+		// else{
+		// 	return HTTP.delete('figures',{params:params}).then(function(response){
+		// 		console.info(response.data);
+		// 		commit('DELETE_FIGURE',{figure_id:response.data})
+		// 	})
+		//
+		// 	commit("DELETE_FIGURE",params)
+		//
+		// }
 	},
 	getFigureComments ({commit, state}, params) {
-		
+		//NOT PROCESS YET
 		return new Promise ((resolve, reject) => {
 			let idx = _.findIndex(state.figures, f => +f.id === +params.id)
 			if (idx === -1) reject("Sorry, figure is unknown")
@@ -63,16 +98,11 @@ const actions = {
 			resolve(notifications)
 		})
 	} ,
-	postFigureComment ({ commit, state, dispatch }, params){
-		commit('SET_FIGURE_COMMENT',params)
-	},
-	addFigure({ commit, state, rootState }, figure){
-		let newId = 0;
-		_.forEach(state.figures, f => {
-			if (+f.id > newId) newId = +f.id;
+	addFigure({ commit, state, rootState }, figure_id){
+		//NOT PROCESS YET
+		HTTP.get('figures',{params:{figure_id:figure_id}}).then(function(response){
+			commit('ADD_FIGURE',response.data[0])
 		})
-		figure.id = newId+1
-		commit('ADD_FIGURE',figure);
 	}
 	
 }
@@ -102,12 +132,18 @@ const mutations = {
 		
 		state.flags = {}
 	},
-	PUT_FIGURES_IN_PROJECT (state, params){
-		let selectedFigureIds = _.map(params.figures, f =>  f.id);
+	REMOVE_FIGURE_FROM_PROJECT(state,params){
+		console.info(params);
+		state.figures[params.figure_idx].projects.splice(params[params.project_idx],1);
+		console.info(state.figures[params.figure_idx]);
+	},
+	PUT_PROJECT_IN_FIGURE (state, project){
+		let selectedFigureIds = project.figures;
+		// let selectedFigureIds = _.map(project.figures, f =>  f.id);
 		_.forEach(state.figures, (f,i) => {
 			if (selectedFigureIds.indexOf(+f.id) > -1) {
-				if (f.projects.indexOf(+params.project_id) === -1){
-					state.figures[i].projects.push(+params.project_id)
+				if (f.projects.indexOf(+project.project_id) === -1){
+					state.figures[i].projects.push(+project.project_id)
 				}
 			}
 		})
@@ -121,16 +157,10 @@ const mutations = {
 			_.remove(state.figures[i].projects, p => p == project_id)
 		})
 	},
-	REMOVE_FIGURE_FROM_PROJECT (state, params) {
-		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.figure_id);
-		if (figureIdx > -1) {
-			let projectIdx = state.figures[figureIdx].projects.indexOf(+params.project_id);
-			if (projectIdx > -1) state.figures[figureIdx].projects.splice(projectIdx,1);
-		}
-	},
+
 	SET_FIGURE_COMMENT (state, params) {
 		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.id)
-		if (params.post_date){
+		if (params.existing){
 			let idx = _.findIndex(state.figures[figureIdx].notifications, n => n.post_date === params.post_date && n.origin_name === params.origin_name)
 			if (idx > -1){
 				if (params.comment) {
@@ -142,16 +172,12 @@ const mutations = {
 			}
 		}
 		else {
-			state.figures[figureIdx].notifications.push({
-				origin_name: params.origin_name,
-				event_type: 'comment',
-				mutation_type: null,
-				comment: params.comment,
-				post_date: new Date()
-			})			
+			state.figures[figureIdx].notifications.push(params);			
 		}
 	},
+
 	ADD_FIGURE (state, figure){
+		figure._showDetails = false; figure.is_selected = false; figure.view = 'panels';
 		state.figures.push(figure)
 	},
 	RESET_STATE (state) {

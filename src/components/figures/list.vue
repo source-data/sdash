@@ -26,9 +26,12 @@
 		"nofigure": "no figure found",
 		"figuressend": "figures send to my files",
     "confirmDelete": "are you sure you want to delete {count} figure | are you sure you want to delete {count} figures",
+    "confirmRemovefromproject": "are you sure you want to remove {count} figure from this project | are you sure you want to remove {count} figures from this project",
     "confirmdeletepanels": "containing {count} serie? once deleted, you will not be able to re-upload any panels if other users still have access to them. | containing {count} panels? once deleted, you will not be able to re-upload any panels if other users still have access to them.",
     "cancel": "cancel",
-		"newproject": "new project..."
+		"newproject": "new project...",
+		"figuresnotfound": "Error during getting figures",
+		"removefromproject":"Remove"
 	},
 	"fr": {
 		"selectednbfigures": "{count} étude est sélectionnée | {count} études sont sélectionnées",
@@ -54,57 +57,60 @@
     "nofigure": "aucune étude trouvée",
 		"figuressend": "études envoyées dans votre boîte de réception",
     "confirmDelete": "êtes vous de sûr de vouloir supprimer ? ",
+    "confirmRemovefromproject": "êtes vous de sûr de vouloir supprimer du projet? ",		
     "cancel": "annuler",
-		"newproject": "nouveau projet..."
+		"newproject": "nouveau projet...",
+		"figuresnotfound": "Erreur pendanr le chargement des figures",
+		"removefromproject":"Supprimer"
+		
 	}
 }
 </i18n>
 
 <template>
-  <div v-if="!loading" class="listContainer">
-		
+  <div v-if="!loading" class="listContainer" >
+    <nav-bar v-if="!filters.project_id" />
+
 		<figure-upload v-if="!filters.project_id"></figure-upload>
 		
     <!--button Figure selected -->
     <div class="container-fluid my-3 selection-button-container">
       <span v-if="selectedFiguresNb" class="float-left">
         <span>{{ $tc("selectednbfigures",selectedFiguresNb,{count: selectedFiguresNb}) }}</span>
-        <b-dropdown  v-if="!filters.project_id || (project.send_panels || project.is_admin)"  variant="link"  size="sm"  no-caret>
-          <template slot="button-content">
-            <span> <v-icon  class="align-middle"  name="book"/> </span>
-						<br>
-						{{ $t("addproject") }}
-          </template>
-          <b-dropdown-item  v-for="allowedProject in allowedProjects"  :key="allowedProject.id"  @click.stop="addToProject(allowedProject.project_id)">
-            {{ allowedProject.name }}
-          </b-dropdown-item>
-					<b-dropdown-divider v-if="allowedProjects.length" />
-					<b-dropdown-item>
-					<b-button v-b-modal.modalNewProject size="sm"> {{$t('newproject')}} </b-button>
-					</b-dropdown-item>
-        </b-dropdown>
-        <button  v-if="!filters.project_id || project.is_admin"  type="button"  class="btn btn-link btn-sm text-center"  @click="confirmDelete=!confirmDelete">
-          <span>  <v-icon  class="align-middle"  name="trash"/>  </span><br> {{ $t("delete") }} 
-				</button>
-      </span>
+        <b-dropdown  v-if="!filters.project_id"  variant="link"  size="sm"  no-caret>
+        <!-- <b-dropdown  v-if="!filters.project_id || (project.send_panels || project.is_admin)"  variant="link"  size="sm"  no-caret> -->
+          <template slot="button-content"> <span> <v-icon class="align-middle" name="book"/> </span> <br> {{ $t("addproject") }} </template>
 
-      <button  type="button"  class="d-none d-sm-block btn btn-link btn-lg float-right"  @click="showFilters=!showFilters">
-        <v-icon  name="search"  scale="2"/>
-      </button>
+          <b-dropdown-item v-for="allowedProject in allowedProjects" :key="allowedProject.id" @click.stop="addToProject(allowedProject.project_id)"> {{ allowedProject.name }} </b-dropdown-item>
+					<b-dropdown-divider v-if="allowedProjects.length" />
+					<b-dropdown-item> <b-button v-b-modal.modalNewProject size="sm"> {{$t('newproject')}} </b-button> </b-dropdown-item>
+        </b-dropdown>
+        <button v-if="!filters.project_id || project.is_admin" type="button" class="btn btn-link btn-sm text-center" @click="confirmDelete=!confirmDelete"> <span><v-icon class="align-middle" name="trash"/> </span><br> {{ $t("delete") }} </button>
+      </span>
+      <button type="button" class="d-none d-sm-block btn btn-link btn-lg float-right" @click="showFilters=!showFilters"> <v-icon name="search" scale="2"/> </button>
+
     </div>
     <!--deleteSelectedFigures()-->
     <confirm-button
-      v-if="confirmDelete && selectedFiguresNb"
+      v-if="confirmDelete && selectedFiguresNb && !filters.project_id"
       :btn-primary-text="$t('delete')"
       :btn-danger-text="$t('cancel')"
       :text="$tc('confirmDelete',selectedFiguresNb,{count: selectedFiguresNb})"
       :method-confirm="deleteSelectedFigures"
       :method-cancel="() => confirmDelete=false"
     />
+    <confirm-button
+      v-if="confirmDelete && selectedFiguresNb && filters.project_id"
+      :btn-primary-text="$t('removefromproject')"
+      :btn-danger-text="$t('cancel')"
+      :text="$tc('confirmRemovefromproject',selectedFiguresNb,{count: selectedFiguresNb})"
+      :method-confirm="deleteSelectedFigures"
+      :method-cancel="() => confirmDelete=false"
+    />
     <form-get-user  v-if="form_send_figure && selectedFiguresNb"  @get-user="sendToUser"  @cancel-user="form_send_figure=false"/>
     <b-table
       class="container-fluid"
-			style="min-height: 500px"
+			:style="{'min-height':(filteredFigures.length) ? '500px':'0px'}"
       responsive
       striped
       :items="filteredFigures"
@@ -261,7 +267,7 @@
             </div>
             <div  v-if="row.item.view=='panels'"  class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
               <div class="row">
-                <div  v-for="panel in row.item.dar.fig"  :key="panel.id"  class="col-sm-12 col-md-12 col-lg-12 col-xl-6 mb-5">
+                <div v-for="panel in row.item.dar.fig"  :key="panel.id"  class="col-sm-12 col-md-12 col-lg-12 col-xl-6 mb-5">
                   <panels-summary :key="panel.id" :panel-i-d="panel.id" :figure-i-d="row.item.id"  />
                 </div>
               </div>
@@ -295,7 +301,7 @@
 			</template>
 
 			<template slot="nbPanels" slot-scope="data">
-				{{ data.item.dar.fig.length }}
+				{{ data.item.nbPanels }}
 			</template>
 
 			<template slot="create_date" slot-scope="data">
@@ -320,7 +326,7 @@
 		
 		
   </div>
-  <div  v-else  class="container-fluid"  style="margin-top: 30px; text-align:center;">
+  <div v-else  class="container-fluid"  style="margin-top: 30px; text-align:center;">
     <pulse-loader  :loading="loading"  color="white"/>
   </div>
 </template>
@@ -339,10 +345,11 @@ import figureUpload from '@/components/figures/figureUpload'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import ConfirmButton from '@/components/figures/ConfirmButton.vue'
 import userIcon from '@/components/user/userIcon'
+import navBar from '@/components/navbar'
 
 export default {
 	name: 'Figures',
-	components: { panelsSummary, Datepicker, commentsAndNotifications, formGetUser, PulseLoader, ConfirmButton, userIcon, newProject, figureUpload },
+	components: { panelsSummary, Datepicker, commentsAndNotifications, formGetUser, PulseLoader, ConfirmButton, userIcon, newProject, figureUpload,navBar },
 	props: {
 		project: {
 			type: Object,
@@ -447,9 +454,11 @@ export default {
 		}),
 		filteredFigures () {
 			let figures = this.figures;
+			console.info('filterFigure');
 			_.forEach(this.filters, (value,filter) => {
+
 				if (value) figures = _.filter(figures, f => {
-					if (f[filter] !== undefined && f[filter].indexOf(value) > -1) {return true}
+					if (filter === 'project_id' || (f[filter] !== undefined && f[filter].indexOf(value) > -1)) {return true}
 					if (filter === 'title') {return f.dar.caption.title.toLowerCase().indexOf(value.toLowerCase()) > -1}
 					if (filter === 'createdFrom') {return moment(f.create_date).isSameOrAfter(value)} 
 					if (filter === 'createdTo') {return moment(f.create_date).isSameOrBefore(value)} 
@@ -457,8 +466,14 @@ export default {
 					if (filter === 'modifiedTo') {return moment(f.modified_date).isSameOrBefore(value)} 
 				})
 			})
-			if (this.project && this.project.project_id){
+			// if (this.project && this.project.project_id){
+			if (this.filters && this.filters.project_id){
+				console.info("avec projet");
 				figures = _.filter(this.figures, f => f.projects.indexOf(this.project.project_id) > -1)
+			}
+			else{
+				console.info("sans projet",this.filters.project_id);
+				figures = _.filter(this.figures, f => f.user_id == this.user.user_id)				
 			}
 			return figures
 		},
@@ -542,14 +557,19 @@ export default {
 	},
 
 	created () {
+		var vm = this
 		if (this.$route.params.project_id) {
 			this.filters.project_id = this.$route.params.project_id
 			this.$store.commit('RESET_FIGURE_FLAGS')
 			this.setLoading(false)
 		} else {
-			this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
-				.then(() => { setTimeout(() => this.setLoading(false), 300); })
-			this.$store.dispatch('getProjects', { pageNb: 1, limit: 40, sortBy: 'created_time', sortDesc: true })
+			this.$store.dispatch('getFigures')
+			// this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
+			.then(() => { setTimeout(() => this.setLoading(false), 300); })
+			.catch(function(err){ vm.$snotify.error(vm.$t('figuresnotfound')) })
+
+			this.$store.dispatch('getProjects')
+			// this.$store.dispatch('getProjects', { pageNb: 1, limit: 40, sortBy: 'created_time', sortDesc: true })
 		}
 	},
 
@@ -559,11 +579,11 @@ export default {
 	methods: {
 		scroll () {
 			window.onscroll = () => {
-				let bottomOfWindow = Math.floor((document.documentElement.scrollTop || document.body.scrollTop)) + Math.floor(window.innerHeight) === document.documentElement.offsetHeight
-				if (bottomOfWindow) {
-					this.pageNb++
-					this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
-				}
+				//let bottomOfWindow = Math.floor((document.documentElement.scrollTop || document.body.scrollTop)) + Math.floor(window.innerHeight) === document.documentElement.offsetHeight
+				//if (bottomOfWindow) {
+				//this.pageNb++
+				//this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
+				//}
 			}
 		},
 		sortingChanged (ctx) {
@@ -574,7 +594,8 @@ export default {
 			this.sortBy = ctx.sortBy
 			this.sortDesc = ctx.sortDesc
 			this.limit = this.figures.length
-			this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
+			this.$store.dispatch('getFigures')
+			// this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
 		},
 		showPanels (row) {
 			if (!row.item.detailsShowing) {
@@ -599,11 +620,22 @@ export default {
 			this.figures.allSelected = !this.figures.allSelected
 		},
 		deleteSelectedFigures () {
+			console.info("delete");
 			var vm = this
 			var i;
 			for (i = this.figures.length - 1; i > -1; i--) {
 				if (this.figures[i].is_selected) {
-					vm.$store.dispatch('deleteFigure', { figure_id: this.figures[i].id, project_id: this.filters.project_id, filename: this.figures[i].filename, origin_name: this.user.fullname })
+					if (!this.filters || !this.filters.project_id){
+						console.info("detelFigure");
+						vm.$store.dispatch('deleteFigure',{figure_id: this.figures[i].id})
+					}
+					else{
+						console.info("REMOVE from project");
+						vm.$store.dispatch('removeFigureFromProject',{figure_id: this.figures[i].id, project_id: +this.filters.project_id}).then(function(){
+							console.info("ici");
+							vm.filters.inc =1;
+						})					
+					}
 				}
 			}
 		},
@@ -615,7 +647,7 @@ export default {
 			var vm = this
 			_.forEach(this.figures, function (figure) {
 				if (figure.is_selected) {
-					vm.$store.dispatch('downloadFigure', { figure_id: figure.id })
+					vm.$store.dispatch('downloadFigure', { figure_id: figure.id,jwt:vm.user.jwt })
 				}
 			})
 		},
@@ -624,10 +656,15 @@ export default {
 			this.addToProject(newProject.project_id)
 		},
 		addToProject (project_id) {
-			let figures = _.filter(this.figures, s => s.is_selected)
+			var vm =this;
+			let figures = _.filter(vm.figures, s => s.is_selected)
 			if (figures.length) {
-				this.$store.commit('PUT_FIGURES_IN_PROJECT',{figures: figures, project_id: project_id, origin_name: this.user.fullname})
-				this.$snotify.success(this.$t('figureputtoproject'))
+				_.forEach(figures,function(fig){
+					vm.$store.dispatch('putFiguresInProject',{figure_id: fig.figure_id, project_id: project_id, user_id: vm.user.user_id}).then(function(project){
+						vm.$store.commit('PUT_PROJECT_IN_FIGURE',project);
+					})					
+				})
+				vm.$snotify.success(vm.$t('figureputtoproject'))
 			}
 		},
 		getProjectNameById (project_id){
@@ -663,7 +700,7 @@ export default {
 			this.loading = val
 		},
 		downloadDar (figure_id) {
-			this.$snotify.info("Something will be downloaded from here...")
+			this.$store.dispatch('downloadDar',{figure_id:figure_id,jwt:this.user.jwt})
 		}
 	}
 }
@@ -673,7 +710,7 @@ export default {
 <style scoped>
 
 div.listContainer{
-	min-height: 500px;
+/*	min-height: 500px;*/
 }
 
 	table thead th {

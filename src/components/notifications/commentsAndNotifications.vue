@@ -229,17 +229,20 @@ export default {
 						this.newComment.to_user = ''
 						this.newComment.post_date = ''
 					})
-				} else if (this.scope === 'figures') {
-					this.$store.dispatch('postFigureComment', { id: this.id, comment: vm.newComment.comment, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date }).then(() => {
+				}
+				else if (this.scope === 'figures') {
+					this.$store.dispatch('postFigureComment', { id: this.id, comment: vm.newComment.comment,note_id: vm.newComment.note_id, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date }).then(() => {
 						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
 						else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
 						else this.$snotify.success(this.$t('commentpostsuccess'))
 						this.newComment.comment = ''
 						this.newComment.to_user = ''
 						this.newComment.post_date = ''							
+						this.newComment.note_id = ''							
 					}).catch(res => {
 						this.$snotify.error(this.$t('sorryerror') + ': ' + res)
 						this.newComment.comment = ''
+						this.newComment.note_id = ''							
 						this.newComment.to_user = ''
 					})
 				}
@@ -264,6 +267,7 @@ export default {
 		},
 		editComment (idx) {
 			this.newComment.comment = this.comments[idx].comment
+			this.newComment.note_id = this.comments[idx].note_id
 			this.newComment.to_user = this.comments[idx].to_user
 			this.newComment.post_date = this.comments[idx].post_date
 			

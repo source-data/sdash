@@ -23,14 +23,14 @@ Props :
 	"fr": {
 		"projectdeletesuccess": "Project supprimé avec succès",
 		"projectquitsuccess": "Project quitté avec succès",
-		"delete": "Effacer l'project",
-		"quit": "Quitter l'project",
+		"delete": "Effacer le project",
+		"quit": "Quitter le project",
 		"confirm": "Confirmer",
 		"cancel": "Annuler",
-		"lastuser": "Vous êtes le dernier utilisateur, si vous quittez l'project, il sera supprimé.",
-		"delproject": "Etes-vous sûr de vouloir supprimer l'project ?",
-		"quitproject": "Etes-vous sûr de vouloir quitter l'project ?",
-		"lastadmin": "Vous êtes le dernier administrateur, vous pouvez définir un nouveau administrateur ou laisser l'project sans."
+		"lastuser": "Vous êtes le dernier utilisateur, si vous quittez le project, il sera supprimé.",
+		"delproject": "Etes-vous sûr de vouloir supprimer le project ?",
+		"quitproject": "Etes-vous sûr de vouloir quitter le project ?",
+		"lastadmin": "Vous êtes le dernier administrateur, vous pouvez définir un nouveau administrateur ou laisser le project sans."
 	}
 }
 </i18n>
@@ -64,7 +64,7 @@ Props :
         <p v-if="confirmDeletion">
           {{ $t("delproject") }}
         </p>
-        <button  type="button"  class="btn btn-danger"  @click="deleteProject">
+        <button  type="button"  class="btn btn-danger mr-1"  @click="deleteProject">
           {{ confirmDeletion?$t('confirm'):$t('delete') }}
         </button>
         <button  v-if="confirmDeletion"  type="button"  class="btn btn-secondary"  @click="confirmDeletion=!confirmDeletion">
@@ -124,9 +124,8 @@ export default {
 				this.$store.dispatch('deleteProject').then(() => {
 					this.$snotify.success(this.$t('projectdeletesuccess'))
 					this.$router.push('/projects')
-				}).catch(() => {
-					this.$snotify.error(this.$t('sorryerror'))
 				})
+				.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 			}
 		},
 		quitProject () {
@@ -142,9 +141,8 @@ export default {
 				this.$store.dispatch('removeUserFromProject',{project_id: this.project.project_id, id: this.user.user_id, origin_name: this.user.fullname} ).then(() => {
 					this.$snotify.success(this.$t('projectquitsuccess'))
 					this.$router.push('/projects')
-				}).catch(() => {
-					this.$snotify.error(this.$t('sorryerror'))
 				})
+				.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 			}
 		}
 	}

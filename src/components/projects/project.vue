@@ -28,6 +28,7 @@
 
 <template>
   <div>
+    <nav-bar/>
     <div  v-if="loading"  class="container">
       <p class="text-center fade"> loading...</p>
     </div>
@@ -47,7 +48,6 @@
             <a  class="nav-link"  :class="(view=='settings')?'active':''"  @click.stop="view='settings'"> Settings </a>
           </nav>
         </div>
-        <!-- <div class = 'col-md'></div> -->
       </div>
     </div>
     <project-figures v-if="view=='figures'" />
@@ -61,10 +61,11 @@ import { mapGetters } from 'vuex'
 import projectFigures from '@/components/projects/projectFigures'
 import projectNotifications from '@/components/projects/projectNotifications'
 import projectSettings from '@/components/projects/projectSettings'
+import navBar from '@/components/navbar'
 
 export default {
 	name: 'Project',
-	components: { projectFigures, projectSettings, projectNotifications },
+	components: { projectFigures, projectSettings, projectNotifications,navBar },
 	data () {
 		return {
 			view: 'figures',
@@ -89,15 +90,18 @@ export default {
 	},
 	created () {
 		this.loading = true
-		this.$store.dispatch('getProject', { project_id: this.$route.params.project_id }).then(() => {
-			this.loading = false
-			if (!this.$route.query.view) {
-				this.$router.push({ query: { view: 'figures' } })
-			}
-			this.view = this.$route.query.view
-		}).catch(error => {
-			this.$snotify.error(error)
-			this.$router.push('/projects')
+		
+		this.$store.dispatch('getProjects').then(() => {
+			this.$store.dispatch('getProject', { project_id: this.$route.params.project_id }).then(() => {
+				this.loading = false
+				if (!this.$route.query.view) {
+					this.$router.push({ query: { view: 'figures' } })
+				}
+				this.view = this.$route.query.view
+			}).catch(error => {
+				this.$snotify.error(error)
+				this.$router.push('/projects')
+			})
 		})
 	},
 	methods: {
@@ -106,6 +110,10 @@ export default {
 </script>
 
 <style scoped>
+	
+.container{
+	margin-top:30px;
+}
 h3 {
 	margin-bottom: 40px;
 	float: left;

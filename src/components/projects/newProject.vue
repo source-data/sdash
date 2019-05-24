@@ -23,6 +23,7 @@
 
 <template>
   <div class="container">
+    <!-- <nav-bar /> -->
     <h3 v-if="!fromModal">{{ displayName }}</h3>
     <form @submit.prevent="createProject">
       <fieldset>
@@ -63,16 +64,16 @@
           <div class="col-xs-12 col-sm-9">
             <dd>
               <h5 class="user">
-                <span  v-for="user in project.users"  :key="user.user_id"  class="badge badge-secondary">
-									{{ user.email }}
+                <span  v-for="user in project.users"  :key="user.user_id"  class="badge badge-secondary mr-1">
+									{{ user.name }}
 									<span class="icon pointer" @click="deleteUser(user)"> <v-icon name="times" /> </span>
                 </span>
               </h5>
               <h5 class="user">
                 <div class="input-group mb-3">
-                  <input  v-model="newUserName"  type="text"  class="form-control form-control-sm" id="newuserinput" placeholder="email"  aria-label="Email"  @keydown.enter.prevent="checkUser">
+                  <input  v-model="newUserEmail"  type="text"  class="form-control form-control-sm" id="newuserinput" placeholder="email"  aria-label="Email"  @keydown.enter.prevent="checkUser">
                   <div class="input-group-append">
-                    <button  id="button-addon2"  class="btn btn-outline-secondary btn-sm"  type="button"  title="add user"  @click="checkUser()"> <v-icon name="plus" /> </button>
+                    <button  id="button-addon2"  class="btn btn-outline-secondary btn-sm"  type="button"  title="add user"  @click="checkUser()" :disabled="!newUserEmail"> <v-icon name="plus" /> </button>
                   </div>
                 </div>
               </h5>
@@ -97,6 +98,7 @@
 import { mapGetters } from 'vuex'
 export default {
 	name: 'newProject',
+	components: { },
 	props: {
 		fromModal: {
 			required: false,
@@ -112,7 +114,7 @@ export default {
 				url: '',
 				users: []
 			},
-			newUserName: ''
+			newUserEmail: ''
 		}
 	},
 	created () {
@@ -126,7 +128,8 @@ export default {
 	},
 	computed: {
 		...mapGetters ({
-			currentUser: 'currentUser'
+			currentUser: 'currentUser',
+			projects: 'projects',
 		}),
 		displayName () {
 			return (!this.project.project_id) ? 'New project' : this.project.name
@@ -139,9 +142,13 @@ export default {
 		},
 		checkUser () {
 			let vm = this
-			let idx = _.findIndex(vm.project.users, u => { return u.email === vm.newUserName })
-			if (vm.newUserName && idx === -1) {
-				this.$store.dispatch('checkUser',{email: vm.newUserName}).then( res => {
+			let idx = _.findIndex(vm.project.users, u => { return u.email === vm.newUserEmail })
+			if (vm.newUserEmail && idx === -1) {
+				this.$store.dispatch('checkUser',{email: vm.newUserEmail}).then( res => {
+					if (!res){
+						this.$snotify.error("Sorry, the user is unknown")
+						return;
+					}
 					let emailIdx = _.findIndex(vm.project.users, u => u.email === res.email);
 					if (emailIdx === -1){
 						res.is_admin = false
@@ -150,13 +157,16 @@ export default {
 					else {
 						this.$snotify.warning("The user is already member of the project")
 					}
-					vm.newUserName = '';
+					vm.newUserEmail = '';
 					document.getElementById('newuserinput').focus()
 				}, error => {
 					this.$snotify.error("Sorry, the user is unknown")
-					vm.newUserName = '';
+					vm.newUserEmail = '';
 					document.getElementById('newuserinput').focus()
 				})
+			}
+			else{
+				this.$snotify.warning("The user is already member of the project")				
 			}
 		},
 		createProject () {
@@ -166,13 +176,18 @@ export default {
 				url: this.project.url,
 				users: this.project.users
 			}
+			var existing = _.findIndex(this.projects,function(p){return p.name == postValues.name;});
+			if (existing<-1){
+				this.$snotify.error(this.$t('projectalreadyexists'))
+				return;	
+			}
 			this.$store.dispatch('createProject', postValues).then(project => {
 				if (this.fromModal){
 					this.$root.$emit('bv::hide::modal','modalNewProject')
 				}
 				else this.$router.push('/projects/' + project.project_id)
 			}, error => {
-				this.$snotify.error(this.$t(error))
+				this.$snotify.error(error)
 			})
 		},
 		cancel () {

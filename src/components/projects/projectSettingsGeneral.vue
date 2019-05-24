@@ -52,8 +52,8 @@
               <div>
                 <textarea  v-model="edit.description"  rows="6"  class="form-control"/>
               </div>
-              <div>
-                <button  class="btn btn-primary"  type="submit"> {{ $t('update') }} </button>
+              <div class="my-1">
+                <button  class="btn btn-primary mr-1"  type="submit"> {{ $t('update') }} </button>
                 <button  class="btn btn-secondary"  type="reset"  tabindex="0"  @keyup.esc="edit.description = '-1'"  @click="edit.description = '-1'"> {{ $t('cancel') }} </button>
               </div>
             </div>
@@ -71,7 +71,7 @@
           <form @submit.prevent="updateProject">
             <div class="input-group mb-2">
               <div>
-                <input  v-model="edit.url"  type="text"  class="form-control">
+                <input v-model="edit.url"  type="text"  class="form-control">
               </div>
               <div class="input-group-append">
                 <button  class="btn btn-primary"  type="submit"> {{ $t('update') }} </button>
@@ -129,7 +129,9 @@ export default {
 					params[k] = v
 				}
 			})
-			params.origin_name = this.user.fullname
+			params.project_id = this.project.project_id
+			console.info(params);
+			// params.origin_name = this.user.fullname
 			this.$store.dispatch('patchProject', params).then(() => {
 				this.$snotify.success(this.$t('projectupdatesuccess'))
 				this.edit.name = '-1' 
@@ -160,7 +162,7 @@ dl label {
 
 dd.project_description{
 	border: 1px solid #333;
-	height: 10em;
+	height: 11em;
 	padding: 10px;
 }
 

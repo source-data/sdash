@@ -6,22 +6,10 @@
           {{ text }}
         </p>
         <div class="col-auto col-sm-auto mb-1">
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="methodConfirm"
-          >
-            {{ btnPrimaryText }}
-          </button>
+          <button type="button" class="btn btn-primary" @click="methodConfirm" > {{ btnPrimaryText }} </button>
         </div>
         <div class="col-auto col-sm-auto mb-1">
-          <button
-            type="button"
-            class="btn btn-danger"
-            @click="methodCancel"
-          >
-            {{ btnDangerText }}
-          </button>
+          <button type="button" class="btn btn-danger" @click="methodCancel" > {{ btnDangerText }} </button>
         </div>
       </div>
     </div>

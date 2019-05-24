@@ -11,7 +11,7 @@
 		"projectuseraddsuccess": "User successfully added to the project",
 		"Unknown user": "Unknown user",
     "usersettings": "Project user settings",
-		"recipient": "recipient",
+		"recipient": "email",
 		"invitation": "invitation message"
 	},
 	"fr": {
@@ -42,34 +42,23 @@
 				
 				
         <form @submit.prevent="addUser">
-					<!-- TODO: remove firstname / lastname -->
-					<div class = 'row'>
-						<div class="form-group col-md-6">
-							<label for="firstname">{{$t('firstname')}}</label>
-							<input type="text" class="form-control" id="firstname"  placeholder="firstname"  v-validate="'required'" data-vv-as="firstname" v-model="new_firstname">
-						</div>
-						<div class="form-group col-md-6">
-							<label for="lastname">{{$t('lastname')}}</label>
-							<input type="text" class="form-control" id="lastname"  placeholder="lastname"  v-validate="'required'" data-vv-as="lastname" v-model="new_lastname">
-						</div>
-					</div>
-					<!-- <div class="form-group">
+					<div class="form-group">
 						<label for="recipient">{{$t('recipient')}}</label>
-						<input type="email" class="form-control" id="recipient"  :placeholder="'email '+$t('user')"  v-validate="'email'" data-vv-as="email" v-model="new_user_name">
-					</div> -->
+						<input type="email" class="form-control" id="recipient"  placeholder="email"  v-validate="'email'" data-vv-as="email" v-model="new_email">
+					</div>
 					<div class="form-group">
 						<label for="invitation">{{$t('invitation')}}</label>
 						<textarea class="form-control" id="invitation" name="invitation" v-model="invitation"></textarea>
 					</div>
 					<div class="form-group">
-						<button  class="btn btn-primary"  type="submit"  :disabled="!validForm()"> {{ $t('send') }} </button>
-						<button  class="btn btn-secondary"  type="reset"  tabindex="0"  @keyup.esc="new_user_name=''"  @click="new_user_name='';form_add_user=!form_add_user"> {{ $t('cancel') }} </button>
+						<button  class="btn btn-primary mr-1"  type="submit"  :disabled="!validForm()"> {{ $t('send') }} </button>
+						<button  class="btn btn-secondary"  type="reset"  tabindex="0"  @keyup.esc="new_email=''"  @click="new_email='';form_add_user=!form_add_user"> {{ $t('cancel') }} </button>
 					</div>
 				</form>
       </div>
     </div>
 
-    <project-users  :project="project"  :users="project.users"  :show-delete-user="true"  :show-change-role="true"/>
+    <project-users :project="project" :users="project.users" :show-delete-user="true" :show-change-role="true"/>
 
   </div>
 </template>
@@ -84,9 +73,7 @@ export default {
 	data () {
 		return {
 			form_add_user: false,
-			// new_user_name: '',
-			new_firstname: '',
-			new_lastname: '',
+			new_email: '',
 			new_invitation: ''
 		}
 	},
@@ -97,11 +84,8 @@ export default {
 			loggedUser: 'currentUser'
 		}),
 		invitation: {
-			get: function() { return `you have been invited by ${this.loggedUser.fullname} to join the ${this.project.name} project on SDash`},
+			get: function() { return `you have been invited by ${this.loggedUser.fullname} to join the '${this.project.name}' project on SDash`},
 			set: function(value) {this.new_invitation = value}
-		},
-		new_user_name () {
-			return `${this.new_firstname.replace(/ /g,'').toLowerCase()}.${this.new_lastname.replace(/ /g,'').toLowerCase()}@email.com` 
 		}
 	},
 	created () {
@@ -111,17 +95,14 @@ export default {
 		addUser () {
 			if (!this.form_add_user) this.form_add_user = true
 			else {
-				if (this.new_user_name && this.validEmail(this.new_user_name)) {
-					this.$store.dispatch('addUserToProject', { email: this.new_user_name, firstname: this.new_firstname, lastname: this.new_lastname, origin_name: this.loggedUser.fullname }).then(() => {
+				if (this.new_email && this.validEmail(this.new_email)) {
+					this.$store.dispatch('addUserToProject',{invitation:this.invitation, email: this.new_email}).then(() => {
 						this.$snotify.success(this.$t('projectuseraddsuccess'))
-						// this.new_user_name = ''
-						this.new_firstname = ''
-						this.new_lastname = ''
+						this.new_email = ''
 						this.form_add_user = false
 						this.confirm_delete = ''
-					}).catch(res => {
-						this.$snotify.error(this.$t(res))
 					})
+					.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 				}
 			}
 		},
@@ -130,18 +111,10 @@ export default {
 			return re.test(email)
 		},
 		validForm () {
-			return (this.new_firstname.length > 1 && this.new_lastname.length > 1 && this.validEmail(this.new_user_name))
-		},
-		patchProject (field) {
-			let params = {}
-			params[field] = this.project[field]
-			this.$store.dispatch('patchProject', params).catch(err => {
-				this.$snotify.error(this.$t('sorryerror'))
-			})
+			return (this.validEmail(this.new_email))
 		}
 	}
 }
-
 </script>
 
 <style scoped>

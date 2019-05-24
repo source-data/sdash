@@ -1,3 +1,5 @@
+import {HTTP} from '@/router/http';
+
 // initial state
 const getDefaultState = () => {
 	return {
@@ -34,7 +36,7 @@ const actions = {
 				reject("Sorry, the project is unknown")
 			}
 			let project = projects[0];
-			let userIdx = _.findIndex(project.users, u => u.email === rootState.users.current.email)
+			let userIdx = _.findIndex(project.users, u => u.id === +rootState.users.current.user_id)
 			if (userIdx === -1){
 				reject("Sorry, you are not allowed to see this project")
 			}
@@ -46,68 +48,63 @@ const actions = {
 			}
 		})
 	},
+
 	deleteProject ({ state, commit }){
-		let project = state.project
-		return new Promise ((resolve, reject) => {
-			if ( !state.project.is_admin ){
-				reject("Sorry, your are not allowed to delete the project")
-			}
-			else {
-				commit("DELETE_PROJECT",project.project_id)
-				commit("RESET_PROJECT")				
-				resolve(true)
-			}
+		if ( !state.project.is_admin ){ console.info("no admin, could not delete"); return;}
+		return HTTP.delete('projects/'+state.project.project_id).then(function(response){		
+			commit("DELETE_PROJECT",response.data)
+			commit("RESET_PROJECT")
+			return response.data
 		})
 	},
-	patchProject ( { commit, state }, params){
-		return new Promise ((resolve, reject) => {
-			if (!state.project.is_admin) {
-				reject("permissiondenied");
-			}
-			else {
-				params.project_id = state.project.project_id
-				commit("PATCH_PROJECT",params);
-			}
-			resolve(params)
+
+	patchProject ( { commit, state }, project){
+		return HTTP.patch('projects/'+project.project_id,project).then(function(response){		
+			commit('PATCH_PROJECT',response.data)
+			return response.data
 		})
 	},
-	toggleProjectUserAdmin ( { commit, state }, params){
+
+	toggleProjectUserAdmin ( { commit, state }, params){	
 		let userIdx = _.findIndex(state.project.users, u => +u.id === params.user.id)
 		if (userIdx > -1) {
-			commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+			if (params.user.is_admin){
+				return HTTP.put("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
+					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+					return response.data
+				})				
+			}
+			else{
+				return HTTP.delete("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
+					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+					return response.data
+				})				
+			}
 		}
 	},
+
 	addUserToProject ({ commit, rootState, state }, params){
-		return new Promise ((resolve, reject) => {
-			let userIdx = _.findIndex(state.project.users, u => u.email === params.email)
-			if (userIdx > -1){
-				reject("User already in the project");
-				return;
-			}
-			let user = _.first(_.filter(rootState.users.users, u => u.email === params.email))
-			if (!user){
-				user = commit('ADD_USER',{email: params.email, firstname: params.firstname, lastname: params.lastname});
-			}
-			commit("ADD_USER_TO_PROJECT", {project_id: state.project.project_id, user: {email: user.email, id: user.user_id, is_admin: false, name: user.fullname}})
-			resolve(true);
-			return true;
-		})
+		let userIdx = _.findIndex(state.project.users, u => u.email === params.email)
+		if (userIdx > -1){ console.info("User already in the project"); return; }
+
+		return HTTP.put("/projects/"+state.project.project_id+"/users/",params).then(function(response){		
+			commit("ADD_USER_TO_PROJECT", response.data)
+			return response.data
+		})		
 	},
+
 	removeUserFromProject ({ commit, state }, params){
-		return new Promise ((resolve, reject) => {
-			if (state.project.users.length === 1) {
-				reject("Sorry, you cannot delete the last member of the project");
-				return;				
-			}
-			let idx = _.findIndex(state.project.users, u => +u.id === +params.id);
-			if (idx === -1) {
-				reject("Sorry, the user is not in the project");
-				return;
-			}
+		if (state.project.users.length === 1) { console.info("Sorry, you cannot delete the last member of the project"); return; }
+		let idx = _.findIndex(state.project.users, u => +u.id === +params.id);
+		if (idx === -1) { console.info("Sorry, the user is not in the project"); return; }
+
+		return HTTP.delete("/projects/"+params.project_id+"/users/"+params.id).then(function(response){		
 			commit("REMOVE_USER_FROM_PROJECT",{project_id: params.project_id, user_idx: idx})
-			resolve(true)
-		})	
+			return response.data
+		})				
 	},
+
+	
 	getProjectComments ({commit, state}, params) {
 		return new Promise ((resolve, reject) => {
 			let notifications = []
@@ -144,8 +141,17 @@ const mutations = {
 	SET_PROJECT (state, project){
 		state.project = project
 	},
-	PATCH_PROJECT (state, params){
-		_.forEach(params, (v,k) => {
+	ADD_USER_TO_PROJECT (state, user){
+		if (user){
+			state.project.users.push(user);
+		}
+	},
+	REMOVE_FIGURE_FROM_PROJECT(state,idx){
+		if (idx)
+			state.project.figures.splice(idx,1);
+	},
+	PATCH_PROJECT (state, project){
+		_.forEach(project, (v,k) => {
 			if (state.project[k] !== undefined && k !== 'origin_name') state.project[k] = v;
 		})
 	},

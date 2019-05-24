@@ -4,17 +4,27 @@ import Figures from '@/components/figures/list'
 import Projects from '@/components/projects/list'
 import Project from '@/components/projects/project'
 import newProject from '@/components/projects/newProject'
-import store from '@/store'
-import Login from '@/components/user/login'
 
+import Login from '@/components/user/login'
+import UserList from '@/components/user/UserList'
+import User from '@/components/user/User'
+import Admin from '@/components/user/Admin'
+import store from '@/store'
+
+import PermissionDenied from '@/components/user/permissionDenied'
+import Register from '@/components/user/Register'
+import AccountValidation from '@/components/user/AccountValidation'
+import AccountActivation from '@/components/user/AccountActivation'
+import forgetPassword from '@/components/user/forgetPassword'
+import SetNewPassword from '@/components/user/setNewPassword'
 
 Vue.use(Router)
 
 const router = new Router({
-	base: 'sdash',
 	mode: 'history',
 	routes: [{
 		path: '/',
+		// redirect: '/'
 		redirect: '/figures'
 	},
 	{
@@ -51,6 +61,67 @@ const router = new Router({
 		component: Login
 	},
 	{
+		path: '/users',
+		name: 'users',
+		component: UserList,
+		beforeEnter: requireAuth,
+		meta: {permissions: 'active',condition: 'any'}
+	},
+	{
+		path: '/admin',
+		name: 'admin',
+		component: Admin,
+		beforeEnter: requireAuth,
+		meta: {permissions: 'admin',condition: 'any'}
+	},
+	{
+		path: '/user/:user_id',
+		name: 'user',
+		component: User,
+		beforeEnter: requireAuth,
+		meta: {permissions: 'active',condition: 'any'}
+	},
+	{
+		path: '/permissionDenied',
+		name: 'permissionDenied',
+		component: PermissionDenied
+	},
+	{
+		path: '/register',
+		name: 'register',
+		component: Register
+	},
+	{
+		path: '/validationrequired',
+		name: 'setCredentials',
+		component: AccountValidation
+	},
+	{
+		path: '/setnewpassword',
+		name: 'setNewPassword',
+		component: SetNewPassword
+	},
+	{
+		path: '/activation/:param',
+		name: 'accountActivation',
+		component: AccountActivation,
+		// beforeEnter: requireAuth,
+		meta: {permissions: 'active',condition: 'any'}
+	},
+	{
+		path: '/reject/:param',
+		name: 'accountActivation',
+		component: AccountActivation,
+		// beforeEnter: requireAuth,
+		meta: {permissions: 'active',condition: 'any'}
+	},
+	{
+		path: '/forgetPassword',
+		name: 'forgetPassword',
+		component: forgetPassword
+	},
+	
+	{
 		path: '*',
 		redirect: '/login'
 	}
@@ -64,6 +135,7 @@ router.beforeEach((to, from, next) => {
 
 function requireAuth (to, from, next) {
 	store.dispatch('getCredentials').then(test => {
+		console.info("requireAuth",test);
 		if (!test) {
 			next({
 				path: '/login',

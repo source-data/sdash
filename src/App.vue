@@ -2,10 +2,10 @@
   <div id="app">
     <vue-snotify />
     <nav-header />
-    <nav-bar />
-
+    <!-- <nav-bar /> -->
+		
     <!-- content -->
-    <router-view style="margin: 25px auto" />
+    <router-view style="margin-top: 100px" />
 
     <!-- footer -->
     <footer>
@@ -20,11 +20,10 @@
 <script>
 
 import navHeader from '@/components/navheader'
-import navBar from '@/components/navbar'
 
 export default {
 	name: 'App',
-	components: { navHeader, navBar },
+	components: { navHeader },
 	computed: {
 		year () {
 			return new Date().getFullYear()
@@ -35,9 +34,9 @@ export default {
 
 <style>
 
+		
 #app{
 	padding-bottom: 50px;
-	
 }
 .pointer{
 	cursor:pointer;
