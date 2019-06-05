@@ -620,7 +620,6 @@ export default {
 			this.figures.allSelected = !this.figures.allSelected
 		},
 		deleteSelectedFigures () {
-			console.info("delete");
 			var vm = this
 			var i;
 			for (i = this.figures.length - 1; i > -1; i--) {
@@ -632,7 +631,6 @@ export default {
 					else{
 						console.info("REMOVE from project");
 						vm.$store.dispatch('removeFigureFromProject',{figure_id: this.figures[i].id, project_id: +this.filters.project_id}).then(function(){
-							console.info("ici");
 							vm.filters.inc =1;
 						})					
 					}
@@ -643,14 +641,14 @@ export default {
 			let index = _.findIndex(this.figures, s => { return s.id === item.id })
 			this.$store.commit('TOGGLE_SELECTED_FIGURE', { type: type, index: index, is_selected: isSelected })
 		},
-		downloadSelectedFigures () {
-			var vm = this
-			_.forEach(this.figures, function (figure) {
-				if (figure.is_selected) {
-					vm.$store.dispatch('downloadFigure', { figure_id: figure.id,jwt:vm.user.jwt })
-				}
-			})
-		},
+		// downloadSelectedFigures () {
+		// 	var vm = this
+		// 	_.forEach(this.figures, function (figure) {
+		// 		if (figure.is_selected) {
+		// 			vm.$store.dispatch('downloadFigure', { figure_id: figure.id,jwt:vm.user.jwt })
+		// 		}
+		// 	})
+		// },
 		newProjectCreated () {
 			let newProject = this.projects[this.projects.length-1];
 			this.addToProject(newProject.project_id)
