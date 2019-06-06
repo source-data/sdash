@@ -1,9 +1,9 @@
 module.exports = {
-  // configureWebpack: {
-  //   devServer: {
-  //     host: 'localhost'
-  //   }
-  // },
+	// configureWebpack: {
+	//   devServer: {
+	//     host: 'localhost'
+	//   }
+	// },
 
 	publicPath: process.env.NODE_ENV === 'production'
 		? '/sdash/'

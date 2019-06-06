@@ -134,11 +134,11 @@ export default {
 				let message = (user.is_admin) ? this.$t('usersettoadmin') : this.$t('usernotsettoadmin')
 				this.$snotify.success(message)
 			})
-			.catch(err => {if (!_.isEmpty(err)){
+				.catch(err => {if (!_.isEmpty(err)){
 					this.$snotify.error(err) 
 					user.is_admin = !user.is_admin
 				} 
-			})
+				})
 		},
 		deleteUser (user) {
 			if (this.confirmDelete !== user.name) this.confirmDelete = user.name
@@ -147,7 +147,7 @@ export default {
 					this.$snotify.success(this.$t('projectuserdeletesuccess'))
 					this.confirmDelete = ''
 				})
-				.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
+					.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 
 			}
 		}

@@ -565,8 +565,8 @@ export default {
 		} else {
 			this.$store.dispatch('getFigures')
 			// this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
-			.then(() => { setTimeout(() => this.setLoading(false), 300); })
-			.catch(function(err){ vm.$snotify.error(vm.$t('figuresnotfound')) })
+				.then(() => { setTimeout(() => this.setLoading(false), 300); })
+				.catch(function(err){ vm.$snotify.error(vm.$t('figuresnotfound')) })
 
 			this.$store.dispatch('getProjects')
 			// this.$store.dispatch('getProjects', { pageNb: 1, limit: 40, sortBy: 'created_time', sortDesc: true })

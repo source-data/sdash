@@ -9,10 +9,11 @@
 
     <!-- footer -->
     <footer>
-      <b-navbar type="info" navbar-dark bg-primary fixed="bottom" >
-        <b-navbar-brand href="#" tag="h4">@ SIB Swiss Institute of Bioinformatics and EMBO, inc {{ year }}
-        </b-navbar-brand>
-      </b-navbar>
+		<b-navbar toggleable="md" type="light" variant="light" fixed='bottom'>
+			<b-navbar-brand href="https://www.vital-it.ch/"  tag='h4' class="mr-auto">© SIB Swiss Institute of Bioinformatics / Vital-IT {{year}}
+			</b-navbar-brand>
+			<span class = 'imi-logo'></span>
+		</b-navbar>
     </footer>
   </div>
 </template>
