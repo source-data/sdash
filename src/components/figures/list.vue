@@ -107,7 +107,7 @@
       :method-confirm="deleteSelectedFigures"
       :method-cancel="() => confirmDelete=false"
     />
-    <form-get-user  v-if="form_send_figure && selectedFiguresNb"  @get-user="sendToUser"  @cancel-user="form_send_figure=false"/>
+    <form-get-user v-if="form_send_figure && selectedFiguresNb"  @get-user="sendToUser"  @cancel-user="form_send_figure=false"/>
     <b-table
       class="container-fluid"
 			:style="{'min-height':(filteredFigures.length) ? '500px':'0px'}"
@@ -118,9 +118,11 @@
       :sort-desc="true"
       :sort-by.sync="sortBy"
       :no-local-sorting="false"
-			:dark="false"
+			:per-page="perPage"
+      :current-page="currentPage"
       @sort-changed="sortingChanged"
     >
+
       <template  slot="HEAD_is_selected"  slot-scope="data">
         {{ $t(data.label) }}
       </template>
@@ -273,7 +275,7 @@
               </div>
             </div>
 
-            <div  v-if="row.item.view=='notifications'"  class="col-md-10">
+            <div v-if="row.item.view=='notifications'"  class="col-md-10">
               <comments-and-notifications :id="row.item.id+''" scope="figures" />
             </div>
 
@@ -313,6 +315,8 @@
 			</template>
 
     </b-table>
+		
+		
     <div  v-if="figures.length===0"  style="text-align:center;"  class="card">
       <div class="card-body">
         {{ $t('nofigure') }}
@@ -359,6 +363,8 @@ export default {
 	},
 	data () {
 		return {
+		 perPage: 10,
+        currentPage: 1,
 			pageNb: 1,
 			active: false,
 			form_send_figure: false,
@@ -454,6 +460,7 @@ export default {
 		}),
 		filteredFigures () {
 			let figures = this.figures;
+			console.info(this.figures);
 			console.info('filterFigure');
 			_.forEach(this.filters, (value,filter) => {
 
@@ -475,6 +482,7 @@ export default {
 				console.info("sans projet",this.filters.project_id);
 				figures = _.filter(this.figures, f => f.user_id == this.user.user_id)				
 			}
+			console.info(figures);
 			return figures
 		},
 		totalRows () {

@@ -30,6 +30,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import {serverURL} from "@/app_config"
+	
 export default {
 
 	data () {
@@ -43,7 +45,8 @@ export default {
 		options(){
 			var vm = this
 			return {
-				url: 'http://sdash/api/parse_dar.php',
+				url:  serverURL+"/dar/",
+				// url: 'http://sdash/api/parse_dar.php',
 				headers:{'Authorization': 'Bearer '+vm.user.jwt},
 				paramName: 'file'
 			}
@@ -54,6 +57,7 @@ export default {
 		onComplete (file, status, xhr) {
 			var vm = this
 			if (status === 'success'){
+				console.info(file,status,xhr);
 				var figure_id = xhr.response
 				vm.$store.dispatch('addFigure',figure_id).then(function(){
 					vm.$snotify.success(vm.$t('figuresuccess'))
