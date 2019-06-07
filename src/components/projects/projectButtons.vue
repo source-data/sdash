@@ -125,7 +125,7 @@ export default {
 					this.$snotify.success(this.$t('projectdeletesuccess'))
 					this.$router.push('/projects')
 				})
-				.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
+					.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 			}
 		},
 		quitProject () {
@@ -142,7 +142,7 @@ export default {
 					this.$snotify.success(this.$t('projectquitsuccess'))
 					this.$router.push('/projects')
 				})
-				.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
+					.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 			}
 		}
 	}

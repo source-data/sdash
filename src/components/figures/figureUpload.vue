@@ -29,8 +29,8 @@
 </template>
 
 <script>
+import { serverURL } from '@/app_config'
 import { mapGetters } from 'vuex'
-import {serverURL} from "@/app_config"
 	
 export default {
 
@@ -45,10 +45,9 @@ export default {
 		options(){
 			var vm = this
 			return {
-				url:  serverURL+"/dar/",
-				// url: 'http://sdash/api/parse_dar.php',
+				url: serverURL+'/dar',
 				headers:{'Authorization': 'Bearer '+vm.user.jwt},
-				paramName: 'file'
+				paramName: 'dar'
 			}
 		}
 	},
@@ -57,13 +56,15 @@ export default {
 		onComplete (file, status, xhr) {
 			var vm = this
 			if (status === 'success'){
-				console.info(file,status,xhr);
 				var figure_id = xhr.response
 				vm.$store.dispatch('addFigure',figure_id).then(function(){
 					vm.$snotify.success(vm.$t('figuresuccess'))
 				})
 			}
-			else this.$snotify.error(this.$t('sorryerror'))
+			else{
+				this.$snotify.error(xhr.responseText)
+				
+			} 
 		}
 	},
 

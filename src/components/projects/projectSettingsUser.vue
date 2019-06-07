@@ -32,16 +32,16 @@
 </i18n>
 
 <template>
-  <div class="container">
-    <h3  v-if="!form_add_user"  class="pointer"  style="width: 100%">
-      {{ $t('userlist') }}
+	<div class="container">
+		<h3  v-if="!form_add_user"  class="pointer"  style="width: 100%">
+			{{ $t('userlist') }}
 			<button  v-if="project.is_admin"  class="btn btn-secondary float-right"  @click="addUser()"> <v-icon  name="user-plus"  scale="1"  class="mr-2"/> {{ $t('add_user') }} </button>
-    </h3>
-    <div  v-if="form_add_user"  class="card">
-      <div class="card-body">
+		</h3>
+		<div  v-if="form_add_user"  class="card">
+			<div class="card-body">
 				
 				
-        <form @submit.prevent="addUser">
+				<form @submit.prevent="addUser">
 					<div class="form-group">
 						<label for="recipient">{{$t('recipient')}}</label>
 						<input type="email" class="form-control" id="recipient"  placeholder="email"  v-validate="'email'" data-vv-as="email" v-model="new_email">
@@ -55,12 +55,12 @@
 						<button  class="btn btn-secondary"  type="reset"  tabindex="0"  @keyup.esc="new_email=''"  @click="new_email='';form_add_user=!form_add_user"> {{ $t('cancel') }} </button>
 					</div>
 				</form>
-      </div>
-    </div>
+			</div>
+		</div>
 
-    <project-users :project="project" :users="project.users" :show-delete-user="true" :show-change-role="true"/>
+		<project-users :project="project" :users="project.users" :show-delete-user="true" :show-change-role="true"/>
 
-  </div>
+	</div>
 </template>
 
 <script>
@@ -102,7 +102,7 @@ export default {
 						this.form_add_user = false
 						this.confirm_delete = ''
 					})
-					.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
+						.catch(err => {if (!_.isEmpty(err)) this.$snotify.error(err) })
 				}
 			}
 		},
