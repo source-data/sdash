@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { serverURL } from '@/app_config'
 import { mapGetters } from 'vuex'
 export default {
 
@@ -43,9 +44,9 @@ export default {
 		options(){
 			var vm = this
 			return {
-				url: 'http://sdash/api/parse_dar.php',
+				url: serverURL+'/dar',
 				headers:{'Authorization': 'Bearer '+vm.user.jwt},
-				paramName: 'file'
+				paramName: 'dar'
 			}
 		}
 	},
