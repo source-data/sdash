@@ -108,6 +108,7 @@ const actions = {
 	getProjectComments ({commit, state}, params) {
 		return new Promise ((resolve, reject) => {
 			let notifications = []
+			console.log(state.project.notifications)
 			if (params.type === 'comments') {
 				notifications = _.filter(state.project.notifications, n => n.event_type === 'comment')
 			}
@@ -120,8 +121,8 @@ const actions = {
 	} ,
 	postProjectComment ({ commit, state, dispatch }, params){
 		params.project_id = state.project.project_id
-		console.log(params)
-		HTTP.post("/projects/"+state.project.project_id+"/comments", params).then( () => {
+		HTTP.post("/projects/"+state.project.project_id+"/comments", params).then( res => {
+			params.note_id = res.data.note_id
 			commit('SET_COMMENT',params)	
 			dispatch('getProjectComments',{type: 'comments'})
 		})
@@ -181,6 +182,7 @@ const mutations = {
 		}
 		else {
 			state.project.notifications.push({
+				note_id: params.note_id,
 				origin_name: params.origin_name,
 				event_type: 'comment',
 				mutation_type: null,
