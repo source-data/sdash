@@ -135,7 +135,6 @@ router.beforeEach((to, from, next) => {
 
 function requireAuth (to, from, next) {
 	store.dispatch('getCredentials').then(test => {
-		console.info("requireAuth",test);
 		if (!test) {
 			next({
 				path: '/login',
