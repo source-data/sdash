@@ -182,6 +182,7 @@ const mutations = {
 		else {
 			state.project.notifications.push({
 				origin_name: params.origin_name,
+				note_id:params.note_id,
 				event_type: 'comment',
 				mutation_type: null,
 				comment: params.comment,
