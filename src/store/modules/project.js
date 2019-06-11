@@ -108,7 +108,6 @@ const actions = {
 	getProjectComments ({commit, state}, params) {
 		return new Promise ((resolve, reject) => {
 			let notifications = []
-			console.log(state.project.notifications)
 			if (params.type === 'comments') {
 				notifications = _.filter(state.project.notifications, n => n.event_type === 'comment')
 			}
@@ -125,6 +124,18 @@ const actions = {
 			params.note_id = res.data.note_id
 			commit('SET_COMMENT',params)	
 			dispatch('getProjectComments',{type: 'comments'})
+		})
+	},
+	deleteProjectComment ({ commit, state, dispatch }, params) {
+		if (!params.note_id)  return
+		return new Promise ((resolve, reject) => {
+			HTTP.delete("/projects/"+state.project.project_id+"/comments/"+params.note_id).then( () => {
+				commit("DELETE_COMMENT",params)
+				dispatch('getProjectComments',{type: 'comments'})
+				resolve(params.note_id)
+			}).catch(err => {
+				reject(err)
+			})
 		})
 	}
 	
@@ -191,6 +202,9 @@ const mutations = {
 			})
 		}
 		state.project.last_event = new Date();
+	},
+	DELETE_COMMENT (state, params) {
+		_.remove(state.project.notifications, n => n.note_id === params.note_id)
 	}
 	
 }
