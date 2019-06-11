@@ -54,7 +54,7 @@ const actions = {
 		_.forEach(params.filters, function (value, filterName) {
 			if (filterName === 'project_id') {
 				if (value) {
-					requestParams += '&project=' + value
+					requestParams += '&project_id=' + value
 				}
 			} else if (filterName.indexOf('created') === -1 && filterName.indexOf('modified') === -1) {
 				if (value) {

@@ -120,8 +120,11 @@ const actions = {
 	} ,
 	postProjectComment ({ commit, state, dispatch }, params){
 		params.project_id = state.project.project_id
-		commit('SET_COMMENT',params)
-		dispatch('getProjectComments',{type: 'comments'})
+		console.log(params)
+		HTTP.post("/projects/"+state.project.project_id+"/comments", params).then( () => {
+			commit('SET_COMMENT',params)	
+			dispatch('getProjectComments',{type: 'comments'})
+		})
 	}
 	
 }
@@ -163,7 +166,31 @@ const mutations = {
 	},
 	RESET_STATE (state) {
 		Object.assign(state, getDefaultState())
+	},
+	SET_COMMENT (state, params){
+		if (params.post_date){
+			let idx = _.findIndex(state.project.notifications, n => n.post_date === params.post_date && n.origin_name === params.origin_name)
+			if (idx > -1){
+				if (params.comment) {
+					state.project.notifications[idx].comment = params.comment
+				}
+				else {
+					state.project.notifications.splice(idx,1)
+				}
+			}
+		}
+		else {
+			state.project.notifications.push({
+				origin_name: params.origin_name,
+				event_type: 'comment',
+				mutation_type: null,
+				comment: params.comment,
+				post_date: new Date()
+			})
+		}
+		state.project.last_event = new Date();
 	}
+	
 }
 
 export default {
