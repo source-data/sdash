@@ -191,7 +191,6 @@ export default {
 			let vm = this;
 			if (this.newComment.comment.length > 2 || this.newComment.post_date) {
 				if (this.newComment.comment.indexOf('@') > -1) {
-					console.log('hummm')
 					if (this.users.length) { // project
 						_.forEach(this.users, user => {
 							if (this.newComment.comment.indexOf(user.user_name) > -1) {

@@ -62,277 +62,281 @@
 		"newproject": "nouveau projet...",
 		"figuresnotfound": "Erreur pendanr le chargement des figures",
 		"removefromproject":"Supprimer"
-		
+
 	}
 }
 </i18n>
 
 <template>
-  <div v-if="!loading" class="listContainer" >
-    <nav-bar v-if="!filters.project_id" />
+	<div  class="listContainer" >
+		<nav-bar v-if="!filters.project_id" />
 
 		<figure-upload v-if="!filters.project_id"></figure-upload>
-		
-    <!--button Figure selected -->
-    <div class="container-fluid my-3 selection-button-container">
-      <span v-if="selectedFiguresNb" class="float-left">
-        <span>{{ $tc("selectednbfigures",selectedFiguresNb,{count: selectedFiguresNb}) }}</span>
-        <b-dropdown  v-if="!filters.project_id"  variant="link"  size="sm"  no-caret>
-        <!-- <b-dropdown  v-if="!filters.project_id || (project.send_panels || project.is_admin)"  variant="link"  size="sm"  no-caret> -->
-          <template slot="button-content"> <span> <v-icon class="align-middle" name="book"/> </span> <br> {{ $t("addproject") }} </template>
+		<!--button Figure selected -->
+		<div id="myHeader" ref="myHeader" :class="isActive ? 'sticky' : ''" class="pt-2">
+			<div class="d-flex flex-wrap">
+				<div class="container-fluid my-3 selection-button-container">
+					<span v-if="selectedFiguresNb || isActive" class="float-left">
+						<span>{{ $tc("selectednbfigures",selectedFiguresNb,{count: selectedFiguresNb}) }}</span>
+						<b-dropdown  v-if="!filters.project_id"  variant="link"  size="sm"  no-caret :disabled="!selectedFiguresNb">
+						<!-- <b-dropdown  v-if="!filters.project_id || (project.send_panels || project.is_admin)"  variant="link"  size="sm"  no-caret> -->
+						<template slot="button-content"> <span> <v-icon class="align-middle" name="book"/> </span> <br> {{ $t("addproject") }} </template>
 
-          <b-dropdown-item v-for="allowedProject in allowedProjects" :key="allowedProject.id" @click.stop="addToProject(allowedProject.project_id)"> {{ allowedProject.name }} </b-dropdown-item>
-					<b-dropdown-divider v-if="allowedProjects.length" />
-					<b-dropdown-item> <b-button v-b-modal.modalNewProject size="sm"> {{$t('newproject')}} </b-button> </b-dropdown-item>
-        </b-dropdown>
-        <button v-if="!filters.project_id || project.is_admin" type="button" class="btn btn-link btn-sm text-center" @click="confirmDelete=!confirmDelete"> <span><v-icon class="align-middle" name="trash"/> </span><br> {{ $t("delete") }} </button>
-      </span>
-      <button type="button" class="d-none d-sm-block btn btn-link btn-lg float-right" @click="showFilters=!showFilters"> <v-icon name="search" scale="2"/> </button>
+							<b-dropdown-item v-for="allowedProject in allowedProjects" :key="allowedProject.id" @click.stop="addToProject(allowedProject.project_id)"> {{ allowedProject.name }} </b-dropdown-item>
+							<b-dropdown-divider v-if="allowedProjects.length" />
+							<b-dropdown-item> <b-button v-b-modal.modalNewProject size="sm"> {{$t('newproject')}} </b-button> </b-dropdown-item>
+						</b-dropdown>
+						<button v-if="!filters.project_id || project.is_admin" type="button" class="btn btn-link btn-sm text-center" :disabled="!selectedFiguresNb" @click="confirmDelete=!confirmDelete"> <span><v-icon class="align-middle" name="trash"/> </span><br> {{ $t("delete") }} </button>
+					</span>
+					<button type="button" class="d-none d-sm-block btn btn-link btn-lg float-right" @click="showFilters=!showFilters"> <v-icon name="search" scale="2"/> </button>
+				</div>
+			</div>
+			<!--deleteSelectedFigures()-->
+			<confirm-button
+			v-if="confirmDelete && selectedFiguresNb && !filters.project_id"
+			:btn-primary-text="$t('delete')"
+			:btn-danger-text="$t('cancel')"
+			:text="$tc('confirmDelete',selectedFiguresNb,{count: selectedFiguresNb})"
+			:method-confirm="deleteSelectedFigures"
+			:method-cancel="() => confirmDelete=false"
+			/>
+			<confirm-button
+			v-if="confirmDelete && selectedFiguresNb && filters.project_id"
+			:btn-primary-text="$t('removefromproject')"
+			:btn-danger-text="$t('cancel')"
+			:text="$tc('confirmRemovefromproject',selectedFiguresNb,{count: selectedFiguresNb})"
+			:method-confirm="deleteSelectedFigures"
+			:method-cancel="() => confirmDelete=false"
+			/>
+			<form-get-user  v-if="form_send_figure && selectedFiguresNb"  @get-user="sendToUser"  @cancel-user="form_send_figure=false"/>
+			<div v-if="loading">
+				<pulse-loader  :loading="loading"  color="white"/>
+			</div>
 
-    </div>
-    <!--deleteSelectedFigures()-->
-    <confirm-button
-      v-if="confirmDelete && selectedFiguresNb && !filters.project_id"
-      :btn-primary-text="$t('delete')"
-      :btn-danger-text="$t('cancel')"
-      :text="$tc('confirmDelete',selectedFiguresNb,{count: selectedFiguresNb})"
-      :method-confirm="deleteSelectedFigures"
-      :method-cancel="() => confirmDelete=false"
-    />
-    <confirm-button
-      v-if="confirmDelete && selectedFiguresNb && filters.project_id"
-      :btn-primary-text="$t('removefromproject')"
-      :btn-danger-text="$t('cancel')"
-      :text="$tc('confirmRemovefromproject',selectedFiguresNb,{count: selectedFiguresNb})"
-      :method-confirm="deleteSelectedFigures"
-      :method-cancel="() => confirmDelete=false"
-    />
-    <form-get-user v-if="form_send_figure && selectedFiguresNb"  @get-user="sendToUser"  @cancel-user="form_send_figure=false"/>
-    <b-table
-      class="container-fluid"
+		</div>
+		<div ref="figuresList" class="content">
+			<b-table
+			class="container-fluid"
 			:style="{'min-height':(filteredFigures.length) ? '500px':'0px'}"
-      responsive
-      striped
-      :items="filteredFigures"
-      :fields="fields"
-      :sort-desc="true"
-      :sort-by.sync="sortBy"
-      :no-local-sorting="false"
-			:per-page="perPage"
-      :current-page="currentPage"
-      @sort-changed="sortingChanged"
-    >
+			responsive
+			striped
+			:items="filteredFigures"
+			:fields="fields"
+			:sort-desc="true"
+			:sort-by.sync="sortBy"
+			:no-local-sorting="true"
+			:dark="false"
+			@sort-changed="sortingChanged"
+			@row-clicked="showDetailsOnRow"
+			>
+				<template  slot="HEAD_is_selected"  slot-scope="data">
+					{{ $t(data.label) }}
+				</template>
 
-      <template  slot="HEAD_is_selected"  slot-scope="data">
-        {{ $t(data.label) }}
-      </template>
+				<template  slot="HEAD_owner"  slot-scope="data">
+					<div  v-if="showFilters"  @click.stop="">
+						<input  v-model="filters.owner"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
+					</div>
+					{{ $t(data.label) }}
+				</template>
 
-      <template  slot="HEAD_owner"  slot-scope="data">
-        <div  v-if="showFilters"  @click.stop="">
-          <input  v-model="filters.owner"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
-        </div>
-        {{ $t(data.label) }}
-      </template>
+				<template  slot="HEAD_filename"  slot-scope="data">
+					<div  v-if="showFilters"  @click.stop="">
+						<input  v-model="filters.filename"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
+					</div>
+					{{ $t(data.label) }}
+				</template>
 
-      <template  slot="HEAD_filename"  slot-scope="data">
-        <div  v-if="showFilters"  @click.stop="">
-          <input  v-model="filters.filename"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
-        </div>
-        {{ $t(data.label) }}
-      </template>
+				<template  slot="HEAD_title"  slot-scope="data">
+					<div  v-if="showFilters"  @click.stop="">
+						<input  v-model="filters.title"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
+					</div>
+					{{ $t(data.label) }}
+				</template>
 
-      <template  slot="HEAD_title"  slot-scope="data">
-        <div  v-if="showFilters"  @click.stop="">
-          <input  v-model="filters.title"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"> <br>
-        </div>
-        {{ $t(data.label) }}
-      </template>
+				<template  slot="HEAD_create_date"  slot-scope="data">
+					<div  v-if="showFilters"  class="form-row"  @click.stop="">
+						<div class="col form-inline">
+							<div class="form-group">
+								<datepicker
+								v-model="filters.createdFrom"
+								:bootstrap-styling="false"
+								:disabled-dates="disabledFromDatesCreated"
+								input-class="form-control form-control-sm  search-calendar"
+								:calendar-button="false"
+								calendar-button-icon=""
+								wrapper-class="calendar-wrapper"
+								:placeholder="$t('fromDate')"
+								:clear-button="true"
+								clear-button-icon="fa fa-times"
+								/>
+							</div>
+						</div>
 
-      <template  slot="HEAD_create_date"  slot-scope="data">
-        <div  v-if="showFilters"  class="form-row"  @click.stop="">
-          <div class="col form-inline">
-            <div class="form-group">
-              <datepicker
-                v-model="filters.createdFrom"
-                :bootstrap-styling="false"
-                :disabled-dates="disabledFromDatesCreated"
-                input-class="form-control form-control-sm  search-calendar"
-                :calendar-button="false"
-                calendar-button-icon=""
-                wrapper-class="calendar-wrapper"
-                :placeholder="$t('fromDate')"
-                :clear-button="true"
-                clear-button-icon="fa fa-times"
-              />
-            </div>
-          </div>
+						<div class="col form-inline">
+							<div class="form-group">
+								<datepicker
+								v-model="filters.createdTo"
+								:bootstrap-styling="false"
+								:disabled-dates="disabledToDatesCreated"
+								input-class="form-control form-control-sm search-calendar"
+								:calendar-button="false"
+								calendar-button-icon=""
+								wrapper-class="calendar-wrapper"
+								:placeholder="$t('toDate')"
+								:clear-button="true"
+								clear-button-icon="fa fa-times"
+								/>
+							</div>
+						</div>
+						<!-- <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateFrom' placeholder="From"> - <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateTo' placeholder="To"> <br/> -->
+					</div>
+					<br v-if="showFilters">
+					{{ $t(data.label) }}
+				</template>
+				<template  slot="HEAD_modified_date"  slot-scope="data">
+					<div  v-if="showFilters"  class="form-row"  @click.stop="">
+						<div class="col form-inline">
+							<div class="form-group">
+								<datepicker
+								v-model="filters.modifiedFrom"
+								:bootstrap-styling="false"
+								:disabled-dates="disabledFromDatesModified"
+								input-class="form-control form-control-sm  search-calendar"
+								:calendar-button="false"
+								calendar-button-icon=""
+								wrapper-class="calendar-wrapper"
+								:placeholder="$t('fromDate')"
+								:clear-button="true"
+								clear-button-icon="fa fa-times"
+								/>
+							</div>
+						</div>
 
-          <div class="col form-inline">
-            <div class="form-group">
-              <datepicker
-                v-model="filters.createdTo"
-                :bootstrap-styling="false"
-                :disabled-dates="disabledToDatesCreated"
-                input-class="form-control form-control-sm search-calendar"
-                :calendar-button="false"
-                calendar-button-icon=""
-                wrapper-class="calendar-wrapper"
-                :placeholder="$t('toDate')"
-                :clear-button="true"
-                clear-button-icon="fa fa-times"
-              />
-            </div>
-          </div>
-          <!-- <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateFrom' placeholder="From"> - <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateTo' placeholder="To"> <br/> -->
-        </div>
-        <br v-if="showFilters">
-        {{ $t(data.label) }}
-			</template>
-      <template  slot="HEAD_modified_date"  slot-scope="data">
-        <div  v-if="showFilters"  class="form-row"  @click.stop="">
-          <div class="col form-inline">
-            <div class="form-group">
-              <datepicker
-                v-model="filters.modifiedFrom"
-                :bootstrap-styling="false"
-                :disabled-dates="disabledFromDatesModified"
-                input-class="form-control form-control-sm  search-calendar"
-                :calendar-button="false"
-                calendar-button-icon=""
-                wrapper-class="calendar-wrapper"
-                :placeholder="$t('fromDate')"
-                :clear-button="true"
-                clear-button-icon="fa fa-times"
-              />
-            </div>
-          </div>
+						<div class="col form-inline">
+							<div class="form-group">
+								<datepicker
+								v-model="filters.modifiedTo"
+								:bootstrap-styling="false"
+								:disabled-dates="disabledToDatesModified"
+								input-class="form-control form-control-sm search-calendar"
+								:calendar-button="false"
+								calendar-button-icon=""
+								wrapper-class="calendar-wrapper"
+								:placeholder="$t('toDate')"
+								:clear-button="true"
+								clear-button-icon="fa fa-times"
+								/>
+							</div>
+						</div>
+						<!-- <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateFrom' placeholder="From"> - <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateTo' placeholder="To"> <br/> -->
+					</div>
+					<br v-if="showFilters">
+					{{ $t(data.label) }}
+				</template>
 
-          <div class="col form-inline">
-            <div class="form-group">
-              <datepicker
-                v-model="filters.modifiedTo"
-                :bootstrap-styling="false"
-                :disabled-dates="disabledToDatesModified"
-                input-class="form-control form-control-sm search-calendar"
-                :calendar-button="false"
-                calendar-button-icon=""
-                wrapper-class="calendar-wrapper"
-                :placeholder="$t('toDate')"
-                :clear-button="true"
-                clear-button-icon="fa fa-times"
-              />
-            </div>
-          </div>
-          <!-- <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateFrom' placeholder="From"> - <input type = 'search' class = 'form-control form-control-sm' v-model='filters.FigureDateTo' placeholder="To"> <br/> -->
-        </div>
-        <br v-if="showFilters">
-        {{ $t(data.label) }}
-      </template>
+				<template  slot="HEAD_projects"  slot-scope="data">
+					<div  v-if="showFilters"  @click.stop="">
+						<input  v-model="filters.projects"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"><br>
+					</div>
+					{{ $t(data.label) }}
+				</template>
 
-      <template  slot="HEAD_projects"  slot-scope="data">
-        <div  v-if="showFilters"  @click.stop="">
-          <input  v-model="filters.projects"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"><br>
-        </div>
-        {{ $t(data.label) }}
-      </template>
+				<template  slot="is_selected"  slot-scope="row">
+					<b-form-group>
+						<b-button  variant="link"  size="sm"  class="mr-2"  @click.stop="showPanels(row)">
+							<v-icon  v-if="row.detailsShowing"  class="align-middle"  name="chevron-down"  @click.stop="row.toggleDetails"/>
+							<v-icon  v-else  class="align-middle"  name="chevron-right"  @click.stop="row.toggleDetails"/>
+						</b-button>
+						<b-form-checkbox  v-model="row.item.is_selected"  class="pt-2"  inline  @click.native.stop  @change="toggleSelected(row.item,'figure',!row.item.is_selected)"/>
+						<b-button variant="link" size="sm" class="mr-2" v-if="!filters.project_id || project.is_admin" @click.stop="downloadDar(row.item.id)">
+							<v-icon class="align-middle" style="margin-right:0" name="download" />					
+						</b-button>
+						<b-button variant="link" size="sm" class="mr-2"  @click.stop="handleComments(row)">
+							<v-icon v-if="nbComments(row.item.notifications)" class="align-middle" style="margin-right:0" name="comment-dots" />
+							<v-icon v-else class="align-middle" name="comment" color="grey" />
+						</b-button>
+					</b-form-group>				
+				</template>
 
-      <template  slot="is_selected"  slot-scope="row">
-        <b-form-group>
-          <b-button  variant="link"  size="sm"  class="mr-2"  @click.stop="showPanels(row)">
-            <v-icon  v-if="row.detailsShowing"  class="align-middle"  name="chevron-down"  @click.stop="row.toggleDetails"/>
-            <v-icon  v-else  class="align-middle"  name="chevron-right"  @click.stop="row.toggleDetails"/>
-          </b-button>
-          <b-form-checkbox  v-model="row.item.is_selected"  class="pt-2"  inline  @click.native.stop  @change="toggleSelected(row.item,'figure',!row.item.is_selected)"/>
-					<b-button variant="link" size="sm" class="mr-2" v-if="!filters.project_id || project.is_admin" @click.stop="downloadDar(row.item.id)">
-            <v-icon class="align-middle" style="margin-right:0" name="download" />					
-					</b-button>
-					<b-button variant="link" size="sm" class="mr-2"  @click.stop="handleComments(row)">
-            <v-icon v-if="nbComments(row.item.notifications)" class="align-middle" style="margin-right:0" name="comment-dots" />
-            <v-icon v-else class="align-middle" name="comment" color="grey" />
-					</b-button>
-        </b-form-group>				
-      </template>
+				<!--Infos figure (Panels / Comments / Figure Metadata) -->
+				<template  slot="row-details"  slot-scope="row">
+					<b-card>
+						<div class="row">
+						<div class="col-xl-auto mb-4">
+							<nav class="nav nav-pills nav-justified flex-column text-center text-xl-left">
+								<a  class="nav-link"  :class="(row.item.view==='panels')?'active':''"  @click="row.item.view='panels'">
+									{{ $t('panels') }}
+								</a>
+								<a  class="nav-link"  :class="(row.item.view==='notifications')?'active':''"  @click="loadFiguresComments(row.item)">
+									{{ $t('comments') }}
+								</a>
+							</nav>
+						</div>
+						<div  v-if="row.item.view=='panels'"  class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
+							<div class="row">
+								<div v-for="panel in row.item.dar.fig"  :key="panel.id"  class="col-sm-12 col-md-12 col-lg-12 col-xl-6 mb-5">
+									<panels-summary :key="panel.id" :panel-i-d="panel.id" :figure-i-d="row.item.id"  />
+								</div>
+							</div>
+						</div>
 
-      <!--Infos figure (Panels / Comments / Figure Metadata) -->
-      <template  slot="row-details"  slot-scope="row">
-        <b-card>
-          <div class="row">
-            <div class="col-xl-auto mb-4">
-              <nav class="nav nav-pills nav-justified flex-column text-center text-xl-left">
-                <a  class="nav-link"  :class="(row.item.view==='panels')?'active':''"  @click="row.item.view='panels'">
-                  {{ $t('panels') }}
-                </a>
-                <a  class="nav-link"  :class="(row.item.view==='notifications')?'active':''"  @click="loadFiguresComments(row.item)">
-                  {{ $t('comments') }}
-                </a>
-              </nav>
-            </div>
-            <div  v-if="row.item.view=='panels'"  class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
-              <div class="row">
-                <div v-for="panel in row.item.dar.fig"  :key="panel.id"  class="col-sm-12 col-md-12 col-lg-12 col-xl-6 mb-5">
-                  <panels-summary :key="panel.id" :panel-i-d="panel.id" :figure-i-d="row.item.id"  />
-                </div>
-              </div>
-            </div>
+						<div  v-if="row.item.view=='notifications'"  class="col-md-10">
+							<comments-and-notifications :id="row.item.id+''" scope="figures" />
+						</div>
 
-            <div v-if="row.item.view=='notifications'"  class="col-md-10">
-              <comments-and-notifications :id="row.item.id+''" scope="figures" />
-            </div>
+						</div>
+					</b-card>
+				</template>
+				<!-- Button next to owner -->
+				<template slot="owner" slot-scope="row">
+					<div class="ownerContainer">
+						<div class="row">
+							<div class="col-md-auto">
+								<user-icon :name="row.item.owner"></user-icon>
+							</div>
+						</div>
+					</div>
+				</template>
 
-          </div>
-        </b-card>
-      </template>
-      <!-- Button next to owner -->
-      <template slot="owner" slot-scope="row">
-        <div class="ownerContainer">
-          <div class="row">
-            <div class="col-md-auto">
-							<user-icon :name="row.item.owner"></user-icon>
-            </div>
-          </div>
-        </div>
-      </template>
-
-			<template slot="title" slot-scope="data">
+				<template slot="title" slot-scope="data">
 				<small v-html="data.item.dar.caption.title"></small>
-			</template>
+				</template>
 
-			<template slot="projects" slot-scope="data">
-				<span v-for="(p,i) in data.value" :key="i">{{getProjectNameById(p)}}<span v-if="i < data.value.length - 1">, </span></span>
-				<span class = 'text-muted' v-if="data.value.length === 0">no project</span>
-			</template>
+				<template slot="projects" slot-scope="data">
+					<span v-for="(p,i) in data.value" :key="i">{{getProjectNameById(p)}}<span v-if="i < data.value.length - 1">, </span></span>
+					<span class = 'text-muted' v-if="data.value.length === 0">no project</span>
+				</template>
 
-			<template slot="nbPanels" slot-scope="data">
-				{{ data.item.nbPanels }}
-			</template>
+				<template slot="nbPanels" slot-scope="data">
+					{{ data.item.nbPanels }}
+				</template>
 
-			<template slot="create_date" slot-scope="data">
-				{{ data.value | formatDate }}
-			</template>
+				<template slot="create_date" slot-scope="data">
+					{{ data.value | formatDate }}
+				</template>
 
-			<template slot="modified_date" slot-scope="data">
-				{{ data.value | formatDate }}
-			</template>
+				<template slot="modified_date" slot-scope="data">
+					{{ data.value | formatDate }}
+				</template>
+			</b-table>
+		</div>
+		<div  v-if="figures.length===0"  style="text-align:center;"  class="card">
+			<div class="card-body">
+				{{ $t('nofigure') }}
+			</div>
+		</div>
+		<div  v-if="figures.length===0"  style="text-align:center;"  class="card">
+			<div class="card-body">
+				{{ $t('nofigure') }}
+			</div>
+		</div>
 
-    </b-table>
-		
-		
-    <div  v-if="figures.length===0"  style="text-align:center;"  class="card">
-      <div class="card-body">
-        {{ $t('nofigure') }}
-      </div>
-    </div>
-		
 		<!-- Modal Component -->
 		<b-modal id="modalNewProject" title="New project" size="xl" :hide-footer="true" @hide="newProjectCreated" v-if="!project.project_id">
 			<new-project :from-modal="true"></new-project>
 		</b-modal>
-		
-		
-  </div>
-  <div v-else  class="container-fluid"  style="margin-top: 30px; text-align:center;">
-    <pulse-loader  :loading="loading"  color="white"/>
-  </div>
+	</div>
 </template>
 
 <script>
@@ -363,8 +367,8 @@ export default {
 	},
 	data () {
 		return {
-		 perPage: 10,
-        currentPage: 1,
+			perPage: 10,
+			currentPage: 1,
 			pageNb: 1,
 			active: false,
 			form_send_figure: false,
@@ -409,7 +413,7 @@ export default {
 					label: 'projects',
 					thClass: 'd-none d-sm-table-cell d-md-table-cell d-lg-table-cell capitalize',
 					tdClass: 'd-none d-sm-table-cell d-md-table-cell d-lg-table-cell',
-					sortable: true
+					sortable: false
 				},
 				{
 					key: 'create_date',
@@ -426,10 +430,10 @@ export default {
 					sortable: true
 				}
 			],
-			sortBy: 'created',
+			sortBy: 'create_date',
 			sortDesc: true,
-			limit: 100,
-			optionsNbPages: [5, 10, 25, 50, 100],
+			limit: 15,
+			// optionsNbPages: [5, 10, 25, 50, 100],
 			showFilters: false,
 			filterTimeout: null,
 			filters: {
@@ -449,7 +453,8 @@ export default {
 				count: 0
 			},
 			confirmDelete: false,
-			selectedPanelsNb: 0
+			selectedPanelsNb: 0,
+			isActive: false
 		}
 	},
 	computed: {
@@ -460,8 +465,6 @@ export default {
 		}),
 		filteredFigures () {
 			let figures = this.figures;
-			console.info(this.figures);
-			console.info('filterFigure');
 			_.forEach(this.filters, (value,filter) => {
 
 				if (value) figures = _.filter(figures, f => {
@@ -475,14 +478,11 @@ export default {
 			})
 			// if (this.project && this.project.project_id){
 			if (this.filters && this.filters.project_id){
-				console.info("avec projet");
 				figures = _.filter(this.figures, f => f.projects.indexOf(this.project.project_id) > -1)
 			}
 			else{
-				console.info("sans projet",this.filters.project_id);
 				figures = _.filter(this.figures, f => f.user_id == this.user.user_id)				
 			}
-			console.info(figures);
 			return figures
 		},
 		totalRows () {
@@ -569,16 +569,12 @@ export default {
 		if (this.$route.params.project_id) {
 			this.filters.project_id = this.$route.params.project_id
 			this.$store.commit('RESET_FIGURE_FLAGS')
-			this.setLoading(false)
-		} else {
-			this.$store.dispatch('getFigures')
-			// this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
-				.then(() => { setTimeout(() => this.setLoading(false), 300); })
-				.catch(function(err){ vm.$snotify.error(vm.$t('figuresnotfound')) })
-
-			this.$store.dispatch('getProjects')
-			// this.$store.dispatch('getProjects', { pageNb: 1, limit: 40, sortBy: 'created_time', sortDesc: true })
 		}
+		this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit, resetDisplay: true })
+			.then(() => { setTimeout(() => this.setLoading(false), 300); })
+			.catch(function(err){ vm.$snotify.error(err) })
+
+		setTimeout(() => this.$store.dispatch('getProjects'), 300)
 	},
 
 	mounted () {
@@ -586,12 +582,59 @@ export default {
 	},
 	methods: {
 		scroll () {
+			const _this = this
+
+			function getScrollXY() {
+				var scrOfX = 0, scrOfY = 0;
+				if( typeof( window.pageYOffset ) == 'number' ) {
+					//Netscape compliant
+					scrOfY = window.pageYOffset;
+					scrOfX = window.pageXOffset;
+				} else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
+					//DOM compliant
+					scrOfY = document.body.scrollTop;
+					scrOfX = document.body.scrollLeft;
+				} else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
+					//IE6 standards compliant mode
+					scrOfY = document.documentElement.scrollTop;
+					scrOfX = document.documentElement.scrollLeft;
+				}
+				return [ Math.floor(scrOfX), Math.floor(scrOfY) ];
+			}
+
+			function getDocHeight() {
+				var D = document;
+				return Math.max(
+					D.body.scrollHeight, D.documentElement.scrollHeight,
+					D.body.offsetHeight, D.documentElement.offsetHeight,
+					D.body.clientHeight, D.documentElement.clientHeight
+				);
+			}
+
+			let previousY = 0;
+
 			window.onscroll = () => {
-				//let bottomOfWindow = Math.floor((document.documentElement.scrollTop || document.body.scrollTop)) + Math.floor(window.innerHeight) === document.documentElement.offsetHeight
-				//if (bottomOfWindow) {
-				//this.pageNb++
-				//this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
-				//}
+				if (this.$route.params.project_id && this.$route.query.view !== 'figures') return
+
+				let bottomOfWindow = (getDocHeight() -20 <  getScrollXY()[1] + window.innerHeight && previousY < getScrollXY()[1]) 
+				previousY = getScrollXY()[1];	
+				if (bottomOfWindow && !this.loading) {
+					this.setLoading(true);
+					this.pageNb++
+					this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit }).then( () => {
+						this.setLoading(false);
+					})
+				}
+				if (_this.$refs.myHeader){
+					let sticky = _this.$refs.myHeader.offsetTop
+					let heightSticky = _this.$refs.myHeader.clientHeight
+					let figuresList = _this.$refs.figuresList.offsetTop
+					if ((window.pageYOffset) > sticky - heightSticky && !this.isActive) {
+						this.isActive = true
+					} else if (window.pageYOffset < figuresList - heightSticky) {
+						this.isActive = false
+					}					
+				}
 			}
 		},
 		sortingChanged (ctx) {
@@ -602,19 +645,21 @@ export default {
 			this.sortBy = ctx.sortBy
 			this.sortDesc = ctx.sortDesc
 			this.limit = this.figures.length
-			this.$store.dispatch('getFigures')
-			// this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
+			// this.$store.dispatch('getFigures')
+			this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit })
 		},
 		showPanels (row) {
-			if (!row.item.detailsShowing) {
-				this.$store.dispatch('getPanels', { figure_id: row.item.id, project_id: this.filters.project_id })
-			}
 			this.toggleDetails(row)
 		},
 		toggleDetails (row) {
 			this.$store.commit('TOGGLE_DETAILS', { figure_id: row.item.id })
 			row.toggleDetails()
 		},
+		showDetailsOnRow (row) {
+			this.$store.commit('TOGGLE_DETAILS', { figure_id: row.figure_id })
+			row._showDetails = !row._showDetails
+		},
+
 		handleComments (row) {
 			this.showPanels(row)
 			row.item.view = 'notifications'
@@ -633,11 +678,9 @@ export default {
 			for (i = this.figures.length - 1; i > -1; i--) {
 				if (this.figures[i].is_selected) {
 					if (!this.filters || !this.filters.project_id){
-						console.info("detelFigure");
 						vm.$store.dispatch('deleteFigure',{figure_id: this.figures[i].id})
 					}
 					else{
-						console.info("REMOVE from project");
 						vm.$store.dispatch('removeFigureFromProject',{figure_id: this.figures[i].id, project_id: +this.filters.project_id}).then(function(){
 							vm.filters.inc =1;
 						})					
@@ -797,4 +840,17 @@ div.listContainer{
 	a.download:hover{
 		color: #000;
 	}
+
+  .sticky {
+    position: fixed;
+    top: 70px;
+    width: 100%;
+    background: #555;
+    z-index: 5;
+    opacity: 0.95;
+  }
+  .sticky + .content {
+    padding-top: 70px;
+  }
+
 </style>

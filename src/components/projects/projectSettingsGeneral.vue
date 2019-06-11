@@ -130,7 +130,6 @@ export default {
 				}
 			})
 			params.project_id = this.project.project_id
-			console.info(params);
 			// params.origin_name = this.user.fullname
 			this.$store.dispatch('patchProject', params).then(() => {
 				this.$snotify.success(this.$t('projectupdatesuccess'))

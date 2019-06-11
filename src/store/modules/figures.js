@@ -1,18 +1,27 @@
 // initial state
 import {HTTP} from '@/router/http';
 import {serverURL} from "@/app_config"
-
+import moment from 'moment'
 const getDefaultState = () => {
 	return {
 		figures: [],
 		flags: {},
 		totalItems: null,
 		filterParams: {
-			sortBy: 'date',
+			sortBy: 'create_date',
 			sortDesc: true,
-			limit: 10,
+			limit: 15,
 			pageNb: 1,
 			filters: {
+				owner: '',
+				filename: '',
+				title: '',
+				figureLabel: '',
+				projects: '',
+				createdFrom: '',
+				createdTo: '',
+				modifiedFrom: '',
+				modifiedTo: ''
 			}
 		},
 		request: ''
@@ -33,7 +42,84 @@ const actions = {
 	downloadDar ({ commit, state }, params) {
 		self.location.href = serverURL+"/dar/"+params.figure_id+"?jwt="+params.jwt;
 	},
-	getFigures ({ commit, state }, params) {
+	getFigures ({ commit , dispatch, state }, params) {
+		if (state.totalItems !== null && state.figures.length >= state.totalItems && state.filterParams.sortBy === params.sortBy && state.filterParams.sortDesc === params.sortDesc && _.isEqual(state.filterParams.filters, params.filters)) {
+			return
+		}
+		var reset = false
+		if (params.resetDisplay){
+			commit('RESET_FLAGS')
+		} 
+		let requestParams = ''
+		_.forEach(params.filters, function (value, filterName) {
+			if (filterName === 'project_id') {
+				if (value) {
+					requestParams += '&project=' + value
+				}
+			} else if (filterName.indexOf('created') === -1 && filterName.indexOf('modified') === -1) {
+				if (value) {
+					requestParams += '&' + filterName + '=' + value + '*'
+				}
+			}
+		})
+		if (params.filters.createdFrom || params.filters.createdTo) {
+			let fromDate = ''; let toDate = ''
+			if (params.filters.createdFrom) {
+				fromDate = moment(params.filters.createdFrom).format('YYYYMMDD')
+			}
+			if (params.filters.createdTo) {
+				toDate = moment(params.filters.createdTo).format('YYYYMMDD')
+			}
+			requestParams += '&create_date=' + fromDate + '-' + toDate
+		}
+		if (params.filters.modifiedFrom || params.filters.modifiedTo) {
+			let fromDate = ''; let toDate = ''
+			if (params.filters.modifiedFrom) {
+				fromDate = moment(params.filters.modifiedFrom).format('YYYYMMDD')
+			}
+			if (params.filters.modifiedTo) {
+				toDate = moment(params.filters.modifiedTo).format('YYYYMMDD')
+			}
+			requestParams += '&modified_date=' + fromDate + '-' + toDate
+		}
+		let offset = 0
+		if (state.filterParams.sortBy !== params.sortBy || state.filterParams.sortDesc !== params.sortDesc || state.request !== requestParams) {
+			offset = 0
+			params.limit = (state.figures.length > state.filterParams.limit) ? state.figures.length : state.filterParams.limit
+			reset = true
+		} else offset = (params.pageNb - 1) * params.limit
+		let sortSense = (params.sortDesc) ? '-' : ''
+		var request = 'figures?limit=' + params.limit + '&offset=' + offset + (params.sortBy ? '&sort=' + sortSense + params.sortBy : '') + requestParams
+		return HTTP.get(request, { headers: { 'Accept': 'application/json' } }).then(res => {
+			commit('SET_TOTAL', res.headers['x-total-count'])
+			let data = []
+			_.forEach(res.data, d => {
+				let t = { panels: [], comments: [] }
+				_.forEach(d, (v, k) => {
+					t[k] = v
+				})
+				
+				let showDetails = (state.flags[t.figure_id] !== undefined) ? state.flags[t.figure_id].show_details : false
+				if (t.figure_id !== undefined) {
+					let flag = {
+						id: t.figure_id,
+						is_selected: false,
+						show_details: showDetails,
+						comment: false
+					}
+					commit('SET_FLAG', flag)
+					t._showDetails = showDetails
+					data.push(t)
+				}
+			})
+			commit('SET_FIGURES', { data: data, reset: reset })
+			commit('SET_FIGURES_FILTER_PARAMS', params)
+			commit('SET_REQUEST_PARAMS', requestParams)
+			return res
+		})
+	},
+	
+	getFiguresOld ({ commit, state }, params) {
 		return HTTP.get('figures',{params:params}).then(function(response){
 			commit('SET_FIGURES',response.data)
 		})
@@ -45,13 +131,7 @@ const actions = {
 		});
 	},
 	
-	getPanels ({ commit }, params) {
-		//NOT PROCESS YET
-		return params
-	},
-	
 	removeFigureFromProject ({ commit, state }, params){
-		console.info(params);		
 		let figure_idx = _.findIndex(state.figures, f => +f.figure_id === +params.figure_id);
 		if (figure_idx === -1) { console.info("Sorry, the figure doesn't exist"); return; }
 
@@ -66,7 +146,7 @@ const actions = {
 	
 	deleteFigure ({ commit }, params) {
 		return HTTP.delete('figures/'+params.figure_id).then(function(response){
-			commit('DELETE_FIGURE',response.data)
+			commit('DELETE_FIGURE',{figure_id: params.figure_id})
 		})
 
 		// if (params.project_id) {
@@ -109,7 +189,32 @@ const actions = {
 
 // mutations
 const mutations = {
-	SET_FIGURES (state, params) {
+	SET_FIGURES (state, data) {
+		let figures = data.data
+		let reset = data.reset
+		_.forEach(figures, (d, i) => {
+			if (d.is_selected === undefined) d.is_selected = false
+			if (d._showDetails === undefined) d._showDetails = false
+			if (d.comment === undefined) d.comment = null
+			d.view = 'panels'
+			d.comments = []
+			_.forEach(state.flags, (flag, figure_id) => {
+				if (d.figure_id === figure_id) {
+					figures[i].is_selected = flag.is_selected
+					figures[i]._showDetails = flag.show_details
+					figures[i].comment = flag.comment
+				}
+			})
+		})
+		if (reset) {
+			state.figures = figures
+		} 
+		else {
+			state.figures = _.uniqBy(state.figures.concat(figures), function (d) { return d.figure_id })
+		}
+	},
+	
+	SET_FIGURES_OLD (state, params) {
 		state.figures = _.map(params, f => {
 			f._showDetails = false;
 			f.is_selected = false
@@ -117,8 +222,8 @@ const mutations = {
 			return f;
 		})
 	},
-	TOGGLE_DETAILS (state,params){
-		return params;
+	TOGGLE_DETAILS (state, params) {
+		state.flags[params.figure_id].show_details = !state.flags[params.figure_id].show_details
 	},
 	TOGGLE_SELECTED_FIGURE (state, params) {
 		state.figures[params.index].is_selected = !state.figures[params.index].is_selected
@@ -133,9 +238,7 @@ const mutations = {
 		state.flags = {}
 	},
 	REMOVE_FIGURE_FROM_PROJECT(state,params){
-		console.info(params);
-		state.figures[params.figure_idx].projects.splice(params[params.project_idx],1);
-		console.info(state.figures[params.figure_idx]);
+		state.figures.splice(params.figure_idx,1);
 	},
 	PUT_PROJECT_IN_FIGURE (state, project){
 		let selectedFigureIds = project.figures;
@@ -182,6 +285,37 @@ const mutations = {
 	},
 	RESET_STATE (state) {
 		Object.assign(state, getDefaultState())
+	},
+	SET_FLAG (state, flag) {
+		state.flags[flag.id] = {
+			is_selected: flag.is_selected,
+			comment: flag.comment
+		}
+		if (flag.show_details !== undefined) state.flags[flag.id].show_details = flag.show_details
+	},
+	RESET_FLAGS (state) {
+		state.flags = {}
+	},
+	SET_FIGURES_FILTER_PARAMS (state, params) {
+		state.filterParams.sortBy = params.sortBy
+		state.filterParams.sortDesc = params.sortDesc
+		state.filterParams.limit = params.limit
+		state.filterParams.pageNb = params.pageNb
+		state.filterParams.owner = params.filters.owner
+		state.filterParams.filename = params.filters.filename
+		state.filterParams.title = params.filters.title
+		state.filterParams.figureLabel = params.filters.figureLabel
+		state.filterParams.projects = params.filters.projects
+		state.filterParams.createdFrom = params.filters.createdFrom
+		state.filterParams.createdTo = params.filters.createdTo
+		state.filterParams.modifiedFrom = params.filters.modifiedFrom
+		state.filterParams.modifiedTo = params.filters.modifiedTo
+	},
+	SET_REQUEST_PARAMS (state, request) {
+		state.request = request
+	},
+	SET_TOTAL (state, value) {
+		state.totalItems = value
 	}
 	
 }
