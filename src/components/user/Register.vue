@@ -32,11 +32,6 @@
 						<div class='col-sm-3'><small v-if='errors.has("email")'>{{ errors.first('email') }}</small></div>
 					</div>
 
-					<div class="form-group row">
-						<div class="col-sm-3"> <label class="float-right" for="phone">Phone</label> </div>
-						<div class='col-sm-6'><input type="tel" name="phone" id="phone" class="form-control" v-model="user.phone" /></div>
-					</div>
-
 
 					<div class="form-group row" :class="{'has-error': errors.has('password') }">
 						<label class='col-sm-3 col-form-label text-right' for="password">Password</label>
@@ -83,7 +78,6 @@ export default {
 				firstname: '',
 				lastname: '',
 				email: '',
-				phone: '',
 				password: '',
 				password2: ''
 			},
