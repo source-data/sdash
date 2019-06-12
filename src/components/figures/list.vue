@@ -530,15 +530,18 @@ export default {
 			},
 			deep: true
 		},
-		// filters: {
-		// 	handler: function (filters) {
-		// 		if (this.filterTimeout) {
-		// 			clearTimeout(this.filterTimeout)
-		// 		}
-		// 		this.filterTimeout = setTimeout(() => this.searchOnline(filters), 300)
-		// 	},
-		// 	deep: true
-		// },
+		filters: {
+			handler: function (filters) {
+				let vm = this
+				if (vm.filterTimeout) {
+					clearTimeout(vm.filterTimeout)
+				}
+				vm.filterTimeout = setTimeout(() => vm.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit, resetDisplay: true })
+					.then(() => { setTimeout(() => this.setLoading(false), 300); })
+					.catch(function(err){ vm.$snotify.error(err) }), 300)
+			},
+			deep: true
+		},
 		showFilters: {
 			handler: function (showFilters) {
 				if (!showFilters) {

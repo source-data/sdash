@@ -57,7 +57,8 @@ const actions = {
 				}
 			} else if (filterName.indexOf('created') === -1 && filterName.indexOf('modified') === -1) {
 				if (value) {
-					requestParams += '&' + filterName + '=' + value + '*'
+					if (value.indexOf('*') === -1) { requestParams += '&' + filterName + '=*' + value + '*' }
+					else { requestParams += '&' + filterName + '=' + value  }
 				}
 			}
 		})
