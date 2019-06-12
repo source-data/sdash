@@ -149,11 +149,12 @@ const mutations = {
 		let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
 		if (projectIdx > -1) {
 			state.projects[projectIdx].users[params.user_idx].is_admin = !state.projects[projectIdx].users[params.user_idx].is_admin
-			let comment = (state.projects[projectIdx].users[params.user_idx].is_admin) ? state.projects[projectIdx].users[params.user_idx].name+" has admin privileges" : state.projects[projectIdx].users[params.user_idx].name+" has not anymore admin privileges";
+			let comment = state.projects[projectIdx].users[params.user_idx].name
+			let mutation_type = (state.projects[projectIdx].users[params.user_idx].is_admin) ? "PROMOTE_ADMIN" : "DEMOTE_ADMIN"
 			state.projects[projectIdx].notifications.push({
 				origin_name: params.origin_name,
 				event_type: 'mutation',
-				mutation_type: 'PROMOTE_ADMIN',
+				mutation_type: mutation_type,
 				comment: comment,
 				post_date: new Date()
 			})

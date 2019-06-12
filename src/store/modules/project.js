@@ -65,18 +65,20 @@ const actions = {
 		})
 	},
 
-	toggleProjectUserAdmin ( { commit, state }, params){	
+	toggleProjectUserAdmin ( { commit, state, dispatch }, params){	
 		let userIdx = _.findIndex(state.project.users, u => +u.id === params.user.id)
 		if (userIdx > -1) {
 			if (params.user.is_admin){
 				return HTTP.delete("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
-					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx, origin_name: params.origin_name})
+					dispatch('getProjectComments',{type: 'comments'})
 					return response.data
 				})				
 			}
 			else{
 				return HTTP.put("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
-					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx, origin_name: params.origin_name})
+					dispatch('getProjectComments',{type: 'comments'})
 					return response.data
 				})				
 			}
@@ -96,13 +98,14 @@ const actions = {
 		})		
 	},
 
-	removeUserFromProject ({ commit, state }, params){
+	removeUserFromProject ({ commit, state, dispatch }, params){
 		if (state.project.users.length === 1) { console.info("Sorry, you cannot delete the last member of the project"); return; }
 		let idx = _.findIndex(state.project.users, u => +u.id === +params.id);
 		if (idx === -1) { console.info("Sorry, the user is not in the project"); return; }
 
 		return HTTP.delete("/projects/"+params.project_id+"/users/"+params.id).then(function(response){		
 			commit("REMOVE_USER_FROM_PROJECT",{project_id: params.project_id, user_idx: idx})
+			dispatch('getProjectComments',{type: 'comments'})
 			return response.data
 		})				
 	},

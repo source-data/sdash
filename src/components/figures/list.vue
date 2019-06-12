@@ -326,11 +326,6 @@
 				{{ $t('nofigure') }}
 			</div>
 		</div>
-		<div  v-if="figures.length===0"  style="text-align:center;"  class="card">
-			<div class="card-body">
-				{{ $t('nofigure') }}
-			</div>
-		</div>
 
 		<!-- Modal Component -->
 		<b-modal id="modalNewProject" title="New project" size="xl" :hide-footer="true" @hide="newProjectCreated" v-if="!project.project_id">

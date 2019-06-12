@@ -126,7 +126,7 @@ export default {
 				this.confirmResetAdmin = user.name
 				return
 			}
-			this.$store.dispatch('toggleProjectUserAdmin', {project_id: this.project.project_id, user: user}).then(() => {
+			this.$store.dispatch('toggleProjectUserAdmin', {project_id: this.project.project_id, user: user, origin_name: this.user.fullname}).then(() => {
 				this.$store.dispatch('getProject', { project_id: this.project.project_id })
 				let message = (user.is_admin) ? this.$t('usersettoadmin') : this.$t('usernotsettoadmin')
 				this.$snotify.success(message)
