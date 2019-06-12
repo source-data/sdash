@@ -1,9 +1,11 @@
 module.exports = {
-	serverURL: process.env.VUE_APP_URL_API,
+	serverURL:  process.env.NODE_ENV === 'production'
+		? '/sdash/api/index.php'
+		: 'http://sdash/api/index.php',
 	publicPath: process.env.NODE_ENV === 'production'
 		? '/sdash/'
 		: '/',
-	siteTitle: 'SDash',
+	siteTitle: process.env.VUE_APP_TITLE,
 	loginType: 'local',
 	getHeader () {
 		const headers = {

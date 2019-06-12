@@ -293,6 +293,12 @@ const mutations = {
 	ADD_FIGURE (state, figure){
 		figure._showDetails = false; figure.is_selected = false; figure.view = 'panels';
 		state.figures.push(figure)
+		let flag = {
+			is_selected: false,
+			show_details: false,
+			comment: ''
+		}
+		state.flags[figure.figure_id] = flag;
 	},
 	RESET_STATE (state) {
 		Object.assign(state, getDefaultState())
