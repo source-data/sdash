@@ -425,7 +425,7 @@ export default {
 					sortable: true
 				}
 			],
-			sortBy: 'create_date',
+			sortBy: 'modified_date',
 			sortDesc: true,
 			limit: 15,
 			// optionsNbPages: [5, 10, 25, 50, 100],

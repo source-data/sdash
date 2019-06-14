@@ -293,7 +293,7 @@ const mutations = {
 
 	ADD_FIGURE (state, figure){
 		figure._showDetails = false; figure.is_selected = false; figure.view = 'panels';
-		state.figures.push(figure)
+		state.figures.unshift(figure)
 		let flag = {
 			is_selected: false,
 			show_details: false,
