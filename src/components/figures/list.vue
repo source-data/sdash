@@ -378,16 +378,15 @@ export default {
 				{
 					key: 'owner',
 					label: 'owner',
-					thClass: 'text-left capitalize',
-					tdClass: 'owner',
+					thClass: 'd-none d-md-table-cell d-lg-table-cell capitalize',
+					tdClass: 'd-none d-md-table-cell d-lg-table-cell',
 					sortable: true
 				},
 				{
 					key: 'filename',
 					label: 'file name',
 					sortable: true,
-					thClass: 'd-none d-md-table-cell d-lg-table-cell capitalize',
-					tdClass: 'd-none d-md-table-cell d-lg-table-cell'
+					class: 'breakword'
 				},
 				{
 					key: 'title',
@@ -850,5 +849,8 @@ div.listContainer{
   .sticky + .content {
     padding-top: 70px;
   }
+  .breakword {
+		word-break: break-word;
+	}
 
 </style>
