@@ -90,7 +90,7 @@ const actions = {
 		let userIdx = _.findIndex(state.project.users, u => u.email === params.email)
 		if (userIdx > -1){ console.info("User already in the project"); return; }
 
-		return HTTP.put("/projects/"+state.project.project_id+"/users/",params).then(function(response){		
+		return HTTP.put("/projects/"+state.project.project_id+"/users",params).then(function(response){		
 			response.data.is_admin = false
 			commit("ADD_USER_TO_PROJECT", {user: response.data, project_id: state.project.project_id})
 			dispatch('getProject',{project_id: state.project.project_id})

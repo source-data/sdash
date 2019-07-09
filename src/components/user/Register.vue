@@ -90,7 +90,7 @@ export default {
 			this.$validator.validateAll().then((result) => {
 				if (result){
 					vm.$store.dispatch('register',vm.user).then(() => {
-						vm.$snotify.success('Account created in successfully');
+						vm.$snotify.success('Account created successfully');
 						vm.$router.push('/validationrequired')
 
 					}).catch((err) => {
