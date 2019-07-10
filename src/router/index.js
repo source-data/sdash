@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Figures from '@/components/figures/list'
+import FigureListGrid from '@/components/figures/FigureListGrid'
 import Projects from '@/components/projects/list'
 import Project from '@/components/projects/project'
 import newProject from '@/components/projects/newProject'
@@ -34,6 +35,13 @@ const router = new Router({
 		path: '/figures',
 		name: 'figures',
 		component: Figures,
+		beforeEnter: requireAuth,
+		meta: { permissions: 'active', condition: 'any' }
+	},
+	{
+		path: '/figures2',
+		name: 'figures2',
+		component: FigureListGrid,
 		beforeEnter: requireAuth,
 		meta: { permissions: 'active', condition: 'any' }
 	},
