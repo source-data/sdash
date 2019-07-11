@@ -23,7 +23,15 @@
                     </div>
                 </div>
                 <div class="list-grid-extra--info-container">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quis cum eaque rem ipsam tempora vel possimus culpa aspernatur hic adipisci, quia quibusdam facere expedita iste. Itaque unde placeat saepe iste!
+                    <h2>{{panel.label}}</h2>
+                    <h4>Part of Figure: {{ panel.figure.dar.caption.title }}</h4>
+                    <figure-list-grid-detail :panel="panel"></figure-list-grid-detail>
+                    <footer class="list-grid-actions">
+                        <b-button variant="light">Open SmartFigure</b-button>
+                        <b-button variant="light" @click.stop="downloadDar(panel.figure.id)"><v-icon name="file-download" class="list-grid--download-icon"></v-icon>Download .dar</b-button>
+                        <b-button variant="danger" @click.stop="deleteFigure"><v-icon name="trash-alt" class="list-grid--delete-icon"></v-icon>Delete File</b-button>
+                        <p class="confirmDeletionMessage" v-if="confirmDeletion"> Are you sure? <button @click.stop="reallyDeleteFigure">YES</button> / <button @click.stop="dontReallyDeleteFigure">NO</button></p>
+                    </footer>
                 </div>
             
             </div>
@@ -35,21 +43,29 @@
 
 import {Bus} from '@/bus';
 import userIcon from '@/components/user/userIcon'
+import FigureListGridDetail from '@/components/figures/FigureListGridDetail'
+import { mapGetters } from 'vuex'
 
 export default {
  
     name: 'FigureListGridItem',
-    components: { userIcon, },
+    components: { userIcon, FigureListGridDetail },
     props: ['panel'],
  
     data(){
  
         return {
-            isExpanded: false
+            isExpanded: false,
+            confirmDeletion: false,
             
         }
  
-    }, /* end of data */
+    },
+    computed: {
+		...mapGetters({
+			user: 'currentUser'
+		}),
+    },
  
     methods:{
  
@@ -61,12 +77,26 @@ export default {
             if(vm.isExpanded){ 
 
                 vm.$emit('expanded', {id:vm.panel.panel_id});
-                vm.$scrollTo(vm.$refs.listGridExtra, 300, {offset:-200} );
+                vm.$scrollTo(vm.$refs.listGridExtra, 300, {offset:-120} );
                 setTimeout(function(){ vm.$refs.listGridImage.style.display="inline-block" }, 500);
             } else {
                 vm.$refs.listGridImage.style.display="none";
             }
 
+        },
+        downloadDar (figure_id) {
+			this.$store.dispatch('downloadDar',{figure_id:figure_id,jwt:this.user.jwt})
+		},
+        deleteFigure() {
+            this.confirmDeletion = true
+        },
+        reallyDeleteFigure(figure_id) {
+            this.$store.dispatch('deleteFigure',{ figure_id: this.panel.figure.id }).then(() => {
+                this.$snotify.success("Figure permanently deleted ");
+            })
+        },
+        dontReallyDeleteFigure() {
+            this.confirmDeletion = false;
         }
     },
     mounted: function () {
@@ -97,7 +127,7 @@ export default {
 
     .list-grid-item.list-grid__expanded {
 
-        margin-bottom:610px;
+        margin-bottom:710px;
 
     }
 
@@ -175,6 +205,7 @@ export default {
     }
 
     .list-grid-extra {
+        cursor: default;
         position: absolute;
         left:0;
         width: 100%;
@@ -190,8 +221,8 @@ export default {
     }
 
     .list-grid__expanded .list-grid-extra {
-        max-height: 600px;
-        height:600px;
+        max-height: 700px;
+        height:700px;
     }
 
     .list-grid-extra--close {
@@ -214,8 +245,12 @@ export default {
     }
 
     .list-grid-extra--image-container {
-        flex: 1 0 50%;
+        flex: 0 0 50%;
         display: flex;
+
+    }
+    .list-grid-extra--info-container {
+        flex: 0 0 50%;
 
     }
 
@@ -248,6 +283,41 @@ export default {
         border-top: none;
         position: absolute;
         bottom: -6px;
+    }
+
+    .list-grid-actions {
+        margin-top: 1em;
+    }
+
+    .list-grid-actions .btn {
+        margin-right: 4px;
+    }
+
+    .list-grid--download-icon {
+        color:#444;
+        margin-right:6px;
+        position:relative;
+        top:-2px;
+    }
+
+    .list-grid--delete-icon {
+        color:#eee;
+        margin-right:6px;
+        position:relative;
+        top:-2px;
+    }
+
+    .confirmDeletionMessage {
+        display: inline-block;
+        padding-left:1em;
+    }
+
+    .confirmDeletionMessage button {
+        border: none;
+        background: transparent;
+        color: orange;
+        text-decoration: underline;
+        cursor: pointer;
     }
 
 </style>
