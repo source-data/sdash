@@ -39,8 +39,8 @@ const router = new Router({
 		meta: { permissions: 'active', condition: 'any' }
 	},
 	{
-		path: '/figures2',
-		name: 'figures2',
+		path: '/panels',
+		name: 'panels',
 		component: FigureListGrid,
 		beforeEnter: requireAuth,
 		meta: { permissions: 'active', condition: 'any' }

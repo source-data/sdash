@@ -195,6 +195,20 @@ const actions = {
 		HTTP.get('figures',{params:{figure_id:figure_id}}).then(function(response){
 			commit('ADD_FIGURE',response.data[0])
 		})
+	}, 
+	updatePanel({commit, state, dispatch}, params ){ 
+
+		let updatedPanel = {
+			caption: params.caption,
+			label: params.label,
+			panel_id: params.panel_id,
+		}
+
+		return new Promise((resolve, reject) => {
+			HTTP.patch('panel/' + params.panel_id, updatedPanel).then((data) => { 
+				resolve(data);
+			}).catch(err => reject(err))
+		});
 	}
 	
 }

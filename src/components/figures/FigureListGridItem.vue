@@ -23,7 +23,12 @@
                     </div>
                 </div>
                 <div class="list-grid-extra--info-container">
-                    <h2>{{panel.label}}</h2>
+                    <h2 v-if="!editingLabel">{{panel.label}} <button class="edit-label-button" @click.stop="isEditingLabel"><v-icon name="edit" class="edit-label--edit-icon"></v-icon> Edit</button></h2>
+                    <div v-if="editingLabel" class="edit-label--input-container">
+                        <input type="text" class="form-control" :value="panel.label" @input="updateTempLabelText">
+                        <button class="btn btn-success" @click.prevent="updateLabel"><v-icon name="save" class="list-grid--save-icon"></v-icon> Save</button>
+                        <button class="btn btn-warning" @click.prevent="dontEditLabel"><v-icon name="ban" class="list-grid--save-icon"></v-icon> Cancel</button>
+                    </div>
                     <h4>Part of Figure: {{ panel.figure.dar.caption.title }}</h4>
                     <figure-list-grid-detail :panel="panel"></figure-list-grid-detail>
                     <footer class="list-grid-actions">
@@ -56,6 +61,8 @@ export default {
  
         return {
             isExpanded: false,
+            editingLabel: false, 
+            newLabel: null,
             confirmDeletion: false,
             
         }
@@ -97,7 +104,34 @@ export default {
         },
         dontReallyDeleteFigure() {
             this.confirmDeletion = false;
+        },
+        isEditingLabel() {
+            this.editingLabel = true;
+        },
+        dontEditLabel() {
+            this.editingLabel = false;
+            this.newLabel = null;
+        },
+        updateTempLabelText(e){
+
+            this.newLabel = e.target.value;
+        },
+        updateLabel() {
+            let vm = this;
+
+            let updateLabelData = {
+                panel_id: vm.panel.panel_id,
+                caption: vm.panel.caption,
+                label: vm.newLabel,
+            }
+
+            vm.$store.dispatch("updatePanel", updateLabelData).then(() => {
+                vm.$snotify.success("Panel label updated");
+                vm.panel.label = vm.newLabel;
+                vm.editingLabel = false;
+            });            
         }
+
     },
     mounted: function () {
         let vm = this;
@@ -318,6 +352,28 @@ export default {
         color: orange;
         text-decoration: underline;
         cursor: pointer;
+    }
+
+    .edit-label-button {
+        border: none;
+        position: relative;
+        top:-1em;
+        background-color: transparent;
+        font-size: 0.85rem;
+        color: #01c59f;
+        margin-top: 6px;
+    }
+
+    .edit-label--input-container {
+        margin: 0 0 6px 0;
+    }
+
+    .edit-label--input-container .btn {
+        margin: 6px 6px 0 0;
+    }
+
+    .edit-label--input-container .form-control {
+        font-size: 1.8rem;
     }
 
 </style>
