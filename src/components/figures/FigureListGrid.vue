@@ -2,11 +2,31 @@
   TODO: Remove settimeout when load figures.
 -->
 <template>
-	<div class="FigureListGridContainer" >
-        <div class="FigureListGridContainer--inner">
-            <figure-list-grid-item v-for="panel in panels" :key="panel.figure_id" :panel="panel" @expanded="handleChildExpansion"></figure-list-grid-item>
-        </div>
-        
+	<div>
+		<b-container>
+			<b-row class="mb-4">
+				<b-col>
+					<b-input-group
+						size="lg"
+						prepend="Search"
+					>
+						<b-form-input></b-form-input>
+					</b-input-group>
+				</b-col>
+			</b-row>
+			<b-row class="mb-4">
+				<b-col>
+					<figure-upload v-if="!filters.project_id"></figure-upload>
+				</b-col>
+			</b-row>
+		</b-container>
+
+		<div class="FigureListGridContainer" >
+			<div class="FigureListGridContainer--inner">
+				<figure-list-grid-item v-for="panel in panels" :key="panel.figure_id" :panel="panel" @expanded="handleChildExpansion"></figure-list-grid-item>
+			</div>
+			
+		</div>
 	</div>
 </template>
 
@@ -175,7 +195,9 @@ export default {
 
 		handleChildExpansion(obj) {
 			Bus.$emit("close-panels", obj);
-		}
+		},
+
+
 	}
 }
 

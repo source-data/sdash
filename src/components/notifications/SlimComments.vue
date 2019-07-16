@@ -59,7 +59,7 @@
         <form @submit.prevent="addComment">
             <textarea  v-model="newComment.comment"  class="form-control"  rows="4"  placeholder="comment here..."  maxlength="1024"/>
               <button  type="submit"  class="btn btn-light mt-2"  :disabled="newComment.comment.length < 2 && !newComment.post_date">
-                <v-icon  name="paper-plane"  class="mr-2"/> {{ (newComment.post_date) ? ((newComment.comment.length) ? $t('update') : $t('delete')) : $t('send') }}
+                <v-icon  name="paper-plane"  class="mr-2"/> {{ (newComment.post_date) ? ((newComment.comment.length) ? 'Update' : 'Delete') : 'Send' }}
 							</button>
         </form>
 </div>

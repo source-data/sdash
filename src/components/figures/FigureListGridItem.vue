@@ -70,7 +70,7 @@ export default {
     },
     computed: {
 		...mapGetters({
-			user: 'currentUser'
+			user: 'currentUser',
 		}),
     },
  
@@ -130,7 +130,7 @@ export default {
                 vm.panel.label = vm.newLabel;
                 vm.editingLabel = false;
             });            
-        }
+        },
 
     },
     mounted: function () {
