@@ -33,17 +33,22 @@
                     <figure-list-grid-detail :panel="panel"></figure-list-grid-detail>
                     <footer class="list-grid-actions">
                         <b-button variant="light">Open SmartFigure</b-button>
-                        <b-button variant="light" @click.stop="downloadDar(panel.figure.id)"><v-icon name="file-download" class="list-grid--download-icon"></v-icon>Download .dar</b-button>
+                        <b-dropdown right dropup variant="light" >
+                            <span slot="text"><v-icon name="file-download" class="list-grid--download-icon"></v-icon> Download</span>
+                            <b-dropdown-item @click.stop="downloadDar(panel.figure.id)">.dar file</b-dropdown-item>
+                            <b-dropdown-item @click.stop="downloadPdf(panel.figure.id)">.pdf file</b-dropdown-item>
+                            <b-dropdown-item @click.stop="downloadPowerpoint(panel.figure.id)">.pptx (PowerPoint) file</b-dropdown-item>
+                        </b-dropdown>
                         <b-button variant="danger" @click.stop="deleteFigure"><v-icon name="trash-alt" class="list-grid--delete-icon"></v-icon>Delete File</b-button>
                         <p class="confirmDeletionMessage" v-if="confirmDeletion"> Are you sure? <button @click.stop="reallyDeleteFigure">YES</button> / <button @click.stop="dontReallyDeleteFigure">NO</button></p>
                     </footer>
                 </div>
-            
+
             </div>
         </div>
     </section>
 </template>
- 
+
 <script>
 
 import {Bus} from '@/bus';
@@ -52,36 +57,36 @@ import FigureListGridDetail from '@/components/figures/FigureListGridDetail'
 import { mapGetters } from 'vuex'
 
 export default {
- 
+
     name: 'FigureListGridItem',
     components: { userIcon, FigureListGridDetail },
     props: ['panel'],
- 
+
     data(){
- 
+
         return {
             isExpanded: false,
-            editingLabel: false, 
+            editingLabel: false,
             newLabel: null,
             confirmDeletion: false,
-            
+
         }
- 
+
     },
     computed: {
 		...mapGetters({
 			user: 'currentUser',
 		}),
     },
- 
+
     methods:{
- 
+
         toggleExpanded(){
 
             let vm = this;
 
             vm.isExpanded = !vm.isExpanded;
-            if(vm.isExpanded){ 
+            if(vm.isExpanded){
 
                 vm.$emit('expanded', {id:vm.panel.panel_id});
                 vm.$scrollTo(vm.$refs.listGridExtra, 300, {offset:-120} );
@@ -93,6 +98,12 @@ export default {
         },
         downloadDar (figure_id) {
 			this.$store.dispatch('downloadDar',{figure_id:figure_id,jwt:this.user.jwt})
+		},
+        downloadPdf (figure_id) {
+			this.$store.dispatch('downloadPdf',{figure_id:figure_id,jwt:this.user.jwt})
+		},
+        downloadPowerpoint (figure_id) {
+			this.$store.dispatch('downloadPowerpoint',{figure_id:figure_id,jwt:this.user.jwt})
 		},
         deleteFigure() {
             this.confirmDeletion = true
@@ -129,7 +140,7 @@ export default {
                 vm.$snotify.success("Panel label updated");
                 vm.panel.label = vm.newLabel;
                 vm.editingLabel = false;
-            });            
+            });
         },
 
     },
@@ -138,16 +149,16 @@ export default {
         Bus.$on("close-panels", (obj) => { if(vm.isExpanded && obj.id !== vm.panel.panel_id) vm.isExpanded = false; });
     }
 
- 
+
 }
 </script>
- 
+
 <style scoped>
-   
+
     *, *:before, *:after {
-   
+
         box-sizing: border-box;
-   
+
     }
 
     .list-grid-item {
@@ -218,7 +229,7 @@ export default {
 
 
     }
-    
+
     .list-grid-file-type {
         position: absolute;
         bottom: 6px;

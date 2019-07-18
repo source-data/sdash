@@ -20,12 +20,15 @@
 				</b-col>
 			</b-row>
 		</b-container>
-
 		<div class="FigureListGridContainer" >
 			<div class="FigureListGridContainer--inner">
+
 				<figure-list-grid-item v-for="panel in panels" :key="panel.figure_id" :panel="panel" @expanded="handleChildExpansion"></figure-list-grid-item>
 			</div>
 			
+		</div>
+		<div v-if="loading" class="loading-indicator">
+			<pulse-loader  :loading="loading"  color="gray" class="p-loader"/>
 		</div>
 	</div>
 </template>
@@ -60,7 +63,7 @@ export default {
 	},
 	data () {
 		return {
-			perPage: 10,
+			perPage: 15,
 			currentPage: 1,
 			pageNb: 1,
 			active: false,
@@ -184,11 +187,10 @@ export default {
 
 		setTimeout(() => vm.$store.dispatch('getProjects'), 300)		
 	},
-
 	mounted () {
-        var vm = this
-
+		this.scroll()
 	},
+
 	methods: {
 
         setLoading(val) { this.loading = val; },
@@ -197,6 +199,63 @@ export default {
 			Bus.$emit("close-panels", obj);
 		},
 
+		scroll () {
+			const _this = this
+
+			function getScrollXY() {
+				var scrOfX = 0, scrOfY = 0;
+				if( typeof( window.pageYOffset ) == 'number' ) {
+					//Netscape compliant
+					scrOfY = window.pageYOffset;
+					scrOfX = window.pageXOffset;
+				} else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
+					//DOM compliant
+					scrOfY = document.body.scrollTop;
+					scrOfX = document.body.scrollLeft;
+				} else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
+					//IE6 standards compliant mode
+					scrOfY = document.documentElement.scrollTop;
+					scrOfX = document.documentElement.scrollLeft;
+				}
+				return [ Math.floor(scrOfX), Math.floor(scrOfY) ];
+			}
+
+			function getDocHeight() {
+				var D = document;
+				return Math.max(
+					D.body.scrollHeight, D.documentElement.scrollHeight,
+					D.body.offsetHeight, D.documentElement.offsetHeight,
+					D.body.clientHeight, D.documentElement.clientHeight
+				);
+			}
+
+			let previousY = 0;
+
+			window.onscroll = () => {
+				if (this.$route.params.project_id && this.$route.query.view !== 'figures') return
+
+				let bottomOfWindow = (getDocHeight() -20 <  getScrollXY()[1] + window.innerHeight && previousY < getScrollXY()[1]) 
+				previousY = getScrollXY()[1];	
+				if (bottomOfWindow && !this.loading) {
+					this.setLoading(true);
+					this.pageNb++
+					this.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit }).then( () => {
+						this.setLoading(false);
+					})
+				}
+				if (_this.$refs.myHeader){
+					let sticky = _this.$refs.myHeader.offsetTop
+					let heightSticky = _this.$refs.myHeader.clientHeight
+					let figuresList = _this.$refs.figuresList.offsetTop
+					if ((window.pageYOffset) > sticky - heightSticky && !this.isActive) {
+						this.isActive = true
+					} else if (window.pageYOffset < figuresList - heightSticky) {
+						this.isActive = false
+					}					
+				}
+			}
+		}
+
 
 	}
 }
@@ -204,6 +263,10 @@ export default {
 </script>
 
 <style scoped>
+
+	.loading-indicator {
+		text-align:center;
+	}
 
     .FigureListGridContainer {
         width:100%;

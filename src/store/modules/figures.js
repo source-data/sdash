@@ -41,6 +41,12 @@ const actions = {
 	downloadDar ({ commit, state }, params) {
 		self.location.href = serverURL+"/dar/"+params.figure_id+"?jwt="+params.jwt;
 	},
+	downloadPdf ({ commit, state }, params) {
+		self.location.href = serverURL+"/pdf/"+params.figure_id+"?jwt="+params.jwt;
+	},
+	downloadPowerpoint ({ commit, state }, params) {
+		self.location.href = serverURL+"/powerpoint/"+params.figure_id+"?jwt="+params.jwt;
+	},
 	getFigures ({ commit , dispatch, state }, params) {
 		if (state.totalItems !== null && state.figures.length >= state.totalItems && state.filterParams.sortBy === params.sortBy && state.filterParams.sortDesc === params.sortDesc && _.isEqual(state.filterParams.filters, params.filters)) {
 			return
@@ -48,7 +54,7 @@ const actions = {
 		var reset = false
 		if (params.resetDisplay){
 			commit('RESET_FLAGS')
-		} 
+		}
 		let requestParams = ''
 		_.forEach(params.filters, function (value, filterName) {
 			if (filterName === 'project_id') {
@@ -98,7 +104,7 @@ const actions = {
 				_.forEach(d, (v, k) => {
 					t[k] = v
 				})
-				
+
 				let showDetails = (state.flags[t.figure_id] !== undefined) ? state.flags[t.figure_id].show_details : false
 				if (t.figure_id !== undefined) {
 					let flag = {
@@ -118,7 +124,7 @@ const actions = {
 			return res
 		})
 	},
-	
+
 	getFiguresOld ({ commit, state }, params) {
 		return HTTP.get('figures',{params:params}).then(function(response){
 			commit('SET_FIGURES',response.data)
@@ -142,7 +148,7 @@ const actions = {
 			})
 		})
 	},
-	
+
 	removeFigureFromProject ({ commit, state }, params){
 		let figure_idx = _.findIndex(state.figures, f => +f.figure_id === +params.figure_id);
 		if (figure_idx === -1) { console.info("Sorry, the figure doesn't exist"); return; }
@@ -150,12 +156,12 @@ const actions = {
 		let project_idx = _.findIndex(state.figures[figure_idx].projects, p => +p === +params.project_id);
 		if (project_idx === -1) { console.info("Sorry, the figure is not in this project"); return; }
 
-		return HTTP.delete("/figures/"+params.figure_id+"/projects/"+params.project_id).then(function(response){		
+		return HTTP.delete("/figures/"+params.figure_id+"/projects/"+params.project_id).then(function(response){
 			commit("REMOVE_FIGURE_FROM_PROJECT",{project_idx: project_idx, figure_idx: figure_idx})
 			return response.data
-		})				
+		})
 	},
-	
+
 	deleteFigure ({ commit }, params) {
 		return HTTP.delete('figures/'+params.figure_id).then(function(response){
 			commit('DELETE_FIGURE',{figure_id: params.figure_id})
@@ -185,7 +191,7 @@ const actions = {
 			}
 			else {
 				notifications = state.figures[idx].notifications
-			} 
+			}
 			commit("SET_NOTIFICATIONS",notifications)
 			resolve(notifications)
 		})
@@ -195,8 +201,8 @@ const actions = {
 		HTTP.get('figures',{params:{figure_id:figure_id}}).then(function(response){
 			commit('ADD_FIGURE',response.data[0])
 		})
-	}, 
-	updatePanel({commit, state, dispatch}, params ){ 
+	},
+	updatePanel({commit, state, dispatch}, params ){
 
 		let updatedPanel = {
 			caption: params.caption,
@@ -205,12 +211,12 @@ const actions = {
 		}
 
 		return new Promise((resolve, reject) => {
-			HTTP.patch('panel/' + params.panel_id, updatedPanel).then((data) => { 
+			HTTP.patch('panel/' + params.panel_id, updatedPanel).then((data) => {
 				resolve(data);
 			}).catch(err => reject(err))
 		});
 	}
-	
+
 }
 
 // mutations
@@ -234,12 +240,12 @@ const mutations = {
 		})
 		if (reset) {
 			state.figures = figures
-		} 
+		}
 		else {
 			state.figures = _.uniqBy(state.figures.concat(figures), function (d) { return d.figure_id })
 		}
 	},
-	
+
 	SET_FIGURES_OLD (state, params) {
 		state.figures = _.map(params, f => {
 			f._showDetails = false;
@@ -260,7 +266,7 @@ const mutations = {
 			f._showDetails = false
 			return f
 		})
-		
+
 		state.flags = {}
 	},
 	REMOVE_FIGURE_FROM_PROJECT(state,params){
@@ -301,7 +307,7 @@ const mutations = {
 			}
 		}
 		else {
-			state.figures[figureIdx].notifications.push(params);			
+			state.figures[figureIdx].notifications.push(params);
 		}
 	},
 
@@ -354,7 +360,7 @@ const mutations = {
 		let nidx = _.findIndex(state.figures[figureIdx].notifications, n => n.note_id === params.note_id);
 		state.figures[figureIdx].notifications.splice(nidx,1)
 	}
-	
+
 }
 
 export default {
