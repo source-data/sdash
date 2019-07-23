@@ -47,6 +47,9 @@ const actions = {
 	downloadPowerpoint ({ commit, state }, params) {
 		self.location.href = serverURL+"/powerpoint/"+params.figure_id+"?jwt="+params.jwt;
 	},
+	downloadImage ({ commit, state }, params) {
+		self.location.href = serverURL+"/image/"+params.figure_id+"?jwt="+params.jwt;
+	},
 	getFigures ({ commit , dispatch, state }, params) {
 		if (state.totalItems !== null && state.figures.length >= state.totalItems && state.filterParams.sortBy === params.sortBy && state.filterParams.sortDesc === params.sortDesc && _.isEqual(state.filterParams.filters, params.filters)) {
 			return
@@ -212,6 +215,7 @@ const actions = {
 
 		return new Promise((resolve, reject) => {
 			HTTP.patch('panel/' + params.panel_id, updatedPanel).then((data) => {
+				commit('UPDATE_PANEL', data.data);
 				resolve(data);
 			}).catch(err => reject(err))
 		});
@@ -359,6 +363,11 @@ const mutations = {
 		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.figure_id)
 		let nidx = _.findIndex(state.figures[figureIdx].notifications, n => n.note_id === params.note_id);
 		state.figures[figureIdx].notifications.splice(nidx,1)
+	},
+	UPDATE_PANEL (state, params) {
+		let figureIndex = _.findIndex(state.figures, f => +f.id === +params.figure_id);
+		let panelIndex = _.findIndex(state.figures[figureIndex].dar.fig, f => +f.panel_id === +params.panel_id);
+		state.figures[figureIndex].dar.fig[panelIndex] = params;
 	}
 
 }

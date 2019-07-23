@@ -6,7 +6,7 @@
                     <div>{{panel.caption}}</div>
                     <button class="panel-caption--edit" @click="editCaption"><v-icon name="edit" class="edit-caption--edit-icon"></v-icon>Edit</button>
                 </b-card-text>
-                <div v-if="!panel.caption || editingCaption" class="editing-panel-caption">
+                <div v-if="canEditCaption" class="editing-panel-caption">
                     <textarea :value="panel.caption" name="panel-caption" id="panel-caption" rows="10" @input="updateTempCaptionText" placeholder="Create a caption for this panel"></textarea>
                     <button class="btn btn-success" @click.prevent="updateCaption"><v-icon name="save" class="list-grid--save-icon"></v-icon> Save</button>
                     <button class="btn btn-warning" @click.prevent="dontEditCaption"><v-icon name="ban" class="list-grid--save-icon"></v-icon> Cancel</button>
@@ -30,14 +30,14 @@
         </b-tabs>
     </div>
 </template>
- 
+
 <script>
 
 import SlimComments from '@/components/notifications/SlimComments'
 import { mapGetters } from 'vuex'
 
 export default {
- 
+
     name: 'FigureListGridDetail',
     components: {
         SlimComments,
@@ -50,20 +50,23 @@ export default {
         }
     },
     props: ["panel"],
- 
+
     computed: {
- 
+
         commentCount () {
             return "Comments (" + (this.panel.figure.notifications.reduce((n, note) => n + (note.event_type === "comment") ,0)).toString() + ")"
         },
         ...mapGetters({
 			projects: 'projects',
 		}),
-         
-    }, 
- 
+        canEditCaption(){
+            return (this.editingCaption || this.panel.caption === "")
+        },
+
+    },
+
     methods:{ //run as event handlers, for example
- 
+
         editCaption () {
             this.editingCaption = true;
             this.newCaption = this.panel.caption;
@@ -87,29 +90,30 @@ export default {
 
             vm.$store.dispatch("updatePanel", updatePanelData).then(() => {
                 vm.$snotify.success("Panel caption updated");
-                vm.panel.caption = vm.newCaption;
                 vm.editingCaption = false;
             });
-            
+
+
+
         },
-        getProjectNameById (project_id){ console.log(project_id);console.log(this.projects);
+        getProjectNameById (project_id){
 			return _.map(_.filter(this.projects, p => +p.project_id === +project_id), p => p.name)[0]
 		},
         createProjectUrl(project_id) {
             return "/projects/" + project_id + "?view=figures";
         }
- 
+
     }
- 
+
 }
 </script>
- 
+
 <style>
     .figure-list-grid-card {
         border: solid 1px #fff;
         border-radius: 6px 6px 0 0;
-        max-height: 400px;   
-        margin-top: -1px;     
+        max-height: 400px;
+        margin-top: -1px;
     }
 
     .figure-list-grid-card .tab-pane.card-body {
@@ -162,7 +166,7 @@ export default {
     .list-grid--metadata-table td:first-child {
         padding-right:6px;
         color: #cb84ec;
-        
+
     }
 
 </style>

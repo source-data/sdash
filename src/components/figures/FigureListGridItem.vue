@@ -33,11 +33,12 @@
                     <figure-list-grid-detail :panel="panel"></figure-list-grid-detail>
                     <footer class="list-grid-actions">
                         <b-button variant="light">Open SmartFigure</b-button>
-                        <b-dropdown right dropup variant="light" >
+                        <b-dropdown right dropup variant="light" class="list-grid--download-controls" >
                             <span slot="text"><v-icon name="file-download" class="list-grid--download-icon"></v-icon> Download</span>
                             <b-dropdown-item @click.stop="downloadDar(panel.figure.id)">.dar file</b-dropdown-item>
                             <b-dropdown-item @click.stop="downloadPdf(panel.figure.id)">.pdf file</b-dropdown-item>
                             <b-dropdown-item @click.stop="downloadPowerpoint(panel.figure.id)">.pptx (PowerPoint) file</b-dropdown-item>
+                            <b-dropdown-item @click.stop="downloadImage(panel.figure.id)">Original image</b-dropdown-item>
                         </b-dropdown>
                         <b-button variant="danger" @click.stop="deleteFigure"><v-icon name="trash-alt" class="list-grid--delete-icon"></v-icon>Delete File</b-button>
                         <p class="confirmDeletionMessage" v-if="confirmDeletion"> Are you sure? <button @click.stop="reallyDeleteFigure">YES</button> / <button @click.stop="dontReallyDeleteFigure">NO</button></p>
@@ -105,6 +106,9 @@ export default {
         downloadPowerpoint (figure_id) {
 			this.$store.dispatch('downloadPowerpoint',{figure_id:figure_id,jwt:this.user.jwt})
 		},
+        downloadImage (figure_id) {
+			this.$store.dispatch('downloadImage',{figure_id:figure_id,jwt:this.user.jwt})
+		},
         deleteFigure() {
             this.confirmDeletion = true
         },
@@ -165,6 +169,7 @@ export default {
         box-sizing: border-box;
         height: 280px;
         min-width: 240px;
+        max-width:100%;
         margin:8px;
         cursor:pointer;
         transition: all 0.3s ease-in;
@@ -203,6 +208,10 @@ export default {
 
     .list-grid-caption--label {
         padding-left: 54px;
+        padding-right: 12px;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
         margin-top: -12px;
     }
 
@@ -225,6 +234,7 @@ export default {
     .list-grid-image {
         display:block;
         max-height: 100%;
+        max-width:100%;
         width: auto;
 
 
@@ -334,7 +344,7 @@ export default {
         margin-top: 1em;
     }
 
-    .list-grid-actions .btn {
+    .list-grid-actions .btn, .list-grid--download-controls {
         margin-right: 4px;
     }
 
