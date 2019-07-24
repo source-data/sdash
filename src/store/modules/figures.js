@@ -50,6 +50,9 @@ const actions = {
 	downloadImage ({ commit, state }, params) {
 		self.location.href = serverURL+"/image/"+params.figure_id+"?jwt="+params.jwt;
 	},
+	registerPanelItemClick ({ commit, state }, params) {
+		HTTP.patch('panel/' + params.panel_id + '/event', {'event_type' : 'click'}).then((response) => console.log(params.panel_id) );
+	},
 	getFigures ({ commit , dispatch, state }, params) {
 		if (state.totalItems !== null && state.figures.length >= state.totalItems && state.filterParams.sortBy === params.sortBy && state.filterParams.sortDesc === params.sortDesc && _.isEqual(state.filterParams.filters, params.filters)) {
 			return

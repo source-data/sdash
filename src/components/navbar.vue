@@ -2,12 +2,14 @@
 {
 	"en" : {
 		"inbox": "my files",
+		"panels": "my panels",
 		"projects": "projects",
 		"favorites": "favorites",
 		"recents": "recents"
 	},
 	"fr": {
 		"inbox": "mes fichiers",
+		"panels": "mes panneaux",
 		"projects": "projets",
 		"favorites": "favoris",
 		"recents": "récents"
@@ -22,6 +24,11 @@
         <li class="nav-item">
           <router-link to="/figures" class="nav-link" active-class="active" v-access = "'active'">
             <v-icon name="bars" />{{ $t("inbox") }}
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/panels" class="nav-link" active-class="active" v-access = "'active'">
+            <v-icon name="image" />{{ $t("panels") }}
           </router-link>
         </li>
         <li class="nav-item">

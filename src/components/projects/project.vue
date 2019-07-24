@@ -44,6 +44,7 @@
         <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
           <nav class="nav nav-pills nav-fill flex-column flex-lg-row text-center justify-content-lg-end">
             <a  class="nav-link"  :class="(view=='figures')?'active':''"  @click.stop="view='figures'"> Figures </a>
+            <a  class="nav-link"  :class="(view=='panels')?'active':''"  @click.stop="view='panels'"> Panels </a>
             <a  class="nav-link"  :class="(view=='notifications')?'active':''"  @click.stop="view='notifications'"> Comments </a>
             <a  class="nav-link"  :class="(view=='settings')?'active':''"  @click.stop="view='settings'"> Settings </a>
           </nav>
@@ -51,6 +52,7 @@
       </div>
     </div>
     <project-figures v-if="view=='figures'" />
+    <project-grid v-if="view=='panels'" />
     <project-notifications  v-if="view=='notifications'" :id="project.project_id+''"/>
     <project-settings v-if="view=='settings'" />
   </div>
@@ -59,13 +61,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import projectFigures from '@/components/projects/projectFigures'
+import ProjectGrid from '@/components/projects/ProjectGrid'
 import projectNotifications from '@/components/projects/projectNotifications'
 import projectSettings from '@/components/projects/projectSettings'
 import navBar from '@/components/navbar'
 
 export default {
 	name: 'Project',
-	components: { projectFigures, projectSettings, projectNotifications,navBar },
+	components: { projectFigures, ProjectGrid, projectSettings, projectNotifications,navBar },
 	data () {
 		return {
 			view: 'figures',
@@ -90,7 +93,7 @@ export default {
 	},
 	created () {
 		this.loading = true
-		
+
 		this.$store.dispatch('getProjects').then(() => {
 			this.$store.dispatch('getProject', { project_id: this.$route.params.project_id }).then(() => {
 				this.loading = false
@@ -110,7 +113,7 @@ export default {
 </script>
 
 <style scoped>
-	
+
 .container{
 	margin-top:30px;
 }

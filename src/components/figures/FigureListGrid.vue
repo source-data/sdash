@@ -3,6 +3,10 @@
 -->
 <template>
 	<div>
+		<div class="listContainer">
+			<nav-bar v-if="!filters.project_id" />
+			<figure-upload v-if="!filters.project_id"></figure-upload>
+		</div>
 		<b-container>
 			<b-row class="mb-4">
 				<b-col>
@@ -14,18 +18,13 @@
 					</b-input-group>
 				</b-col>
 			</b-row>
-			<b-row class="mb-4">
-				<b-col>
-					<figure-upload v-if="!filters.project_id"></figure-upload>
-				</b-col>
-			</b-row>
 		</b-container>
 		<div class="FigureListGridContainer" >
 			<div class="FigureListGridContainer--inner">
 
 				<figure-list-grid-item v-for="panel in panels" :key="panel.figure_id" :panel="panel" @expanded="handleChildExpansion"></figure-list-grid-item>
 			</div>
-			
+
 		</div>
 		<div v-if="loading" class="loading-indicator">
 			<pulse-loader  :loading="loading"  color="gray" class="p-loader"/>
@@ -151,7 +150,7 @@ export default {
 			selectedPanelsNb: 0,
 			isActive: false,
 		}
-	
+
 	},
 	computed: {
 		...mapGetters({
@@ -176,22 +175,28 @@ export default {
 	},
 
 	created () {
-		var vm = this
-		if (vm.$route.params.project_id) {
-			vm.filters.project_id = vm.$route.params.project_id
-			vm.$store.commit('RESET_FIGURE_FLAGS')
-		}
-		vm.$store.dispatch('getFigures', { pageNb: vm.pageNb, filters: vm.filters, sortBy: vm.sortBy, sortDesc: vm.sortDesc, limit: vm.limit, resetDisplay: true })
-			.then(() => { setTimeout(() => vm.setLoading(false), 300);})
-			.catch(function(err){ vm.$snotify.error(err) })
-
-		setTimeout(() => vm.$store.dispatch('getProjects'), 300)		
+		this.getData();
 	},
 	mounted () {
-		this.scroll()
+		let vm = this;
+		vm.scroll();
+		// Bus.$on("refreshData", () => { vm.getData() });
 	},
 
 	methods: {
+
+		getData() {
+			var vm = this
+			if (vm.$route.params.project_id) {
+				vm.filters.project_id = vm.$route.params.project_id
+				vm.$store.commit('RESET_FIGURE_FLAGS')
+			}
+			vm.$store.dispatch('getFigures', { pageNb: vm.pageNb, filters: vm.filters, sortBy: vm.sortBy, sortDesc: vm.sortDesc, limit: vm.limit, resetDisplay: true })
+				.then(() => { setTimeout(() => vm.setLoading(false), 300);})
+				.catch(function(err){ vm.$snotify.error(err) })
+
+			setTimeout(() => vm.$store.dispatch('getProjects'), 300)
+		},
 
         setLoading(val) { this.loading = val; },
 
@@ -234,8 +239,8 @@ export default {
 			window.onscroll = () => {
 				if (this.$route.params.project_id && this.$route.query.view !== 'figures') return
 
-				let bottomOfWindow = (getDocHeight() -20 <  getScrollXY()[1] + window.innerHeight && previousY < getScrollXY()[1]) 
-				previousY = getScrollXY()[1];	
+				let bottomOfWindow = (getDocHeight() -20 <  getScrollXY()[1] + window.innerHeight && previousY < getScrollXY()[1])
+				previousY = getScrollXY()[1];
 				if (bottomOfWindow && !this.loading) {
 					this.setLoading(true);
 					this.pageNb++
@@ -251,7 +256,7 @@ export default {
 						this.isActive = true
 					} else if (window.pageYOffset < figuresList - heightSticky) {
 						this.isActive = false
-					}					
+					}
 				}
 			}
 		}
@@ -277,7 +282,8 @@ export default {
     .FigureListGridContainer--inner {
         display:flex;
         flex-wrap:wrap;
-		justify-content: space-between;
+		/* justify-content: space-between; */
+		justify-content: flex-start;
         width:100%;
         max-width: 1600px;
         margin:0 auto;

@@ -2,11 +2,11 @@
     <div>
         <b-tabs card content-class="figure-list-grid-card">
             <b-tab title="Caption" active>
-                <b-card-text v-if="panel.caption && !editingCaption">
+                <b-card-text v-if="!editingCaption">
                     <div>{{panel.caption}}</div>
                     <button class="panel-caption--edit" @click="editCaption"><v-icon name="edit" class="edit-caption--edit-icon"></v-icon>Edit</button>
                 </b-card-text>
-                <div v-if="canEditCaption" class="editing-panel-caption">
+                <div v-if="editingCaption" class="editing-panel-caption">
                     <textarea :value="panel.caption" name="panel-caption" id="panel-caption" rows="10" @input="updateTempCaptionText" placeholder="Create a caption for this panel"></textarea>
                     <button class="btn btn-success" @click.prevent="updateCaption"><v-icon name="save" class="list-grid--save-icon"></v-icon> Save</button>
                     <button class="btn btn-warning" @click.prevent="dontEditCaption"><v-icon name="ban" class="list-grid--save-icon"></v-icon> Cancel</button>
@@ -21,11 +21,9 @@
                 </table>
             </b-card-text></b-tab>
             <b-tab :title="commentCount"><b-card-text><slim-comments :id="panel.figure_id+''" scope="figures" /></b-card-text></b-tab>
-            <b-tab title="File History"><b-card-text><p style="color:red">Demo content only</p><ul>
-                <li>(2019-05-25 09:45:00) File uploaded by Paul Johnsonson</li>
-                <li>(2019-05-25 11:30:01) Caption created by Paul Johnsonson</li>
-                <li>(2019-06-11 14:00:00) Added to Project "Neurological Materials" by Tim Wordle</li>
-                <li>(2019-06-25 90:22:25) Version 2 uploaded</li>
+            <b-tab title="File History"><b-card-text>
+            <ul>
+                <li>({{ panel.figure.create_date }}) - Version 1 created by {{ panel.figure.owner }}</li>
             </ul></b-card-text></b-tab>
         </b-tabs>
     </div>
@@ -35,6 +33,8 @@
 
 import SlimComments from '@/components/notifications/SlimComments'
 import { mapGetters } from 'vuex'
+import {Bus} from '@/bus'
+
 
 export default {
 
@@ -46,7 +46,7 @@ export default {
     data () {
         return {
             editingCaption: false,
-            newCaption: null,
+            newCaption: "",
         }
     },
     props: ["panel"],
@@ -58,10 +58,7 @@ export default {
         },
         ...mapGetters({
 			projects: 'projects',
-		}),
-        canEditCaption(){
-            return (this.editingCaption || this.panel.caption === "")
-        },
+		})
 
     },
 
@@ -89,6 +86,8 @@ export default {
             }
 
             vm.$store.dispatch("updatePanel", updatePanelData).then(() => {
+                Bus.$emit("refreshData");
+                vm.panel.caption = vm.newCaption;
                 vm.$snotify.success("Panel caption updated");
                 vm.editingCaption = false;
             });

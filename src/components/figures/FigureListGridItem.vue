@@ -10,6 +10,8 @@
                 </div>
                 <div class="list-grid-caption--label">{{ panel.label }}</div>
             </div>
+            <span class="list-grid-clicks" v-if="panel.clicks">{{ panel.clicks }} clicks</span>
+            <span class="list-grid-downloads" v-if="panel.downloads">{{ panel.downloads }} downloads</span>
             <span class="list-grid-file-type" v-if="panel.subtype">
                 {{ panel.subtype }}
             </span>
@@ -88,7 +90,8 @@ export default {
 
             vm.isExpanded = !vm.isExpanded;
             if(vm.isExpanded){
-
+                this.$store.dispatch('registerPanelItemClick', {panel_id: vm.panel.panel_id});
+                vm.panel.clicks++;
                 vm.$emit('expanded', {id:vm.panel.panel_id});
                 vm.$scrollTo(vm.$refs.listGridExtra, 300, {offset:-120} );
                 setTimeout(function(){ vm.$refs.listGridImage.style.display="inline-block" }, 500);
@@ -99,15 +102,19 @@ export default {
         },
         downloadDar (figure_id) {
 			this.$store.dispatch('downloadDar',{figure_id:figure_id,jwt:this.user.jwt})
+            this.panel.downloads++;
 		},
         downloadPdf (figure_id) {
 			this.$store.dispatch('downloadPdf',{figure_id:figure_id,jwt:this.user.jwt})
+            this.panel.downloads++;
 		},
         downloadPowerpoint (figure_id) {
 			this.$store.dispatch('downloadPowerpoint',{figure_id:figure_id,jwt:this.user.jwt})
+            this.panel.downloads++;
 		},
         downloadImage (figure_id) {
 			this.$store.dispatch('downloadImage',{figure_id:figure_id,jwt:this.user.jwt})
+            this.panel.downloads++;
 		},
         deleteFigure() {
             this.confirmDeletion = true
@@ -141,8 +148,9 @@ export default {
             }
 
             vm.$store.dispatch("updatePanel", updateLabelData).then(() => {
-                vm.$snotify.success("Panel label updated");
+                Bus.$emit("refreshData");
                 vm.panel.label = vm.newLabel;
+                vm.$snotify.success("Panel label updated");
                 vm.editingLabel = false;
             });
         },
@@ -253,10 +261,46 @@ export default {
         transition: all 200ms linear;
     }
 
+    .list-grid-clicks {
+        position: absolute;
+        bottom: 6px;
+        left: 6px;
+        padding: 3px 12px;
+        background-color: #9e33a5;
+
+        color: #fff;
+        border-radius: 16px;
+        line-height: 18px;
+        opacity:0.4;
+        transition: all 200ms linear;
+    }
+
+    .list-grid-downloads {
+        position: absolute;
+        bottom: 36px;
+        left: 6px;
+        padding: 3px 12px;
+        background-color: #9e33a5;
+
+        color: #fff;
+        border-radius: 16px;
+        line-height: 18px;
+        opacity:0.4;
+        transition: all 200ms linear;
+    }
+
     .list-grid-item:hover .list-grid-file-type,
     .list-grid-item:focus .list-grid-file-type,
-    .list-grid-item:active .list-grid-file-type {
-        opacity:0.8;
+    .list-grid-item:active .list-grid-file-type,
+    .list-grid-item:hover .list-grid-clicks,
+    .list-grid-item:focus .list-grid-clicks,
+    .list-grid-item:active .list-grid-clicks,
+    .list-grid-item:hover .list-grid-downloads,
+    .list-grid-item:focus .list-grid-downloads,
+    .list-grid-item:active .list-grid-downloads
+
+     {
+        opacity:0.9;
     }
 
     .list-grid-extra {
