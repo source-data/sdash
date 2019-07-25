@@ -75,7 +75,7 @@ export default {
 div.dz-message {
 	padding: 20px;
 	margin: 20px auto;
-	width: 600px;
+	width: 80%;
 	border: 1px dashed red;
 	text-align: center;
 }

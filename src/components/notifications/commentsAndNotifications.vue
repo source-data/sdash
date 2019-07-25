@@ -15,7 +15,7 @@
 		"hasleft": "has left",
 		"hascreated": "has created",
 		"hasedited": "has edited",
-		"includenotifications": "include notifications",
+		"includenotifications": "project's history",
 		"addproject": "add as favorite",
 		"removeproject": "remove as favorite"
 	},
@@ -34,7 +34,7 @@
 		"hasleft": "a quitté",
 		"hascreated": "a créé",
 		"hasedited": "a édité",
-		"includenotifications": "inclure les notifications",
+		"includenotifications": "historique du projet",
 		"addproject": "a mis en favori",
 		"removeproject": "a enlevé des favories"
 	}

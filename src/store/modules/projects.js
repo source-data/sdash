@@ -145,50 +145,53 @@ const mutations = {
 	// 		console.log("error no project")
 	// 	}
 	// },
-	// TOGGLE_PROJECT_USER_ADMIN (state, params){
-	// 	let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
-	// 	if (projectIdx > -1) {
-	// 		state.projects[projectIdx].users[params.user_idx].is_admin = !state.projects[projectIdx].users[params.user_idx].is_admin
-	// 		let comment = (state.projects[projectIdx].users[params.user_idx].is_admin) ? state.projects[projectIdx].users[params.user_idx].name+" has admin privileges" : state.projects[projectIdx].users[params.user_idx].name+" has not anymore admin privileges";
-	// 		state.projects[projectIdx].notifications.push({
-	// 			origin_name: params.origin_name,
-	// 			event_type: 'mutation',
-	// 			mutation_type: 'PROMOTE_ADMIN',
-	// 			comment: comment,
-	// 			post_date: new Date()
-	// 		})
-	// 		state.projects[projectIdx].last_event = new Date();
-	// 	}
-	// },
-	// ADD_USER_TO_PROJECT (state, params){
-	// 	let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
-	// 	if (projectIdx > -1) {
-	// 		state.projects[projectIdx].users.push(params.user);
-	// 		state.projects[projectIdx].notifications.push({
-	// 			origin_name: params.origin_name,
-	// 			event_type: 'mutation',
-	// 			mutation_type: 'ADD_USER',
-	// 			comment: params.user.name+" has been added to the project",
-	// 			post_date: new Date()
-	// 		})
-	// 		state.projects[projectIdx].last_event = new Date();
-	// 	}
-	// },
-	// REMOVE_USER_FROM_PROJECT (state, params){
-	// 	let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
-	// 	if (projectIdx > -1) {
-	// 		let username = state.projects[projectIdx].users[params.user_idx].name
-	// 		state.projects[projectIdx].users.splice(params.user_idx,1);
-	// 		state.projects[projectIdx].notifications.push({
-	// 			origin_name: params.origin_name,
-	// 			event_type: 'mutation',
-	// 			mutation_type: 'ADD_USER',
-	// 			comment: username+" has been removed from the project",
-	// 			post_date: new Date()
-	// 		})
-	// 		state.projects[projectIdx].last_event = new Date();
-	// 	}
-	// },
+	TOGGLE_PROJECT_USER_ADMIN (state, params){
+		let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
+		if (projectIdx > -1) {
+			state.projects[projectIdx].users[params.user_idx].is_admin = !state.projects[projectIdx].users[params.user_idx].is_admin
+			let comment = state.projects[projectIdx].users[params.user_idx].name
+			let mutation_type = (state.projects[projectIdx].users[params.user_idx].is_admin) ? "PROMOTE_ADMIN" : "DEMOTE_ADMIN"
+			state.projects[projectIdx].notifications.push({
+				origin_name: params.origin_name,
+				event_type: 'mutation',
+				mutation_type: mutation_type,
+				comment: comment,
+				post_date: new Date()
+			})
+			state.projects[projectIdx].last_event = new Date();
+		}
+	},
+	ADD_USER_TO_PROJECT (state, params){
+
+		let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
+		if (projectIdx > -1) {
+			state.projects[projectIdx].users.push(params.user);
+			state.projects[projectIdx].notifications.push({
+				origin_name: params.origin_name,
+				event_type: 'mutation',
+				mutation_type: 'ADD_USER',
+				comment: params.user.name+" has been added to the project",
+				post_date: new Date()
+			})
+			state.projects[projectIdx].last_event = new Date();
+		}
+	},
+	REMOVE_USER_FROM_PROJECT (state, params){
+		let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
+		if (projectIdx > -1) {
+			let username = state.projects[projectIdx].users[params.user_idx].name
+			state.projects[projectIdx].users.splice(params.user_idx,1);
+			state.projects[projectIdx].notifications.push({
+				origin_name: params.origin_name,
+				event_type: 'mutation',
+				mutation_type: 'ADD_USER',
+				comment: username+" has been removed from the project",
+				post_date: new Date()
+			})
+			state.projects[projectIdx].last_event = new Date();
+		}
+	},
+	
 	// SET_COMMENT (state, params){
 	// 	let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
 	// 	if (params.post_date){

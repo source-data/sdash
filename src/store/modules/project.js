@@ -65,41 +65,47 @@ const actions = {
 		})
 	},
 
-	toggleProjectUserAdmin ( { commit, state }, params){	
+	toggleProjectUserAdmin ( { commit, state, dispatch }, params){	
 		let userIdx = _.findIndex(state.project.users, u => +u.id === params.user.id)
 		if (userIdx > -1) {
 			if (params.user.is_admin){
-				return HTTP.put("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
-					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+				return HTTP.delete("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
+					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx, origin_name: params.origin_name})
+					dispatch('getProjectComments',{type: 'comments'})
 					return response.data
 				})				
 			}
 			else{
-				return HTTP.delete("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
-					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx})
+				return HTTP.put("/projects/"+params.project_id+"/users/"+params.user.id+"/admin").then(function(response){		
+					commit("TOGGLE_PROJECT_USER_ADMIN", {project_id: params.project_id, user_idx: userIdx, origin_name: params.origin_name})
+					dispatch('getProjectComments',{type: 'comments'})
 					return response.data
 				})				
 			}
 		}
+		else console.error(params.user.id+" is unkown")
 	},
 
-	addUserToProject ({ commit, rootState, state }, params){
+	addUserToProject ({ commit, dispatch, state }, params){
 		let userIdx = _.findIndex(state.project.users, u => u.email === params.email)
 		if (userIdx > -1){ console.info("User already in the project"); return; }
 
 		return HTTP.put("/projects/"+state.project.project_id+"/users/",params).then(function(response){		
-			commit("ADD_USER_TO_PROJECT", response.data)
+			response.data.is_admin = false
+			commit("ADD_USER_TO_PROJECT", {user: response.data, project_id: state.project.project_id})
+			dispatch('getProject',{project_id: state.project.project_id})
 			return response.data
 		})		
 	},
 
-	removeUserFromProject ({ commit, state }, params){
+	removeUserFromProject ({ commit, state, dispatch }, params){
 		if (state.project.users.length === 1) { console.info("Sorry, you cannot delete the last member of the project"); return; }
 		let idx = _.findIndex(state.project.users, u => +u.id === +params.id);
 		if (idx === -1) { console.info("Sorry, the user is not in the project"); return; }
 
 		return HTTP.delete("/projects/"+params.project_id+"/users/"+params.id).then(function(response){		
 			commit("REMOVE_USER_FROM_PROJECT",{project_id: params.project_id, user_idx: idx})
+			dispatch('getProjectComments',{type: 'comments'})
 			return response.data
 		})				
 	},
@@ -156,11 +162,6 @@ const mutations = {
 	SET_PROJECT (state, project){
 		state.project = project
 	},
-	ADD_USER_TO_PROJECT (state, user){
-		if (user){
-			state.project.users.push(user);
-		}
-	},
 	REMOVE_FIGURE_FROM_PROJECT(state,idx){
 		if (idx)
 			state.project.figures.splice(idx,1);
@@ -169,9 +170,6 @@ const mutations = {
 		_.forEach(project, (v,k) => {
 			if (state.project[k] !== undefined && k !== 'origin_name') state.project[k] = v;
 		})
-	},
-	TOGGLE_PROJECT_USER_ADMIN (state, params){
-		state.project.users[params.user_idx].is_admin = !state.project.users[params.user_idx].is_admin
 	},
 	SET_NOTIFICATIONS (state, notifications) {
 		state.notifications = notifications
@@ -207,6 +205,7 @@ const mutations = {
 	DELETE_COMMENT (state, params) {
 		_.remove(state.project.notifications, n => n.note_id === params.note_id)
 	}
+	
 	
 }
 

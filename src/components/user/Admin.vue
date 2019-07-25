@@ -8,9 +8,6 @@
 			</ul>
 
 			<div v-if="nav=='user'"><user-list from='admin'></user-list></div>
-			<div v-if="nav=='group'"><group-list from='admin'></group-list></div>
-
-
 		</div>
 	</div>
 </template>

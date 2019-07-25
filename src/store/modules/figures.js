@@ -57,7 +57,8 @@ const actions = {
 				}
 			} else if (filterName.indexOf('created') === -1 && filterName.indexOf('modified') === -1) {
 				if (value) {
-					requestParams += '&' + filterName + '=' + value + '*'
+					if (value.indexOf('*') === -1) { requestParams += '&' + filterName + '=*' + value + '*' }
+					else { requestParams += '&' + filterName + '=' + value  }
 				}
 			}
 		})
@@ -292,7 +293,13 @@ const mutations = {
 
 	ADD_FIGURE (state, figure){
 		figure._showDetails = false; figure.is_selected = false; figure.view = 'panels';
-		state.figures.push(figure)
+		state.figures.unshift(figure)
+		let flag = {
+			is_selected: false,
+			show_details: false,
+			comment: ''
+		}
+		state.flags[figure.figure_id] = flag;
 	},
 	RESET_STATE (state) {
 		Object.assign(state, getDefaultState())

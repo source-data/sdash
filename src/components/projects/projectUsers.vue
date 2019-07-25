@@ -120,17 +120,14 @@ export default {
 			deep: true
 		}
 	},
-	created () {
-
-	},
 	methods: {
 		toggleAdmin (user) {
 			if (this.user.user_id === user.id && !this.confirmResetAdmin) {
 				this.confirmResetAdmin = user.name
 				return
 			}
-			user.is_admin = !user.is_admin
-			this.$store.dispatch('toggleProjectUserAdmin', {project_id: this.project.project_id, user: user}).then(() => {
+			this.$store.dispatch('toggleProjectUserAdmin', {project_id: this.project.project_id, user: user, origin_name: this.user.fullname}).then(() => {
+				this.$store.dispatch('getProject', { project_id: this.project.project_id })
 				let message = (user.is_admin) ? this.$t('usersettoadmin') : this.$t('usernotsettoadmin')
 				this.$snotify.success(message)
 			})

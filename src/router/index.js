@@ -18,10 +18,13 @@ import AccountActivation from '@/components/user/AccountActivation'
 import forgetPassword from '@/components/user/forgetPassword'
 import SetNewPassword from '@/components/user/setNewPassword'
 
+import { publicPath } from '@/app_config'
+
 Vue.use(Router)
 
 const router = new Router({
 	mode: 'history',
+	base: publicPath,
 	routes: [{
 		path: '/',
 		// redirect: '/'

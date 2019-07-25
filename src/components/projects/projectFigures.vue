@@ -11,6 +11,7 @@
           <p  v-for="(p,idx) in formattedProjectDescription"  :key="idx"  class="py-0 my-0"  :class="(idx)?'pl-3':''"> {{ p }} </p>
         </div>
       </div>
+			<h6 v-if="project.url" class = "mt-3"><b>URL: </b><a :href="project.url" target="_blank" class="pl-1">{{project.url}}</a></h6>
     </div>
     <figures :project="project" />
   </div>

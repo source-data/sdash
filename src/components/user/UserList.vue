@@ -18,7 +18,6 @@
 							<tr>
 								<th class="pointer" v-on:click="sortBy('lastname')"> User <sort-icon :sorter='table_sorter' ccas='lastname'></sort-icon> </th>
 								<th class="pointer" v-on:click="sortBy('email')"> Email <sort-icon :sorter='table_sorter' ccas='email'></sort-icon> </th>
-								<th>Phone</th>
 								<th class="pointer" v-on:click="sortBy('role')"> Role <sort-icon :sorter='table_sorter' ccas='role'></sort-icon> </th>
 								<th>Active</th>
 							</tr>
@@ -27,7 +26,6 @@
 							<tr v-for="user in filteredUsers" :key='user.user_id'>
 								<td><router-link :to="{name: 'user', params: {user_id: user.user_id}}"><span class="uppercase">{{user.lastname}}</span> {{user.firstname}}</router-link></td>
 								<td><a v-bind:href=" `mailto:${user.email}` ">{{user.email}}</a></td>
-								<td>{{user.phone}}</td>
 								<td>{{user.role}}</td>
 								<td><v-icon v-if="user.is_active=='N'" name="ban" style="fill:red"></v-icon><v-icon v-else name="check-circle" style="fill:green"></v-icon></td>
 							</tr>
@@ -50,7 +48,7 @@ export default {
 			users:[],
 			table_filter:null,
 			table_sorter:{cas:'name',order:'asc'},
-			filtered_fields:['firstname','lastname','email','phone','role']
+			filtered_fields:['firstname','lastname','email','role']
 		}
 	},
 	props:['from'],
@@ -87,12 +85,12 @@ export default {
 	},
 
 	beforeRouteEnter(to, from, next) {
-		HTTP.get('/user').then(res => {
+		HTTP.get('/users').then(res => {
 			next(vm => vm.setUsers(res.data));
 		});
 	},
 	mounted() {
-		HTTP.get('/user').then(res => {
+		HTTP.get('/users').then(res => {
 			this.users = res.data;
 		});
 	}

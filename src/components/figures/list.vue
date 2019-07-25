@@ -326,11 +326,6 @@
 				{{ $t('nofigure') }}
 			</div>
 		</div>
-		<div  v-if="figures.length===0"  style="text-align:center;"  class="card">
-			<div class="card-body">
-				{{ $t('nofigure') }}
-			</div>
-		</div>
 
 		<!-- Modal Component -->
 		<b-modal id="modalNewProject" title="New project" size="xl" :hide-footer="true" @hide="newProjectCreated" v-if="!project.project_id">
@@ -383,16 +378,15 @@ export default {
 				{
 					key: 'owner',
 					label: 'owner',
-					thClass: 'text-left capitalize',
-					tdClass: 'owner',
+					thClass: 'd-none d-md-table-cell d-lg-table-cell capitalize',
+					tdClass: 'd-none d-md-table-cell d-lg-table-cell',
 					sortable: true
 				},
 				{
 					key: 'filename',
 					label: 'file name',
 					sortable: true,
-					thClass: 'd-none d-md-table-cell d-lg-table-cell capitalize',
-					tdClass: 'd-none d-md-table-cell d-lg-table-cell'
+					class: 'breakword'
 				},
 				{
 					key: 'title',
@@ -430,7 +424,7 @@ export default {
 					sortable: true
 				}
 			],
-			sortBy: 'create_date',
+			sortBy: 'modified_date',
 			sortDesc: true,
 			limit: 15,
 			// optionsNbPages: [5, 10, 25, 50, 100],
@@ -535,15 +529,18 @@ export default {
 			},
 			deep: true
 		},
-		// filters: {
-		// 	handler: function (filters) {
-		// 		if (this.filterTimeout) {
-		// 			clearTimeout(this.filterTimeout)
-		// 		}
-		// 		this.filterTimeout = setTimeout(() => this.searchOnline(filters), 300)
-		// 	},
-		// 	deep: true
-		// },
+		filters: {
+			handler: function (filters) {
+				let vm = this
+				if (vm.filterTimeout) {
+					clearTimeout(vm.filterTimeout)
+				}
+				vm.filterTimeout = setTimeout(() => vm.$store.dispatch('getFigures', { pageNb: this.pageNb, filters: this.filters, sortBy: this.sortBy, sortDesc: this.sortDesc, limit: this.limit, resetDisplay: true })
+					.then(() => { setTimeout(() => this.setLoading(false), 300); })
+					.catch(function(err){ vm.$snotify.error(err) }), 300)
+			},
+			deep: true
+		},
 		showFilters: {
 			handler: function (showFilters) {
 				if (!showFilters) {
@@ -852,5 +849,8 @@ div.listContainer{
   .sticky + .content {
     padding-top: 70px;
   }
+  .breakword {
+		word-break: break-word;
+	}
 
 </style>
