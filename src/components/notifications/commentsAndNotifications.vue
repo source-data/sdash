@@ -8,7 +8,7 @@
 		"removed": "removed",
 		"thefigure": "the figure",
 		"thefigures": "the figures",
-		"hasadd": "has added",
+		"hasadd": "has add",
 		"hasgranted": "has granted",
 		"hasremoved": "has removed",
 		"adminrights": "admin rights",
@@ -154,6 +154,7 @@ export default {
 	data () {
 		return {
 			newComment: {
+				note_id: null,
 				comment: '',
 				to_user: '',
 				post_date: null
@@ -190,60 +191,66 @@ export default {
 		addComment () {
 			let vm = this;
 			if (this.newComment.comment.length > 2 || this.newComment.post_date) {
-				if (this.newComment.comment.indexOf('@') > -1) {
-					if (this.users.length) { // project
-						_.forEach(this.users, user => {
-							if (this.newComment.comment.indexOf(user.user_name) > -1) {
-								this.newComment.to_user = user.user_name
-								this.newComment.comment = this.newComment.comment.replace('@' + user.user_name, '').trim()
-							}
-						})
-					} else {
-						let atIdx = this.newComment.comment.indexOf('@')
-						let end = this.newComment.comment.substr(atIdx).length
-						let match = this.newComment.comment.substr(atIdx).match(/\s/)
-						if (match) end = match.index
-						this.newComment.to_user = this.newComment.comment.substr(atIdx + 1, end - 1)
-						this.$store.dispatch('checkUser', this.newComment.to_user).then(res => {
-							if (res) {
-								this.newComment.comment = this.newComment.comment.replace('@' + this.newComment.to_user, '').trim()
-								this.newComment.to_user = res
-							} else {
-								this.newComment.to_user = ''
-							}
+				if (this.scope === 'project') {
+					
+					if (this.newComment.comment.trim().length === 0) {
+						this.$store.dispatch('deleteProjectComment',{note_id: this.newComment.note_id}).then( () => {
+							this.$snotify.success(this.$t('commentdeletesuccess'))
+							this.newComment.comment = ''
+							this.newComment.to_user = ''
+							this.newComment.post_date = ''
+							this.newComment.note_id = ''
+						}).catch(err => {
+							this.$snotify.error(err)
 						})
 					}
-				}
-				if (this.scope === 'project') {
-					this.$store.dispatch('postProjectComment', {comment: vm.newComment.comment, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date}).then(() => {
-						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
-						else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
-						else this.$snotify.success(this.$t('commentpostsuccess'))
-						this.newComment.comment = ''
-						this.newComment.to_user = ''
-						this.newComment.post_date = ''
-					}).catch(res => {
-						this.$snotify.error(this.$t('sorryerror') + ': ' + res)
-						this.newComment.comment = ''
-						this.newComment.to_user = ''
-						this.newComment.post_date = ''
-					})
+					else {
+						this.$store.dispatch('postProjectComment', {comment: vm.newComment.comment, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date, note_id: vm.newComment.note_id}).then(() => {
+							if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
+							else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
+							else this.$snotify.success(this.$t('commentpostsuccess'))
+							this.newComment.comment = ''
+							this.newComment.to_user = ''
+							this.newComment.post_date = ''
+							this.newComment.note_id = ''
+						}).catch(res => {
+							this.$snotify.error(this.$t('sorryerror') + ': ' + res)
+							this.newComment.comment = ''
+							this.newComment.to_user = ''
+							this.newComment.post_date = ''
+							this.newComment.note_id = ''
+						})						
+					}
 				}
 				else if (this.scope === 'figures') {
-					this.$store.dispatch('postFigureComment', { id: this.id, comment: vm.newComment.comment,note_id: vm.newComment.note_id, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date }).then(() => {
-						if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
-						else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
-						else this.$snotify.success(this.$t('commentpostsuccess'))
-						this.newComment.comment = ''
-						this.newComment.to_user = ''
-						this.newComment.post_date = ''							
-						this.newComment.note_id = ''							
-					}).catch(res => {
-						this.$snotify.error(this.$t('sorryerror') + ': ' + res)
-						this.newComment.comment = ''
-						this.newComment.note_id = ''							
-						this.newComment.to_user = ''
-					})
+					if (this.newComment.comment.trim().length === 0) {
+						this.$store.dispatch('deleteFigureComment',{figure_id: this.id, note_id: this.newComment.note_id}).then( () => {
+							this.$snotify.success(this.$t('commentdeletesuccess'))
+							this.newComment.comment = ''
+							this.newComment.to_user = ''
+							this.newComment.post_date = ''
+							this.newComment.note_id = ''
+							
+						}).catch(err => {
+							this.$snotify.error(err)
+						})
+					}
+					else {
+						this.$store.dispatch('postFigureComment', { id: this.id, comment: vm.newComment.comment,note_id: vm.newComment.note_id, to_user: vm.newComment.to_user, origin_name: vm.user.fullname, post_date: vm.newComment.post_date }).then(() => {
+							if (!vm.newComment.comment) this.$snotify.success(this.$t('commentdeletesuccess'))
+							else if (vm.newComment.post_date) this.$snotify.success(this.$t('commentupdatesuccess'))
+							else this.$snotify.success(this.$t('commentpostsuccess'))
+							this.newComment.comment = ''
+							this.newComment.to_user = ''
+							this.newComment.post_date = ''							
+							this.newComment.note_id = ''							
+						}).catch(res => {
+							this.$snotify.error(this.$t('sorryerror') + ': ' + res)
+							this.newComment.comment = ''
+							this.newComment.note_id = ''							
+							this.newComment.to_user = ''
+						})						
+					}
 				}
 			}
 		},

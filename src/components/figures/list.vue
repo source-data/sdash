@@ -235,7 +235,7 @@
 					{{ $t(data.label) }}
 				</template>
 
-				<template  slot="HEAD_projects"  slot-scope="data">
+				<template slot="HEAD_projects"  slot-scope="data">
 					<div  v-if="showFilters"  @click.stop="">
 						<input  v-model="filters.projects"  type="search"  class="form-control form-control-sm"  :placeholder="$t('filter')"><br>
 					</div>

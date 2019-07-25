@@ -33,7 +33,6 @@ const state = getDefaultState()
 // getters
 const getters = {
 	figures: state => state.figures
-
 }
 
 // actions
@@ -129,6 +128,18 @@ const actions = {
 			response.data.existing = (params.note_id) ? true : false;
 			commit('SET_FIGURE_COMMENT',response.data)
 		});
+	},
+	deleteFigureComment ({ commit, state, dispatch }, params) {
+		if (!params.note_id || !params.figure_id)  return
+		return new Promise ((resolve, reject) => {
+			HTTP.delete("/figures/"+params.figure_id+"/comments/"+params.note_id).then( () => {
+				commit("DELETE_FIGURE_COMMENT",params)
+				dispatch('getFigureComments',{type: 'comments',id: params.figure_id})
+				resolve(params.note_id)
+			}).catch(err => {
+				reject(err)
+			})
+		})
 	},
 	
 	removeFigureFromProject ({ commit, state }, params){
@@ -316,6 +327,11 @@ const mutations = {
 	},
 	SET_TOTAL (state, value) {
 		state.totalItems = value
+	},
+	DELETE_FIGURE_COMMENT (state, params) {
+		let figureIdx = _.findIndex(state.figures, f => +f.id === +params.figure_id)
+		let nidx = _.findIndex(state.figures[figureIdx].notifications, n => n.note_id === params.note_id);
+		state.figures[figureIdx].notifications.splice(nidx,1)
 	}
 	
 }

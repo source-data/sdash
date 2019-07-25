@@ -10,8 +10,8 @@
 		"projectalreadyexists": "Sorry, the project already exists"
 	},
 	"fr": {
-		"projectname": "nom de l'projet",
-		"projectdescription": "description de l'projet",
+		"projectname": "nom du projet",
+		"projectdescription": "description du projet",
 		"projecturl": "url du projet",
 		"users": "utilisateurs",
 		"create": "créer",
@@ -177,7 +177,7 @@ export default {
 				users: this.project.users
 			}
 			var existing = _.findIndex(this.projects,function(p){return p.name == postValues.name;});
-			if (existing<-1){
+			if (existing>-1){
 				this.$snotify.error(this.$t('projectalreadyexists'))
 				return;	
 			}
