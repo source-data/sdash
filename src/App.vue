@@ -2,6 +2,7 @@
   <div id="app">
     <vue-snotify />
     <nav-header />
+		<account-validation></account-validation>
     <!-- <nav-bar /> -->
 		
     <!-- content -->
@@ -21,10 +22,11 @@
 <script>
 
 import navHeader from '@/components/navheader'
-
+import accountValidation from '@/components/user/Validation'
+	
 export default {
 	name: 'App',
-	components: { navHeader },
+	components: { navHeader,accountValidation },
 	computed: {
 		year () {
 			return new Date().getFullYear()

@@ -24,8 +24,9 @@ const getters = {
 // actions
 const actions = {
 	getAllUsers ({ commit }) {
-		HTTP.get('/users').then(res => {
+		return HTTP.get('/users').then(res => {
 			commit('SET_USERS', res.data)
+			return res.data;
 		});
 	},
 	getUsers ({ state }){

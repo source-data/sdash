@@ -7,7 +7,7 @@ import newProject from '@/components/projects/newProject'
 
 import Login from '@/components/user/login'
 import UserList from '@/components/user/UserList'
-import User from '@/components/user/User'
+import User from '@/components/user/user'
 import Admin from '@/components/user/Admin'
 import store from '@/store'
 

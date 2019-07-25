@@ -5,8 +5,10 @@
 			<h3 style="margin-bottom:20px" v-if="!from">List of users<router-link v-access='"admin"' class="float-right btn btn-sm btn-primary" to="/groups">manage groups</router-link></h3>
 
 			<div class="card">
-				<div class="card-header mb-3"><h6 class="float-left mt-1">Users</h6></div>
-				<div class="card-block">
+				<div class="card-header mb-3">
+					<h6 class="mt-1">Users</h6>
+				</div>
+				<div class="card-block" >
 					<div class="row">
 						<div class="col-sm-4 mb-2 ml-2">
 							<input type="text" name="userlist_filter" id="userlist_filter" v-model="table_filter" class="form-control" placeholder="Global search..." />
@@ -27,7 +29,9 @@
 								<td><router-link :to="{name: 'user', params: {user_id: user.user_id}}"><span class="uppercase">{{user.lastname}}</span> {{user.firstname}}</router-link></td>
 								<td><a v-bind:href=" `mailto:${user.email}` ">{{user.email}}</a></td>
 								<td>{{user.role}}</td>
-								<td><v-icon v-if="user.is_active=='N'" name="ban" style="fill:red"></v-icon><v-icon v-else name="check-circle" style="fill:green"></v-icon></td>
+								<td>
+									<v-icon v-if="user.is_active=='N'" name="ban" style="fill:red"></v-icon><v-icon v-else name="check-circle" style="fill:green"></v-icon>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -39,13 +43,14 @@
 
 <script>
 import {HTTP} from '@/router/http';
+import { mapGetters } from 'vuex';
 import SortIcon from '@/components/globals/sortIcon'
 		
 export default {
 	name : 'UserList',
 	data() {
 		return {
-			users:[],
+			// users:[],
 			table_filter:null,
 			table_sorter:{cas:'name',order:'asc'},
 			filtered_fields:['firstname','lastname','email','role']
@@ -56,9 +61,15 @@ export default {
 		'sort-icon': SortIcon			
 	},
 	computed:{
+		...mapGetters({
+			user: 'currentUser',
+			users: 'allUsers'
+		}),
+		
 		filteredUsers(){
 			var vm = this;
 			var f_users = [];
+			if (!vm.users) return;
 			f_users = _.filter(vm.users,function(u){
 				if (!vm.table_filter){ return true; }
 				else{
@@ -74,6 +85,7 @@ export default {
 		}
 	},
 	methods:{
+
 		setUsers(users){
 			this.users = _.values(Object.assign({}, this.users, users));
 		},
@@ -85,14 +97,16 @@ export default {
 	},
 
 	beforeRouteEnter(to, from, next) {
-		HTTP.get('/users').then(res => {
-			next(vm => vm.setUsers(res.data));
-		});
+		this.$store.dispatch('getAllUsers');
+		// HTTP.get('/users').then(res => {
+		// 	next(vm => vm.setUsers(res.data));
+		// });
 	},
 	mounted() {
-		HTTP.get('/users').then(res => {
-			this.users = res.data;
-		});
+		this.$store.dispatch('getAllUsers');
+		// HTTP.get('/users').then(res => {
+		// 	this.users = res.data;
+		// });
 	}
 }
 </script>
