@@ -14,7 +14,7 @@
 						size="lg"
 						prepend="Search"
 					>
-						<b-form-input></b-form-input>
+						<b-form-input @input="handleSearchBar"></b-form-input>
 					</b-input-group>
 				</b-col>
 			</b-row>
@@ -22,7 +22,7 @@
 		<div class="FigureListGridContainer" >
 			<div class="FigureListGridContainer--inner">
 
-				<figure-list-grid-item v-for="panel in panels" :key="panel.figure_id" :panel="panel" @expanded="handleChildExpansion"></figure-list-grid-item>
+				<figure-list-grid-item v-for="panel in panels" :key="panel.figure_id + '_' + panel.panel_id" :panel="panel" @expanded="handleChildExpansion"></figure-list-grid-item>
 			</div>
 
 		</div>
@@ -34,6 +34,7 @@
 
 <script>
 import moment from 'moment'
+import _ from 'lodash';
 import { mapGetters } from 'vuex'
 import {Bus} from '@/bus'
 import commentsAndNotifications from '@/components/notifications/commentsAndNotifications'
@@ -204,6 +205,15 @@ export default {
 			Bus.$emit("close-panels", obj);
 		},
 
+		handleSearchBar: _.debounce(function (e) {
+
+			let vm = this;
+			vm.filters.title = e;
+			vm.filters.figureLabel = e;
+			vm.getData();
+
+		}, 500),
+
 		scroll () {
 			const _this = this
 
@@ -282,7 +292,8 @@ export default {
     .FigureListGridContainer--inner {
         display:flex;
         flex-wrap:wrap;
-		/* justify-content: space-between; */
+		/* justify-content: space-around;
+		justify-content: space-between;*/
 		justify-content: flex-start;
         width:100%;
         max-width: 1600px;

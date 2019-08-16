@@ -10,7 +10,13 @@ const state = {
 		jwt: null,
 		permissions: null,
 		role: null,
-		validator: null
+		validator: null,
+		projects: null,
+		institution_name: null,
+		department_name: null,
+		institution_address: null,
+		profile_picture_filename: null,
+		profile_picture: null,
 	}
 
 }
@@ -35,10 +41,10 @@ const actions = {
 		return HTTP.get('/check_user',{params:{mail:user.email}}).then(res => {
 			return res.data;
 			// if (res.data)
-				
+
 			// commit('SET_USERS', res.data)
 		});
-		
+
 		// let email = user.email.substr(0,user.email.indexOf('@')).concat('@email.com')
 		// return new Promise((resolve, reject) => {
 		// 	let user = _.filter(state.users, u => u.email === email);
@@ -52,7 +58,7 @@ const actions = {
 		// 	}
 		// })
 	},
-		
+
 	register ({ commit },user){
 		return new Promise((resolve, reject) => {
 			HTTP.post('user',user).then(res => {
@@ -66,7 +72,13 @@ const actions = {
 					jwt: userData.jwt,
 					permissions: userData.permissions,
 					role: userData.role,
-					validator: userData.validator
+					validator: userData.validator,
+					projects: userData.projects,
+					institution_name: userData.institution_name,
+					department_name: userData.department_name,
+					institution_address: userData.institution_address,
+					profile_picture_filename: userData.profile_picture_filename,
+					profile_picture: userData.profile_picture,
 				}
 				commit("LOGIN",loggedUser);
 				resolve(loggedUser);
@@ -79,10 +91,10 @@ const actions = {
 			// HTTP.get('/test', user)
 			HTTP.post('/authenticate', user)
 				.then(function(res){
-				
-					var userData = res.data;
-				
-					// google authenticator // 
+
+					var userData = res.data; console.log(userData);
+
+					// google authenticator //
 					var loggedUser;
 					var authdata = userData.code;
 					HTTP.defaults.headers.common['authorization'] = 'Bearer '+userData.jwt;
@@ -93,7 +105,13 @@ const actions = {
 						authdata: authdata,
 						jwt: userData.jwt,
 						permissions: userData.permissions,
-						role: userData.role
+						role: userData.role,
+						projects: userData.projects,
+						institution_name: userData.institution_name,
+						department_name: userData.department_name,
+						institution_address: userData.institution_address,
+						profile_picture_filename: userData.profile_picture_filename,
+						profile_picture: userData.profile_picture,
 					};
 					localStorage.setItem('currentUser',JSON.stringify(loggedUser));
 					commit('LOGIN',loggedUser);

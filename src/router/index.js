@@ -8,6 +8,7 @@ import newProject from '@/components/projects/newProject'
 
 import Login from '@/components/user/login'
 import UserList from '@/components/user/UserList'
+import UserProfile from '@/components/user/UserProfile'
 import User from '@/components/user/user'
 import Admin from '@/components/user/Admin'
 import store from '@/store'
@@ -72,6 +73,13 @@ const router = new Router({
 		component: Login
 	},
 	{
+		path: '/user',
+		name: 'profile',
+		component: UserProfile,
+		beforeEnter: requireAuth,
+		meta: {permissions: 'active',condition: 'any'}
+	},
+	{
 		path: '/users',
 		name: 'users',
 		component: UserList,
@@ -131,7 +139,7 @@ const router = new Router({
 		name: 'forgetPassword',
 		component: forgetPassword
 	},
-	
+
 	{
 		path: '*',
 		redirect: '/login'
@@ -152,7 +160,7 @@ function requireAuth (to, from, next) {
 				query: { redirect: to.fullPath }
 			})
 		} else {
-			
+
 			if (to.matched.some(record => record.meta.permissions.length > 0)) {
 				store.dispatch('checkPermissions', { permissions: to.meta.permissions, condition: to.meta.condition }).then(res => {
 					if (res) {

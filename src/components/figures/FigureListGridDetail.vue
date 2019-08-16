@@ -16,6 +16,9 @@
                 <table class="list-grid--metadata-table">
                     <tr v-if="panel.figure.projects.length > 0"><td>Part of projects</td><td><a :href="createProjectUrl(proj)" class="panel-projects" v-for="(proj, index) in panel.figure.projects" :key="index">{{getProjectNameById(proj)}}</a></td></tr>
                     <tr><td>Creation date</td><td>{{ panel.figure.create_date }}</td></tr>
+                    <tr v-if="interventions.length > 0"><td>Interventions:</td><td><span class="sd-tag intervention-tag" v-for="intervention in interventions" :key="intervention.panel_id + '_' + intervention.tag_id">{{intervention.kwd}}</span></td></tr>
+                    <tr v-if="assays.length > 0"><td>Assays:</td><td><span class="sd-tag assay-tag" v-for="assay in assays" :key="assay.panel_id + '_' + assay.tag_id">{{assay.kwd}}</span></td></tr>
+                    <tr v-if="components.length > 0"><td>Components:</td><td><span class="sd-tag component-tag" v-for="component in components" :key="component.panel_id + '_' + component.tag_id">{{component.kwd}}</span></td></tr>
                     <tr><td>Resource type</td><td>{{ panel.graphic.mimetype }}</td></tr>
                     <tr><td>File format</td><td>{{ panel.graphic["mime-subtype"] }}</td></tr>
                 </table>
@@ -58,7 +61,16 @@ export default {
         },
         ...mapGetters({
 			projects: 'projects',
-		})
+		}),
+        assays() {
+            return this.panel["kwd-group"].filter(item => item.label == "assayed")
+        },
+        interventions() {
+            return this.panel["kwd-group"].filter(item => item.label == "intervention")
+        },
+        components() {
+            return this.panel["kwd-group"].filter(item => item.label == "component")
+        },
 
     },
 
@@ -165,6 +177,24 @@ export default {
     .list-grid--metadata-table td:first-child {
         padding-right:6px;
         color: #cb84ec;
+
+    }
+
+    .sd-tag {
+        color: #fff;
+        padding: 3px 6px;
+        border-radius: 6px;
+        background-color: #6b6b6b;
+        margin-right: 3px;
+    }
+
+    .intervention-tag {
+        background-color: #da4848;
+
+    }
+
+    .assay-tag {
+        background-color: #6485ff;
 
     }
 
