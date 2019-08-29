@@ -30,7 +30,7 @@ const router = new Router({
 	routes: [{
 		path: '/',
 		// redirect: '/'
-		redirect: '/figures'
+		redirect: '/panels'
 	},
 	{
 		path: '/figures',
