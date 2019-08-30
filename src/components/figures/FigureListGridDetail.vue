@@ -28,6 +28,11 @@
             <ul>
                 <li>({{ panel.figure.create_date }}) - Version 1 created by {{ panel.figure.owner }}</li>
             </ul></b-card-text></b-tab>
+            <b-tab title="Data Attachments">
+                <b-card-text>
+                </b-card-text>
+                    <PanelAttachments :panel="panel"/>
+            </b-tab>
         </b-tabs>
     </div>
 </template>
@@ -35,6 +40,7 @@
 <script>
 
 import SlimComments from '@/components/notifications/SlimComments'
+import PanelAttachments from '@/components/figures/PanelAttachments'
 import { mapGetters } from 'vuex'
 import {Bus} from '@/bus'
 
@@ -44,7 +50,7 @@ export default {
     name: 'FigureListGridDetail',
     components: {
         SlimComments,
-
+        PanelAttachments,
     },
     data () {
         return {
@@ -77,6 +83,7 @@ export default {
     methods:{ //run as event handlers, for example
 
         editCaption () {
+            debugger
             this.editingCaption = true;
             this.newCaption = this.panel.caption;
         },
