@@ -30,9 +30,9 @@ export default {
 	computed: {
 		attachments () {
 			return [
-				{ id: 1, filename: 'data.xlsx', description: 'raw data', created_at: Date.now() },
-				{ id: 2, filename: 'processed.csv', description: 'pre processed data with the python script', created_at: Date.now() },
-				{ id: 3, filename: 'process.py', description: 'python script to process data', created_at: Date.now() },
+				{ id: 1, panel_id: 'xxx', filename: 'data.xlsx', description: 'raw data', created_at: Date.now() },
+				{ id: 2, panel_id: 'xxx', filename: 'processed.csv', description: 'pre processed data with the python script', created_at: Date.now() },
+				{ id: 3, panel_id: 'xxx', filename: 'process.py', description: 'python script to process data', created_at: Date.now() },
 			]
 		}
 	},
