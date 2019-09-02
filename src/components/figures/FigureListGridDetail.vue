@@ -96,24 +96,28 @@
 					</ul>
 				</b-card-text>
 			</b-tab>
+            <b-tab title="Data Attachments">
+                <b-card-text>
+                </b-card-text>
+                    <PanelAttachments :panel="panel"/>
+            </b-tab>
 		</b-tabs>
 	</div>
 </template>
 
 <script>
 import SlimComments from "@/components/notifications/SlimComments";
+import PanelAttachments from '@/components/figures/PanelAttachments'
 import { mapGetters } from "vuex";
 import { Bus } from "@/bus";
 import Vue from "vue";
 import xml2js from "xml2js";
 
-//Vue.use(xml2json);
-
-
 export default {
 	name: "FigureListGridDetail",
 	components: {
-		SlimComments
+		SlimComments,
+		PanelAttachments,
 	},
 	data() {
 		return {
@@ -206,7 +210,7 @@ export default {
 				for(let key in labels){
 					labels[key].forEach(label => {
 						kwd_group.push({
-							label: key.toLowerCase(), 
+							label: key.toLowerCase(),
 							kwd: label,
 							tag_id: Math.random(),
 							panel_id: this.panel.id
