@@ -14,18 +14,21 @@
 			</tr>
 		</table>
 		<AttachmentUpload :panel="panel" />
+		<AttachmentByUrl :panel="panel" />
 	</div>
 </template>
 
 <script>
 
 import AttachmentUpload from './upload'
+import AttachmentByUrl from './by_url'
 
 export default {
 	name: 'DataAttachments',
 	props: ["panel"],
 	components: {
-		AttachmentUpload
+		AttachmentUpload,
+		AttachmentByUrl,
 	},
 	computed: {
 		attachments () {
