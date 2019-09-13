@@ -18,7 +18,6 @@
 							<div class='col-3'><small v-show="errors.has('firstname')">{{ errors.first('firstname') }}</small></div>
 						</div>
 
-
 						<div class="form-group row" v-bind:class="{ 'has-error': errors.has('lastname') }">
 							<div class="col-3"> <label class="float-right" for="lastname">Last name</label> </div>
 							<div class='col-6'><input v-validate="'required'" type="text" name="lastname" id="lastname" class="form-control" v-model="user.lastname"/></div>
@@ -35,8 +34,8 @@
 							<div class="col-3"> <label class="float-right" for="password2">Password</label> </div>
 							<div class='col-9'><button class="btn btn-info" type="button" @click="resetPassword()">Reset password</button></div>
 						</div>
-						
-						<div v-if="user.user_id == currentUser.user_id">							
+
+						<div v-if="user.user_id == currentUser.user_id">
 							<div class="form-group row" v-bind:class="{ 'has-error': errors.has('password') }">
 								<div class="col-3"> <label class="float-right" for="password">Password</label> </div>
 								<div class='col-6'><input v-validate='{required:false,min:8,regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/}' type="password" name="password" id="password" class="form-control" ref="password" v-model="user.password"/></div>
@@ -47,7 +46,7 @@
 									</small>
 								</div>
 							</div>
-						
+
 							<div class="form-group row" v-bind:class="{ 'has-error': errors.has('password2') }">
 								<div class="col-3"> <label class="float-right" for="password2">Confirm password</label> </div>
 								<div class='col-6'><input v-validate="'required|confirmed:password'" type="password" name="password2" id="password2" class="form-control" v-model="user.password2" data-vv-as='password'/></div>
@@ -113,9 +112,9 @@ export default {
 			HTTP.post('/resetpass',{email:vm.user.email}).then( () => {
 				vm.$snotify.success('reset password successfully');
 			});
-				
+
 		},
-			
+
 		updateUser:function(){
 			var vm = this;
 			vm.$validator.validateAll().then((result) => {

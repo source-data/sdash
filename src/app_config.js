@@ -1,7 +1,7 @@
 module.exports = {
 	serverURL:  process.env.NODE_ENV === 'production'
 		? '/api/index.php'
-		: 'http://sdash/api/index.php',
+		: 'http://34.238.29.0/api/index.php',
 	publicPath: process.env.NODE_ENV === 'production'
 		? '/'
 		: '/',

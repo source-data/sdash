@@ -26,6 +26,12 @@
 						<div class='col-sm-3'><small v-if='errors.has("lastname")'>{{ errors.first('lastname') }}</small></div>
 					</div>
 
+					<div class="form-group row" :class="{'has-error': errors.has('institution_name') }">
+						<div class="col-sm-3"><label class="float-right" for="institution_name">Insitution Name</label> </div>
+						<div class='col-sm-6'><input type="text" name="institution_name" id="institution_name" class="form-control" v-model="user.institution_name" v-validate="'required'"/> </div>
+						<div class='col-sm-3'><small v-if='errors.has("institution_name")'>{{ errors.first('institution_name') }}</small></div>
+					</div>
+
 					<div class="form-group row" :class="{'has-error': errors.has('email') }">
 						<div class="col-sm-3"> <label class="float-right" for="email">Email</label> </div>
 						<div class='col-sm-6'> <input type="text" name="email" id="email" class="form-control" v-model="user.email" v-validate='"required|email"'/> </div>
@@ -35,7 +41,7 @@
 
 					<div class="form-group row" :class="{'has-error': errors.has('password') }">
 						<label class='col-sm-3 col-form-label text-right' for="password">Password</label>
-						
+
 						<div class='col-sm-6'><input type="password" name="password" id="password" class="form-control" v-model="user.password" v-validate='{required:true,min:8,regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/}' ref="password"/></div>
 						<div class='col-sm-3' v-if='errors.has("password")'>
 							<small v-if="errors.first('password')=='The password field format is invalid.'">Password must contain at least one numerical, lowercase and uppercase character</small>
@@ -77,6 +83,7 @@ export default {
 				login: '',
 				firstname: '',
 				lastname: '',
+				institution_name: '',
 				email: '',
 				password: '',
 				password2: ''
@@ -90,7 +97,7 @@ export default {
 			this.$validator.validateAll().then((result) => {
 				if (result){
 					vm.$store.dispatch('register',vm.user).then(() => {
-						vm.$snotify.success('Account created in successfully');
+						vm.$snotify.success('Account created successfully');
 						vm.$router.push('/validationrequired')
 
 					}).catch((err) => {

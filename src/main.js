@@ -18,6 +18,7 @@ import messages from '@/lang/messages'
 import VeeValidate from 'vee-validate'
 import ToggleButton from 'vue-js-toggle-button'
 import VueClip from 'vue-clip'
+import VueScrollTo from 'vue-scrollto'
 
 Vue.use(VueClip)
  
@@ -41,6 +42,7 @@ Vue.use(BootstrapVue)
 Vue.use(VueI18n)
 Vue.use(lodash)
 Vue.use(VeeValidate, veeconfig);
+Vue.use(VueScrollTo);
 Vue.component('v-icon', Icon)
 Vue.directive('access', Access)
 

@@ -32,20 +32,20 @@ const getters = {
 // actions
 const actions = {
 	getProjects ({ commit, state }, params) {
-		return HTTP.get('projects',{params:params}).then(function(response){			
+		return HTTP.get('projects',{params:params}).then(function(response){
 			commit('SET_PROJECTS',response.data)
 		})
 	},
 	createProject ({ commit, state, rootState }, project) {
-		return HTTP.post('projects',project).then(function(response){		
+		return HTTP.post('projects',project).then(function(response){
 			commit('CREATE_PROJECT',response.data)
 			return response.data
 		})
 	},
-		
+
 	putFiguresInProject ({ commit, state, rootState }, params) {
 		// let figureIds = _.map(params.figures, f => f.id).join(',');
-		return HTTP.put('figure/'+params.figure_id+"/projects/"+params.project_id).then(function(response){		
+		return HTTP.put('figure/'+params.figure_id+"/projects/"+params.project_id).then(function(response){
 			commit('PUT_FIGURES_IN_PROJECT',response.data)
 			return response.data
 		})
@@ -191,7 +191,7 @@ const mutations = {
 			state.projects[projectIdx].last_event = new Date();
 		}
 	},
-	
+
 	// SET_COMMENT (state, params){
 	// 	let projectIdx = _.findIndex(state.projects, p => +p.project_id === +params.project_id)
 	// 	if (params.post_date){
@@ -219,7 +219,7 @@ const mutations = {
 	RESET_STATE (state) {
 		Object.assign(state, getDefaultState())
 	}
-		
+
 }
 
 export default {

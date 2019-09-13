@@ -1,48 +1,42 @@
-<i18n>
-{
-}
-</i18n>
-
 <template>
   <div>
     <div class="container">
-      <div  v-if="formattedProjectDescription[0] !== ''"  class="card">
+      <div  v-if="formattedProjectDescription[0] !== ''"  class="card project-description">
         <div class="card-body">
           <p  v-for="(p,idx) in formattedProjectDescription"  :key="idx"  class="py-0 my-0"  :class="(idx)?'pl-3':''"> {{ p }} </p>
         </div>
       </div>
       <div class="card my-3">
-		<div class="card-body user-info-cards">
-				<div v-for="user in project.users"  :key="user.user_id"  class="py-0 user-info-container">
-					<b-badge pill class="admin-pill" v-if="user.is_admin">Admin</b-badge>
-					<div class="user-info-container--avatar-container">
-						<user-icon :name="user.name" v-if="!user.profile_picture_filename"></user-icon>
-						<img v-if="user.profile_picture_filename" class="user-info-container--avatar" :src="user.profile_picture" :alt="user.name">
-					</div>
-					<div class="user-info-container--name-container">
-						{{user.name}}
-					</div>
-					<div class="user-info-container--institution-container">
-						{{user.institution_name}}
-					</div>
-				</div>
+        <div class="card-body user-info-cards">
+			<div v-for="user in project.users"  :key="user.user_id"  class="py-0 user-info-container">
+			<b-badge pill class="admin-pill" v-if="user.is_admin">Admin</b-badge>
+			<div class="user-info-container--avatar-container">
+				<user-icon :name="user.name" v-if="!user.profile_picture_filename"></user-icon>
+				<img v-if="user.profile_picture_filename" class="user-info-container--avatar" :src="user.profile_picture" :alt="user.name">
 			</div>
-		</div>
+			<div class="user-info-container--name-container">
+				{{user.name}}
+			</div>
+			<div class="user-info-container--institution-container">
+				{{user.institution_name}}
+			</div>
+			</div>
+        </div>
+      </div>
 			<h6 v-if="project.url" class = "mt-3"><b>URL: </b><a :href="project.url" target="_blank" class="pl-1">{{project.url}}</a></h6>
     </div>
-    <figures :project="project" />
+    <figure-list-grid :project="project" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Figures from '@/components/figures/list.vue'
+import FigureListGrid from '@/components/figures/FigureListGrid.vue'
 import userIcon from '@/components/user/userIcon'
 
-
 export default {
-	name: 'projectFigures',
-	components: { Figures, userIcon },
+	name: 'projectGrid',
+	components: { FigureListGrid, userIcon },
 	data () {
 		return {
 
@@ -109,6 +103,4 @@ export default {
 		right: 16px;
 		background-color: #2eb92e;
 	}
-
-
 </style>

@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Figures from '@/components/figures/list'
+import FigureListGrid from '@/components/figures/FigureListGrid'
 import Projects from '@/components/projects/list'
 import Project from '@/components/projects/project'
 import newProject from '@/components/projects/newProject'
 
 import Login from '@/components/user/login'
 import UserList from '@/components/user/UserList'
+import UserProfile from '@/components/user/UserProfile'
 import User from '@/components/user/user'
 import Admin from '@/components/user/Admin'
 import store from '@/store'
@@ -28,12 +30,19 @@ const router = new Router({
 	routes: [{
 		path: '/',
 		// redirect: '/'
-		redirect: '/figures'
+		redirect: '/panels'
 	},
 	{
 		path: '/figures',
 		name: 'figures',
 		component: Figures,
+		beforeEnter: requireAuth,
+		meta: { permissions: 'active', condition: 'any' }
+	},
+	{
+		path: '/panels',
+		name: 'panels',
+		component: FigureListGrid,
 		beforeEnter: requireAuth,
 		meta: { permissions: 'active', condition: 'any' }
 	},
@@ -62,6 +71,13 @@ const router = new Router({
 		path: '/login',
 		name: 'login',
 		component: Login
+	},
+	{
+		path: '/user',
+		name: 'profile',
+		component: UserProfile,
+		beforeEnter: requireAuth,
+		meta: {permissions: 'active',condition: 'any'}
 	},
 	{
 		path: '/users',
@@ -123,7 +139,7 @@ const router = new Router({
 		name: 'forgetPassword',
 		component: forgetPassword
 	},
-	
+
 	{
 		path: '*',
 		redirect: '/login'
@@ -144,7 +160,7 @@ function requireAuth (to, from, next) {
 				query: { redirect: to.fullPath }
 			})
 		} else {
-			
+
 			if (to.matched.some(record => record.meta.permissions.length > 0)) {
 				store.dispatch('checkPermissions', { permissions: to.meta.permissions, condition: to.meta.condition }).then(res => {
 					if (res) {
