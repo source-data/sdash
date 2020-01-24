@@ -1,86 +1,45 @@
 {
-	"name": "sdash",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"serve": "vue-cli-service serve",
-		"build": "vue-cli-service build",
-		"lint": "vue-cli-service lint"
-	},
-	"dependencies": {
-		"axios": "^0.18.0",
-		"bootstrap-vue": "^2.0.0-rc.19",
-		"jquery": "^3.4.1",
-		"moment": "^2.24.0",
-		"vee-validate": "^2.2.5",
-		"vue": "^2.6.6",
-		"vue-awesome": "^3.5.2",
-		"vue-axios": "^2.1.4",
-		"vue-clip": "^1.0.0",
-		"vue-context": "^3.4.0",
-		"vue-i18n": "^8.11.2",
-		"vue-js-toggle-button": "^1.3.2",
-		"vue-multiselect": "^2.1.6",
-		"vue-router": "^3.0.6",
-		"vue-snotify": "^3.2.1",
-		"vue-spinner": "^1.0.3",
-		"vuejs-datepicker": "^1.5.4",
-		"vuex": "^3.1.0",
-		"vuex-persistedstate": "^2.5.4"
-	},
-	"devDependencies": {
-		"@kazupon/vue-i18n-loader": "^0.3.0",
-		"@vue/cli-plugin-babel": "^3.7.0",
-		"@vue/cli-plugin-eslint": "^3.7.0",
-		"@vue/cli-service": "^3.7.0",
-		"@vue/eslint-config-standard": "^4.0.0",
-		"babel-eslint": "^10.0.1",
-		"eslint": "^5.8.0",
-		"eslint-plugin-lodash": "^5.1.0",
-		"eslint-plugin-vue": "^5.0.0",
-		"vue-template-compiler": "^2.5.21"
-	},
-	"eslintConfig": {
-		"root": true,
-		"env": {
-			"node": true
-		},
-		"extends": [
-			"plugin:vue/essential",
-			"@vue/standard",
-			"eslint:recommended"
-		],
-		"rules": {
-			"no-console": "off",
-			"no-multiple-empty-lines": [
-				2,
-				{
-					"max": 2,
-					"maxEOF": 10000,
-					"maxBOF": 10000
-				}
-			],
-			"indent": [
-				2,
-				"tab"
-			],
-			"no-tabs": 0
-		},
-		"parserOptions": {
-			"parser": "babel-eslint"
-		},
-		"globals": {
-			"_": true
-		}
-	},
-	"postcss": {
-		"plugins": {
-			"autoprefixer": {}
-		}
-	},
-	"browserslist": [
-		"> 1%",
-		"last 2 versions",
-		"not ie <= 8"
-	]
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "devDependencies": {
+        "axios": "^0.19",
+        "bootstrap": "^4.3.1",
+        "cross-env": "^5.1",
+        "jquery": "^3.2",
+        "laravel-mix": "^4.0.7",
+        "lodash": "^4.17.13",
+        "popper.js": "^1.12",
+        "resolve-url-loader": "2.3.1",
+        "sass": "^1.23.0",
+        "sass-loader": "7.*",
+        "vue": "^2.6.10",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^1.2.25",
+        "@fortawesome/free-solid-svg-icons": "^5.11.2",
+        "@fortawesome/vue-fontawesome": "^0.1.7",
+        "@johmun/vue-tags-input": "^2.1.0",
+        "bootstrap-vue": "^2.0.2",
+        "moment": "^2.24.0",
+        "vue-avatar": "^2.1.8",
+        "vue-easy-lightbox": "^0.5.0",
+        "vue-full-screen-file-drop": "^2.0.0",
+        "vue-infinite-loading": "^2.4.4",
+        "vue-js-toggle-button": "^1.3.2",
+        "vue-lazyload": "^1.3.3",
+        "vue-multiselect": "^2.1.6",
+        "vue-router": "^3.1.3",
+        "vue-scrollto": "^2.17.1",
+        "vue-snotify": "^3.2.1",
+        "vuex": "^3.1.1"
+    }
 }
