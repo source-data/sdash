@@ -8,8 +8,9 @@ use App\Models\Image;
 use App\Models\File;
 use \Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\Interfaces\FileRepositoryInterface;
 
-class FileRepository
+class FileRepository implements FileRepositoryInterface
 {
 
     public function storePanelFile(Panel $panel, UploadedFile $file)

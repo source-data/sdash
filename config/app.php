@@ -176,7 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Obiefy\API\APIServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-
+        Intervention\Image\ImageServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
     ],
 
     /*

@@ -3,25 +3,26 @@
 namespace App\Http\Controllers\API;
 
 use API;
-use App\Http\Controllers\Controller;
+use App\User;
 use App\Models\File;
 use App\Models\Panel;
-use App\User;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Repositories\FileRepository;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Auth\Access\AuthorizationException;
+use App\Repositories\Interfaces\FileRepositoryInterface;
 
 class FileController extends Controller
 {
 
     protected $fileRepository;
 
-    public function __construct()
+    public function __construct(FileRepositoryInterface $fileRepository)
     {
-           $this->fileRepository = new FileRepository;
+           $this->fileRepository = $fileRepository;
     }
 
     /**
