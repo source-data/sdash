@@ -2,6 +2,12 @@
 <div>
     <info-bar v-if="currentGroup">
         <template v-slot:above-title>
+            <div v-if="isGroupAdmin" tabindex="0" class="sd-edit-icon sd-group-edit-link">
+                <router-link :to="{path: '/group/' + currentGroup.id + '/edit'}" class="sd-edit-icon sd-group-edit-link">
+                    <font-awesome-icon icon="edit" title="Edit group details" />
+                    Edit group
+                </router-link>
+            </div>
             <group-title-icon></group-title-icon>
         </template>
         <template v-slot:title>
@@ -81,6 +87,7 @@ export default {
             'isLoadingPanels',
             'hasPanels',
             'hasLoadedAllResults',
+            'isGroupAdmin',
             ])
 
     },
@@ -103,7 +110,6 @@ export default {
         }
     },
     created() {
-        console.log(this.$route)
         this.fetchData()
     },
     watch: {
@@ -119,5 +125,11 @@ export default {
         display:flex;
         flex-wrap:wrap;
         justify-content: flex-start;
+    }
+
+    .sd-group-edit-link {
+        font-size: 1rem;
+        padding: 0.5rem 0;
+        color: #459939;
     }
 </style>

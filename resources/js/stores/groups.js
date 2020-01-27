@@ -83,7 +83,8 @@ const mutations = {
     },
     setCurrentGroup(state, group_id){
         state.currentGroup = group_id ? state.userGroups.find((group) => group.id === parseInt(group_id)) : null
-    }
+    },
+
 }
 
 const getters = {
@@ -96,6 +97,9 @@ const getters = {
     },
     currentGroup(state) {
         return state.currentGroup
+    },
+    isGroupAdmin(state, getters, rootState) {
+        return state.currentGroup.confirmed_users.find(user => (user.id === rootState.Users.user.id && user.pivot.role==="admin")) ? true : false
     }
 }
 

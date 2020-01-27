@@ -67,6 +67,8 @@ export default {
 
     },
     mounted() {
+        store.commit("clearLoadedPanels")
+        store.commit("clearSelectedPanels")
         store.commit("setSearchMode", "user")
         store.dispatch("fetchPanelList")
         .then((response) => {
