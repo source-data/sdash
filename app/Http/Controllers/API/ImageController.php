@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Spatie\PdfToImage\Pdf as PdfConverter;
 use App\Repositories\PanelRepository as PanelQuery;
 use Intervention\Image\Facades\Image as ImageService;
+use App\Repositories\Interfaces\ImageRepositoryInterface;
 
 class ImageController extends Controller
 {

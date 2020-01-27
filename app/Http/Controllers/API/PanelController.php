@@ -7,30 +7,32 @@ use App\User;
 use App\Models\Panel;
 use App\Models\Image;
 use App\Models\Group;
+use Obiefy\API\APIResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Repositories\ImageRepository;
+use App\Repositories\PanelRepository;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\PdfToImage\Pdf as PdfConverter;
-use App\Repositories\PanelRepository as PanelQuery;
 use Intervention\Image\Facades\Image as ImageService;
-use Obiefy\API\APIResponse;
+use App\Repositories\Interfaces\PanelRepositoryInterface;
+use App\Repositories\Interfaces\ImageRepositoryInterface;
 
 class PanelController extends Controller
 {
 
-    protected $panelQuery;
+    protected $panelRepository;
     protected $imageRepository;
 
     /**
      * Use the PanelRepository to abstract the complexity of the panel request
      */
-    public function __construct()
+    public function __construct(ImageRepositoryInterface $imageRepository, PanelRepositoryInterface $panelRepository)
     {
-        $this->panelQuery = new PanelQuery;
-        $this->imageRepository = new ImageRepository;
+        $this->panelRepository = $panelRepository;
+        $this->imageRepository = $imageRepository;
     }
 
     /**
@@ -60,7 +62,7 @@ class PanelController extends Controller
         return API::response(
             200,
             "A list of panels accessible to the logged-in user.",
-            $this->panelQuery->userPanels($user, $search, $tags, $private)
+            $this->panelRepository->userPanels($user, $search, $tags, $private)
         );
 
 
@@ -85,7 +87,7 @@ class PanelController extends Controller
         return API::response(
             200,
             "A list of panels accessible to chosen group.",
-            $this->panelQuery->groupPanels($user, $group, $search, $tags, $private)
+            $this->panelRepository->groupPanels($user, $group, $search, $tags, $private)
         );
 
 
@@ -102,7 +104,7 @@ class PanelController extends Controller
         $search = $request->input('search');
         $tags   = $request->input("tags");
 
-        return API::response(200, "A list of public panels.", $this->panelQuery->publicPanels($search, $tags));
+        return API::response(200, "A list of public panels.", $this->panelRepository->publicPanels($search, $tags));
 
     }
 

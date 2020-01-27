@@ -6,8 +6,9 @@ use App\User;
 use App\Models\Panel;
 use App\Models\Group;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Interfaces\PanelRepositoryInterface;
 
-class PanelRepository
+class PanelRepository implements PanelRepositoryInterface
 {
 
 /**
