@@ -73,7 +73,7 @@ class GroupController extends Controller
 
         $newGroup->load(['confirmedUsers' => function($query) {
             $query->withPivot(['role']);
-        }])->withCount(['confirmedUsers', 'panels']);
+        }])->loadCount(['confirmedUsers', 'panels']);
 
         return API::response(200, "Group created", $newGroup);
 
@@ -87,7 +87,13 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        //
+        if(!Gate::allows("modify-group", $group)) return API::response(401, "Access Denied", []);
+
+        $group->load(['confirmedUsers' => function($query) {
+            $query->withPivot(['role']);
+        }])->loadCount(['confirmedUsers', 'panels']);
+
+        return API::response(200, "Group loaded", $group);
     }
 
     /**

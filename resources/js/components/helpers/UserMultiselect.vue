@@ -84,6 +84,7 @@ export default {
     },
     props: {
         id: String,
+        initialusers: Array,
     },
     data() {
         return {
@@ -134,6 +135,11 @@ export default {
                 this.$emit("userdataChange", this.selectedUsers)
             },
             deep: true
+        }
+    },
+    mounted(){
+        if(this.initialusers){
+            this.selectedUsers = this.initialusers
         }
     }
 

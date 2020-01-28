@@ -12,6 +12,17 @@ const state = {
 
 const actions = {
 
+    getGroupById({commit, state, rootState}, group_id){
+
+        if(!group_id) throw new Error("Group ID is required")
+
+        return Axios.get("/groups/" + group_id).then(response => {
+            commit("setCurrentGroupFromApi",response.data.DATA)
+            return response
+        })
+
+    },
+
     createNewGroup({commit, state, rootState}, group){
         return Axios.post("/groups", group).then(response => {
             let newGroup = {
@@ -84,6 +95,9 @@ const mutations = {
     setCurrentGroup(state, group_id){
         state.currentGroup = group_id ? state.userGroups.find((group) => group.id === parseInt(group_id)) : null
     },
+    setCurrentGroupFromApi(state, group){
+        state.currentGroup = group
+    }
 
 }
 

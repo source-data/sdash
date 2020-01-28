@@ -1,8 +1,8 @@
 <template>
-    <b-container class="sd-edit-group py-4">
+    <b-container class="sd-edit-group py-4" v-if="currentGroup">
         <b-row>
             <b-col>
-                <h1 class="mb-4">Create a New User Group</h1>
+                <h1 class="mb-4">Edit "{{ currentGroup.name }}"</h1>
             </b-col>
         </b-row>
         <b-row>
@@ -51,7 +51,7 @@
                 label="Group members"
                 label-for="sd-new-group-members-input"
                 >
-                    <user-multiselect id="sd-new-group-members-input" @userdataChange="updatedUserdata">
+                    <user-multiselect id="sd-new-group-members-input" :initialusers="groupMembers" @userdataChange="updatedUserdata">
                     </user-multiselect>
                 </b-form-group>
             </b-col>
@@ -98,6 +98,7 @@ export default {
     components: {
         UserMultiselect
     },
+    props: ["group_id"],
     data(){
         return {
             groupName: "",
@@ -110,6 +111,7 @@ export default {
         ...mapGetters([
             'selectedPanels',
             'loadedPanels',
+            'currentGroup',
         ]),
         selectedPanelDetails(){
             return this.loadedPanels.filter((item) => this.selectedPanels.indexOf(item.id) >= 0)
@@ -162,7 +164,9 @@ export default {
 
     methods:{
         ...mapActions([
-            'createNewGroup'
+            'createNewGroup',
+            'setCurrentGroup',
+            'getGroupById',
         ]),
         deselectPanel(id){
             this.$store.commit("removePanelFromSelections", id)
@@ -206,6 +210,22 @@ export default {
         }
 
 
+    },
+    beforeMount() {
+        // only allow authorized users to view the edit screen
+        this.getGroupById(this.group_id).then(response => {
+            let group = response.data.DATA
+            this.groupName = group.name
+            this.groupUrl =  group.url
+            this.groupDescription =  group.description
+            this.groupMembers = group.confirmed_users
+
+        }).catch(err => {
+            if(err.status === 401) {
+                this.$snotify.error("You don't have permission to do that", "Access Denied")
+                this.$router.push({path: '/'})
+            }
+        })
     }
 
 }
