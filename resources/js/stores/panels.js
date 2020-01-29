@@ -6,6 +6,7 @@ const defaultState = {
     loadedPanels: [],
     expandedPanelId: null,
     expandedPanelDetail:{},
+    paginate: true,
     searchGroup: null,
     searchText: null,
     searchTags: [],
@@ -53,6 +54,7 @@ const actions = {
         console.log(searchUrl)
 
         //pagination
+        params.params.paginate = state.paginate
         if( state.page < state.lastPage && state.page !== null ) params.params.page = state.nextPage
         if( state.searchText ) params.params.search = state.searchText
         if( state.searchTags ) params.params.tags = state.searchTags
@@ -66,6 +68,8 @@ const actions = {
 
             commit("addToLoadedPanels", response.data)
             commit("setPanelLoadingState", false)
+
+            return response
 
         })
     },
@@ -248,11 +252,15 @@ const mutations = {
         state.searchText = null
         state.searchTags = []
         state.onlyMyPanels = false
+        state.paginate = true
 
 
     },
     setPrivate(state, payload){
         state.onlyMyPanels = payload
+    },
+    setPagination(state, payload){
+        state.paginate = payload
     },
     addGroupsToPanelById(state, panelData){
         let index = _.findIndex(state.loadedPanels, function(panel){ return panel.id == panelData.id })

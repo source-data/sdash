@@ -68,6 +68,7 @@ export default {
     },
     mounted() {
         store.commit("clearLoadedPanels")
+        store.commit("setPagination", true)
         store.commit("clearSelectedPanels")
         store.commit("setSearchMode", "user")
         store.dispatch("fetchPanelList")

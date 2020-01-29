@@ -1,88 +1,100 @@
 <template>
-    <b-container class="sd-edit-group py-4" v-if="currentGroup">
+<div>
+    <div v-if="!loaded">
         <b-row>
-            <b-col>
-                <h1 class="mb-4">Edit "{{ currentGroup.name }}"</h1>
+            <b-col class="text-center">
+                <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
             </b-col>
         </b-row>
-        <b-row>
-            <b-col>
-                <b-form-group
-                id="sd-new-group-name"
-                label-cols-sm="3"
-                label-cols-lg="2"
-                label="Group Name"
-                label-for="sd-new-group-name-input"
-                :valid-feedback="groupNameValid"
-                :invalidFeedback="groupNameInvalid"
-                >
-                <b-form-input id="sd-new-group-name-input" placeholder="My new group" :state="groupNameState" v-model="groupName" trim></b-form-input>
-                </b-form-group>
+    </div>
+    <div v-if="loaded">
+        <b-container class="sd-edit-group py-4" v-if="currentGroup">
+            <b-row>
+                <b-col>
+                    <h1 class="mb-4">Edit "{{ currentGroup.name }}"</h1>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-form-group
+                    id="sd-new-group-name"
+                    label-cols-sm="3"
+                    label-cols-lg="2"
+                    label="Group Name"
+                    label-for="sd-new-group-name-input"
+                    :valid-feedback="groupNameValid"
+                    :invalidFeedback="groupNameInvalid"
+                    >
+                    <b-form-input id="sd-new-group-name-input" placeholder="My new group" :state="groupNameState" v-model="groupName" trim></b-form-input>
+                    </b-form-group>
 
-                <b-form-group
-                id="sd-new-group-url"
-                label-cols-sm="3"
-                label-cols-lg="2"
-                label="Group Website URL"
-                label-for="sd-new-group-url-input"
-                :valid-feedback="groupUrlValid"
-                :invalidFeedback="groupUrlInvalid"
-                >
-                <b-form-input id="sd-new-group-url-input" placeholder="Website URL" :state="groupUrlState" v-model="groupUrl"></b-form-input>
-                </b-form-group>
+                    <b-form-group
+                    id="sd-new-group-url"
+                    label-cols-sm="3"
+                    label-cols-lg="2"
+                    label="Group Website URL"
+                    label-for="sd-new-group-url-input"
+                    :valid-feedback="groupUrlValid"
+                    :invalidFeedback="groupUrlInvalid"
+                    >
+                    <b-form-input id="sd-new-group-url-input" placeholder="Website URL" :state="groupUrlState" v-model="groupUrl"></b-form-input>
+                    </b-form-group>
 
-                <b-form-group
-                id="sd-new-group-description"
-                label-cols-sm="3"
-                label-cols-lg="2"
-                label="Group Description"
-                label-for="sd-new-group-description-input"
-                :valid-feedback="groupDescriptionValid"
-                :invalidFeedback="groupDescriptionInvalid"
-                >
-                <b-form-textarea :state="groupDescriptionState" v-model="groupDescription" id="sd-new-group-description-input" placeholder="About this group"></b-form-textarea>
-                </b-form-group>
-                </b-form-group>
-                <b-form-group
-                id="sd-new-group-members"
-                label-cols-sm="3"
-                label-cols-lg="2"
-                members="Select the group members."
-                label="Group members"
-                label-for="sd-new-group-members-input"
-                >
-                    <user-multiselect id="sd-new-group-members-input" :initialusers="groupMembers" @userdataChange="updatedUserdata">
-                    </user-multiselect>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col class="sd-create-group--buttons-wrapper">
-                <b-button variant="success" @click.prevent="saveGroup" :disabled="disableSubmission">Save</b-button>
-                <b-button @click.prevent="exitGroup">Cancel</b-button>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                <h2 class="py-4">Panels in Group</h2>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                <section v-if="selectedPanels" class="sd-group-panel-list">
-                    <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper">
-                        <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
-                        <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
-                    </div>
+                    <b-form-group
+                    id="sd-new-group-description"
+                    label-cols-sm="3"
+                    label-cols-lg="2"
+                    label="Group Description"
+                    label-for="sd-new-group-description-input"
+                    :valid-feedback="groupDescriptionValid"
+                    :invalidFeedback="groupDescriptionInvalid"
+                    >
+                    <b-form-textarea :state="groupDescriptionState" v-model="groupDescription" id="sd-new-group-description-input" placeholder="About this group"></b-form-textarea>
+                    </b-form-group>
+                    </b-form-group>
+                    <b-form-group
+                    id="sd-new-group-members"
+                    label-cols-sm="3"
+                    label-cols-lg="2"
+                    members="Select the group members."
+                    label="Group members"
+                    label-for="sd-new-group-members-input"
+                    >
+                        <user-multiselect id="sd-new-group-members-input" v-if="loaded" :initialusers="groupMembers" @userdataChange="updatedUserdata">
+                        </user-multiselect>
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col class="sd-create-group--buttons-wrapper">
+                    <b-button variant="success" @click.prevent="saveGroup" :disabled="disableSubmission">Save</b-button>
+                    <b-button @click.prevent="exitGroup">Cancel</b-button>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <h2 class="py-4">Panels in Group</h2>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <section v-if="selectedPanels" class="sd-group-panel-list">
+                        <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper">
+                            <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
+                            <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
+                        </div>
 
-                </section>
-                <section v-if="selectedPanels.length < 1" class="sd-group-panel-list--no-panels">
-                    <p>No panels selected</p>
-                </section>
-            </b-col>
-        </b-row>
+                    </section>
+                    <section v-if="selectedPanels.length < 1" class="sd-group-panel-list--no-panels">
+                        <p>No panels selected</p>
+                    </section>
+                </b-col>
+            </b-row>
 
-    </b-container>
+        </b-container>
+    </div>
+</div>
+
 
 </template>
 
@@ -105,6 +117,7 @@ export default {
             groupUrl: "",
             groupDescription: "",
             groupMembers:[],
+            loaded: false,
         }
     },
     computed: {
@@ -219,6 +232,27 @@ export default {
             this.groupUrl =  group.url
             this.groupDescription =  group.description
             this.groupMembers = group.confirmed_users
+            this.loaded = true
+
+            this.$store.commit("clearLoadedPanels")
+            this.$store.commit("updateExpandedPanelId")
+            this.$store.commit("clearExpandedPanelDetail")
+            this.$store.commit("clearSearchCriteria")
+            // this.$store.commit("setCurrentGroup", this.group_id)
+            this.$store.commit("setPagination", false)
+            this.$store.commit("setSearchMode", "group")
+            store.dispatch("fetchPanelList")
+            .then((response) => {
+                //select all the panels from this group, so they can be excluded from the group
+                //by deselecting them
+                for(let i = 0; i < response.data.DATA.data.length; i++){
+                    this.$store.commit("addPanelToSelections", response.data.DATA.data[i].id)
+                }
+
+            })
+            .catch((error) => { console.log(error)
+                this.$store.commit("setPanelLoadingState", false)
+            })
 
         }).catch(err => {
             if(err.status === 401) {
