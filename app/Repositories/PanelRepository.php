@@ -20,7 +20,7 @@ class PanelRepository implements PanelRepositoryInterface
  * @param boolean $private Whether the search should only return panels owned by the user
  * @return void
  */
-    public function userPanels(User $user, string $search=null, Array $tags=null, bool $private = false)
+    public function userPanels(User $user, string $search=null, Array $tags=null, bool $private = false, bool $paginate=true)
     {
         // $groupAccessiblePanelIdsQuery   = User::where('id',$user->id)->with('groups.panels');
         // $groupAccessiblePanelIds        = $groupAccessiblePanelIdsQuery->get()->pluck("groups.*.panels.*.id")->flatten()->unique();
@@ -62,11 +62,11 @@ class PanelRepository implements PanelRepositoryInterface
         //add order by clause
         $panelQuery->orderByUpdated();
 
-        return $panelQuery->with('user')->paginate(20);
+        return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
     }
 
 
-    public function GroupPanels(User $user, Group $group, string $search=null, Array $tags=null, bool $private = false)
+    public function GroupPanels(User $user, Group $group, string $search=null, Array $tags=null, bool $private = false, bool $paginate=true)
     {
         $panelQuery = $group->panels()->with(['groups', 'tags', 'user']);
 
@@ -98,12 +98,12 @@ class PanelRepository implements PanelRepositoryInterface
         //add order by clause
         $panelQuery->orderByUpdated();
 
-        return $panelQuery->with('user')->paginate(20);
+        return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
 
     }
 
 
-    public function publicPanels(string $search=null, Array $tags=null)
+    public function publicPanels(string $search=null, Array $tags=null, bool $paginate=true)
     {
         $panelQuery = Panel::whereNotNull('made_public_at');
 
@@ -132,7 +132,7 @@ class PanelRepository implements PanelRepositoryInterface
         $panelQuery->orderByUpdated();
 
 
-        return $panelQuery->with('user')->paginate(20);
+        return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
 
     }
 
