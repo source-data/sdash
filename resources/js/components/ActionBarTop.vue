@@ -130,7 +130,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode', 'isGroupAdmin']),
+        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode']),
         myAdminGroups(){
             let groups = this.userAdminGroups.reduce((myGroups, group) => {
                 myGroups.push({text: group.name, value: group.id})
