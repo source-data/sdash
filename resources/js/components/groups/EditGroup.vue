@@ -229,7 +229,7 @@ export default {
         this.getGroupById(this.group_id).then(response => {
             let group = response.data.DATA
             this.groupName = group.name
-            this.groupUrl =  group.url
+            this.groupUrl =  group.url || ""
             this.groupDescription =  group.description
             this.groupMembers = group.confirmed_users
             this.loaded = true

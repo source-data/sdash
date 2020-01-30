@@ -52,9 +52,9 @@ const actions = {
         return Axios.patch("/groups/" + groupId, {panels: rootState.Panels.selectedPanels}).then(response => {
             let updatedGroup = Object.assign({},response.data.DATA.group)
             updatedGroup.pivot = {
-                group_id: response.data.DATA.group.users[0].pivot.group_id,
-                user_id: response.data.DATA.group.users[0].pivot.user_id,
-                role: response.data.DATA.group.users[0].pivot.role,
+                group_id: response.data.DATA.group.confirmed_users[0].pivot.group_id,
+                user_id: response.data.DATA.group.confirmed_users[0].pivot.user_id,
+                role: response.data.DATA.group.confirmed_users[0].pivot.role,
             }
             delete updatedGroup.users
 
