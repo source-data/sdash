@@ -12,11 +12,11 @@ const state = {
 
 const actions = {
 
-    getGroupById({commit, state, rootState}, group_id){
+    getGroupById({commit, state, rootState}, {group_id, unconfirmed_users}){ console.log("unconf", unconfirmed_users)
 
         if(!group_id) throw new Error("Group ID is required")
 
-        return Axios.get("/groups/" + group_id).then(response => {
+        return Axios.get("/groups/" + group_id, { params: (unconfirmed_users) ? { unconfirmed_users: true} : null }).then(response => {
             commit("setCurrentGroupFromApi",response.data.DATA)
             return response
         })
@@ -42,6 +42,32 @@ const actions = {
             }
 
             commit("addGroupToUserGroups", newGroup)
+
+            return response
+         })
+    },
+    modifyGroup({commit, state, rootState}, group){
+        console.table(group)
+        return Axios.put("/groups/" + group.id, group).then(response => {
+            let modifiedGroup = {
+                id: response.data.DATA.id,
+                user_id: response.data.DATA.user_id,
+                name: response.data.DATA.name,
+                description: response.data.DATA.description,
+                url: response.data.DATA.url,
+                updated_at: response.data.DATA.updated_at,
+                created_at: response.data.DATA.created_at,
+                confirmed_users: response.data.DATA.confirmed_users,
+                pivot: {
+                    group_id: response.data.DATA.id,
+                    role: "admin",
+                    user_id: rootState.Users.user.id,
+                }
+            }
+
+            console.table(modifiedGroup)
+
+            commit("updateUserGroup", newGroup)
 
             return response
          })

@@ -177,7 +177,7 @@ export default {
 
     methods:{
         ...mapActions([
-            'createNewGroup',
+            'modifyGroup',
             'setCurrentGroup',
             'getGroupById',
         ]),
@@ -214,10 +214,10 @@ export default {
 
             }
 
-            this.createNewGroup(group).then(response => {
+            this.modifyGroup(group).then(response => {
                 this.$router.push({path: `/group/${response.data.DATA.id}`})
             }).catch(err => {
-                this.$snotify.error("Could not save new sharing group", "Sorry!")
+                this.$snotify.error("Could not save sharing group", "Sorry!")
             })
 
         }
@@ -226,12 +226,13 @@ export default {
     },
     beforeMount() {
         // only allow authorized users to view the edit screen
-        this.getGroupById(this.group_id).then(response => {
+        let group_id = this.group_id
+        this.getGroupById({group_id, unconfirmed_users: true}).then(response => {
             let group = response.data.DATA
             this.groupName = group.name
             this.groupUrl =  group.url || ""
             this.groupDescription =  group.description
-            this.groupMembers = group.confirmed_users
+            this.groupMembers = group.users
             this.loaded = true
 
             this.$store.commit("clearLoadedPanels")

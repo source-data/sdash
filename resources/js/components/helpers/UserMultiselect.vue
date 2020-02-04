@@ -45,6 +45,7 @@ open-direction="bottom"
             <div class="sd-group-user--selected-info">
                 <div class="sd-group-user--selected-name">
                     {{ option.firstname + ' ' + option.surname }}
+                    <span class="sd-unconfirmed-user" v-if="option.pivot.status && option.pivot.status=='pending'">(user has not opted-in)</span>
                 </div>
                 <div class="sd-group-user--selected-affiliation">
                     {{ option.institution_name }}
@@ -158,7 +159,10 @@ export default {
 </script>
 
 <style lang="scss">
-
+    .sd-unconfirmed-user {
+        color: red;
+        font-weight: normal;
+    }
     .multiselect.sd-user-multiselect .multiselect__tags {
         border: solid 1px #ced4da;
     }

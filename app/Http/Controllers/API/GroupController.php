@@ -85,16 +85,25 @@ class GroupController extends Controller
      * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function show(Group $group)
+    public function show(Request $request, Group $group)
     {
-        if(!Gate::allows("modify-group", $group)) return API::response(401, "Access Denied", []);
+        // only the group admin can view unconfirmed users
+        if($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(401, "Admin level access denied", []);
+        if(!Gate::allows("view-group", $group)) return API::response(401, "Access denied", []);
 
-        $group->load(['confirmedUsers' => function($query) {
-            $query->withPivot(['role']);
-        }])->loadCount(['confirmedUsers', 'panels']);
+        if($request->get('unconfirmed_users')) {
+            $group->load(['users' => function($query) {
+                $query->withPivot(['role', 'status']);
+            }])->loadCount(['users', 'panels']);
+        } else {
+            $group->load(['confirmedUsers' => function($query) {
+                $query->withPivot(['role']);
+            }])->loadCount(['confirmedUsers', 'panels']);
+        }
 
         return API::response(200, "Group loaded", $group);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -158,6 +167,55 @@ class GroupController extends Controller
         } else {
             return API::response(401, "You are not an administrator of the group.",[]);
         }
+    }
+
+    /**
+     * replace an existing Group details with a revised version of the data
+     *
+     * @param Request $request
+     * @param Group $group
+     * @return void
+     */
+    public function replace(Request $request, Group $group)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'name'                  => ['required', 'min:5'],
+            'url'                   => ['nullable', 'url'],
+            'description'           => ['required'],
+            'members.*.id'          => ['exists:users'],
+            'panels.*'              => ['exists:panels,id']
+        ]);
+
+        if(Gate::allows('modify-group', $group)) {
+
+            $group->name = $request->input('name');
+            $group->url = $request->input('url');
+            $group->description = $request->input('description');
+
+
+
+
+            foreach($request->input("panels") as $panel) {
+
+                $panelModel = Panel::findOrFail($panel);
+
+
+            }
+
+            return API::response(200, "$addedCount panels added. $notAddedCount skipped.",
+                [
+                    "group" => Group::where('id',$group->id)->with(['confirmedUsers' => function($query) { $query->withPivot(['role']); } ])->withCount(['confirmedUsers', 'panels'])->first(),
+                    "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
+                ]
+            );
+
+
+        } else {
+            return API::response(401, "You are not an administrator of the group.",[]);
+        }
+
+
     }
 
     /**
