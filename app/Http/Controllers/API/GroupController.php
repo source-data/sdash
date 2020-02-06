@@ -8,13 +8,28 @@ use App\Models\Group;
 use App\Models\Panel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use App\Repositories\GroupRepository;
 use App\Notifications\UserAddedToGroup;
+use App\Repositories\Interfaces\GroupRepositoryInterface;
+use FFI;
 
 class GroupController extends Controller
 {
+
+    protected $groupRepository;
+
+    /**
+     * Use the GroupRepository to abstract the complexity of the group request
+     */
+    public function __construct(GroupRepositoryInterface $groupRepository)
+    {
+        $this->groupRepository = $groupRepository;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -54,14 +69,12 @@ class GroupController extends Controller
             'url'           => $request->input("url")
         ]);
 
+        // add logged in user as admin
         $newGroup->users()->attach($user->id,['role' => 'admin', 'status' => 'confirmed']);
 
         if($members){
             foreach($members as $member) {
-                $token = sha1(now()->timestamp . $member["id"] . Str::random(24));
-                $newGroup->users()->attach($member["id"],['role' => ($member["admin"]==TRUE) ? 'admin' : 'user', 'token' => $token]);
-                $user = User::find($member["id"]);
-                $user->notify( new UserAddedToGroup($user, $newGroup, $token) );
+                $this->groupRepository->addMemberToGroup($newGroup, $member);
             }
         }
 
@@ -189,21 +202,51 @@ class GroupController extends Controller
 
         if(Gate::allows('modify-group', $group)) {
 
+            $group->load('users');
+
             $group->name = $request->input('name');
+
             $group->url = $request->input('url');
+
             $group->description = $request->input('description');
 
+            // detach removed members and panels
+            foreach($group->users as $existingMember) {
 
+                if(count(array_filter($request->input('members'), function($newMember) use($existingMember){ return $newMember["id"] === $existingMember->id; })) < 1) {
 
+                    // remove member *and their panels*
+                    $this->groupRepository->removeMemberFromGroup($group, $existingMember);
 
-            foreach($request->input("panels") as $panel) {
+                }
+            }
 
-                $panelModel = Panel::findOrFail($panel);
+            // or attach members who are new to the group
+            foreach($request->input('members') as $newMember) {
 
+                if(count(array_filter($group->users, function($existingUser) use($newMember) { return $existingUser->id === $newMember["id"]; } )) < 1) {
+
+                    $this->groupRepository->addMemberToGroup($group, $newMember);
+
+                }
+            }
+
+            // loading group panels here as they may have been modified by
+            // the process above
+            if($request->input('panels')) {
+
+                $group->load('panels');
+
+                foreach($group->panels as $existingPanel) {
+
+                    if( !in_array($existingPanel->id, $request->input('panels')) ) {
+                        $group->panels()->detach($existingPanel);
+                    }
+                }
 
             }
 
-            return API::response(200, "$addedCount panels added. $notAddedCount skipped.",
+            return API::response(200, "Panel Updated.",
                 [
                     "group" => Group::where('id',$group->id)->with(['confirmedUsers' => function($query) { $query->withPivot(['role']); } ])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
