@@ -45,7 +45,7 @@ open-direction="bottom"
             <div class="sd-group-user--selected-info">
                 <div class="sd-group-user--selected-name">
                     {{ option.firstname + ' ' + option.surname }}
-                    <span class="sd-unconfirmed-user" v-if="option.pivot.status && option.pivot.status=='pending'">(user has not opted-in)</span>
+                    <span class="sd-unconfirmed-user" v-if="option.pivot && option.pivot.status && option.pivot.status=='pending'">(user has not opted-in)</span>
                 </div>
                 <div class="sd-group-user--selected-affiliation">
                     {{ option.institution_name }}
