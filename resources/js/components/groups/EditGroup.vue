@@ -51,7 +51,6 @@
                     >
                     <b-form-textarea :state="groupDescriptionState" v-model="groupDescription" id="sd-new-group-description-input" placeholder="About this group"></b-form-textarea>
                     </b-form-group>
-                    </b-form-group>
                     <b-form-group
                     id="sd-new-group-members"
                     label-cols-sm="3"
@@ -59,6 +58,7 @@
                     members="Select the group members."
                     label="Group members"
                     label-for="sd-new-group-members-input"
+                    description="Note: removing a member will also remove their panels"
                     >
                         <user-multiselect id="sd-new-group-members-input" v-if="loaded" :initialusers="groupMembers" @userdataChange="updatedUserdata">
                         </user-multiselect>
