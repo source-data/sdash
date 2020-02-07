@@ -34,6 +34,8 @@ const actions = {
                 updated_at: response.data.DATA.updated_at,
                 created_at: response.data.DATA.created_at,
                 confirmed_users: response.data.DATA.confirmed_users,
+                confirmed_users_count: response.data.DATA.confirmed_users_count,
+                panels_count: response.data.DATA.panels_count,
                 pivot: {
                     group_id: response.data.DATA.id,
                     role: "admin",
@@ -50,24 +52,22 @@ const actions = {
         console.table(group)
         return Axios.put("/groups/" + group.id, group).then(response => {
             let modifiedGroup = {
-                id: response.data.DATA.id,
-                user_id: response.data.DATA.user_id,
-                name: response.data.DATA.name,
-                description: response.data.DATA.description,
-                url: response.data.DATA.url,
-                updated_at: response.data.DATA.updated_at,
-                created_at: response.data.DATA.created_at,
-                confirmed_users: response.data.DATA.confirmed_users,
+                id: response.data.DATA.group.id,
+                user_id: response.data.DATA.group.user_id,
+                name: response.data.DATA.group.name,
+                description: response.data.DATA.group.description,
+                url: response.data.DATA.group.url,
+                updated_at: response.data.DATA.group.updated_at,
+                created_at: response.data.DATA.group.created_at,
+                confirmed_users: response.data.DATA.group.confirmed_users,
                 pivot: {
-                    group_id: response.data.DATA.id,
+                    group_id: response.data.DATA.group.id,
                     role: "admin",
                     user_id: rootState.Users.user.id,
                 }
             }
 
-            console.table(modifiedGroup)
-
-            commit("updateUserGroup", newGroup)
+            commit("updateUserGroup", modifiedGroup)
 
             return response
          })
@@ -141,6 +141,10 @@ const getters = {
     isGroupAdmin(state, getters, rootState) {
         if(!state.currentGroup) return false
         return state.currentGroup.confirmed_users.find(user => (user.id === rootState.Users.user.id && user.pivot.role==="admin")) ? true : false
+    },
+    isGroupOwner(state, getters, rootState) {
+        if(!state.currentGroup) return false
+        return state.currentGroup.user_id === rootState.Users.user.id
     }
 }
 

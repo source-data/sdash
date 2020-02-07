@@ -12,5 +12,7 @@ interface GroupRepositoryInterface {
 
     public function removeMemberFromGroup(Group $group, User $member);
     public function addMemberToGroup(Group $group, Array $member);
+    public function makeMemberIntoAdmin(Group $group, String $user_id);
+    public function makeMemberNotAdmin(Group $group, String $user_id);
 
 }

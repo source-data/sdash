@@ -15,7 +15,7 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                        <b-nav-form v-if="searchMode=='group'">
+                        <b-nav-form v-if="searchMode=='group' && !isGroupOwner">
                             <b-button variant="outline-danger" @click.prevent class="my-2" id="sd-quit-group" type="submit" v-b-tooltip.hover.top title="Remove yourself from the group">
                                 <font-awesome-icon icon="sign-out-alt" />
                                 Leave Group
@@ -130,7 +130,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode']),
+        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode', 'isGroupOwner']),
         myAdminGroups(){
             let groups = this.userAdminGroups.reduce((myGroups, group) => {
                 myGroups.push({text: group.name, value: group.id})

@@ -206,18 +206,19 @@ export default {
             })
 
             let group = {
+                id: this.group_id,
                 name: this.groupName,
                 url: this.groupUrl,
                 description: this.groupDescription,
                 members: members,
                 panels: panels,
-
             }
 
             this.modifyGroup(group).then(response => {
-                this.$router.push({path: `/group/${response.data.DATA.id}`})
+                this.$router.push({path: `/group/${response.data.DATA.group.id}`})
             }).catch(err => {
-                this.$snotify.error("Could not save sharing group", "Sorry!")
+                console.log(err)
+                this.$snotify.error(err.data.MESSAGE, "Sorry!")
             })
 
         }
