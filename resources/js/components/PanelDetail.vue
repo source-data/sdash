@@ -68,9 +68,6 @@
                 </b-tabs>
 
             <div class="sd-panel-detail--panel-actions">
-                <span v-if="iOwnThisPanel">Sharing status: </span>
-                <toggle-button v-if="iOwnThisPanel" :value="isShared" @change="toggleShareStatus" :color="{checked: '#65dd65', unchecked: '#666'}" :labels="{checked:'Shared', unchecked:'Private'}" :width="90" :height="30" :font-size="14" class="sd-sharing-toggle"/>
-
                 <b-button id="sd-delete-panel" variant="danger" v-if="iOwnThisPanel" class="sd-delete-panel-button"><font-awesome-icon class="sd-delete-panel-icon" icon="trash-alt" title="Delete panel"/> Delete Panel</b-button>
                 <b-popover
                     ref="delete-panel-popover"
@@ -139,14 +136,6 @@ export default {
         commentCountTitle(){
             return "Comments (" + this.commentCount + ")"
         },
-        isShared(){
-            //temporary sharing hack - the panel is shared if it's part of group 5
-            console.log("_-_-_-_-_-_-_-_")
-            console.log(this.expandedPanel.groups)
-            console.log(this.expandedPanel.groups.filter(group => group.id === 5))
-            return this.expandedPanel.groups.filter(group => group.id === 5).length > 0
-        },
-
     },
     methods:{ //run as event handlers, for example
 
