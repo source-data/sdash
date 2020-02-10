@@ -96,8 +96,11 @@ const actions = {
             return response
         })
     },
-    removeUserFromGroup({commit, state, rootState}, userId){
-        return Axios.delete("/groups/" + state.currentGroup.id + '/users/' + userId).then(response => {
+    // Remove logged-in user from group
+    removeUserFromGroup({commit, state, rootState}){
+        return Axios.delete("/groups/" + state.currentGroup.id + '/users/').then(response => {
+            commit("removeGroupFromUserGroups", state.currentGroup.id)
+            commit("setCurrentGroup", null)
             return response
         })
     }
@@ -113,6 +116,10 @@ const mutations = {
 
         state.userGroups.push(group)
 
+    },
+    removeGroupFromUserGroups(state, group_id){
+        let index = _.findIndex(state.userGroups, oldGroup => { return oldGroup.id === parseInt(group_id) })
+        if(index > -1) state.userGroups.splice(index,1)
     },
     updateUserGroup(state, group){
         let index = _.findIndex(state.userGroups, oldGroup => { return oldGroup.id === group.id })

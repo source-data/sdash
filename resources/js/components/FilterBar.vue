@@ -11,7 +11,7 @@
         </section>
 
         <h5 class="pb-2">My Groups</h5>
-        <div role="tablist">
+        <div role="tablist" class="sd-group-list-wrapper">
             <b-card v-for="group in userGroups" :key="group.id" no-body class="mb-1">
             <b-card-header header-tag="header" class="p-1" role="tab">
                 <b-button block href="#" v-b-toggle="'group-'+group.id" class="sd-filter-accordion-header" variant="light">{{ group.name }} <br>| <font-awesome-icon icon="users" /> {{group.confirmed_users_count}} | <font-awesome-icon icon="layer-group" /> {{group.panels_count}} </b-button>
@@ -49,12 +49,11 @@ export default {
         ]),
         privacyLevel:{
 
-            get() { console.log("getter " + this.privatePanels)
+            get() {
                 return (this.privatePanels===true) ? "private" : "all"
             },
-            set(value) { console.log(value)
+            set(value) {
                 let privacy = (value === "private") ? true : false
-                console.log("setter " + privacy)
                 this.toggleAccess(privacy)
             }
         }
@@ -76,5 +75,13 @@ export default {
   .sd-filter-accordion-header {
       text-align:left;
       background-color: none;
+  }
+
+  .sd-group-list-wrapper {
+      max-height: 600px;
+      overflow-y: scroll;
+      border: solid 1px #e0e0e0;
+      padding: 1rem 0.5rem;
+
   }
 </style>

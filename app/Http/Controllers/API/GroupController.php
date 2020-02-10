@@ -306,4 +306,5 @@ class GroupController extends Controller
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
         return view('addtogroup',['user' => $user, 'group' => $group]);
     }
+
 }

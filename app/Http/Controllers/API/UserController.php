@@ -25,12 +25,11 @@ class UserController extends Controller
             "name"  =>  ['max:40']
         ]);
 
-        if($request->query('name')){
+        if ($request->query('name')) {
 
-            $userList = User::where(\DB::raw("CONCAT(firstname, ' ', surname)"),'like', '%' . $request->query('name') . '%')->limit(40)->get();
+            $userList = User::where(\DB::raw("CONCAT(firstname, ' ', surname)"), 'like', '%' . $request->query('name') . '%')->limit(40)->get();
 
             return ($userList->isEmpty()) ? API::response(204, "No matching records found", []) : API::response(200, "A list of users", $userList);
-
         }
 
         return API::response(200, "A list of all users.", User::all());
@@ -59,14 +58,13 @@ class UserController extends Controller
     {
         $loggedInUser = auth()->user();
 
-        if($loggedInUser->id !== $user->id && !$loggedInUser->is_superadmin()) abort(403, 'Access denied');
+        if ($loggedInUser->id !== $user->id && !$loggedInUser->is_superadmin()) abort(403, 'Access denied');
 
         $data = $request->only(["firstname", "surname", "email", "institution_name", "institution_address", "department_name", "linkedin", "twitter", "orcid"]);
 
         $user->update($data);
 
         return API::response(200, "User record updated.", $user);
-
     }
 
     /**
@@ -77,7 +75,7 @@ class UserController extends Controller
      */
     public function destroy(User $user, Request $request)
     {
-        if(!auth()->user()->is_superadmin()) abort(403, "Access Denied");
+        if (!auth()->user()->is_superadmin()) abort(403, "Access Denied");
 
         $name = "{$user->firstname} {$user->surname}";
 
@@ -94,13 +92,15 @@ class UserController extends Controller
      */
     public function me(Request $request)
     {
-        if(!auth()->user()) abort(404, "User could not be found.");
+        if (!auth()->user()) abort(404, "User could not be found.");
         return API::response(
             200,
             "Logged-in user.",
             User::where('id', auth()->user()->id)
-                ->with(['confirmedGroups' => function($query) {
-                    $query->with(['confirmedUsers' => function($query) { $query->withPivot(['role']); }]);
+                ->with(['confirmedGroups' => function ($query) {
+                    $query->with(['confirmedUsers' => function ($query) {
+                        $query->withPivot(['role']);
+                    }]);
                     $query->withCount(['confirmedUsers', 'panels']);
                     $query->withPivot('role');
                 }])
@@ -108,39 +108,41 @@ class UserController extends Controller
         );
     }
 
-    public function removeFromGroup(Group $group, User $user)
+    public function removeFromGroup(Group $group)
     {
         $loggedInUser = auth()->user();
 
-        if(($loggedInUser->id === $user->id && Gate::allows('view-group', $group)) || Gate::allows('modify-group', $group)) {
+        if (Gate::allows('view-group', $group) || Gate::allows('modify-group', $group)) {
 
-            $group->users()->detach($user->id);
+            /*
+            User should not be removed from group if:
+                1. They are group owner
+                2. They are last remaining admin
+            */
 
-            $userPanels = $group->panels()->where("user_id", $user->id);
+            // 1.
+            if ($loggedInUser->id === $group->user_id) return API::response(403, "Group owner cannot leave group.", []);
+
+            // 2.
+            if ($group->users()->wherePivot("role", "admin")->count() < 2 && $group->users()->where("user_id", $loggedInUser->id)->wherePivot("role", "admin")->exists()) return API::response(403, "A group must have an administrator", []);
+
+            $group->users()->detach($loggedInUser->id);
+
+            $userPanels = $group->panels()->where("user_id", $loggedInUser->id)->get();
 
             $panelIdsToRemove = [];
 
-
-
-            if(!$userPanels->isEmpty()){
-                foreach($userPanels as $panel){
-                    $panelIdsToRemove[]=$panel->id;
+            if (!$userPanels->isEmpty()) {
+                foreach ($userPanels as $panel) {
+                    $panelIdsToRemove[] = $panel->id;
                 }
 
                 $group->panels()->detach($panelIdsToRemove);
-
             }
 
-            return API::response(200, "{$user->firstname} {$user->surname} removed from group", []);
-
+            return API::response(200, "{$loggedInUser->firstname} {$loggedInUser->surname} removed from group", []);
         } else {
             return API::response(403, "You are forbidden from removing this user from the group.", []);
         }
-
-
-
-
     }
-
-
 }

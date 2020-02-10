@@ -16,33 +16,34 @@
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
                         <b-nav-form v-if="searchMode=='group' && !isGroupOwner">
-                            <b-button variant="outline-danger" @click.prevent class="my-2" id="sd-quit-group" type="submit" v-b-tooltip.hover.top title="Remove yourself from the group">
+                            <b-button variant="outline-danger" class="my-2" @click.prevent id="sd-quit-group" type="submit" v-b-tooltip.hover.top title="Remove yourself from the group">
                                 <font-awesome-icon icon="sign-out-alt" />
                                 Leave Group
                             </b-button>
-                        </b-nav-form>
-                        <b-popover
-                            ref="quit-group-popover"
-                            target="sd-quit-group"
-                            triggers="click"
-                            placement="bottom"
-                        >
-                        <template v-slot:title>
-                                Are you sure?
-                            <b-button @click="closeQuitGroupPopover" class="close" aria-label="Close">
-                                <span class="d-inline-block" aria-hidden="true">&times;</span>
-                            </b-button>
-                        </template>
-                            <div class="confirm-delete-content">
-                                <p>
-                                    Remove yourself and your panels from the group?
-                                </p>
-                                <div class="delete-buttons">
-                                    <b-button variant="danger" small @click="quitGroup">Remove Me</b-button>
-                                    <b-button variant="outline-dark" small @click="closeQuitGroupPopover">Cancel</b-button>
+                            <b-popover
+                                ref="quit-group-popover"
+                                target="sd-quit-group"
+                                triggers="click"
+                                placement="bottom"
+                                selector="sd-quit-group"
+                            >
+                            <template v-slot:title>
+                                    Are you sure?
+                                <b-button @click="closeQuitGroupPopover" class="close" aria-label="Close">
+                                    <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                </b-button>
+                            </template>
+                                <div class="confirm-delete-content">
+                                    <p>
+                                        Remove yourself and your panels from the group?
+                                    </p>
+                                    <div class="delete-buttons">
+                                        <b-button variant="danger" small @click="quitGroup">Remove Me</b-button>
+                                        <b-button variant="outline-dark" small @click="closeQuitGroupPopover">Cancel</b-button>
+                                    </div>
                                 </div>
-                            </div>
-                        </b-popover>
+                            </b-popover>
+                        </b-nav-form>
                         <b-nav-form v-if="searchMode=='user' && countSelectedPanels > 0">
                             <span>
                                 {{ countSelectedPanels }} panel(s) selected (</span><b-button @click="clearSelectedPanels" class="action-bar-top--clear-button" variant="link">clear selection</b-button><span>)</span>
@@ -205,6 +206,14 @@ export default {
         quitGroup(){
             this.removeUserFromGroup(this.currentUser.id).then(response => {
                 console.log(response)
+                this.closeQuitGroupPopover()
+                this.$router.push({name: 'dashboard'})
+                this.$snotify.success(response.data.MESSAGE, "Success")
+            }).catch(error => {
+                console.log(error)
+                this.$snotify.error(error.data.MESSAGE, "Update Failed!")
+                this.closeQuitGroupPopover()
+
             })
         }
 
