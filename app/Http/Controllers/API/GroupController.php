@@ -70,26 +70,25 @@ class GroupController extends Controller
         ]);
 
         // add logged in user as admin
-        $newGroup->users()->attach($user->id,['role' => 'admin', 'status' => 'confirmed']);
+        $newGroup->users()->attach($user->id, ['role' => 'admin', 'status' => 'confirmed']);
 
-        if($members){
-            foreach($members as $member) {
+        if ($members) {
+            foreach ($members as $member) {
                 $this->groupRepository->addMemberToGroup($newGroup, $member);
             }
         }
 
-        if($panels){
-            foreach($panels as $panel) {
+        if ($panels) {
+            foreach ($panels as $panel) {
                 $newGroup->panels()->attach($panel);
             }
         }
 
-        $newGroup->load(['confirmedUsers' => function($query) {
+        $newGroup->load(['confirmedUsers' => function ($query) {
             $query->withPivot(['role']);
         }])->loadCount(['confirmedUsers', 'panels']);
 
         return API::response(200, "Group created", $newGroup);
-
     }
 
     /**
@@ -101,15 +100,15 @@ class GroupController extends Controller
     public function show(Request $request, Group $group)
     {
         // only the group admin can view unconfirmed users
-        if($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(401, "Admin level access denied", []);
-        if(!Gate::allows("view-group", $group)) return API::response(401, "Access denied", []);
+        if ($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(401, "Admin level access denied", []);
+        if (!Gate::allows("view-group", $group)) return API::response(401, "Access denied", []);
 
-        if($request->get('unconfirmed_users')) {
-            $group->load(['users' => function($query) {
+        if ($request->get('unconfirmed_users')) {
+            $group->load(['users' => function ($query) {
                 $query->withPivot(['role', 'status']);
             }])->loadCount(['users', 'panels']);
         } else {
-            $group->load(['confirmedUsers' => function($query) {
+            $group->load(['confirmedUsers' => function ($query) {
                 $query->withPivot(['role']);
             }])->loadCount(['confirmedUsers', 'panels']);
         }
@@ -145,19 +144,19 @@ class GroupController extends Controller
             'panels.*' => ['exists:panels,id']
         ]);
 
-        if(Gate::allows('modify-group', $group)) {
+        if (Gate::allows('view-group', $group)) {
 
             $addedCount = 0;
             $notAddedCount = 0;
 
-            foreach($request->input("panels") as $panel) {
+            foreach ($request->input("panels") as $panel) {
 
                 $panelModel = Panel::findOrFail($panel);
 
-                if(Gate::allows('modify-panel', $panelModel)){
+                if (Gate::allows('modify-panel', $panelModel)) {
 
 
-                    if(!$group->panels()->where('panels.id', $panelModel->id)->exists()){
+                    if (!$group->panels()->where('panels.id', $panelModel->id)->exists()) {
                         $group->panels()->attach($panelModel->id);
                         $addedCount++;
                     } else {
@@ -166,19 +165,20 @@ class GroupController extends Controller
                 } else {
                     $notAddedCount++;
                 }
-
             }
 
-            return API::response(200, "$addedCount panels added. $notAddedCount skipped.",
+            return API::response(
+                200,
+                "$addedCount panels added. $notAddedCount skipped.",
                 [
-                    "group" => Group::where('id',$group->id)->with(['confirmedUsers' => function($query) { $query->withPivot(['role']); } ])->withCount(['confirmedUsers', 'panels'])->first(),
+                    "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
+                        $query->withPivot(['role']);
+                    }])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
             );
-
-
         } else {
-            return API::response(401, "You are not an administrator of the group.",[]);
+            return API::response(401, "You are not an administrator of the group.", []);
         }
     }
 
@@ -200,7 +200,7 @@ class GroupController extends Controller
             'panels.*'              => ['exists:panels,id']
         ]);
 
-        if(Gate::allows('modify-group', $group)) {
+        if (Gate::allows('modify-group', $group)) {
 
             $group->load('users');
 
@@ -211,77 +211,79 @@ class GroupController extends Controller
             $group->description = $request->input('description');
 
             //make sure all the admins aren't being removed
-            if(! array_filter($request->input('members'), function($members){ return $members["admin"]==true; })) return API::response(403, "A group must have an admin.", []);
+            if (!array_filter($request->input('members'), function ($members) {
+                return $members["admin"] == true;
+            })) return API::response(403, "A group must have an admin.", []);
 
 
             // detach removed members and panels
-            foreach($group->users as $existingMember) {
+            foreach ($group->users as $existingMember) {
 
-                if(count(array_filter($request->input('members'), function($newMember) use($existingMember){ return $newMember["id"] === $existingMember->id; })) < 1) {
+                if (count(array_filter($request->input('members'), function ($newMember) use ($existingMember) {
+                    return $newMember["id"] === $existingMember->id;
+                })) < 1) {
 
                     // remove member *and their panels*
                     $this->groupRepository->removeMemberFromGroup($group, $existingMember);
-
                 }
             }
 
             // or attach members who are new to the group
-            foreach($request->input('members') as $newMember) {
+            foreach ($request->input('members') as $newMember) {
 
-                if(count(array_filter($group->users->toArray(), function($existingUser) use($newMember) { return $existingUser["id"] === $newMember["id"]; } )) < 1) {
+                if (count(array_filter($group->users->toArray(), function ($existingUser) use ($newMember) {
+                    return $existingUser["id"] === $newMember["id"];
+                })) < 1) {
 
                     $this->groupRepository->addMemberToGroup($group, $newMember);
-
                 } else {
                     // if the new member (submitted) has a different group role (user / admin) from the existing (stored) member
                     // update the stored member's status to match the submitted one.
-                    if(isset($newMember["admin"])) {
+                    if (isset($newMember["admin"])) {
 
-                        switch($newMember["admin"]) {
+                        switch ($newMember["admin"]) {
                             case true:
-                                    $this->groupRepository->makeMemberIntoAdmin($group, $newMember["id"]);
+                                $this->groupRepository->makeMemberIntoAdmin($group, $newMember["id"]);
                                 break;
 
                             case false:
                                 $this->groupRepository->makeMemberNotAdmin($group, $newMember["id"]);
                                 break;
                         }
-
                     }
                 }
             }
 
             // loading group panels here as they may have been modified by
             // the process above
-            if($request->input('panels')) {
+            if ($request->input('panels')) {
 
                 $group->load('panels');
 
-                foreach($group->panels as $existingPanel) {
+                foreach ($group->panels as $existingPanel) {
 
-                    if( !in_array($existingPanel->id, $request->input('panels')) ) {
+                    if (!in_array($existingPanel->id, $request->input('panels'))) {
                         $group->panels()->detach($existingPanel);
                     }
                 }
-
             }
 
             // save changes
             $group->save();
 
-            return API::response(200, "Panel Updated.",
-            [
-                "group" => Group::where('id',$group->id)->with(['confirmedUsers' => function($query) { $query->withPivot(['role']); } ])->withCount(['confirmedUsers', 'panels'])->first(),
+            return API::response(
+                200,
+                "Panel Updated.",
+                [
+                    "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
+                        $query->withPivot(['role']);
+                    }])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
             );
-
-
         } else {
-            return API::response(401, "You are not an administrator of the group.",[]);
+            return API::response(401, "You are not an administrator of the group.", []);
         }
-
-
     }
 
     /**
@@ -299,12 +301,11 @@ class GroupController extends Controller
 
     public function join(Group $group, String $token)
     {
-        $user = $group->users()->wherePivot("token","=", $token)->first();
+        $user = $group->users()->wherePivot("token", "=", $token)->first();
 
-        if(!$user) return redirect('/dashboard');
+        if (!$user) return redirect('/dashboard');
 
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
-        return view('addtogroup',['user' => $user, 'group' => $group]);
+        return view('addtogroup', ['user' => $user, 'group' => $group]);
     }
-
 }
