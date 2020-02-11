@@ -44,9 +44,7 @@ export default {
 <style lang="scss">
 
 .sd-info-bar {
-    background-color: #ebf5ff;
     padding-bottom: 1em;
-    box-shadow: 0px 2px 4px -2px #656598;
 }
 
 .sd-info-bar-title-wrapper {

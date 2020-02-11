@@ -48,7 +48,7 @@
                             <span>
                                 {{ countSelectedPanels }} panel(s) selected (</span><b-button @click="clearSelectedPanels" class="action-bar-top--clear-button" variant="link">clear selection</b-button><span>)</span>
 
-                            <b-button class="sd-action-bar-top--delete-button" v-b-tooltip.hover.top title="Delete selected panels">
+                            <b-button class="sd-action-bar-top--delete-button" id="sd-mass-delete-panels" v-b-tooltip.hover.top title="Delete selected panels">
                                 <font-awesome-icon icon="trash-alt" size="2x" />
                             </b-button>
                             <b-button class="sd-action-bar-top--group-button" id="sd-add-panels-to-sharing-group" v-b-tooltip.hover.top title="Add panels to sharing group">
@@ -57,6 +57,28 @@
                             <b-button class="sd-action-bar-top--figure-button" v-b-tooltip.hover.top title="Combine panels into figure">
                                 <font-awesome-icon icon="layer-group" size="2x" />
                             </b-button>
+                            <!-- panel mass-deleting popover -->
+                            <b-popover
+                                ref="delete-popover"
+                                target="sd-mass-delete-panels"
+                                triggers="click"
+                                placement="bottom"
+                                @hidden="onDeletePopoverHide"
+                            >
+                                <template v-slot:title>
+                                        Are you sure?
+                                    <b-button @click="closeDeletePopover" class="close" aria-label="Close">
+                                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                    </b-button>
+                                </template>
+
+                                    <b-button @click="closeDeletePopover" size="sm" >Cancel</b-button>
+                                    <b-button @click="deleteMultiplePanels" size="sm" variant="danger">
+                                        <font-awesome-icon icon="trash-alt" size="1x" />
+                                        Delete {{ countSelectedPanels }} panel(s)
+                                    </b-button>
+                                </p>
+                            </b-popover>
 
                             <!-- panel sharing group popover -->
                             <b-popover
@@ -78,7 +100,7 @@
                                 label="Add to existing group"
                                 label-for="sd-group-select"
                                 >
-                                <b-form-select size="sm" id="sd-group-select" :options="myAdminGroups" v-model="selectedSharingGroupId" trim></b-form-select>
+                                <b-form-select size="sm" id="sd-group-select" :options="myGroups" v-model="selectedSharingGroupId" trim></b-form-select>
                                 </b-form-group>
                                 <p>
                                     <b-button @click="addPanelsToGroup" size="sm" variant="info" :disabled="!selectedSharingGroupId">
@@ -131,14 +153,21 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode', 'isGroupOwner']),
+        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'userGroups', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode', 'isGroupOwner']),
         myAdminGroups(){
             let groups = this.userAdminGroups.reduce((myGroups, group) => {
                 myGroups.push({text: group.name, value: group.id})
                 return myGroups
             },[])
             return groups
-        }
+        },
+        myGroups(){
+            let groups = this.userGroups.reduce((myGroups, group) => {
+                myGroups.push({text: group.name, value: group.id})
+                return myGroups
+            },[])
+            return groups
+        },
     },
 
     methods: { //run as event handlers, for example

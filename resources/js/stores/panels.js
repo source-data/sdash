@@ -1,5 +1,4 @@
 import Axios from "axios"
-import { STATUS_CODES } from "http"
 
 //default state
 const defaultState = {

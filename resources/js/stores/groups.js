@@ -1,7 +1,4 @@
 import Axios from "axios"
-import { STATUS_CODES } from "http"
-import Vue from "vue"
-import panels from "./panels"
 
 //initial state
 const state = {
