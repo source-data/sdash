@@ -9,7 +9,7 @@ const state = {
 
 const actions = {
 
-    getGroupById({commit, state, rootState}, {group_id, unconfirmed_users}){ console.log("unconf", unconfirmed_users)
+    getGroupById({commit, state, rootState}, {group_id, unconfirmed_users}){
 
         if(!group_id) throw new Error("Group ID is required")
 
@@ -88,7 +88,6 @@ const actions = {
             for(let i=0; i<updatedPanels.length; i++) {
                 commit("updateLoadedPanel", updatedPanels[i])
             }
-            console.log(updatedGroup, updatedPanels)
 
             return response
         })

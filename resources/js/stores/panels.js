@@ -50,7 +50,6 @@ const actions = {
 
         let searchUrl = (rootState.searchMode === 'group') ? '/groups/' + rootState.Groups.currentGroup.id + '/panels' : '/users/me/panels';
 
-        console.log(searchUrl)
 
         //pagination
         params.params.paginate = state.paginate
@@ -107,6 +106,20 @@ const actions = {
             commit("setPanelLoadingState", false)
             return response
         })
+    },
+    deleteSelectedPanels({commit, state}) {
+        if(!state.selectedPanels) throw {data:{MESSAGE: "You must select panels to delete"}}
+        let toDelete = [].concat(state.selectedPanels)
+        return Axios.delete('/panels/',{
+            params: {id: toDelete}
+        }).then(response => {
+            for (let i=0; i<toDelete.length; i++){
+                commit("removePanelFromStore", toDelete[i])
+                commit("removePanelFromSelections", toDelete[i])
+            }
+            return response
+        })
+
     },
     expandPanel({ commit }, panelId){
         commit("toggleEditingCaption", false)

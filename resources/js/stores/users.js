@@ -32,10 +32,8 @@ const actions = {
     },
     findUsersByName({ commit }, searchString){
 
-        console.log(searchString)
 
         return Axios.get('/users', { params: { name: searchString } }).then(response =>{
-            console.log(response)
             return response
         })
 

@@ -65,8 +65,6 @@ const mutations = {
     updateFile(state, file){
         let index = _.findIndex(state.expandedPanelFiles, function(oldFile){ return oldFile.id == file.id })
         state.expandedPanelFiles[index] = file
-        console.log(file)
-        console.log(index)
     },
 
 }

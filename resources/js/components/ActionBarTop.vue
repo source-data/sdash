@@ -63,7 +63,6 @@
                                 target="sd-mass-delete-panels"
                                 triggers="click"
                                 placement="bottom"
-                                @hidden="onDeletePopoverHide"
                             >
                                 <template v-slot:title>
                                         Are you sure?
@@ -110,7 +109,7 @@
                                 </p>
                                 <p>
                                     <label class="d-block">or create new sharing group</label>
-                                    <b-button @click="closeGroupsPopover" size="sm" variant="danger">Cancel</b-button>
+                                    <b-button @click="closeGroupsPopover" size="sm">Cancel</b-button>
                                     <b-button @click="createGroup" size="sm" variant="success">
                                         <font-awesome-icon icon="users" size="1x" />
                                         Create New Group
@@ -172,7 +171,7 @@ export default {
 
     methods: { //run as event handlers, for example
 
-        ...mapActions(['clearSelectedPanels', 'removeUserFromGroup']),
+        ...mapActions(['clearSelectedPanels', 'removeUserFromGroup', 'deleteSelectedPanels', ]),
         updateLocalSearchString(value){
             this.localSearchString = value
         },
@@ -211,7 +210,6 @@ export default {
                 this.$snotify.success(response.data.MESSAGE, "Success")
                 this.closeGroupsPopover()
             }).catch(error => {
-                console.log(error)
                 this.$snotify.error("Panels could not be added to group", "Failure")
             })
         },
@@ -232,14 +230,24 @@ export default {
                 this.$refs["quit-group-popover"].$emit("close")
             }
         },
+        closeDeletePopover(){
+            if(this.$refs["delete-popover"]) {
+                this.$refs["delete-popover"].$emit("close")
+            }
+        },
+        deleteMultiplePanels(){
+            this.deleteSelectedPanels().then((response)=>{
+                    this.$snotify.success(response.data.MESSAGE, "Success")
+                }).catch(error => {
+                    this.$snotify.error(error.data.MESSAGE, "Deletion Failed!")
+            })
+        },
         quitGroup(){
             this.removeUserFromGroup(this.currentUser.id).then(response => {
-                console.log(response)
                 this.closeQuitGroupPopover()
                 this.$router.push({name: 'dashboard'})
                 this.$snotify.success(response.data.MESSAGE, "Success")
             }).catch(error => {
-                console.log(error)
                 this.$snotify.error(error.data.MESSAGE, "Update Failed!")
                 this.closeQuitGroupPopover()
 

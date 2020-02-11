@@ -40,6 +40,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/panels/{panel}/comments', 'API\CommentController@store');
     Route::post('/panels', 'API\PanelController@store');
     Route::get('/panels/{panel}', 'API\PanelController@show');
+    Route::delete('/panels', 'API\PanelController@deleteMultiple');
     Route::delete('/panels/{panel}/tags/{tag}', 'API\TagController@detachPanel');
     Route::delete('/panels/{panel}', 'API\PanelController@destroy');
     Route::patch('/comments/{comment}', 'API\CommentController@update');
@@ -52,16 +53,9 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::patch('/groups/{group}', 'API\GroupController@update');
     Route::delete('/groups/{group}/users', 'API\UserController@removeFromGroup');
     Route::get('groups/{group}/panels', 'API\PanelController@listGroupPanels');
-
 });
 
 // Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
 // Route::get('/users/{user}', 'API\UserController@show'); // Todo logged in only
 
 Route::get('panels/public', 'API\PanelController@listPublicPanels');
-
-
-
-
-
-
