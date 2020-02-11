@@ -32,8 +32,6 @@ const SmartTag = function(text, deduplicate = false) {
                 if (http.status >= 200 && http.status < 300) {
                     // If successful
                     let tags = http.responseXML.getElementsByTagName("sd-tag")
-                    console.log("success!")
-                    console.log(tags)
                     var tagArray = []
                     for(let i=0; i<tags.length; i++){
                         let theTag = {}

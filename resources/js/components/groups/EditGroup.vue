@@ -217,7 +217,6 @@ export default {
             this.modifyGroup(group).then(response => {
                 this.$router.push({path: `/group/${response.data.DATA.group.id}`})
             }).catch(err => {
-                console.log(err)
                 this.$snotify.error(err.data.MESSAGE, "Sorry!")
             })
 
@@ -252,7 +251,7 @@ export default {
                 }
 
             })
-            .catch((error) => { console.log(error)
+            .catch((error) => {
                 this.$store.commit("setPanelLoadingState", false)
             })
 

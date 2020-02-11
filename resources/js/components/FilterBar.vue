@@ -59,7 +59,7 @@ export default {
         }
     },
     methods: {
-        toggleAccess(value){ console.log("Toggler " + value)
+        toggleAccess(value){
             this.$store.dispatch("setLoadingState", true)
             this.$store.dispatch("clearLoadedPanels")
             this.$store.dispatch("setSearchString", "")

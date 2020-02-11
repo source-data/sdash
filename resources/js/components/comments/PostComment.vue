@@ -62,7 +62,6 @@ export default {
                 this.postContent = ""
             }).catch(error => {
                 this.$snotify.error(error.data.message, "Comment failed")
-                console.log(error)
             })
         },
         cancelReply(){

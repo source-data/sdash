@@ -149,7 +149,6 @@ export default {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
                 this.clearUploads()
             }).catch(error => {
-                console.log(error.data)
                 this.$snotify.error(error.data.message, "Upload failed")
             })
         },
@@ -158,7 +157,6 @@ export default {
                 this.$snotify.success(response.data.MESSAGE, "URL Stored")
                 this.clearUploads()
             }).catch(error => {
-                console.log(error.data)
                 this.$snotify.error(error.data.message, "Upload failed")
             })
         },
@@ -175,7 +173,6 @@ export default {
                 this.$snotify.success(response.data.MESSAGE, "File Deleted")
                 this.clearDeletion()
             }).catch(error => {
-                console.log(error.data)
                 this.closeDeletePopover(this.fileToDelete.id)
                 this.$snotify.error(error.data.message, "Deletion failed")
                 this.clearDeletion()
@@ -232,7 +229,6 @@ export default {
                 this.clearUpdate()
                 this.$refs.fileUploadsTable.refresh()
             }).catch(error => {
-                console.log(error.data)
                 this.closeDescriptionPopover(this.fileToUpdate.id)
                 this.$snotify.error(error.data.message, "Update failed")
                 this.clearUpdate()

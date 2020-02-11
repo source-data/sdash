@@ -103,7 +103,7 @@ export default {
             .then((response) => {
                 this.$snotify.success("OK, I found your panels", "Panels Loaded")
             })
-            .catch((error) => { console.log(error)
+            .catch((error) => {
                 this.$snotify.error("We couldn't find any panels for you.", "Sorry!")
                 this.$store.commit("setPanelLoadingState", false)
             })

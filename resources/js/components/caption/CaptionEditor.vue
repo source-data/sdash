@@ -60,7 +60,6 @@ export default {
 
                 }).catch(error => {
                     this.$snotify.error("The SmartTag service failed to process this request", "Unavailable")
-                    console.log(error)
                 })
 
             }
@@ -71,7 +70,6 @@ export default {
                     this.$snotify.success(response.data.MESSAGE, "Update succeeded")
                     this.$store.commit("toggleEditingCaption", false)
                 }).catch(error => {
-                    console.log(error)
                     this.$snotify.error(error.message, "Panel Update Failed")
                 })
 

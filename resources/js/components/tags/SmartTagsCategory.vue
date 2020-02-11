@@ -101,7 +101,6 @@ export default {
     methods:{ //run as event handlers, for example
 
         createTag(tag) {
-            console.log(tag)
             let createdTag = {name: tag.tag.text, origin: "smarttag", role: "", type: "", category: ""};
             switch(this.type) {
                 case 'method':
@@ -118,29 +117,23 @@ export default {
                 this.newTag = ""
             }).catch(error => {
                 this.$snotify.error("Could not store this tag", "Sorry!")
-                console.log(error)
             })
         },
         validateSuggestion(tag) {
             this.$store.dispatch("validateSuggestedTag", {array_position: tag.tag.array_position, origin: "smarttag"}).catch(error => {
                 this.$snotify.error("Could not store this tag", "Sorry!")
-                console.log(error)
             })
         },
         showValidate(tag) {
             return tag.tag.status === 'suggested'
         },
-        deleteTag(tag){ console.log(tag)
-            console.log('--------deleting---------')
-            console.log(tag)
+        deleteTag(tag){
             let delTag = this.combinedTags[tag.index]
-            console.log(delTag)
             if(delTag.status === 'suggested'){
                 this.$store.commit('discardSuggestedTag', delTag)
             } else {
                 this.$store.dispatch('deleteTag', delTag).catch(error => {
                     this.$snotify.error("Tag could not be removed", "Sorry!")
-                    console.log(error)
                 })
             }
 

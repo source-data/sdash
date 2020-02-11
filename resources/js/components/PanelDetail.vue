@@ -160,7 +160,6 @@ export default {
                     this.$snotify.success(response.data.MESSAGE, "Update succeeded")
                     this.stopEditingPanelTitle()
                 }).catch(error => {
-                    console.log(error)
                     this.$snotify.error(error.message, "Panel Update Failed")
                 })
             }
@@ -182,7 +181,6 @@ export default {
             this.$store.dispatch("deleteExpandedPanel").then(response => {
                 this.$snotify.success(response.data.MESSAGE, "Deleted")
             }).catch(error => {
-                console.log(error)
                 this.$snotify.error("Could not delete panel", "Failed")
             })
         },
@@ -191,7 +189,6 @@ export default {
             this.$store.dispatch("toggleShareStatus").then(response => {
                 this.$snotify.success(response.data.MESSAGE, "Panel Updated")
             }).catch(error => {
-                console.log(error)
                 this.$snotify.error("Could not update panel", "Failed")
             })
 
