@@ -5,6 +5,7 @@ import SmartTag from "../services/SmartTag"
 const state = {
     expandedPanelTags: [],
     suggestedSmartTags: [],
+    tagCache: [],
 
 }
 
@@ -59,7 +60,15 @@ const mutations = {
     },
     discardSuggestedTag(state, delTag){
         state.suggestedSmartTags.splice(delTag.array_position, 1)
-    }
+    },
+    copyTagsToCache(state){
+        state.tagCache = [].concat(state.expandedPanelTags)
+    },
+    pasteTagsFromCache(state){
+        for(let i=0; i<state.tagCache.length; i++){
+            console.log("paste",state.tagCache[i])
+        }
+    },
 }
 
 const getters = {
@@ -90,6 +99,9 @@ const getters = {
     suggestedOtherTags(state){
         return state.suggestedSmartTags.map((tag, index) => { return {...tag, array_position:index} }).filter(tag => (tag.role !== 'assayed' && tag.role !== 'intervention' && tag.category !== 'assay'))
     },
+    tagCache(state){
+        return state.tagCache
+    }
 
 
 }
