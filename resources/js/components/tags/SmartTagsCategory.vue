@@ -9,8 +9,16 @@
             @before-adding-tag="createTag"
             @before-deleting-tag="deleteTag"
             :disabled="!iOwnThisPanel"
-            @click="tagSearch"
         >
+        <div
+            slot="tag-center"
+            slot-scope="props"
+        >
+            <span class="sd-tag-clickable" @click.stop="tagSearch(props.tag)">
+            {{props.tag.text}}
+            </span>
+
+        </div>
         <div
             class="sd-validate-suggested-tag"
             slot="tag-right"
@@ -142,7 +150,10 @@ export default {
 
         },
         tagSearch(tag){
-            console.log("TAGGA", tag)
+            this.$store.dispatch("setLoadingState", true)
+            this.$store.dispatch("clearLoadedPanels")
+            this.$store.dispatch("setSearchString", tag.text)
+            this.$store.dispatch("fetchPanelList")
         }
 
     }
@@ -176,5 +187,15 @@ export default {
      margin: 0 2px 0 4px;
 }
 
+.sd-tag-clickable {
+    cursor: pointer;
+    padding: 0 3px;
+    border: solid 1px transparent;
+    transition: border-color 200ms linear;
+}
+
+.sd-tag-clickable:hover {
+    border: dotted 1px #cecece;
+}
 
 </style>
