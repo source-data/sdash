@@ -8,6 +8,8 @@
             :add-on-key="[13,',']"
             @before-adding-tag="createTag"
             @before-deleting-tag="deleteTag"
+            :disabled="!iOwnThisPanel"
+            @click="tagSearch"
         >
         <div
             class="sd-validate-suggested-tag"
@@ -44,6 +46,7 @@ export default {
 
     computed: {
         ...mapGetters([
+            'iOwnThisPanel',
             'userTags',
             'methodTags',
             'interventionTags',
@@ -137,6 +140,9 @@ export default {
                 })
             }
 
+        },
+        tagSearch(tag){
+            console.log("TAGGA", tag)
         }
 
     }

@@ -66,12 +66,20 @@ const mutations = {
     },
     pasteTagsFromCache(state){
         for(let i=0; i<state.tagCache.length; i++){
-            console.log("paste",state.tagCache[i])
+            state.suggestedSmartTags.push({
+                category: state.tagCache[i].meta.category,
+                role: state.tagCache[i].meta.role,
+                name: state.tagCache[i].content,
+                type: state.tagCache[i].meta.type,
+            })
         }
     },
 }
 
 const getters = {
+    hasTags(state) {
+        return state.expandedPanelTags.length > 0
+    },
     userTags(state){
         return state.expandedPanelTags.filter(tag => tag.meta.origin === 'user')
     },
