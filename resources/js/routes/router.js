@@ -9,7 +9,7 @@ Vue.use(Router)
 
 export default new Router({
     mode: 'history',
-    base: process.env.MIX_DASHBOARD_URL,
+    base: '/dashboard/',
     routes: [
       {
         path: '/',
