@@ -16,8 +16,6 @@ See REST naming conventions at [https://restfulapi.net/resource-naming/](https:/
 ```
 $ php artisan migrate
 $ php artisan passport:install
-$ php artisan ui vue
-$ php artisan ui vue --auth
 $ npm install
 $ npm run dev
 ```
