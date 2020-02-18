@@ -256,7 +256,7 @@ class GroupController extends Controller
 
             // loading group panels here as they may have been modified by
             // the process above
-            if ($request->input('panels')) {
+            if ($request->has('panels')) {
 
                 $group->load('panels');
 
