@@ -143,6 +143,7 @@ const getters = {
     },
     isGroupAdmin(state, getters, rootState) {
         if(!state.currentGroup) return false
+        if(state.currentGroup.users) return state.currentGroup.users.find(user => (user.id === rootState.Users.user.id && user.pivot.role==="admin")) ? true : false
         return state.currentGroup.confirmed_users.find(user => (user.id === rootState.Users.user.id && user.pivot.role==="admin")) ? true : false
     },
     isGroupOwner(state, getters, rootState) {
