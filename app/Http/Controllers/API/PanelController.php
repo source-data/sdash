@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\PdfToImage\Pdf as PdfConverter;
 use Intervention\Image\Facades\Image as ImageService;
+use App\Services\PanelAccessTokenService as TokenMaker;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
 
@@ -149,6 +150,7 @@ class PanelController extends Controller
                 Panel::where('id', $panel->id)
                     ->with([
                         'user',
+                        'accessToken',
                         'tags' => function ($query) {
                             $query->withPivot('id', 'origin', 'role', 'type', 'category');
                         },
@@ -238,18 +240,18 @@ class PanelController extends Controller
         return API::response(200, "Panels deleted", []);
     }
 
-
-    public function hackShare(Panel $panel, Request $request)
+    public function createPublicAccessToken(Panel $panel, Request $request)
     {
+
+        $user = auth()->user();
+
         if (Gate::allows('modify-panel', $panel)) {
 
-            if ($panel->groups()->where('groups.id', 5)->exists()) {
-                $panel->groups()->detach(5);
-            } else {
-                $panel->groups()->attach(5);
-            }
+            $tokenMaker = new TokenMaker($panel);
 
-            return API::response(200, "Panel sharing updated.", $panel->load(['groups', 'tags', 'user']));
+            $token = $tokenMaker->generateToken();
+
+            return API::response(200, "Public access token created.", $token);
         } else {
             return API::response(401, "Permission denied.", []);
         }

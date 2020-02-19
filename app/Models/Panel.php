@@ -60,6 +60,11 @@ class Panel extends Model
         return $this->belongsToMany('App\Models\Tag')->as('meta')->withTimestamps();
     }
 
+    public function accessToken()
+    {
+        return $this->hasOne('App\Models\PanelAccessToken');
+    }
+
     public function scopeOrderByUpdated($query)
     {
         return $query->orderBy('updated_at', 'desc');
@@ -69,5 +74,4 @@ class Panel extends Model
     {
         return /*config("filesystems.disks.panels.root") 'panels' . DIRECTORY_SEPARATOR .*/ $this->id . DIRECTORY_SEPARATOR;
     }
-
 }

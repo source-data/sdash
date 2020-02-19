@@ -33,7 +33,8 @@ const defaultExpandedPanelState = {
     type: null,
     updated_at: null,
     user: {},
-    user_id: null
+    user_id: null,
+    access_token: {},
 }
 
 defaultState.expandedPanelDetail = Object.assign({}, defaultExpandedPanelState)
@@ -108,7 +109,7 @@ const actions = {
         })
     },
     deleteSelectedPanels({commit, state}) {
-        if(!state.selectedPanels) throw {data:{MESSAGE: "You must select panels to delete"}}
+        if(!state.selectedPanels) throw {data:{MESSAGE: "You must select panels to delete."}}
         let toDelete = [].concat(state.selectedPanels)
         return Axios.delete('/panels/',{
             params: {id: toDelete}
@@ -120,6 +121,13 @@ const actions = {
             return response
         })
 
+    },
+    generatePublicLink({commit, state}){
+        if(!state.expandedPanelId) throw {data:{MESSAGE: "A panel must be expanded before generating a public link."}}
+        return Axios.post('/panels/' + state.expandedPanelId + '/tokens').then(response => {
+
+            return response
+        })
     },
     expandPanel({ commit }, panelId){
         commit("toggleEditingCaption", false)
@@ -220,7 +228,7 @@ const mutations = {
     updateExpandedPanelId(state, panelId = null){
         state.expandedPanelId = panelId
     },
-    storeExpandedPanelDetail(state, payload){
+    storeExpandedPanelDetail(state, payload){ console.log("expanded panel" , payload.access_token)
         let panel = payload
         state.expandedPanelDetail={
             caption: panel.caption,
@@ -236,6 +244,7 @@ const mutations = {
             user: panel.user,
             user_id: panel.user_id,
             groups: panel.groups,
+            access_token: panel.access_token ? panel.access_token : {}
         }
     },
     removePanelFromStore(state, id){

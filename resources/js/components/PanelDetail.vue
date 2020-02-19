@@ -65,6 +65,11 @@
                         <smart-tags-panel></smart-tags-panel>
                     </b-card-text>
                 </b-tab>
+                <b-tab title="Sharing">
+                    <b-card-text>
+                        <panel-access-links></panel-access-links>
+                    </b-card-text>
+                </b-tab>
                 </b-tabs>
 
             <div class="sd-panel-detail--panel-actions">
@@ -109,6 +114,7 @@ import CommentList from '@/components/comments/CommentList'
 import FileUploads from '@/components/files/FileUploads'
 import CaptionEditor from '@/components/caption/CaptionEditor'
 import SmartTagsPanel from '@/components/tags/SmartTagsPanel'
+import PanelAccessLinks from '@/components/panelaccesslinks/PanelAccessLinks'
 import DownloadBar from '@/components/DownloadBar'
 
 export default {
@@ -120,6 +126,7 @@ export default {
         CaptionEditor,
         SmartTagsPanel,
         DownloadBar,
+        PanelAccessLinks,
     },
     data(){
         return {
