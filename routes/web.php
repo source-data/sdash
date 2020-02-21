@@ -20,6 +20,9 @@ Auth::routes(['verify' => true]);
 Route::get('/dashboard', 'DashboardController@index')->name('home');
 Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*');
 
+// Special single panel route
+Route::get('/panel/{panel}', 'PanelController@show');
+
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');

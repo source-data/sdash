@@ -32,6 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('modify-comment', 'App\Gates\CommentAccessGates@canModifyComment');
         Gate::define('modify-group', 'App\Gates\GroupAccessGates@canModifyGroup');
         Gate::define('view-group', 'App\Gates\GroupAccessGates@canViewGroup');
+        Gate::define('view-single-panel', 'App\Gates\PanelAccessGates@canViewSinglePanelPage');
 
         Passport::routes();
 

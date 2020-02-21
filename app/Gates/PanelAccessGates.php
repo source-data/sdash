@@ -2,6 +2,7 @@
 
 namespace App\Gates;
 
+use Illuminate\Support\Facades\Log;
 use App\Models\Panel;
 use App\User;
 
@@ -52,12 +53,19 @@ class PanelAccessGates
      * @param String|null $token
      * @return boolean
      */
-    public function canAccessSinglePanelPage(?User $user, Panel $panel, ?String $token)
+    public function canViewSinglePanelPage(?User $user, Panel $panel, ?String $token)
     {
-        if (is_null($user)) {
+        if (!$user) {
 
-            // check for token access
+            // no access token was submitted by the user
+            if (!$token) return false;
 
+            $accessToken = $panel->accessToken;
+
+            // the panel has no access token
+            if (!$accessToken) return false;
+
+            return ($token === $accessToken->token);
         } else {
             return $this->canViewPanel($user, $panel);
         }

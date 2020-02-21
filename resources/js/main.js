@@ -51,9 +51,10 @@ Vue.component('avatar', Avatar)
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-const app = new Vue({
-    router,
-    store,
-    render: h => h(Dashboard)
-}).$mount('#dashboard');
+if(document.getElementById("dashboard")) {
+  const app = new Vue({
+      router,
+      store,
+      render: h => h(Dashboard)
+  }).$mount('#dashboard');
+}
