@@ -32,7 +32,7 @@ class PanelController extends Controller
             $panel->load(['groups', 'tags'  => function ($query) {
                 $query->withPivot('id', 'origin', 'role', 'type', 'category');
             }, 'user', 'files']);
-            return View::make('singlepanel', $panel);
+            return View::make('singlepanel', ['panel' => $panel, 'token' => $token]);
         } else {
 
             abort(401, "Access Denied");

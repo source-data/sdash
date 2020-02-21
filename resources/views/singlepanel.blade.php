@@ -4,27 +4,25 @@
 <div class="container">
     <div class="row pt-4">
         <div class="col-sm">
-            <h1>{{ $title }}</h1>
+            <h1>{{ $panel["title"] }}</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-sm">
-            Created by <strong>{{ $user["firstname"] }} {{ $user["surname"]}}</strong>, {{ $user["department_name"]}}, {{ $user["institution_name"]}}, {{ $user["institution_address"]}}
+            Created by <strong>{{ $panel["user"]["firstname"] }} {{ $panel["user"]["surname"]}}</strong>, {{ $panel["user"]["department_name"]}}, {{ $panel["user"]["institution_name"]}}, {{ $panel["user"]["institution_address"]}}
         </div>
     </div>
     <div class="row py-4">
         <div class="card w-75">
             <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Button</a>
+                <img src="/panels/{{ $panel["id"] }}/image?token={{ $token }}" alt="{{$panel["title"]}} image">
             </div>
         </div>
 
     </div>
 
 </div>
-{{ var_dump($user) }}
-{{ var_dump($tags) }}
-{{ var_dump($files) }}
+{{ var_dump( $panel["user"]) }}
+{{ var_dump( $panel["tags"]) }}
+{{ var_dump( $panel["files"]) }}
 @endsection
