@@ -20,81 +20,6 @@ use App\Repositories\Interfaces\ImageRepositoryInterface;
 
 class ImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Image $image)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Image $image)
-    {
-        //
-    }
 
     /**
      * Stream the image file for the given panel ID
@@ -102,9 +27,18 @@ class ImageController extends Controller
      * @param Panel $panel
      * @return Response
      */
-    public function showPanelImage(Panel $panel)
+    public function showPanelImage(Panel $panel, Request $request)
     {
-        if(Gate::allows('view-panel', $panel)) {
+
+        $validator = Validator::make($request->all(),
+            ['string', 'exists:panel_access_tokens,token']
+        );
+
+        if($validator->fails()) abort(401, "Access Denied");
+
+        $token = $request->get('token', null);
+
+        if (Gate::allows('view-single-panel', [$panel, $token])) {
 
             $image = $panel->image()->first();
             if(!$image) abort(404, "Resource not found.");
