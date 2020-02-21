@@ -14,6 +14,9 @@
                         <b-button variant="light" @click.prevent="copyLink"><font-awesome-icon icon="copy" /> Copy</b-button>
                     </b-input-group-append>
                 </b-input-group>
+                <div class="sd-qr-code-container">
+                <img v-if="!loading" class="sd-qr-code" :src="'/panels/' + expandedPanel.id + '/token/qr'" alt="QR code leading to the public panel link">
+                </div>
             </b-col>
         </b-row>
         <b-alert show variant="primary" v-if="!hasLinks && !iOwnThisPanel">
@@ -62,13 +65,23 @@ export default {
             this.loading = true
             this.$store.dispatch("generatePublicLink")
             .then(response => {
-
+                this.loading = false
+                this.$snotify.success("New public link generated.", "Success!")
             }).catch(error => {
-
+                this.loading = false
+                this.$snotify.error(error.data.MESSAGE, "Action Failed!")
             })
         },
         revokeLink () {
-            this.loading = !this.loading
+            this.loading = true
+            this.$store.dispatch("revokePublicLink")
+            .then(response => {
+                this.loading = false
+                this.$snotify.success("Public link removed.", "Success!")
+            }).catch(error => {
+                this.loading = false
+                this.$snotify.error(error.data.MESSAGE, "Action Failed!")
+            })
         },
         copyLink () {
             let target = document.getElementById("sd-public-link")
@@ -85,5 +98,14 @@ export default {
 </script>
 
 <style lang="scss">
+.sd-qr-code {
+    height: 150px;
+    width: auto;
+}
+
+.sd-qr-code-container {
+    text-align: center;
+    padding: 0.5rem 0 1.5rem;
+}
 
 </style>

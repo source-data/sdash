@@ -26,12 +26,7 @@ class PanelAccessTokenService
 
     public function generateToken(): PanelAccessToken
     {
-        $existingToken = $this->panel->accessToken;
-
-        if ($existingToken) {
-            $this->deleteQrImage();
-            $existingToken->delete();
-        }
+        $this->destroyToken();
 
         $token = Str::random(48);
         $qrFileName = $this->generateQr($this->baseUrl . '?token=' . $token, Str::random(16) . ".png");
@@ -47,11 +42,23 @@ class PanelAccessTokenService
         return $panelAccessToken;
     }
 
+    public function destroyToken(): Bool
+    {
+        $existingToken = $this->panel->accessToken;
+
+        if ($existingToken) {
+            $this->deleteQrImage();
+            $existingToken->delete();
+        }
+
+        return TRUE;
+    }
+
 
     protected function generateQr($url, $filename)
     {
         $QRrender = new ImageRenderer(
-            new RendererStyle(200, 16),
+            new RendererStyle(350, 4),
             new ImagickImageBackEnd()
         );
 

@@ -125,7 +125,14 @@ const actions = {
     generatePublicLink({commit, state}){
         if(!state.expandedPanelId) throw {data:{MESSAGE: "A panel must be expanded before generating a public link."}}
         return Axios.post('/panels/' + state.expandedPanelId + '/tokens').then(response => {
-
+            commit("setPublicAccessToken", response.data.DATA)
+            return response
+        })
+    },
+    revokePublicLink({commit, state}){
+        if(!state.expandedPanelId) throw {data:{MESSAGE: "A panel must be expanded before revoking a public link."}}
+        return Axios.delete('/panels/' + state.expandedPanelId + '/tokens').then(response => {
+            commit("setPublicAccessToken", {})
             return response
         })
     },
@@ -286,6 +293,9 @@ const mutations = {
     addGroupsToPanelById(state, panelData){
         let index = _.findIndex(state.loadedPanels, function(panel){ return panel.id == panelData.id })
         if(index > -1) state.loadedPanels[index].groups = panelData.groups
+    },
+    setPublicAccessToken(state, tokenObject) {
+        state.expandedPanelDetail.access_token = tokenObject
     }
 }
 

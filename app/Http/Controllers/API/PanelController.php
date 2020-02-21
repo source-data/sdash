@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\PdfToImage\Pdf as PdfConverter;
 use Intervention\Image\Facades\Image as ImageService;
-use App\Services\PanelAccessTokenService as TokenMaker;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
 
@@ -224,8 +223,6 @@ class PanelController extends Controller
             "id.*"  => "exists:panels,id"
         ]);
 
-        $user = auth()->user();
-
         foreach ($request->get("id") as $panelId) {
 
             $panel = Panel::find($panelId);
@@ -238,22 +235,5 @@ class PanelController extends Controller
         }
 
         return API::response(200, "Panels deleted", []);
-    }
-
-    public function createPublicAccessToken(Panel $panel, Request $request)
-    {
-
-        $user = auth()->user();
-
-        if (Gate::allows('modify-panel', $panel)) {
-
-            $tokenMaker = new TokenMaker($panel);
-
-            $token = $tokenMaker->generateToken();
-
-            return API::response(200, "Public access token created.", $token);
-        } else {
-            return API::response(401, "Permission denied.", []);
-        }
     }
 }

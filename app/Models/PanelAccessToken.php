@@ -19,10 +19,6 @@ class PanelAccessToken extends Model
         'expires'
     ];
 
-    protected $hidden = [
-        'qr_image_name'
-    ];
-
     public function panel()
     {
         return $this->belongsTo('\App\Models\Panel');

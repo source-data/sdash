@@ -35,7 +35,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::delete('/users/{user}', 'API\UserController@destroy');
     Route::patch('/panels/{panel}/share', 'API\PanelController@hackShare');
     Route::patch('/panels/{panel}', 'API\PanelController@update');
-    Route::post('/panels/{panel}/tokens', 'API\PanelController@createPublicAccessToken');
+    Route::post('/panels/{panel}/tokens', 'API\AccessTokenController@create');
+    Route::delete('/panels/{panel}/tokens', 'API\AccessTokenController@destroy');
     Route::post('/panels/{panel}/tags', 'API\TagController@store');
     Route::post('/panels/{panel}/files', 'API\FileController@store');
     Route::post('/panels/{panel}/comments', 'API\CommentController@store');
