@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
 use App\Models\Panel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -19,9 +20,11 @@ class PanelController extends Controller
      */
     public function show(Panel $panel, Request $request)
     {
-        $request->validate([
-            'token' => ['string', 'exists:panel_access_tokens,token']
-        ]);
+        $validator = Validator::make($request->all(),
+            ['string', 'exists:panel_access_tokens,token']
+        );
+
+        if($validator->fails()) abort(401, "Access Denied");
 
         $token = $request->get('token', null);
 
@@ -32,7 +35,8 @@ class PanelController extends Controller
             return View::make('singlepanel', $panel);
         } else {
 
-            return redirect('home');
+            abort(401, "Access Denied");
+            
         }
     }
 }
