@@ -15,7 +15,7 @@
     <div class="row py-4">
         <div class="card w-75">
             <div class="card-body">
-                <img src="/panels/{{ $panel["id"] }}/image?token={{ $token }}" alt="{{$panel["title"]}} image">
+                <img class="sd-single-panel-image" src="/panels/{{ $panel["id"] }}/image?token={{ $token }}" alt="{{$panel["title"]}} image">
             </div>
         </div>
 

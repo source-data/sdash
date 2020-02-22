@@ -1,24 +1,26 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url("https://fonts.googleapis.com/css?family=Nunito");
 
 // Variables
-@import 'variables';
+@import "variables";
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
-
+@import "~bootstrap/scss/bootstrap";
 
 //Vue Bootstrap
-@import '~bootstrap-vue/src/index.scss';
+@import "~bootstrap-vue/src/index.scss";
 
 //snotify styles
-@import '~vue-snotify/styles/material.css';
+@import "~vue-snotify/styles/material.css";
 
 //full screen drop upload styles
-@import '~vue-full-screen-file-drop/dist/vue-full-screen-file-drop.css';
+@import "~vue-full-screen-file-drop/dist/vue-full-screen-file-drop.css";
 
 //vue-multiselect
-@import '~vue-multiselect/dist/vue-multiselect.min.css';
+@import "~vue-multiselect/dist/vue-multiselect.min.css";
 
 //overrides
-@import 'custom';
+@import "custom";
+
+//single panel page
+@import "singlepanelpage";
