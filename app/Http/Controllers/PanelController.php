@@ -20,23 +20,48 @@ class PanelController extends Controller
      */
     public function show(Panel $panel, Request $request)
     {
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             ['string', 'exists:panel_access_tokens,token']
         );
 
-        if($validator->fails()) abort(401, "Access Denied");
+        if ($validator->fails()) abort(401, "Access Denied");
 
         $token = $request->get('token', null);
 
         if (Gate::allows('view-single-panel', [$panel, $token])) {
-            $panel->load(['groups', 'tags'  => function ($query) {
-                $query->withPivot('id', 'origin', 'role', 'type', 'category');
-            }, 'user', 'files']);
-            return View::make('singlepanel', ['panel' => $panel, 'token' => $token]);
+
+            $tags = $panel->tags()->withPivot('id', 'origin', 'role', 'type', 'category')->get();
+
+            $panel->load(['groups', 'user', 'files']);
+            return View::make('singlepanel', ['panel' => $panel, 'token' => $token, 'tags' => $this->sortTags($tags)]);
         } else {
 
             abort(401, "Access Denied");
-            
         }
+    }
+
+
+    public function sortTags($tags)
+    {
+        $newTags = [];
+
+        foreach ($tags as $tag) {
+            if ($tag->meta->category === 'assay') {
+
+                $newTags["methods"][] = $tag;
+            } elseif ($tag->meta->role === 'assayed') {
+
+                $newTags["assays"][] = $tag;
+            } elseif ($tag->meta->role === 'intervention') {
+
+                $newTags["interventions"][] = $tag;
+            } else {
+
+                $newTags["other"][] = $tag;
+            }
+        }
+
+        return $newTags;
     }
 }
