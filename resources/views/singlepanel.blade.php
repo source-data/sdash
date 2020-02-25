@@ -16,7 +16,7 @@
         <div class="col-sm">
             <figure class="card">
                 <div class="card-body sd-single-panel--image-wrapper">
-                    <img class="sd-single-panel--image" src="/panels/{{ $panel["id"] }}/image?token={{ $token }}" alt="{{$panel["title"]}} image">
+                    <img class="sd-single-panel--image" @if($token)src="/panels/{{ $panel["id"] }}/image?token={{ $token }}" @else src="/panels/{{ $panel["id"] }}/image" @endif alt="{{$panel["title"]}} image">
                 </div>
                 @if ( !empty($panel["caption"]) )
                 <div class="card-body">
@@ -25,10 +25,10 @@
                     </p>
                 </div>
                 @endif
-                @if ( !empty($tags) )
                 <div class="card-body">
                     <p class="card-text">
                         <div class="row">
+                            @if ( !empty($tags) )
                             <div class="col-md">
 
                                 <h4>Structured Tags</h4>
@@ -83,16 +83,63 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md">
-                                <h4>Supplementary Materials</h4>
+                            @endif
 
+                            <div class="col-md">
+                                @if(!empty($panel["files"]->toArray()))
+                                <h4>Supplementary Materials</h4>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Attached Files</td>
+                                            <td>
+                                                <ul class="list-unstyled">
+                                                    @foreach($panel["files"] as $file)
+                                                    @if($file["type"]==="file")
+                                                    <li class="sd-file-list"><a @if($token)href="/files/{{$file["id"]}}" @else href="/files/{{$file["id"]}}?token={{$token}}" @endif>{{ $file["original_filename"] }}</a>@if($file["description"]): {{ $file["description"]}} @endif</li>
+                                                    @endif
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>External Resources</td>
+                                            <td>
+                                                <ul class="list-unstyled">
+                                                    @foreach($panel["files"] as $file)
+                                                    @if($file["type"]==="url")
+                                                    <li><a href="{{$file["url"]}}">{{ $file["url"] }}</a>@if($file["description"]) - {{ $file["description"]}} @endif</li>
+                                                    @endif
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                @endif
                             </div>
                         </div>
                     </p>
+                    <p class="card-text">
+                        <h4>Download Panel</h4>
+                        <ul>
+                            <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/zip?token={{$token}}" @else href="/panels/{{$panel["id"]}}/zip" @endif>Archive containing all files (.zip)</a></li>
+                            <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/dar?token={{$token}}" @else href="/panels/{{$panel["id"]}}/dar" @endif>SmartFigure Editor document (.smartfigure)</a></li>
+                            <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/pdf?token={{$token}}" @else href="/panels/{{$panel["id"]}}/pdf" @endif>Adobe Acrobat Reader file (.pdf)</a></li>
+                            <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/powerpoint?token={{$token}}" @else href="/panels/{{$panel["id"]}}/powerpoint" @endif>Microsoft Powerpoint slide (.pptx)</a></li>
+                            <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}?token={{$token}}" @else href="/panels/{{$panel["id"]}}/zip" @endif>Original image file (MIME type: {{$panel["image"]["mime_type"]}})</a></li>
+                        </ul>
 
+                    </p>
 
                 </div>
-                @endif
+
                 <ul class="sd-single-panel-update-details list-group list-group-flush">
                     <li class="list-group-item list-group-item-secondary"><Strong>Created:</Strong> {{$panel["created_at"]->format("d M Y h:m:s")}} | <strong>Last updated:</strong> {{$panel["updated_at"]->format("d M Y h:m:s")}}</li>
                 </ul>
