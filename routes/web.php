@@ -24,14 +24,16 @@ Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 // Special single panel route
 Route::get('/panel/{panel}', 'PanelController@show');
 
+// download routes - special access gates for these routes are defined in the controller
+Route::get('/panels/{panel}/pdf', 'DownloadController@downloadPdf');
+Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint');
+Route::get('/panels/{panel}/zip', 'DownloadController@downloadZip');
+Route::get('/panels/{panel}/dar', 'DownloadController@downloadDar');
+Route::get('/panels/{panel}', 'DownloadController@downloadOriginal');
+
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
     Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');
-    Route::get('/panels/{panel}/pdf', 'DownloadController@downloadPdf');
-    Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint');
-    Route::get('/panels/{panel}/zip', 'DownloadController@downloadZip');
-    Route::get('/panels/{panel}/dar', 'DownloadController@downloadDar');
-    Route::get('/panels/{panel}', 'DownloadController@downloadOriginal');
     Route::get('/files/{file}', 'API\FileController@download');
 });

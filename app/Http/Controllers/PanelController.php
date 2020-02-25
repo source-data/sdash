@@ -22,7 +22,7 @@ class PanelController extends Controller
     {
         $validator = Validator::make(
             $request->all(),
-            ['string', 'exists:panel_access_tokens,token']
+            ['token' => ['string', 'exists:panel_access_tokens,token']]
         );
 
         if ($validator->fails()) abort(401, "Access Denied");
