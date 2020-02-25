@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Repositories\Interfaces\FileRepositoryInterface;
+use Illuminate\Support\Facades\Validator;
 
 class FileController extends Controller
 {
@@ -22,7 +23,7 @@ class FileController extends Controller
 
     public function __construct(FileRepositoryInterface $fileRepository)
     {
-           $this->fileRepository = $fileRepository;
+        $this->fileRepository = $fileRepository;
     }
 
     /**
@@ -49,9 +50,9 @@ class FileController extends Controller
             'url'   => ['required_without:file', 'url']
         ]);
 
-        if(Gate::allows('access-panel', $panel)) {
+        if (Gate::allows('access-panel', $panel)) {
 
-            if($request->input('url')){
+            if ($request->input('url')) {
                 $fileCreated = File::create([
                     'panel_id'  => $panel->id,
                     'url'       => $request->input('url'),
@@ -61,20 +62,15 @@ class FileController extends Controller
                 return API::response(200, "External URL stored.", File::find($fileCreated->id));
             }
 
-            if($file = $request->file('file')){
+            if ($file = $request->file('file')) {
 
                 return API::response(200, "File uploaded successfully", $this->fileRepository->storePanelFile($panel, $file));
-
             }
 
             return API::response(400, "Malformed upload attempt - did you submit a file or url?", []);
-
         } else {
-            abort(401,"Access denied.");
+            abort(401, "Access denied.");
         }
-
-
-
     }
 
     /**
@@ -107,21 +103,20 @@ class FileController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, File $file)
-{
+    {
         $user = auth()->user();
         $panel = $file->panel;
         $request->validate([
             'description'  => ['required', 'max:255']
         ]);
 
-        if( !Gate::allows('access-panel', $panel)) return API::response(401, "Access denied.", []);
+        if (!Gate::allows('access-panel', $panel)) return API::response(401, "Access denied.", []);
 
         $file->update([
             'description' => strip_tags($request->input("description"))
         ]);
 
         return API::response(200, "File updated", $file);
-
     }
 
     /**
@@ -136,9 +131,9 @@ class FileController extends Controller
         $user = auth()->user();
         $panel = $file->panel;
 
-        if( !Gate::allows('access-panel', $panel)) return API::response(401, "Access denied.", []);
+        if (!Gate::allows('access-panel', $panel)) return API::response(401, "Access denied.", []);
 
-        if($this->fileRepository->archiveAndRemove($file)) {
+        if ($this->fileRepository->archiveAndRemove($file)) {
             return API::response(200, "File removed.", []);
         }
 
@@ -147,13 +142,19 @@ class FileController extends Controller
 
 
 
-    public function download(File $file)
+    public function download(File $file, Request $request)
     {
+        $validator = Validator::make(
+            $request->all(),
+            ['string', 'exists:panel_access_tokens,token']
+        );
 
-        $user = auth()->user();
+        if ($validator->fails()) abort(401, "Access Denied");
+
         $panel = $file->panel;
+        $token = $request->get('token', null);
 
-        if( !Gate::allows('access-panel', $panel)) throw new AuthorizationException("Access Denied");
+        if (!Gate::allows('view-single-panel', [$panel, $token])) throw new AuthorizationException("Access Denied");
 
         $fs = Storage::getDriver();
 
@@ -161,19 +162,15 @@ class FileController extends Controller
         $fileStream = $fs->readStream($path);
 
         return response()->stream(
-            function() use($fileStream){
-                while(ob_get_level() > 0) ob_end_flush();
+            function () use ($fileStream) {
+                while (ob_get_level() > 0) ob_end_flush();
                 fpassthru($fileStream);
             },
             200,
             [
                 'Content-Type'  =>  $file->mime_type,
-                'Content-disposition' => 'attachment; filename="' . $file->original_filename .'"',
+                'Content-disposition' => 'attachment; filename="' . $file->original_filename . '"',
             ]
         );
-
-
-
-
     }
 }
