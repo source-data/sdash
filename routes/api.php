@@ -31,6 +31,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
+    Route::get('/users/{user}', 'API\UserController@show');
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::delete('/users/{user}', 'API\UserController@destroy');
     Route::patch('/panels/{panel}/share', 'API\PanelController@hackShare');
@@ -58,6 +59,5 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 });
 
 // Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
-// Route::get('/users/{user}', 'API\UserController@show'); // Todo logged in only
 
 Route::get('panels/public', 'API\PanelController@listPublicPanels');
