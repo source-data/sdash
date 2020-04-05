@@ -60,6 +60,9 @@
                                     <a class="dropdown-item" href="/dashboard">
                                         My Dashboard
                                     </a>
+                                    <a class="dropdown-item" href="{{ url('/dashboard/user/' . Auth::user()->id) }}">
+                                        Profile
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
