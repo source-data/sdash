@@ -23,8 +23,10 @@ add('writable_dirs', []);
 
 // Hosts
 
-host('207.154.224.106')
-    ->set('deploy_path', '/var/www/sdash.sourcedata.io');
+host('167.172.103.24')
+    ->user('deployer')
+    ->identityFile('~/.ssh/id_rsa.pub')
+    ->set('deploy_path', '/var/www/html/sdash.sourcedata.io');
 
 // Tasks
 
@@ -37,4 +39,4 @@ after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
 
-before('deploy:symlink', 'artisan:migrate');
+// before('deploy:symlink', 'artisan:migrate');
