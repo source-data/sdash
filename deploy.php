@@ -3,6 +3,7 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
+require 'recipe/npm.php';
 
 // Project name
 set('application', 'SDash');
@@ -25,14 +26,25 @@ add('writable_dirs', []);
 
 host('167.172.111.183')
     ->user('deployer')
+    ->set('branch', 'master')
     ->identityFile('~/.ssh/id_rsa.pub')
     ->set('deploy_path', '/var/www/html/sdash.sourcedata.io');
 
 // Tasks
 
-task('build', function () {
-    run('cd {{release_path}} && build');
+task('npm:compile', function () {
+    run('cd {{release_path}} && npm run production');
 });
+
+//remove node_modules to save space
+task('npm:remove', function () {
+    run('cd {{release_path}} && rm -rf node_modules');
+});
+
+desc('install and compile npm packages');
+after('deploy:update_code', 'npm:install');
+after('npm:install', 'npm:compile');
+after('npm:compile', 'npm:remove');
 
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
@@ -40,3 +52,11 @@ after('deploy:failed', 'deploy:unlock');
 // Migrate database before symlink new release.
 
 before('deploy:symlink', 'artisan:migrate');
+
+desc('Restart PHP-FPM service');
+task('php-fpm:restart', function () {
+    // The user must have rights for restart service
+    // /etc/sudoers: username ALL=NOPASSWD:/bin/systemctl restart php-fpm.service
+    run('sudo systemctl restart php7.4-fpm.service');
+});
+after('deploy:symlink', 'php-fpm:restart');
