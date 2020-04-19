@@ -50,7 +50,6 @@ after('npm:compile', 'npm:remove');
 after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
-
 before('deploy:symlink', 'artisan:migrate');
 
 desc('Restart PHP-FPM service');
