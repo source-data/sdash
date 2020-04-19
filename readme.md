@@ -34,7 +34,11 @@ MIX_SMART_TAG_URL=https://smtag.sourcedata.io/api/v1/tag
 
 Project deployment is in the process of being configured with [Deployer](https://deployer.org/).
 
-To be finalised.
+Deployer will be installed as a project dependency when you run ```composer install```
+
+You should configure the deploy.php file to contain the correct hostname and deploy path for this project.
+
+Running ```php vendor/bin/dep deploy``` will deploy the **master** branch to the defined server.
 
 ### ImageMagick
 
