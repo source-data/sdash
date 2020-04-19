@@ -24,11 +24,12 @@ add('writable_dirs', []);
 
 // Hosts
 
-host('')
+host('dev')
+    ->hostname('')
     ->user('deployer')
     ->set('branch', 'master')
     ->identityFile('~/.ssh/id_rsa.pub')
-    ->set('deploy_path', '/var/www/html');
+    ->set('deploy_path', '/var/www/html/sdash.sourcedata.io');
 
 // Tasks
 
@@ -41,16 +42,19 @@ task('npm:remove', function () {
     run('cd {{release_path}} && rm -rf node_modules');
 });
 
-desc('install and compile npm packages');
-after('deploy:update_code', 'npm:install');
-after('npm:install', 'npm:compile');
-after('npm:compile', 'npm:remove');
+// stack together preparatory tasks
+task('sdash:installations', [
+    'artisan:migrate',
+    'npm:install',
+    'npm:compile',
+    'npm:remove'
+]);
 
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
-before('deploy:symlink', 'artisan:migrate');
+before('deploy:symlink', 'sdash:installations');
 
 desc('Restart PHP-FPM service');
 task('php-fpm:restart', function () {
