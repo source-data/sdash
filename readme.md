@@ -38,7 +38,7 @@ Deployer will be installed as a project dependency when you run ```composer inst
 
 You should configure the deploy.php file to contain the correct hostname and deploy path for this project.
 
-Running ```php vendor/bin/dep deploy``` will deploy the **master** branch to the defined server.
+Running ```php vendor/bin/dep deploy dev``` will deploy the **master** branch to the host called "dev" in the config file.
 
 ### ImageMagick
 
