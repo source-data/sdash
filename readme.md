@@ -32,11 +32,9 @@ MIX_SMART_TAG_URL=https://smtag.sourcedata.io/api/v1/tag
 
 ### Deployment
 
-This application can be deployed to sdash.sourcedata.io using Capistrano. Configuration is already set up, so in the root directory run:
+Project deployment is in the process of being configured with [Deployer](https://deployer.org/).
 
-```
-bundle exec cap staging deploy
-```
+To be finalised.
 
 ### ImageMagick
 
