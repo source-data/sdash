@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import PanelGrid from '@/components/PanelGrid'
 import UserProfile from '@/components/users/UserProfile'
+import EditUser from '@/components/users/EditUser'
 import GroupInfo from '@/components/groups/GroupInfo'
 import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
@@ -21,6 +22,12 @@ export default new Router({
         path: '/user/:user_id',
         name: 'user',
         component: UserProfile,
+        props: true,
+      },
+      {
+        path: '/user/:user_id/edit',
+        name: 'useredit',
+        component: EditUser,
         props: true,
       },
       {

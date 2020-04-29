@@ -1,6 +1,12 @@
 <template>
     <div>
         <info-bar v-if="user">
+            <template v-slot:above-title>
+                <router-link :to="{path: '/user/' + user.id + '/edit'}" class="sd-edit-icon sd-user-edit-link">
+                    <font-awesome-icon icon="edit" title="Edit user details" />
+                    Edit profile
+                </router-link>
+            </template>
             <template v-slot:title>
                 <h1 class="pb-0 mb-0">{{ user.firstname + ' ' + user.surname }}</h1>
                 <p v-if="user.institution_name">{{ user.institution_name }}</p>
@@ -86,5 +92,9 @@ export default {
 </script>
 
 <style lang="scss">
-
+    .sd-user-edit-link {
+        font-size: 1rem;
+        padding: 0.5rem 0;
+        color: #459939;
+    }
 </style>

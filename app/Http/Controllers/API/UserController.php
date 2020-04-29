@@ -62,6 +62,12 @@ class UserController extends Controller
 
         $data = $request->only(["firstname", "surname", "email", "institution_name", "institution_address", "department_name", "linkedin", "twitter", "orcid"]);
 
+        $this->validate($request, [
+            'firstname' => 'required|string',
+            'surname' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->id
+        ]);
+
         $user->update($data);
 
         return API::response(200, "User record updated.", $user);
