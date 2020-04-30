@@ -139,6 +139,7 @@
 <script>
 
 import Axios from "axios"
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'EditUser',
@@ -150,7 +151,18 @@ export default {
             submiting: false
         }
     },
+    computed: {
+        ...mapGetters([
+            'currentUser',
+        ])
+    },
     created() {
+        let userId = parseInt(this.user_id);
+        if (!this.currentUser || ((this.currentUser.id !== userId) && (this.currentUser.role !== 'superadmin'))) {
+            this.$snotify.error("You don't have permission to do that", "Access Denied")
+            this.$router.push({path: '/'})
+            return
+        }
         this.getUserData()
     },
     methods: {

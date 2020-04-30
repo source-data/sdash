@@ -1,7 +1,7 @@
 <template>
     <div>
         <info-bar v-if="user">
-            <template v-slot:above-title>
+            <template v-slot:above-title v-if="isAuthorized">
                 <router-link :to="{path: '/user/' + user.id + '/edit'}" class="sd-edit-icon sd-user-edit-link">
                     <font-awesome-icon icon="edit" title="Edit user details" />
                     Edit profile
@@ -54,6 +54,7 @@
 
 import Axios from "axios"
 import InfoBar from '../InfoBar'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'UserProfile',
@@ -66,6 +67,14 @@ export default {
             loading: false,
             user: null,
             error: null
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'currentUser'
+        ]),
+        isAuthorized() {
+            return (this.currentUser.id === this.user.id) || (this.currentUser.role === 'superadmin')
         }
     },
     created() {
