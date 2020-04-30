@@ -29,6 +29,14 @@
             <b-button variant="success" class="py-2" size="sm" @click="generateLink"><font-awesome-icon icon="link" /> Refresh Link</b-button>
             <b-button variant="danger" class="py-2" size="sm" @click="revokeLink"><font-awesome-icon icon="link" /> Revoke Link</b-button>
         </div>
+        <template v-if="expandedPanel.groups && expandedPanel.groups.length > 0">
+            <p>Shared with the following groups:</p>
+            <ul>
+                <li v-for="group in expandedPanel.groups" :key="group.id">
+                    {{ group.name }}
+                </li>
+            </ul>
+        </template>
     </section>
 </template>
 
