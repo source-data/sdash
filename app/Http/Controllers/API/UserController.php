@@ -65,7 +65,8 @@ class UserController extends Controller
         $this->validate($request, [
             'firstname' => 'required|string',
             'surname' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $user->id
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'orcid' => ['regex:/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/i'],
         ]);
 
         $user->update($data);
