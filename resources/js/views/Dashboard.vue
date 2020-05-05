@@ -56,6 +56,7 @@ export default {
 
         ...mapGetters([
             'currentUser',
+            'currentGroup',
             'isLoggedIn',
             'isLightboxOpen',
             'expandedPanel',
@@ -67,7 +68,8 @@ export default {
     methods:{ //run as event handlers, for example
         ...mapActions([
             'uploadNewPanel',
-            'toggleLightbox'
+            'toggleLightbox',
+            'addSelectedPanelsToGroup',
         ]),
         methodName(){
             //do stuff here
@@ -76,6 +78,19 @@ export default {
             this.uploadNewPanel(formData)
             .then(response => {
                 this.$snotify.success("New panel created", "Uploaded")
+                if(this.currentGroup) {
+                    this.$store.commit("clearSelectedPanels")
+                    this.$store.commit("addPanelToSelections", response.data.DATA.id)
+                    this.addSelectedPanelsToGroup(this.currentGroup.id)
+                      .then(response => {
+                          this.$snotify.success("Panel added to this group", "Group updated")
+                      })
+                      .catch(error => {
+                          console.log(error)
+                          this.$snotify.error("Cannot add panel to this group", "Update failed")
+                      })
+
+                }
                 })
                 .catch(error => {
                     this.$snotify.error(error.data.errors.file[0], "Upload failed")
