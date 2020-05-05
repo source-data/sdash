@@ -72,9 +72,6 @@ export default {
         store.commit("clearSelectedPanels")
         store.commit("setSearchMode", "user")
         store.dispatch("fetchPanelList")
-        .then((response) => {
-            this.$snotify.success("OK, I found your panels", "Panels Loaded")
-        })
         .catch((error) => {
             this.$snotify.error("We couldn't find any panels for you.", "Sorry!")
         })

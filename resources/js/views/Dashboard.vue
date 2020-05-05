@@ -87,11 +87,7 @@ export default {
     created(){
         if(this.$route.query.search) this.$store.commit("setSearchString",this.$route.query.search)
         store.dispatch('fetchCurrentUser')
-        .then((response) => {
-            this.$snotify.success("Welcome to your dashboard", "Logged In")
-        })
         .catch((error) => {
-            console.log('%c Hope this is not... Chris\'s blood! ', 'color: #ff0000')
             console.log(error)
             this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
         })
