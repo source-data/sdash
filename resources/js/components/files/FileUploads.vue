@@ -1,6 +1,6 @@
 <template>
     <div class="sd-file-uploads-container">
-        <div class="sd-file-uploads-header">
+        <div v-if="iOwnThisPanel" class="sd-file-uploads-header">
             <div class="sd-file-uploads--toggle-wrapper">
                 <toggle-button v-model="uploadToggle" @change="clearUploads" :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
             </div>
@@ -26,7 +26,7 @@
                 :fields="fields"
                 ref="fileUploadsTable"
              ><!--end of table definition-->
-                <template v-slot:cell(action)="data">
+                <template v-if="iOwnThisPanel" v-slot:cell(action)="data">
                     <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id"><font-awesome-icon icon="trash-alt" size="lg"/></b-button>
                     <b-popover
                         :ref="'popover-' + data.item.id"
@@ -50,7 +50,11 @@
                         </div>
                     </b-popover>
                 </template>
-                <template v-slot:cell(description)="data">
+                <template v-if="!iOwnThisPanel" v-slot:cell(description)="data">
+                        <span v-if="data.item.description">{{ data.item.description }}</span>
+                        <span v-if="!data.item.description" class="text-info">Add a description</span>
+                </template>
+                <template v-if="iOwnThisPanel" v-slot:cell(description)="data">
                     <a href="#" @click.prevent class="custom-styled-link" :id="'edit-description-' + data.item.id" title="Edit description">
                         <span v-if="data.item.description">{{ data.item.description }}</span>
                         <span v-if="!data.item.description" class="text-info">Add a description</span>
@@ -123,7 +127,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['getFiles']),
+        ...mapGetters(['getFiles', 'iOwnThisPanel']),
         disableSubmit(){
             return (this.file===null && this.url===null)
         }
