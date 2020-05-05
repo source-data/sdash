@@ -50,7 +50,7 @@ class FileController extends Controller
             'url'   => ['required_without:file', 'url']
         ]);
 
-        if (Gate::allows('access-panel', $panel)) {
+        if (Gate::allows('modify-panel', $panel)) {
 
             if ($request->input('url')) {
                 $fileCreated = File::create([
@@ -110,7 +110,7 @@ class FileController extends Controller
             'description'  => ['required', 'max:255']
         ]);
 
-        if (!Gate::allows('access-panel', $panel)) return API::response(401, "Access denied.", []);
+        if (!Gate::allows('modify-panel', $panel)) return API::response(401, "Access denied.", []);
 
         $file->update([
             'description' => strip_tags($request->input("description"))
@@ -131,7 +131,7 @@ class FileController extends Controller
         $user = auth()->user();
         $panel = $file->panel;
 
-        if (!Gate::allows('access-panel', $panel)) return API::response(401, "Access denied.", []);
+        if (!Gate::allows('modify-panel', $panel)) return API::response(401, "Access denied.", []);
 
         if ($this->fileRepository->archiveAndRemove($file)) {
             return API::response(200, "File removed.", []);
