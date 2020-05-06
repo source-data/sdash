@@ -55,6 +55,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::put('/groups/{group}', 'API\GroupController@replace');
     Route::patch('/groups/{group}', 'API\GroupController@update');
     Route::delete('/groups/{group}/users', 'API\UserController@removeFromGroup');
+    Route::delete('/groups/{group}', 'API\GroupController@destroy');
     Route::get('groups/{group}/panels', 'API\PanelController@listGroupPanels');
 });
 

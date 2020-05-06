@@ -294,7 +294,14 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
+        $user = auth()->user();
+
+        if (Gate::allows('modify-group', $group)) {
+            $group->users()->detach();
+            $group->panels()->detach();
+            $group->delete();
+            return API::response(200, "The group was deleted", []);
+        }
     }
 
 
