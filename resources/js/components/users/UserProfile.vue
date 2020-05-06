@@ -14,27 +14,39 @@
             <template v-slot:text>
                 <dl class="row mt-3">
                     <template v-if="user.email">
-                        <dt class="col-sm-2">Email</dt>
-                        <dd class="col-sm-10">
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">
                             <a :href="'mailto:' + user.email" target="_blank" class="pb-2">{{ user.email }}</a>
                         </dd>
                     </template>
+                    <template v-if="user.orcid">
+                        <dt class="col-sm-4">ORCID</dt>
+                        <dd class="col-sm-8">
+                            <a :href="'https://orcid.org/' + user.orcid" target="_blank" class="pb-2">{{ user.orcid }}</a>
+                        </dd>
+                    </template>
+                    <template v-if="user.institution_name">
+                        <dt class="col-sm-4">Institution Name</dt>
+                        <dd class="col-sm-8">{{ user.institution_name }}</dd>
+                    </template>
+                    <template v-if="user.institution_address">
+                        <dt class="col-sm-4">Institution Address</dt>
+                        <dd class="col-sm-8">{{ user.institution_address }}</dd>
+                    </template>
+                    <template v-if="user.department_name">
+                        <dt class="col-sm-4">Department Name</dt>
+                        <dd class="col-sm-8">{{ user.department_name }}</dd>
+                    </template>
                     <template v-if="user.linkedin">
-                        <dt class="col-sm-2">LinkedIn</dt>
-                        <dd class="col-sm-10">
+                        <dt class="col-sm-4">LinkedIn</dt>
+                        <dd class="col-sm-8">
                             <a :href="user.linkedin" target="_blank" class="pb-2">{{ user.linkedin }}</a>
                         </dd>
                     </template>
                     <template v-if="user.twitter">
-                        <dt class="col-sm-2">Twitter</dt>
-                        <dd class="col-sm-10">
+                        <dt class="col-sm-4">Twitter</dt>
+                        <dd class="col-sm-8">
                             <a :href="user.twitter" target="_blank" class="pb-2">{{ user.twitter }}</a>
-                        </dd>
-                    </template>
-                    <template v-if="user.orcid">
-                        <dt class="col-sm-2">ORCID</dt>
-                        <dd class="col-sm-10">
-                            <a :href="'https://orcid.org/' + user.orcid" target="_blank" class="pb-2">{{ user.orcid }}</a>
                         </dd>
                     </template>
                 </dl>
