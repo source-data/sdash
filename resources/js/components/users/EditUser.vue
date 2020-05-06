@@ -178,6 +178,7 @@ export default {
                 .then(response => {
                     this.errors = {}
                     this.submiting = false
+                    this.$router.push({path: `/user/${this.user_id}`})
                 })
                 .catch(error => {
                     this.errors = error.data.errors
