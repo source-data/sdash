@@ -99,6 +99,13 @@ const actions = {
             commit("setCurrentGroup", null)
             return response
         })
+    },
+    deleteUserGroup({commit, state, rootState}){
+        return Axios.delete("/groups/" + state.currentGroup.id).then(response => {
+            commit("removeGroupFromUserGroups", state.currentGroup.id)
+            commit("setCurrentGroup", null)
+            return response
+        })
     }
 
 }

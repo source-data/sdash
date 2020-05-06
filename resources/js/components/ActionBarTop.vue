@@ -15,6 +15,35 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
+                        <b-nav-form v-if="searchMode=='group' && isGroupOwner">
+                            <b-button variant="outline-danger" class="my-2" @click.prevent id="sd-delete-group" type="submit" v-b-tooltip.hover.top title="Delete the group">
+                                <font-awesome-icon icon="trash-alt" />
+                                Delete Group
+                            </b-button>
+                            <b-popover
+                                ref="delete-group-popover"
+                                target="sd-delete-group"
+                                triggers="click"
+                                placement="bottom"
+                                selector="sd-delete-group"
+                            >
+                            <template v-slot:title>
+                                    Are you sure?
+                                <b-button @click="closeDeleteGroupPopover" class="close" aria-label="Close">
+                                    <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                </b-button>
+                            </template>
+                                <div class="confirm-delete-content">
+                                    <p>
+                                        Delete the user group? Panels will not be deleted from the system but will no longer be shared with the group.
+                                    </p>
+                                    <div class="delete-buttons">
+                                        <b-button variant="danger" small @click="deleteGroup">Delete Group</b-button>
+                                        <b-button variant="outline-dark" small @click="closeDeleteGroupPopover">Cancel</b-button>
+                                    </div>
+                                </div>
+                            </b-popover>
+                        </b-nav-form>
                         <b-nav-form v-if="searchMode=='group' && !isGroupOwner">
                             <b-button variant="outline-danger" class="my-2" @click.prevent id="sd-quit-group" type="submit" v-b-tooltip.hover.top title="Remove yourself from the group">
                                 <font-awesome-icon icon="sign-out-alt" />
@@ -171,7 +200,7 @@ export default {
 
     methods: { //run as event handlers, for example
 
-        ...mapActions(['clearSelectedPanels', 'removeUserFromGroup', 'deleteSelectedPanels', ]),
+        ...mapActions(['clearSelectedPanels', 'removeUserFromGroup', 'deleteSelectedPanels', 'deleteUserGroup']),
         updateLocalSearchString(value){
             this.localSearchString = value
         },
@@ -230,6 +259,11 @@ export default {
                 this.$refs["quit-group-popover"].$emit("close")
             }
         },
+        closeDeleteGroupPopover(){
+            if(this.$refs["delete-group-popover"]) {
+                this.$refs["delete-group-popover"].$emit("close")
+            }
+        },
         closeDeletePopover(){
             if(this.$refs["delete-popover"]) {
                 this.$refs["delete-popover"].$emit("close")
@@ -250,6 +284,17 @@ export default {
             }).catch(error => {
                 this.$snotify.error(error.data.MESSAGE, "Update Failed!")
                 this.closeQuitGroupPopover()
+
+            })
+        },
+        deleteGroup(){
+            this.deleteUserGroup().then(response => {
+                this.closeDeleteGroupPopover()
+                this.$router.push({name: 'dashboard'})
+                this.$snotify.success(response.data.MESSAGE, "Success")
+            }).catch(error => {
+                this.$snotify.error(error.data.MESSAGE, "Delete Failed!")
+                this.closeDeleteGroupPopover()
 
             })
         }
