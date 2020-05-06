@@ -126,6 +126,9 @@
                                 <button class="btn btn-primary" type="button" :disabled="submiting" @click="updateUserData">
                                     <i class="fas fa-spinner fa-spin" v-if="submiting"></i> Save
                                 </button>
+                                <button class="btn btn-light" type="button" @click="cancelEdit">
+                                    Cancel
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -185,6 +188,9 @@ export default {
                     console.log(this.errors)
                     this.submiting = false
                 })
+        },
+        cancelEdit() {
+            this.$router.push({path: `/user/${this.user_id}`})
         }
     }
 }
