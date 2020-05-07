@@ -301,6 +301,8 @@ class GroupController extends Controller
             $group->panels()->detach();
             $group->delete();
             return API::response(200, "The group was deleted", []);
+        } else {
+            return API::response(401, "You are not the owner of the group.", []);
         }
     }
 
