@@ -14,7 +14,8 @@
         <div role="tablist" class="sd-group-list-wrapper">
             <b-card v-for="group in userGroups" :key="group.id" no-body class="mb-1">
             <b-card-header header-tag="header" class="p-1" role="tab">
-                <b-button block href="#" v-b-toggle="'group-'+group.id" class="sd-filter-accordion-header" variant="light">{{ group.name }} <br>| <font-awesome-icon icon="users" /> {{group.confirmed_users_count}} | <font-awesome-icon icon="layer-group" /> {{group.panels_count}} </b-button>
+                <b-button block href="#" v-b-toggle="'group-'+group.id" class="sd-filter-accordion-header" variant="light">{{ group.name }} <br>| <font-awesome-icon icon="users" /> {{group.confirmed_users_count}} | <font-awesome-icon icon="layer-group" /> {{group.panels_count}} |
+                <router-link :to="{path:'/group/' + group.id}"><font-awesome-icon icon="external-link-alt" /> Go</router-link></b-button>
             </b-card-header>
             <b-collapse :id="'group-' + group.id" accordion="sd-filter-accordion" role="tabpanel">
                 <b-card-body>
