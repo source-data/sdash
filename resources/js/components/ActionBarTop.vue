@@ -15,7 +15,7 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                        <b-nav-form v-if="searchMode=='group' && isGroupOwner">
+                        <b-nav-form v-if="searchMode=='group' && isGroupAdmin">
                             <b-button variant="outline-danger" class="my-2" @click.prevent id="sd-delete-group" type="submit" v-b-tooltip.hover.top title="Delete the group">
                                 <font-awesome-icon icon="trash-alt" />
                                 Delete Group
@@ -181,7 +181,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'userGroups', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode', 'isGroupOwner']),
+        ...mapGetters(['currentUser', 'selectedPanels', 'countSelectedPanels', 'userGroups', 'searchString', 'hasLoadedAllResults', 'userAdminGroups', 'searchMode', 'isGroupOwner', 'isGroupAdmin']),
         myAdminGroups(){
             let groups = this.userAdminGroups.reduce((myGroups, group) => {
                 myGroups.push({text: group.name, value: group.id})
@@ -350,5 +350,9 @@ export default {
 .sd-action-bar--file-upload .custom-file-label {
     border: solid 1px #343a40;
     color: #6d767e;
+}
+
+#sd-quit-group {
+    margin-left:0.5rem;
 }
 </style>
