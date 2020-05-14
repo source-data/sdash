@@ -98,6 +98,7 @@ export default {
             this.$store.commit("clearExpandedPanelDetail")
             this.$store.commit("clearSearchCriteria")
             this.$store.commit("setCurrentGroup", this.group_id)
+            if(this.$route.query.search) this.$store.commit("setSearchString",this.$route.query.search)
             this.$store.commit("setPanelLoadingState", true)
             store.dispatch("fetchPanelList")
             .then((response) => {
