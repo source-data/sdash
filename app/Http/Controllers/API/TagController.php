@@ -32,7 +32,7 @@ class TagController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created tag resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -47,24 +47,22 @@ class TagController extends Controller
             'origin' => ['required', 'string', 'in:user,smarttag'],
         ]);
 
-        if(Gate::allows('modify-panel', $panel)) {
+        if (Gate::allows('modify-panel-tags', $panel)) {
 
             $newTag = Tag::firstOrCreate([
                 'content' => strip_tags($request->input('name'))
             ]);
 
-            $panel->tags()->attach($newTag,[
+            $panel->tags()->attach($newTag, [
                 'origin' => strip_tags($request->input('origin')),
                 'type' => strip_tags($request->input('type')),
                 'role' => strip_tags($request->input('role')),
                 'category' => strip_tags($request->input('category'))
-                ]);
+            ]);
 
-            return API::response(200, "Tag removed from panel", $panel->tags()->withPivot(['id', 'origin','role','type','category'])->get());
-
-        }
-        else {
-            return API::response(401, "Permission denied.",[]);
+            return API::response(200, "Tag added to panel", $panel->tags()->withPivot(['id', 'origin', 'role', 'type', 'category'])->get());
+        } else {
+            return API::response(401, "Permission denied.", []);
         }
     }
 
@@ -120,19 +118,15 @@ class TagController extends Controller
             'relationship_id' => ['required', 'integer']
         ]);
 
-        if(Gate::allows('modify-panel', $panel)) {
+        if (Gate::allows('modify-panel', $panel)) {
 
             $pivotId = $request->input("relationship_id");
 
             $panel->tags()->where('id', $tag->id)->wherePivot('id', $pivotId)->detach($tag->id);
 
-            return API::response(200, "Tag removed from panel", $panel->tags()->withPivot(['id', 'origin','role','type','category'])->get());
-
+            return API::response(200, "Tag removed from panel", $panel->tags()->withPivot(['id', 'origin', 'role', 'type', 'category'])->get());
+        } else {
+            return API::response(401, "Permission denied.", []);
         }
-        else {
-            return API::response(401, "Permission denied.",[]);
-        }
-
-
     }
 }

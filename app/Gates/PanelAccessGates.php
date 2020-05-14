@@ -42,6 +42,23 @@ class PanelAccessGates
         return false;
     }
 
+    public function canModifyPanelTags(User $user, Panel $panel)
+    {
+        if ($user->is_superadmin()) return true;
+
+        $userId = $user->id;
+
+        // is the logged-in user the panel owner?
+        if ($userId === $panel->user_id) return true;
+
+        // is the user an admin of a group to which the panel belongs
+        return Panel::where('id', $panel->id)->whereHas('groups', function ($query) use ($userId) {
+            $query->whereHas('confirmedUsers', function ($query) use ($userId) {
+                $query->where('users.id', $userId)->where('group_user.role', 'admin');
+            });
+        })->exists();
+    }
+
     /**
      * Authorise a user to access a single-panel summary page.
      *

@@ -16,9 +16,9 @@ export default {
 
     name: 'CopyTags',
     computed: {
-        ...mapGetters(['iOwnThisPanel', 'hasTags','tagCache']),
+        ...mapGetters(['iOwnThisPanel', 'iCanEditTags', 'hasTags','tagCache']),
         disablePaste(){
-            return (this.tagCache.length < 1 || !this.iOwnThisPanel)
+            return (this.tagCache.length < 1 || !this.iCanEditTags)
         }
     },
     methods:{
@@ -31,7 +31,7 @@ export default {
             }
         },
         pasteTags(){
-            if(this.iOwnThisPanel){
+            if(this.iCanEditTags){
                 this.$store.commit("pasteTagsFromCache")
                 this.$snotify.info("Tags pasted", "OK!")
             } else {

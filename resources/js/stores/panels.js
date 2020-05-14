@@ -325,6 +325,13 @@ const getters = {
         if(!rootState.Users.user) return false
         return state.expandedPanelDetail.user_id === rootState.Users.user.id
     },
+    iCanEditTags(state, getters, rootState){
+        if(!state.expandedPanelDetail) return false
+        if(state.expandedPanelDetail.user_id === rootState.Users.user.id) return true
+        if(!rootState.Users.user) return false
+        if(state.expandedPanelDetail.groups.length < 1) return false
+        return !!(state.expandedPanelDetail.groups.find( group => (rootState.Groups.userGroups.find(userGroup => ( userGroup.id === group.id && userGroup.confirmed_users.find(user => (user.pivot.user_id === rootState.Users.user.id && user.pivot.role==="admin")))) )))
+    },
     hasPanelDetail(state){
         return (state.expandedPanelDetail.hasOwnProperty("id") && state.expandedPanelDetail.id === state.expandedPanelId)
     },

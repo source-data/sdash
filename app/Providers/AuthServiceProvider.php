@@ -29,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-panel', 'App\Gates\PanelAccessGates@canAccessPanel');
         Gate::define('view-panel', 'App\Gates\PanelAccessGates@canViewPanel');
         Gate::define('modify-panel', 'App\Gates\PanelAccessGates@canModifyPanel');
+        Gate::define('modify-panel-tags', 'App\Gates\PanelAccessGates@canModifyPanelTags');
         Gate::define('modify-comment', 'App\Gates\CommentAccessGates@canModifyComment');
         Gate::define('modify-group', 'App\Gates\GroupAccessGates@canModifyGroup');
         Gate::define('view-group', 'App\Gates\GroupAccessGates@canViewGroup');

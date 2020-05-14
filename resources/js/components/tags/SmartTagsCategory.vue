@@ -2,13 +2,13 @@
     <section class="sd-smarttags-category-container">
         <h4 class="sd-smarttags-category-container--title">{{ title }}</h4>
         <vue-tags-input
-            placeholder="Enter tags or use SmartTag"
+            :placeholder="iCanEditTags ? 'Enter tags or use SmartTag' : 'Restricted to owner or admin'"
             :tags="combinedTags"
             v-model="newTag"
             :add-on-key="[13,',']"
             @before-adding-tag="createTag"
             @before-deleting-tag="deleteTag"
-            :disabled="!iOwnThisPanel"
+            :disabled="!iCanEditTags"
         >
         <div
             slot="tag-center"
@@ -55,6 +55,7 @@ export default {
     computed: {
         ...mapGetters([
             'iOwnThisPanel',
+            'iCanEditTags',
             'userTags',
             'methodTags',
             'interventionTags',
