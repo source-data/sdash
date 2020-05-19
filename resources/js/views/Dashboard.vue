@@ -36,6 +36,7 @@ import PanelGrid from '@/components/PanelGrid'
 import InfoBar from '@/components/InfoBar'
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 import Lightbox from 'vue-easy-lightbox'
+import queryStringDehasher from '@/services/queryStringDehasher'
 
 export default {
 
@@ -100,7 +101,8 @@ export default {
     },
 
     created(){
-        if(this.$route.query.search) this.$store.commit("setSearchString",this.$route.query.search)
+        let query = queryStringDehasher(this.$route)
+        if(query) this.$store.commit("setSearchString", query)
         store.dispatch('fetchCurrentUser')
         .catch((error) => {
             console.log(error)
