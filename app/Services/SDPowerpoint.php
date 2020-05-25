@@ -93,6 +93,7 @@ class SDPowerpoint {
 
 
         // Add the QR code if a URL was supplied
+        /*
         if(isset($this->url)){
 
             $QRrender = new ImageRenderer(
@@ -118,6 +119,7 @@ class SDPowerpoint {
             $currentSlide->addShape($QRimage);
 
         }
+        */
 
 
         $oWriter = IOFactory::createWriter($this->document, 'PowerPoint2007');
