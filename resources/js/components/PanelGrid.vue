@@ -4,9 +4,6 @@
             <template v-slot:title>
                 <h1>My Dashboard</h1>
             </template>
-            <template v-slot:text>
-                Here you will find all the panels that you can access. You might have access because you uploaded the panel, because it's been shared with you in a sharing group or because the panel is public.
-            </template>
         </info-bar>
 
         <b-container fluid class="mt-3">
