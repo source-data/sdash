@@ -164,7 +164,7 @@ export default {
                 this.$snotify.success(response.data.MESSAGE, "URL Stored")
                 this.clearUploads()
             }).catch(error => {
-                this.$snotify.error(error.data.message, "Upload failed")
+                this.$snotify.error("Not a valid URL - did you include http(s)://?", "Upload failed")
             })
         },
         deleteFile(){
