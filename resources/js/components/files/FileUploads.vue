@@ -11,7 +11,10 @@
                 <b-form-input @change="updatedUrl" v-model="url" type="url" placeholder="Enter a URL to link remote resource"></b-form-input>
             </div>
             <div class="sd-file-uploads--submit-wrapper">
-                <b-button variant="success" @click.prevent="submitFile" :disabled="disableSubmit">Submit</b-button>
+                <b-button variant="success" @click.prevent="submitFile" :disabled="disableSubmit">
+                    <span v-if="!uploadToggle">Attach</span>
+                    <span v-if="uploadToggle">Link</span>
+                </b-button>
             </div>
         </div>
         <!-- file list -->
@@ -114,7 +117,7 @@ export default {
         return {
             file: null,
             url:  null,
-            uploadToggle: false,
+            uploadToggle: true,
             fileToDelete: {},
             fileToUpdate: {},
             fileDescriptionText: "",
