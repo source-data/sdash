@@ -17,11 +17,13 @@
                     Edit title
                 </span>
             </div>
-            <!--<div class="sd-panel-figure-name">
-                Panel Figure Name
-            </div>-->
+            <router-link :to="{path: '/user/' + expandedPanel.user.id}">
+                <div class="sd-panel-author-name">
+                    {{ author }}
+                </div>
+            </router-link>
     </b-row>
-    <b-row class="m-3">
+    <b-row class="m-3 sd-panel-detail-content-wrapper">
         <b-col class="sd-panel-detail-col sd-panel-detail-col--left">
             <div class="panel-detail-image-outer-container">
                 <img class="panel-detail-image"
@@ -30,14 +32,8 @@
                     tabindex="0"
                     @click="openLightBox"
                     style="cursor:pointer"
-                ></img>
+                >
                 <font-awesome-icon @click="openLightBox" class="sd-panel-zoom-icon" icon="search-plus" size="2x" title="View image" />
-            </div>
-            <div class="panel-detail-caption-edit-container">
-                <span class="sd-panel-detail-caption-edit-icon sd-edit-icon" v-if="iOwnThisPanel" tabindex="0" @click="editPanelCaption">
-                    <font-awesome-icon  icon="edit" title="Edit panel title" />
-                    Edit caption
-                </span>
             </div>
             <div class="panel-detail-caption-wrapper">
                 <div class="panel-detail-caption-container" v-if="!editingCaption">
@@ -47,27 +43,33 @@
                     <caption-editor></caption-editor>
                 </div>
             </div>
+            <div class="panel-detail-caption-edit-container">
+                <span class="sd-panel-detail-caption-edit-icon sd-edit-icon" v-if="iOwnThisPanel" tabindex="0" @click="editPanelCaption">
+                    <font-awesome-icon  icon="edit" title="Edit panel title" />
+                    Edit description
+                </span>
+            </div>
         </b-col>
         <b-col class="sd-panel-detail-col sd-panel-detail-col--right">
                 <b-tabs card content-class="sd-panel-detail-tab-card" class="sd-panel-details-tabs">
-                <b-tab :title="commentCountTitle" active>
-                    <b-card-text>
-                        <comment-list></comment-list>
-                    </b-card-text>
-                </b-tab>
-                <b-tab :title="'Files (' + fileCount + ')'">
+                <b-tab :title="'Sources (' + fileCount + ')'" active>
                     <b-card-text>
                         <file-uploads></file-uploads>
                     </b-card-text>
                 </b-tab>
-                <b-tab title="SmartTags">
+                <b-tab title="Keywords">
                     <b-card-text>
                         <smart-tags-panel></smart-tags-panel>
                     </b-card-text>
                 </b-tab>
-                <b-tab title="Sharing">
+                <b-tab title="Share">
                     <b-card-text>
                         <panel-access-links></panel-access-links>
+                    </b-card-text>
+                </b-tab>
+                <b-tab :title="commentCountTitle">
+                    <b-card-text>
+                        <comment-list></comment-list>
                     </b-card-text>
                 </b-tab>
                 </b-tabs>
@@ -137,11 +139,14 @@ export default {
     },
     computed:{
         ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'comments', 'commentCount', 'fileCount', 'editingCaption']),
+        author(){
+            return this.expandedPanel.user.firstname + ' ' + this.expandedPanel.user.surname;
+        },
         fullImageUrl(){
             return "/panels/" + this.expandedPanel.id + "/image"
         },
         commentCountTitle(){
-            return "Comments (" + this.commentCount + ")"
+            return "Discuss (" + this.commentCount + ")"
         },
     },
     methods:{ //run as event handlers, for example
@@ -200,9 +205,7 @@ export default {
             })
 
         }
-
     }
-
 }
 </script>
 
@@ -216,10 +219,21 @@ export default {
         justify-content: center;
         background-color: #2f2f2f;
         position:relative;
+        margin: 0;
     }
 
     .sd-panel-detail-title-wrapper {
         padding-left: 15px;
+        margin-bottom: 0 !important;
+    }
+
+    .sd-panel-detail-title-wrapper a {
+        color: white;
+    }
+
+    .sd-panel-detail-content-wrapper {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0 !important;
     }
 
     .sd-panel-detail-col {
@@ -233,13 +247,18 @@ export default {
     }
 
     .sd-panel-detail-title,
-    .sd-panel-figure-name {
+    .sd-panel-author-name {
         width:100%;
+    }
+
+    .sd-panel-detail-title {
         height:36px;
     }
-    .sd-panel-figure-name {
-        margin-top: 16px;
+
+    .sd-panel-author-name {
+        margin: 0;
     }
+
     .sd-panel-detail-title h3 {
         display: inline-block;
         margin-right: 6px;
@@ -276,27 +295,28 @@ export default {
         max-width: 100%;
         border: solid 1px #eee;
         padding: 6px;
+        margin-top: 0.5rem;
     }
 
     .panel-detail-caption-container {
         height:100%;
         padding-right:6px;
-        overflow-Y:scroll;
+        overflow-y: auto;
     }
 
     .sd-panel-detail-tab-card {
         border: solid 1px #fff;
         border-radius: 6px 6px 0 0;
-        max-height: 400px;
+        max-height: 540px;
         margin-top: -1px;
     }
     .sd-panel-detail-tab-card .tab-panel.card-body {
-        max-height: 400px;
+        max-height: 540px;
     }
     .sd-panel-detail-tab-card .card-text {
-        overflow-y: scroll;
-        max-height: 360px;
-        padding-right: 1rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 500px;
     }
 
     .sd-panel-details-tabs .card-header {

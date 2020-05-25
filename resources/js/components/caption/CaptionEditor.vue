@@ -6,7 +6,7 @@
         <b-form-textarea
             id="sd-edit-caption-textarea"
             v-model="captionText"
-            placeholder="Enter a caption..."
+            placeholder="Enter a description..."
             rows="3"
             max-rows="3"
         >
