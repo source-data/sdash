@@ -106,7 +106,7 @@ export default {
             target.select()
             document.execCommand("copy")
             target.disabled="disabled"
-            this.$snotify.info(this.linkUrl, "Copied Link")
+            this.$snotify.info("The link is stored in your clipboard", "Copied Link")
         }
 
     }
