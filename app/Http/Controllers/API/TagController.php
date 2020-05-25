@@ -118,7 +118,7 @@ class TagController extends Controller
             'relationship_id' => ['required', 'integer']
         ]);
 
-        if (Gate::allows('modify-panel', $panel)) {
+        if (Gate::allows('modify-panel-tags', $panel)) {
 
             $pivotId = $request->input("relationship_id");
 
