@@ -1,6 +1,27 @@
 <template>
     <section class="sd-panel-access-links">
-        <p>Links generated here will allow public access to the details of this single panel by following the generated link.</p>
+        <template v-if="iOwnThisPanel">
+            <div class="sd-generate-panel-access-links">
+                <b-button variant="secondary" class="py-2"><font-awesome-icon icon="users" /> Share with Group</b-button>
+            </div>
+            <template v-if="expandedPanel.groups && expandedPanel.groups.length > 0">
+                <p>This figure is shared with:</p>
+                <ul>
+                    <li v-for="group in expandedPanel.groups" :key="group.id">
+                        {{ group.name }}
+                    </li>
+                </ul>
+            </template>
+            <template v-if="!hasLinks">
+                <div class="sd-generate-panel-access-links">
+                    <b-button variant="secondary" class="py-2" @click="generateLink"><font-awesome-icon icon="link" /> Generate Public Link</b-button>
+                </div>
+                <p>This link will allow public access to this SmartFigure and create a QR code for this link.</p>
+            </template>
+        </template>
+        <b-alert show variant="primary" v-if="!hasLinks && !iOwnThisPanel">
+            The panel owner has not created a public link.
+        </b-alert>
         <b-row v-if="loading">
             <b-col class="text-center">
                 <b-spinner variant="primary" label="Spinning" class="m-2" style="width: 2rem; height: 2rem;"></b-spinner>
@@ -15,28 +36,16 @@
                     </b-input-group-append>
                 </b-input-group>
                 <div class="sd-qr-code-container">
-                <img v-if="!loading" class="sd-qr-code" :src="'/panels/' + expandedPanel.id + '/token/qr'" alt="QR code leading to the public panel link">
+                    <a v-if="!loading" :href="'/panels/' + expandedPanel.id + '/token/qr'" download="qr_code.jpg">
+                        <img class="sd-qr-code" :src="'/panels/' + expandedPanel.id + '/token/qr'" alt="QR code leading to the public panel link">
+                    </a>
                 </div>
             </b-col>
         </b-row>
-        <b-alert show variant="primary" v-if="!hasLinks && !iOwnThisPanel">
-            The panel owner has not created a public link.
-        </b-alert>
-        <div class="sd-generate-panel-access-links text-right" v-if="!hasLinks && iOwnThisPanel">
-            <b-button variant="success" class="py-2" size="sm" @click="generateLink"><font-awesome-icon icon="link" /> Generate Link</b-button>
-        </div>
         <div class="sd-modify-panel-access-links text-right" v-if="hasLinks && iOwnThisPanel">
             <b-button variant="success" class="py-2" size="sm" @click="generateLink"><font-awesome-icon icon="link" /> Refresh Link</b-button>
             <b-button variant="danger" class="py-2" size="sm" @click="revokeLink"><font-awesome-icon icon="link" /> Revoke Link</b-button>
         </div>
-        <template v-if="expandedPanel.groups && expandedPanel.groups.length > 0">
-            <p>Shared with the following groups:</p>
-            <ul>
-                <li v-for="group in expandedPanel.groups" :key="group.id">
-                    {{ group.name }}
-                </li>
-            </ul>
-        </template>
     </section>
 </template>
 
@@ -106,6 +115,10 @@ export default {
 </script>
 
 <style lang="scss">
+.sd-generate-panel-access-links {
+    margin-bottom: 0.5rem;
+}
+
 .sd-qr-code {
     height: 150px;
     width: auto;
@@ -115,5 +128,4 @@ export default {
     text-align: center;
     padding: 0.5rem 0 1.5rem;
 }
-
 </style>
