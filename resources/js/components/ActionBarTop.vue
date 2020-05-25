@@ -83,9 +83,11 @@
                             <b-button class="sd-action-bar-top--group-button" id="sd-add-panels-to-sharing-group" v-b-tooltip.hover.top title="Add panels to sharing group">
                                 <font-awesome-icon icon="users" size="2x" />
                             </b-button>
+                            <!--
                             <b-button class="sd-action-bar-top--figure-button" v-b-tooltip.hover.top title="Combine panels into figure">
                                 <font-awesome-icon icon="layer-group" size="2x" />
                             </b-button>
+                            -->
                             <!-- panel mass-deleting popover -->
                             <b-popover
                                 ref="delete-popover"
