@@ -46,6 +46,5 @@ export default {
 <style lang="scss">
     .sd-copy-tags-wrapper {
         text-align:right;
-        max-width: 450px;
     }
 </style>
