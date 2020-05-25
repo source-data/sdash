@@ -266,6 +266,12 @@ export default {
 
 }
 
+.sd-file-uploads--file-wrapper .custom-file-label {
+    padding-right: 79px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .sd-file-uploads--or {
 
     padding: 0 1em;
