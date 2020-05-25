@@ -190,7 +190,7 @@ class PanelController extends Controller
 
             $panel->update($toUpdate);
 
-            return API::response(200, "Panel info updated.", $panel->load('groups'));
+            return API::response(200, "Panel info updated.", $panel->load(['groups', 'user']));
         } else {
             return API::response(401, "Permission denied.", []);
         }

@@ -235,7 +235,7 @@ const mutations = {
     updateExpandedPanelId(state, panelId = null){
         state.expandedPanelId = panelId
     },
-    storeExpandedPanelDetail(state, payload){ console.log("expanded panel" , payload.access_token)
+    storeExpandedPanelDetail(state, payload){ console.log("expanded panel" , payload)
         let panel = payload
         state.expandedPanelDetail={
             caption: panel.caption,
