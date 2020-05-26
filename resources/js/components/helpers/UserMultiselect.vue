@@ -51,14 +51,14 @@ open-direction="bottom"
                     {{ option.institution_name }}
                 </div>
             </div>
-                <div class="sd-group-user--make-admin">
+                <div class="sd-group-user--make-admin" @mousedown.stop.prevent>
                                     Make admin&nbsp;
 
-                <b-form-checkbox switch @click.stop :checked="option.isGroupAdmin" @change="updateAdminUser(option.id)" title="Remove from group">
+                <b-form-checkbox switch @click.stop.prevent :checked="option.isGroupAdmin" @change="updateAdminUser(option.id)" title="Remove from group">
                 </b-form-checkbox>
             </div>
             <div class="sd-group-user--remove">
-                <span class="custom__remove" @click="remove(option)">Remove ❌</span>
+                <span class="custom__remove" @mousedown.stop.prevent="remove(option)">Remove ❌</span>
             </div>
 
         </div>
