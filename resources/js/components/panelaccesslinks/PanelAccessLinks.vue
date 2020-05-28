@@ -1,9 +1,6 @@
 <template>
     <section class="sd-panel-access-links">
         <template v-if="iOwnThisPanel">
-            <div class="sd-generate-panel-access-links">
-                <b-button variant="secondary" class="py-2"><font-awesome-icon icon="users" /> Share with Group</b-button>
-            </div>
             <template v-if="expandedPanel.groups && expandedPanel.groups.length > 0">
                 <p>This figure is shared with:</p>
                 <ul>
