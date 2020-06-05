@@ -2,12 +2,8 @@
     <li :id="itemId" class="sd-grid-item" :class="{ 'sd-grid-item__expanded' : isExpanded }">
 
         <div class="sd-grid-image-container" >
-            <div class="sd-grid-image-container-inner" @click="toggleExpanded" tabindex="0">
-                <img class="sd-grid-image" v-lazy="'/panels/' + panelId + '/image/thumbnail'">
-
-            </div>
             <header class="sd-grid-item--image-header">
-                <avatar :username="panelOwnerName" :size="40" v-b-tooltip.hover.top :title="'Posted by ' + panelOwnerName"></avatar>
+                <span class="sd-grid-item--image-label">{{panelOwnerName}}</span>
                 <button class="panel-select-button" @click="toggleSelected" v-if="IOwnThisPanel">
                     <transition name="fade">
                         <font-awesome-layers class="fa-2x panel-select-button--icon text-success" v-if="panelSelected">
@@ -17,6 +13,10 @@
                     </transition>
                 </button>
             </header>
+            <div class="sd-grid-image-container-inner" @click="toggleExpanded" tabindex="0">
+                <img class="sd-grid-image" v-lazy="'/panels/' + panelId + '/image/thumbnail'">
+
+            </div>
             <footer class="sd-grid-item--image-footer" :id="'scroll-anchor-' + panelId">
                 <font-awesome-icon :class="panelAccessReason" icon="lock" v-if="panelAccessReason=='private'" title="Private panel"/>
                 <font-awesome-icon :class="panelAccessReason" icon="lock-open"  v-if="panelAccessReason=='public'" title="Public panel"/>
@@ -246,9 +246,6 @@ export default {
     .sd-grid-item--image-header {
         cursor: auto;
         position: absolute;
-        display:flex;
-        flex-wrap:nowrap;
-        justify-content: space-between;
         top:0;
         left:0;
         z-index: 2;
@@ -258,9 +255,6 @@ export default {
 
     .sd-grid-item--image-footer {
         position: absolute;
-        // display:flex;
-        // flex-wrap:nowrap;
-        // justify-content: space-between;
         text-align: right;
         bottom:0;
         left:0;
@@ -281,10 +275,23 @@ export default {
         }
     }
 
+    .sd-grid-item--image-label,
     .panel-select-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute;
+        top: 6px;
+    }
+
+    .sd-grid-item--image-label {
+        left: 6px;
+        padding: 5px 10px;
+        font: 16px Helvetica, Arial, sans-serif;
+        line-height: 1;
+        color: rgb(176, 205, 219);
+        background-color: rgb(96, 125, 139);
+    }
+
+    .panel-select-button {
+        right: 6px;
         padding: 0;
         margin: 0;
         background: none;
@@ -292,7 +299,6 @@ export default {
         width: 40px;
         height: 40px;
         border-radius:50%;
-
     }
 
     .fade-enter-active, .fade-leave-active {
