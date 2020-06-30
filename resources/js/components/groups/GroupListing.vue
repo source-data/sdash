@@ -40,6 +40,7 @@
             </b-col>
         </b-row>
         <b-row v-if="!hasPanels && !isLoadingPanels">
+            <b-col cols="2" class="sd-filter-wrapper"><filter-bar></filter-bar></b-col>
             <b-col >
                 <b-alert show variant="danger" class="no-panel-alert">No Panels Found</b-alert>
             </b-col>
