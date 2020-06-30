@@ -329,7 +329,7 @@ const getters = {
         if(!state.expandedPanelDetail) return false
         if(state.expandedPanelDetail.user_id === rootState.Users.user.id) return true
         if(!rootState.Users.user) return false
-        if(state.expandedPanelDetail.groups.length < 1) return false
+        if(!state.expandedPanelDetail.groups || state.expandedPanelDetail.groups.length < 1) return false
         return !!(state.expandedPanelDetail.groups.find( group => (rootState.Groups.userGroups.find(userGroup => ( userGroup.id === group.id && userGroup.confirmed_users.find(user => (user.pivot.user_id === rootState.Users.user.id && user.pivot.role==="admin")))) )))
     },
     hasPanelDetail(state){

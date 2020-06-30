@@ -66,7 +66,7 @@ class PanelRepository implements PanelRepositoryInterface
     }
 
 
-    public function GroupPanels(User $user, Group $group, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
+    public function groupPanels(User $user, Group $group, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
     {
         $panelQuery = $group->panels()->with(['groups', 'tags', 'user']);
 
@@ -97,7 +97,7 @@ class PanelRepository implements PanelRepositoryInterface
         //add order by clause
         $panelQuery->orderByUpdated();
 
-        return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
+        return ($paginate) ? $panelQuery->with('user')->paginate(20) : ["data" => $panelQuery->with('user')->get()];
     }
 
 

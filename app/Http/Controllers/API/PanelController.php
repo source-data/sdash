@@ -78,13 +78,14 @@ class PanelController extends Controller
         $search     = $request->input("search");
         $tags       = $request->input("tags");
         $private    = $request->has("private");
+        $paginate   = $request->has("paginate") ? strtoupper($request->get("paginate")) === 'TRUE' : true;
 
         if (!Gate::allows('view-group', $group)) return API::response(401, "Permission denied", []);
 
         return API::response(
             200,
             "A list of panels accessible to chosen group.",
-            $this->panelRepository->groupPanels($user, $group, $search, $tags, $private)
+            $this->panelRepository->groupPanels($user, $group, $search, $tags, $private, $paginate)
         );
     }
 
