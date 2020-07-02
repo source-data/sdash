@@ -6,6 +6,7 @@ use API;
 use App\User;
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -100,19 +101,33 @@ class UserController extends Controller
     public function me(Request $request)
     {
         if (!auth()->user()) abort(404, "User could not be found.");
+
+        $user = User::where('id', auth()->user()->id)
+        ->with(['groups' => function ($query) {
+            $query->with(['confirmedUsers' => function ($query) {
+                $query->withPivot(['role']);
+            }]);
+            $query->withCount(['confirmedUsers', 'panels']);
+            $query->withPivot(['role','token', 'status']);
+        }])
+        // ->with(['pendingGroups' => function ($query) {
+        //     $query->withPivot('token');
+        // }])
+        ->first();
+
+        // if($user->pendingGroups){
+        //     for($i=0; $i < count($user->pendingGroups); $i++) {
+        //         $user->pendingGroups[$i]->join_group_link = URL::signedRoute('group.join',['group' => $user->pendingGroups[$i]->id, 'token' => $user->pendingGroups[$i]->pivot->token]);
+        //         unset($user->pendingGroups[$i]->pivot);
+        //     }
+
+        // }
+
         return API::response(
             200,
             "Logged-in user.",
-            User::where('id', auth()->user()->id)
-                ->with(['confirmedGroups' => function ($query) {
-                    $query->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role']);
-                    }]);
-                    $query->withCount(['confirmedUsers', 'panels']);
-                    $query->withPivot('role');
-                }])
-                ->first()
-        );
+            $user);
+
     }
 
     public function removeFromGroup(Group $group)

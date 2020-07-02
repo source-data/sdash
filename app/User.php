@@ -56,6 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany('App\Models\Group')->wherePivot('status','confirmed');
     }
 
+    public function pendingGroups()
+    {
+        return $this->belongsToMany('App\Models\Group')->wherePivot('status','pending');
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

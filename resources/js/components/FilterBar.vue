@@ -19,7 +19,47 @@
         <h5 class="pb-2">My Groups</h5>
         <div role="tablist" class="sd-group-list-wrapper">
             <b-card
-                v-for="group in userGroups"
+                v-for="group in pendingUserGroups"
+                :key="group.id"
+                no-body
+                class="mb-1 user-group--pending"
+            >
+                <b-card-header header-tag="header" class="p-1" role="tab">
+                    <b-button
+                        block
+                        v-b-toggle="'group-' + group.id"
+                        class="sd-filter-accordion-header"
+                        variant="light"
+                        >
+                        <b-badge pill variant="info"><font-awesome-icon icon="star" class="sd-group-new-icon"/>New group invitation!</b-badge>
+                        <br />
+                        {{ group.name }} <br />|
+                        <font-awesome-icon icon="users" />
+                        {{ group.confirmed_users_count }} |
+                        <font-awesome-icon icon="layer-group" />
+                        {{ group.panels_count }}
+                    </b-button>
+                </b-card-header>
+                <b-collapse
+                    :id="'group-' + group.id"
+                    accordion="sd-filter-accordion"
+                    role="tabpanel"
+                >
+                    <b-card-body>
+                        <b-card-text>
+                            {{ group.description }}
+                        </b-card-text>
+                        <b-card-text>
+                            <b-button size="sm" variant="success" @click="acceptGroupInvitation(group.id, group.pivot.token)">Accept</b-button>
+                            <b-button size="sm" variant="danger" @click="declineGroupInvitation(group.id, group.pivot.token)">Reject</b-button>
+                        </b-card-text>
+
+                    </b-card-body>
+                </b-collapse>
+            </b-card>
+
+            <b-card
+                v-for="group in confirmedUserGroups"
                 :key="group.id"
                 no-body
                 class="mb-1"
@@ -68,7 +108,12 @@ import { mapGetters } from "vuex";
 
 export default {
     computed: {
-        ...mapGetters(["userGroups", "privatePanels"]),
+        ...mapGetters([
+            "userGroups",
+            "confirmedUserGroups",
+            "pendingUserGroups",
+            "privatePanels"
+        ]),
         privacyLevel: {
             get() {
                 return this.privatePanels === true ? "private" : "all";
@@ -86,6 +131,27 @@ export default {
             this.$store.dispatch("setSearchString", "");
             this.$store.dispatch("setPrivate", value);
             this.$store.dispatch("fetchPanelList");
+        },
+        acceptGroupInvitation(groupId, token) {
+            this.$store.dispatch("acceptGroupMembership", {groupId, token})
+            .then(response => {
+                this.$store.dispatch("setLoadingState", true);
+                this.$store.dispatch("clearLoadedPanels");
+                this.$store.dispatch("fetchPanelList");
+                this.$snotify.success("Invitation accepted!", "OK")
+
+            }).catch(err => {
+                this.$snotify.error("Could not complete the action", "Sorry!")
+            })
+        },
+        declineGroupInvitation(groupId, token) {
+            this.$store.dispatch("declineGroupMembership", {groupId, token})
+            .then(response => {
+                this.$store.commit("removeGroupFromUserGroups", groupId)
+                this.$snotify.info("Group membership declined", "OK!")
+            }).catch(err => {
+                this.$snotify.error("Could not complete the action", "Sorry!")
+            })
         }
     }
 };
@@ -102,5 +168,12 @@ export default {
     overflow-y: scroll;
     border: solid 1px #e0e0e0;
     padding: 1rem 0.5rem;
+}
+.sd-group-new-icon {
+    color: gold;
+    margin-right: 6px;
+}
+.user-group--pending .sd-filter-accordion-header {
+    background-color: #d4ead4;
 }
 </style>

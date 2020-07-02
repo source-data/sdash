@@ -85,7 +85,7 @@ class GroupController extends Controller
         }
 
         $newGroup->load(['confirmedUsers' => function ($query) {
-            $query->withPivot(['role']);
+            $query->withPivot(['role','token', 'status']);
         }])->loadCount(['confirmedUsers', 'panels']);
 
         return API::response(200, "Group created", $newGroup);
@@ -109,7 +109,7 @@ class GroupController extends Controller
             }])->loadCount(['users', 'panels']);
         } else {
             $group->load(['confirmedUsers' => function ($query) {
-                $query->withPivot(['role']);
+                $query->withPivot(['role','token', 'status']);
             }])->loadCount(['confirmedUsers', 'panels']);
         }
 
@@ -172,7 +172,7 @@ class GroupController extends Controller
                 "$addedCount panels added. $notAddedCount skipped.",
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role']);
+                        $query->withPivot(['role','token', 'status']);
                     }])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
@@ -276,7 +276,7 @@ class GroupController extends Controller
                 "Panel Updated.",
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role']);
+                        $query->withPivot(['role','token', 'status']);
                     }])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
@@ -317,4 +317,35 @@ class GroupController extends Controller
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
         return view('addtogroup', ['user' => $user, 'group' => $group]);
     }
+
+    public function joinViaApi(Group $group, String $token)
+    {
+        $user = auth()->user();
+        $userRecord = $group->users()->wherePivot("token", "=", $token)->first();
+
+        if (!$user->is($userRecord)) return API::response(401, "Permission denied.", []);
+
+        $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
+        return API::response(200, "Group updated.", [
+                "group" => $user->groups()->where('groups.id', $group->id)->with(['confirmedUsers' => function ($query) {
+                    $query->withPivot(['role']);
+                }])->withCount(['confirmedUsers', 'panels'])->withPivot(["role", "status", "token"])->first()
+        ]);
+    }
+
+    public function declineGroupInvitation(Group $group, String $token)
+    {
+        $user = auth()->user();
+
+        // a user can only remove themselves and only from the pending state
+        if($user && $group->users()->where('users.id', $user->id)->wherePivot("status", "pending")->wherePivot("token", $token)->exists() ) {
+            $group->users()->detach($user->id);
+            return API::response(200, "User removed from group.", []);
+        } else {
+            return API::response(403, "You cannot decline this group invitation.", []);
+        }
+    }
+
+
+
 }

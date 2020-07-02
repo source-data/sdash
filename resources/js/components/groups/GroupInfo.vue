@@ -24,13 +24,14 @@ export default {
 
         ...mapGetters([
             'userGroups',
+            'confirmedUserGroups',
             'currentGroup',
             'isLoadingPanels',
             'hasPanels',
             'hasLoadedAllResults',
             ]),
         hasUserGroups () {
-            return this.userGroups.length > 0
+            return this.confirmedUserGroups.length > 0
         }
 
     },

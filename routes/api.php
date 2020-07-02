@@ -34,7 +34,9 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/users/{user}', 'API\UserController@show');
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::delete('/users/{user}', 'API\UserController@destroy');
-    Route::patch('/panels/{panel}/share', 'API\PanelController@hackShare');
+    Route::patch('/users/me/groups/{group}/join/{token}', 'API\GroupController@joinViaApi');
+    Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
+    // Route::patch('/panels/{panel}/share', 'API\PanelController@hackShare');
     Route::patch('/panels/{panel}', 'API\PanelController@update');
     Route::post('/panels/{panel}/tokens', 'API\AccessTokenController@create');
     Route::delete('/panels/{panel}/tokens', 'API\AccessTokenController@destroy');

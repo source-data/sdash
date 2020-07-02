@@ -26,7 +26,7 @@ const actions = {
         .then((response)=>{
 
             commit('setCurrentUser', response.data.DATA)
-            commit('setUserGroups', response.data.DATA.confirmed_groups)
+            commit('setUserGroups', response.data.DATA.groups)
 
         })
     },

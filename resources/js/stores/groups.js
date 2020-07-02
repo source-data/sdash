@@ -46,7 +46,6 @@ const actions = {
          })
     },
     modifyGroup({commit, state, rootState}, group){
-        console.table(group)
         return Axios.put("/groups/" + group.id, group).then(response => {
             let modifiedGroup = {
                 id: response.data.DATA.group.id,
@@ -106,14 +105,23 @@ const actions = {
             commit("setCurrentGroup", null)
             return response
         })
-    }
+    },
+    acceptGroupMembership({commit, state}, payload) {
+        return Axios.patch("/users/me/groups/" + payload.groupId + "/join/" + payload.token).then(response => {
+            commit("updateUserGroup", response.data.DATA.group)
+            return response
+        })
+    },
+    declineGroupMembership({commit, state}, payload) {
+        return Axios.delete("/users/me/groups/" + payload.groupId + "/join/" + payload.token)
+    },
 
 }
 
 const mutations = {
 
     setUserGroups(state, groups){
-        state.userGroups = groups;
+        state.userGroups = groups
     },
     addGroupToUserGroups(state, group){
 
@@ -141,6 +149,12 @@ const getters = {
 
     userGroups( state ){
         return state.userGroups
+    },
+    confirmedUserGroups( state ) {
+        return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'confirmed' ) : null
+    },
+    pendingUserGroups( state ) {
+        return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'pending' ) : null
     },
     userAdminGroups (state) {
         return state.userGroups.filter( group => group.pivot.role === 'admin' )
