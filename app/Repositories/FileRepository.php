@@ -25,7 +25,7 @@ class FileRepository implements FileRepositoryInterface
             $file->storeAs($savePath . 'attachments', $convertedFilename );
 
         } catch(\Exception $e){
-            error_log("Failed to save file {$originalFilename} to {$savePath} as {$convertedFilename}. \r\n Error in FileRespository.php");
+            error_log("Failed to save file {$originalFilename} to {$savePath} as {$convertedFilename}. \r\n Error in FileRepository.php");
             throw new \Exception("Failed to save the uploaded file");
 
         }
