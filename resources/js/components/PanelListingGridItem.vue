@@ -14,8 +14,7 @@
                 </button>
             </header>
             <div class="sd-grid-image-container-inner" @click="toggleExpanded" tabindex="0">
-                <img class="sd-grid-image" v-lazy="'/panels/' + panelId + '/image/thumbnail'">
-
+                <img class="sd-grid-image" v-lazy="thumbnailUrl">
             </div>
             <footer class="sd-grid-item--image-footer" :id="'scroll-anchor-' + panelId">
                 <font-awesome-icon :class="panelAccessReason" icon="lock" v-if="panelAccessReason=='private'" title="Private panel"/>
@@ -68,6 +67,9 @@ export default {
             'currentUser',
             'selectedPanels',
         ]),
+        thumbnailUrl(){
+            return "/panels/" + this.thisPanel.id + "/image/thumbnail?v=" + this.thisPanel.version
+        },
         thisPanel(){
             let thisPanel = this.loadedPanels.filter(panel => panel.id === this.panelId)
             if(thisPanel){

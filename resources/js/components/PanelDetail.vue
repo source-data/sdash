@@ -35,6 +35,17 @@
                 >
                 <font-awesome-icon @click="openLightBox" class="sd-panel-zoom-icon" icon="search-plus" size="2x" title="View image" />
             </div>
+            <span class="sd-panel-change-image-link sd-edit-icon" v-if="iOwnThisPanel" tabindex="0" @click="displayImageUploader">
+                <font-awesome-icon icon="edit" title="Change image" />
+                Change image
+            </span>
+            <b-form-file
+                ref="uploader"
+                class="d-none"
+                accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
+                v-model="imageFile"
+                @input="changeImage">
+            </b-form-file>
             <div class="panel-detail-caption-wrapper">
                 <div class="panel-detail-caption-container" v-if="!editingCaption">
                     {{ expandedPanel.caption }}
@@ -135,6 +146,7 @@ export default {
             isEditingTitle:false,
             titleText:"",
             showDeleteConfirmation: false,
+            imageFile: null,
         }
     },
     computed:{
@@ -143,7 +155,7 @@ export default {
             return this.expandedPanel.user.firstname + ' ' + this.expandedPanel.user.surname;
         },
         fullImageUrl(){
-            return "/panels/" + this.expandedPanel.id + "/image"
+            return "/panels/" + this.expandedPanel.id + "/image?v=" + this.expandedPanel.version
         },
         commentCountTitle(){
             return "Discuss (" + this.commentCount + ")"
@@ -180,6 +192,20 @@ export default {
         },
         editPanelCaption(){
             this.$store.commit("toggleEditingCaption")
+        },
+        displayImageUploader(){
+            this.$refs.uploader.$el.childNodes[0].click()
+        },
+        changeImage(){
+            if (this.imageFile === null) {
+                return;
+            }
+            this.$store.dispatch("changeImage", this.imageFile).then(response => {
+                this.imageFile = null
+            }).catch(error => {
+                this.$snotify.error(error.data.errors.file[0], "Upload failed")
+                this.imageFile = null
+            })
         },
         closeDeletePanelPopover(){
             if(this.$refs["delete-panel-popover"]) {
@@ -287,6 +313,12 @@ export default {
     .panel-detail-caption-edit-container {
         height:32px;
         padding:6px 0;
+    }
+
+    .sd-panel-change-image-link {
+        display: inline-block;
+        margin-top: 8px;
+        margin-bottom: 6px;
     }
 
     .panel-detail-caption-wrapper {

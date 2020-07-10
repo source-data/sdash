@@ -198,6 +198,29 @@ class PanelController extends Controller
     }
 
     /**
+     * Change an image for a given panel.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $panelId
+     * @return \Illuminate\Http\Response
+     */
+    public function changeImage(Request $request, int $panelId)
+    {
+        $request->validate([
+            'file' => ['required', 'mimes:jpeg,png,jpg,gif,pdf,tif', 'max:4096']
+        ]);
+
+        $originalFilename = $request->file('file')->getClientOriginalName();
+
+        $panel = Panel::find($panelId);
+
+        $this->imageRepository->archiveAndRemove($panel->image);
+        $this->imageRepository->storePanelImage($panel, $request->file);
+
+        return API::response(200, "Panel image changed. ", $panel->version);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

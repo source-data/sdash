@@ -35,6 +35,7 @@ const defaultExpandedPanelState = {
     user: {},
     user_id: null,
     access_token: {},
+    version: 0,
 }
 
 defaultState.expandedPanelDetail = Object.assign({}, defaultExpandedPanelState)
@@ -98,6 +99,15 @@ const actions = {
             return response
         })
 
+    },
+    changeImage({commit, state}, payload){
+        const data = new FormData();
+        data.append('file', payload)
+        data.append('_method', 'PATCH')
+        return Axios.post('/panels/' + state.expandedPanelId + '/image', data).then(response => {
+            commit("updateExpandedPanelVersion", response.data.DATA)
+            return response
+        })
     },
     deleteExpandedPanel({commit, state, dispatch}){
         return Axios.delete("/panels/" + state.expandedPanelId).then(response => {
@@ -235,6 +245,11 @@ const mutations = {
     updateExpandedPanelId(state, panelId = null){
         state.expandedPanelId = panelId
     },
+    updateExpandedPanelVersion(state, version = 0){
+        state.expandedPanelDetail.version = version
+        let index = _.findIndex(state.loadedPanels, panel => { return panel.id === state.expandedPanelId })
+        if (index > -1) state.loadedPanels[index].version = version
+    },
     storeExpandedPanelDetail(state, payload){ console.log("expanded panel" , payload)
         let panel = payload
         state.expandedPanelDetail={
@@ -251,7 +266,8 @@ const mutations = {
             user: panel.user,
             user_id: panel.user_id,
             groups: panel.groups,
-            access_token: panel.access_token ? panel.access_token : {}
+            access_token: panel.access_token ? panel.access_token : {},
+            version: panel.version
         }
     },
     removePanelFromStore(state, id){

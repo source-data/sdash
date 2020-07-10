@@ -32,6 +32,7 @@ class ImageRepository implements ImageRepositoryInterface
         $imagePath = $file->storeAs($this->makePanelDirectoryTree($panel), $convertedFilename);
         $savePath = config("filesystems.disks.panels.root") . DIRECTORY_SEPARATOR . $panel->id . DIRECTORY_SEPARATOR;
         $mimeType = $file->getMimeType();
+        $fileSize = $file->getSize();
         $previewFilename = $convertedFilename;
 
         if($mimeType === "application/pdf") {
@@ -49,16 +50,39 @@ class ImageRepository implements ImageRepositoryInterface
         $thumbnail->save($savePath . 'thumbnails' . DIRECTORY_SEPARATOR . $previewFilename, $this->thumbnailCompressionFactor);
 
         $image = Image::create([
+            'panel_id'              => $panel->id,
             'mime_type'             => $mimeType,
             'original_filename'     => $originalFilename,
             'filename'              => $convertedFilename,
             'preview_filename'      => $previewFilename,
-            'panel_id'              => $panel->id
+            'file_size'             => $fileSize
         ]);
+
+        $panel->increment('version');
+        $panel->save();
 
         return $image;
     }
 
+    public function archiveAndRemove(Image $file)
+    {
+        $panel = $file->panel;
+
+        try {
+            Storage::move($panel->save_path . DIRECTORY_SEPARATOR . $file->filename, $panel->save_path . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->filename);
+            Storage::delete($panel->save_path . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . $file->filename);
+        } catch(\Exception $e) {
+            error_log($e->getMessage());
+            error_log($e->getTraceAsString());
+            throw new \Exception("Failed to remove physical file.");
+        }
+
+        $file->is_archived = true;
+        $file->save();
+        $file->delete();
+
+        return true;
+    }
 
     /**
      * Create directories for a new panel in the storage directory
@@ -70,6 +94,7 @@ class ImageRepository implements ImageRepositoryInterface
     {
         Storage::makeDirectory($panel->id);
         Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "thumbnails");
+        Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "archived");
         Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "attachments");
         Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "attachments". DIRECTORY_SEPARATOR . "archived");
         return (string)$panel->id;

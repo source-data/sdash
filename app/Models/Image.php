@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Image extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -16,7 +19,14 @@ class Image extends Model
         'original_filename',
         'filename',
         'preview_filename',
-        'panel_id'
+        'panel_id',
+        'file_size',
+        'is_archived'
+    ];
+
+    protected $hidden = [
+        'filename',
+        'deleted_at',
     ];
 
     public function panel()
