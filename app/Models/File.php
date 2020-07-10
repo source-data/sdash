@@ -23,6 +23,7 @@ class File extends Model
         'url',
         'description',
         'mime_type',
+        'file_size',
         'version',
         'is_archived'
     ];

@@ -96,9 +96,8 @@
                 <template v-slot:cell(link)="data">
                     <a class="text-light" :href="data.item.url" target="_blank">{{data.item.url}}</a>
                     <a class="text-light" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
+                    <span class="sd-file-size" v-if="data.item.file_size">&bull; {{formatBytes(data.item.file_size)}}</span>
                 </template>
-
-
             </b-table>
         </div>
     </div>
@@ -107,6 +106,7 @@
 <script>
 
 import store from '@/stores/store'
+import formatter from '@/services/formatter'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -129,6 +129,7 @@ export default {
         }
 
     }, /* end of data */
+    mixins: [formatter],
     computed: {
         ...mapGetters(['getFiles', 'iOwnThisPanel']),
         disableSubmit(){
@@ -292,6 +293,10 @@ export default {
 .sd-file-uploads--toggle-wrapper {
     display:flex;
     align-items: center;
+}
+
+.sd-file-size {
+    color: #b0cddb;
 }
 
 label.vue-js-switch {

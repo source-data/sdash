@@ -19,6 +19,7 @@ class FileRepository implements FileRepositoryInterface
         $convertedFilename = $file->hashName();
         $savePath = $panel->save_path . DIRECTORY_SEPARATOR;
         $mimeType = $file->getMimeType();
+        $fileSize = $file->getSize();
 
         try
         {
@@ -35,7 +36,8 @@ class FileRepository implements FileRepositoryInterface
             'original_filename' =>  $originalFilename,
             'filename'          =>  $convertedFilename,
             'type'              =>  'file',
-            'mime_type'         =>  $mimeType
+            'mime_type'         =>  $mimeType,
+            'file_size'         =>  $fileSize,
         ]);
 
         return File::find($newFile->id);
