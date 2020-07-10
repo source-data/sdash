@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'WelcomeController@index');
+Route::get('/about', 'WelcomeController@about');
 
 Auth::routes(['verify' => true]);
 
