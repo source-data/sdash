@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 
 // authenticated routes
 Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
@@ -36,7 +37,6 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::delete('/users/{user}', 'API\UserController@destroy');
     Route::patch('/users/me/groups/{group}/join/{token}', 'API\GroupController@joinViaApi');
     Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
-    // Route::patch('/panels/{panel}/share', 'API\PanelController@hackShare');
     Route::patch('/panels/{panel}', 'API\PanelController@update');
     Route::patch('/panels/{panel}/image', 'API\PanelController@changeImage');
     Route::post('/panels/{panel}/tokens', 'API\AccessTokenController@create');

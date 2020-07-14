@@ -55,7 +55,7 @@ class AccessTokenController extends Controller
         if (Gate::allows('view-panel', $panel)) {
 
             $accessToken = $panel->accessToken;
-            Log::info($accessToken);
+            // Log::info($accessToken);
 
             if (!$accessToken) abort(404, "Panel has no public access token");
 

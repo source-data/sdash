@@ -13,15 +13,15 @@ use App\Repositories\Interfaces\GroupRepositoryInterface;
 class GroupRepository implements GroupRepositoryInterface
 {
 
-    public function addMemberToGroup(Group $group, Array $member)
+    public function addMemberToGroup(Group $group, array $member)
     {
         $token = sha1(now()->timestamp . $member["id"] . Str::random(24));
 
-        $group->users()->attach($member["id"],['role' => ($member["admin"]==TRUE) ? 'admin' : 'user', 'token' => $token]);
+        $group->users()->attach($member["id"], ['role' => ($member["admin"] == TRUE) ? 'admin' : 'user', 'token' => $token]);
 
         $user = User::find($member["id"]);
 
-        $user->notify( new UserAddedToGroup($user, $group, $token) );
+        $user->notify(new UserAddedToGroup($user, $group, $token));
 
         return true;
     }
@@ -36,35 +36,31 @@ class GroupRepository implements GroupRepositoryInterface
         $group->panels()->detach($panelsToDetach);
 
         return true;
-
     }
 
     public function makeMemberIntoAdmin(Group $group, String $user_id)
     {
         $user = $group->users()->where("users.id", $user_id)->withPivot("role")->first();
 
-        Log::debug("make admin: " . $user->surname . ' ' . $user->pivot->role);
+        // Log::debug("make admin: " . $user->surname . ' ' . $user->pivot->role);
 
-        if($user->pivot->role == 'admin') return true;
+        if ($user->pivot->role == 'admin') return true;
 
-        $group->users()->updateExistingPivot($user,['role' => 'admin']);
+        $group->users()->updateExistingPivot($user, ['role' => 'admin']);
 
         return true;
-
     }
 
     public function makeMemberNotAdmin(Group $group, String $user_id)
     {
         $user = $group->users()->where("users.id", $user_id)->withPivot("role")->first();
 
-        Log::debug("remove admin: " . $user->surname . ' ' . $user->pivot->role);
+        // Log::debug("remove admin: " . $user->surname . ' ' . $user->pivot->role);
 
-        if($user->pivot->role == 'user') return true;
+        if ($user->pivot->role == 'user') return true;
 
-        $group->users()->updateExistingPivot($user,['role' => 'user']);
+        $group->users()->updateExistingPivot($user, ['role' => 'user']);
 
         return true;
-
     }
-
 }

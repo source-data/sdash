@@ -23,6 +23,9 @@
             @hide="toggleLightbox"
         ></lightbox>
 
+
+    <feedback-widget></feedback-widget>
+
 </main>
 
 </template>
@@ -37,11 +40,12 @@ import InfoBar from '@/components/InfoBar'
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
+import FeedbackWidget from '@/components/FeedbackWidget'
 
 export default {
 
     name: 'Dashboard',
-    components: { ActionBarTop, PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox },
+    components: { ActionBarTop, PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget },
     props: [''],
 
     data(){
