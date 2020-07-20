@@ -289,7 +289,7 @@ export default {
         display: inline-block;
         margin-right: 6px;
         margin-bottom: 4px;
-        max-width: 100%;
+        max-width: calc(100% - 5em);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
