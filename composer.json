@@ -25,6 +25,7 @@
     "require-dev": {
         "deployer/dist": "^6.7",
         "deployer/recipes": "^6.2",
+        "doctrine/dbal": "^2.10",
         "facade/ignition": "^2.0",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^4.1",
