@@ -63,6 +63,32 @@ This includes a demo user with SuperAdmin privileges
 
 You can completely refresh your database (losing any non-seeded data) by running `php artisan migrate:refresh --seed`
 
+### Unit Testing
+
+This project uses Laravel's own integration of PHPUnit. You should set up a testing database using MySQL in order to resemble the real database.
+
+You should create a .env.testing file in the project root. This should be an exact copy of your .env file except the database details.
+
+For example, the database details in .env.testing could be:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sdash_laravel_testing
+DB_USERNAME=test_user
+DB_PASSWORD=test_password
+```
+You would need to create this database and user on your local MySQL installation. Once you've created the empty database, there is no need to run migrations - Laravel will run the migrations when needed for the tests.
+
+To run the test suite:
+
+```
+php artisan test
+```
+
+See also: [Laravel Testing](https://laravel.com/docs/master/http-tests)
+
 ## API Endpoints Needed
 
 ## User
