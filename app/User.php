@@ -12,6 +12,13 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, Notifiable;
 
     /**
+     * The roles that a user can have on a panel
+     */
+    const PANEL_ROLE_AUTHOR = 'author';
+    const PANEL_ROLE_CURATOR = 'curator';
+    const PANEL_ROLE_CORRESPONDING_AUTHOR = 'corresponding';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -41,9 +48,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === 'admin';
     }
 
+    /**
+     * The panels that were uploaded by this user
+     */
     public function panels()
     {
         return $this->hasMany('App\Models\Panel');
+    }
+
+    /**
+     * All panels where this user has an authorial role - whether author, curator or corresponding author
+     */
+    public function authoredPanels()
+    {
+        return $this->belongsToMany('App\Models\Panel')->withPivot('role')->as('role');;
     }
 
     public function groups()
