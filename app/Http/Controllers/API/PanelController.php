@@ -131,6 +131,7 @@ class PanelController extends Controller
         ]);
 
         $createdImage = $this->imageRepository->storePanelImage($newPanel, $request->file('file'));
+        $newPanel->authors()->attach($user->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR]);
 
         return API::response(200, "Panel successfully created.", Panel::where('id', $newPanel->id)->with(['groups', 'tags', 'user'])->first());
     }
@@ -158,6 +159,7 @@ class PanelController extends Controller
                             $query->orderBy('created_at')->with('user');
                         },
                         'groups',
+                        'authors',
                         'files' => function ($query) {
                             $query->where('is_archived', false);
                         }
