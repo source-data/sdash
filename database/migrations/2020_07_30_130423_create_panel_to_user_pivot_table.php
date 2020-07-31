@@ -17,13 +17,15 @@ class CreatePanelToUserPivotTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('panel_id');
-            $table->enum('role',['author','corresponding','curator'])->default('author');
+            $table->enum('role', ['author', 'corresponding', 'curator'])->default('author');
+            $table->integer('order')->default(0);
             $table->timestamps();
 
-            $table->foreign('panel_id')->references('id')->on('panels');
+            $table->foreign('panel_id')->references('id')->on('panels')->onDelete('cascade');
             $table->index('panel_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->index('user_id');
+            $table->index('order');
         });
     }
 
