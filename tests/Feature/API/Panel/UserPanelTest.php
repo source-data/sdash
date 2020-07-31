@@ -32,7 +32,7 @@ class UserPanelTest extends TestCase
      */
     public function testAUserCanBeSetAsAPanelCorrespondingAuthor()
     {
-        $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR]);
+        $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 0]);
 
         $authoredPanel = $this->author->authoredPanels()->first();
 
@@ -44,7 +44,7 @@ class UserPanelTest extends TestCase
 
     public function testAUserWhoIsCorrespondingAuthorOfAPanelCanAccessThePanelDetails()
     {
-        $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR]);
+        $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 0]);
 
         $response = $this->actingAs($this->author, 'api')->get('api/panels/' . $this->panel->id);
 
