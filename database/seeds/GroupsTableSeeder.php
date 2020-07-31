@@ -19,18 +19,17 @@ class GroupsTableSeeder extends Seeder
 
         //get panels and users
         $users = User::all();
-        $panels = Panel::whereIn('user_id',[2,3])->whereNull('made_public_at')->limit(15)->get();
+        $panels = Panel::whereIn('user_id', [2, 3])->whereNull('made_public_at')->limit(15)->get();
 
-        $newGroups->each(function($group) use ($panels, $users) {
+        $newGroups->each(function ($group) use ($panels, $users) {
 
-            $users->each(function($user) use($group) {
+            $users->each(function ($user) use ($group) {
                 $group->users()->attach($user->id, ['status' => 'confirmed']);
             });
 
-            $panels->each(function($panel) use ($group) {
+            $panels->each(function ($panel) use ($group) {
                 $group->panels()->attach($panel->id);
             });
-
         });
     }
 }
