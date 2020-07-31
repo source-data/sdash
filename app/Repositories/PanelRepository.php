@@ -34,6 +34,8 @@ class PanelRepository implements PanelRepositoryInterface
                         $query->whereHas('confirmedUsers', function ($query) use ($user) {
                             $query->where('users.id', $user->id);
                         });
+                    })->orWhereHas('authors', function ($query) use ($user) {
+                        $query->where('users.id', $user->id);
                     });
                 }
             }

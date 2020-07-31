@@ -9,7 +9,8 @@ $factory->define(Panel::class, function (Faker $faker) {
     return [
         'title' => $faker->sentence,
         'caption'   => $faker->paragraph(5),
-        'user_id'   => $faker->numberBetween(2,3),
+        'user_id'   => $faker->numberBetween(2, 3),
+        'version'   => 0,
         'type'      => $faker->word,
         'subtype'   => $faker->word,
         'clicks'    => $faker->randomDigit,

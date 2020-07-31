@@ -22,6 +22,8 @@ class PanelAccessGates
             $query->whereHas('confirmedUsers', function ($query) use ($userId) {
                 $query->where('users.id', $userId);
             });
+        })->orWhereHas('authors', function ($query) use ($user) {
+            $query->where('users.id', $user->id);
         })->exists();
     }
 
@@ -36,8 +38,17 @@ class PanelAccessGates
     {
         if ($user->is_superadmin()) return true;
 
+        if (
+            $user->authoredPanels()
+            ->where('panel_id', $panel->id)
+            ->wherePivot('role', [User::PANEL_ROLE_CORRESPONDING_AUTHOR, User::PANEL_ROLE_CURATOR])
+            ->exists()
+        ) return true;
+
         // is the logged-in user the panel owner?
         if ($user->id === $panel->user_id) return true;
+
+
 
         return false;
     }
