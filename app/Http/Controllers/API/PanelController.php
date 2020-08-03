@@ -45,7 +45,7 @@ class PanelController extends Controller
     }
 
     /**
-     * List panels available to the user, either because they own them, they're public or
+     * List panels available to the user, either because they own them, are an author, they're public or
      * they're shared via a group
      *
      * @param Request $request

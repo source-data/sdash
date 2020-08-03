@@ -150,7 +150,7 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'comments', 'commentCount', 'fileCount', 'editingCaption']),
+        ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'comments', 'commentCount', 'fileCount', 'editingCaption', 'expandedPanelAuthors']),
         author(){
             return this.expandedPanel.user.firstname + ' ' + this.expandedPanel.user.surname;
         },
@@ -163,7 +163,7 @@ export default {
     },
     methods:{ //run as event handlers, for example
 
-        openLightBox(){
+        openLightBox(){ console.log(this.expandedPanelAuthors)
             this.$store.commit("toggleLightbox")
         },
         editPanelTitle(){

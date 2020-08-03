@@ -32,6 +32,7 @@ const defaultExpandedPanelState = {
     title: null,
     type: null,
     updated_at: null,
+    authors: null,
     user: {},
     user_id: null,
     access_token: {},
@@ -255,6 +256,7 @@ const mutations = {
         state.expandedPanelDetail={
             caption: panel.caption,
             clicks: panel.clicks,
+            authors: panel.authors,
             created_at: panel.created_at,
             downloads: panel.downloads,
             id: panel.id,
@@ -335,6 +337,18 @@ const getters = {
     },
     expandedPanel(state){
         return state.expandedPanelDetail
+    },
+    expandedPanelAuthors(state) {
+        return state.expandedPanelDetail.authors ? state.expandedPanelDetail.authors.reduce((accumulator, author) => { accumulator.push({
+            firstname: author.firstname,
+            surname: author.surname,
+            institution_name: author.institution_name,
+            orcid: author.orcid,
+            author_role: author.author_role.role,
+            order: author.author_role.order
+        })
+        return accumulator
+        }, []) : null
     },
     iOwnThisPanel(state, getters, rootState){
         if(!state.expandedPanelDetail) return false
