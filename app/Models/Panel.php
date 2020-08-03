@@ -37,7 +37,7 @@ class Panel extends Model
 
     public function authors()
     {
-        return $this->belongsToMany('App\User')->as('author_role')->withPivot(['role', 'order']);
+        return $this->belongsToMany('App\User')->as('author_role')->withPivot(['role', 'order'])->orderBy('pivot_order', 'asc');
     }
 
     public function comments()
