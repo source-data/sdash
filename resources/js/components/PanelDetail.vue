@@ -30,7 +30,7 @@
                     Edit title
                 </span>
             </div>
-            <div v-if="expandedPanelAuthors">
+            <div v-if="expandedPanelAuthors.length > 0">
                 <ul class="sd-panel-author-list list-unstyled list-inline">
                     <li
                         class="sd-panel-author-list--item list-inline-item"
@@ -249,7 +249,7 @@ export default {
         authors() {
             // don't display the curator in the author list
             return this.expandedPanelAuthors.filter(
-                author => author.role !== AuthorTypes.CURATOR
+                author => author.author_role !== AuthorTypes.CURATOR
             );
         },
         fullImageUrl() {

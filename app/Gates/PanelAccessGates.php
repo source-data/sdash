@@ -106,7 +106,7 @@ class PanelAccessGates
     {
         return $panel->authors()
             ->where('user_id', $user->id)
-            ->wherePivot('role', [User::PANEL_ROLE_CORRESPONDING_AUTHOR, User::PANEL_ROLE_CURATOR])
+            ->wherePivotIn('role', [User::PANEL_ROLE_CORRESPONDING_AUTHOR, User::PANEL_ROLE_CURATOR])
             ->exists();
     }
 }
