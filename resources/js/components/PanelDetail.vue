@@ -30,23 +30,33 @@
                     Edit title
                 </span>
             </div>
-            <ul class="sd-panel-author-list list-unstyled list-inline">
-                <li
-                    class="sd-panel-author-list--item list-inline-item"
-                    v-for="author in authors"
-                    :key="'author-' + author.order + '-' + author.id"
-                    :class="'sd-panel-author-list--item_' + author.author_role"
-                >
-                    <router-link :to="{ path: '/user/' + author.id }">
-                        {{ author.firstname }} {{ author.surname }}
-                        <sup
-                            class="sd-panel-author-list--asterisk"
-                            v-if="author.corresponding"
-                            >*</sup
-                        ></router-link
+            <div v-if="expandedPanelAuthors">
+                <ul class="sd-panel-author-list list-unstyled list-inline">
+                    <li
+                        class="sd-panel-author-list--item list-inline-item"
+                        v-for="author in authors"
+                        :key="'author-' + author.order + '-' + author.id"
+                        :class="
+                            'sd-panel-author-list--item_' + author.author_role
+                        "
                     >
-                </li>
-            </ul>
+                        <router-link :to="{ path: '/user/' + author.id }">
+                            {{ author.firstname }} {{ author.surname }}
+                            <sup
+                                class="sd-panel-author-list--asterisk"
+                                v-if="author.corresponding"
+                                >*</sup
+                            ></router-link
+                        >
+                    </li>
+                </ul>
+                <div class="sd-panel-author-list--note">
+                    <span
+                        class="sd-panel-author-list--corresponding-author-note"
+                        >* indicates corresponding author</span
+                    >
+                </div>
+            </div>
         </b-row>
         <b-row class="m-3 sd-panel-detail-content-wrapper">
             <b-col class="sd-panel-detail-col sd-panel-detail-col--left">
@@ -515,5 +525,10 @@ export default {
 
 .sd-panel-author-list--item_corresponding a {
     color: orange;
+}
+
+.sd-panel-author-list--corresponding-author-note {
+    color: orange;
+    font-size: 0.85em;
 }
 </style>
