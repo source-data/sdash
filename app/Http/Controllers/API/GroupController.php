@@ -129,56 +129,79 @@ class GroupController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Manage panels associated with a group
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Group $group)
+    public function managePanels(Request $request, Group $group)
     {
         $user = auth()->user();
 
         $request->validate([
-            'panels'  => ['required'],
+            'action' => ['required'],
+            'panels' => ['required'],
             'panels.*' => ['exists:panels,id']
         ]);
 
         if (Gate::allows('view-group', $group)) {
 
-            $addedCount = 0;
-            $notAddedCount = 0;
+            $action = $request->input('action');
+            $panels = $request->input('panels');
 
-            foreach ($request->input("panels") as $panel) {
+            $affectedPanelIds = [];
+            $responseMessage = '%u panels ';
 
+            switch ($action) {
+                case 'add':
+                    $responseMessage .= 'added';
+                    break;
+                case 'remove':
+                    $responseMessage .= 'removed';
+                    break;
+                default:
+                    return API::response(400, "Invalid action", []);
+            }
+
+            $responseMessage .= '. %u skipped.';
+
+            foreach ($panels as $panel) {
                 $panelModel = Panel::findOrFail($panel);
-
                 if (Gate::allows('modify-panel', $panelModel)) {
-
-
-                    if (!$group->panels()->where('panels.id', $panelModel->id)->exists()) {
-                        $group->panels()->attach($panelModel->id);
-                        $addedCount++;
-                    } else {
-                        $notAddedCount++;
+                    $panelExists = $group->panels()->where('panels.id', $panelModel->id)->exists();
+                    switch ($action) {
+                        case 'add':
+                            if (!$panelExists) {
+                                $group->panels()->attach($panelModel->id);
+                                $affectedPanelIds[] = $panelModel->id;
+                            }
+                            break;
+                        case 'remove':
+                            if ($panelExists) {
+                                $group->panels()->detach($panelModel->id);
+                                $affectedPanelIds[] = $panelModel->id;
+                            }
+                            break;
                     }
-                } else {
-                    $notAddedCount++;
                 }
             }
 
+            $affectedPanelsCount = count($affectedPanelIds);
+            $ignoredPanelsCount = count($panels) - $affectedPanelsCount;
+
             return API::response(
                 200,
-                "$addedCount panels added. $notAddedCount skipped.",
+                sprintf($responseMessage, $affectedPanelsCount, $ignoredPanelsCount),
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
                         $query->withPivot(['role','token', 'status']);
                     }])->withCount(['confirmedUsers', 'panels'])->first(),
-                    "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
+                    "panels" => Panel::whereIn('id', $affectedPanelIds)->with(['groups', 'tags', 'user'])->get()
                 ]
             );
         } else {
-            return API::response(401, "You are not an administrator of the group.", []);
+            return API::response(401, "You are not an administrator of the group", []);
         }
     }
 

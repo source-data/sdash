@@ -101,7 +101,7 @@
                                         <span class="d-inline-block" aria-hidden="true">&times;</span>
                                     </b-button>
                                 </template>
-
+                                <p>
                                     <b-button @click="closeDeletePopover" size="sm" >Cancel</b-button>
                                     <b-button @click="deleteMultiplePanels" size="sm" variant="danger">
                                         <font-awesome-icon icon="trash-alt" size="1x" />
@@ -237,10 +237,16 @@ export default {
                 })
         },
         addPanelsToGroup(){
-            this.$store.dispatch("addSelectedPanelsToGroup", this.selectedSharingGroupId).then((response)=>{
+            this.$store.dispatch("manageGroupPanels", {
+                action: 'add',
+                target: 'selected',
+                groupId: this.selectedSharingGroupId
+            })
+            .then((response)=>{
                 this.$snotify.success(response.data.MESSAGE, "Success")
                 this.closeGroupsPopover()
-            }).catch(error => {
+            })
+            .catch(error => {
                 this.$snotify.error("Panels could not be added to group", "Failure")
             })
         },

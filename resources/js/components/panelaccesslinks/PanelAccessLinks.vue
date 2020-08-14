@@ -3,11 +3,22 @@
         <template v-if="iOwnThisPanel">
             <template v-if="expandedPanel.groups && expandedPanel.groups.length > 0">
                 <p>This figure is shared with:</p>
-                <ul>
-                    <li v-for="group in expandedPanel.groups" :key="group.id">
-                        {{ group.name }}
-                    </li>
-                </ul>
+                <b-table
+                    small
+                    dark
+                    thead-class="d-none"
+                    :items="expandedPanel.groups"
+                    :fields="fields"
+                >
+                    <template v-if="iOwnThisPanel" v-slot:cell(action)="data">
+                        <b-button variant="link" class="text-light" @click="removePanelFromGroup(data.item.id)">
+                            <font-awesome-icon icon="trash-alt" size="lg"/>
+                        </b-button>
+                    </template>
+                    <template v-slot:cell(group_name)="data">
+                        {{ data.item.name }}
+                    </template>
+                </b-table>
             </template>
             <template v-if="!hasLinks">
                 <div class="sd-generate-panel-access-links">
@@ -48,6 +59,7 @@
 
 <script>
 
+import store from '@/stores/store'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -59,6 +71,10 @@ export default {
         return {
             loading: false,
             link_base: process.env.MIX_API_PANEL_URL,
+            fields:[
+                {key:'action', label:'', sortable: false},
+                {key:'group_name', label:'Group Name', sortable: false}
+            ]
         }
 
     }, /* end of data */
@@ -104,6 +120,16 @@ export default {
             document.execCommand("copy")
             target.disabled="disabled"
             this.$snotify.info("The link is stored in your clipboard", "Copied Link")
+        },
+        removePanelFromGroup(groupId){
+            this.$store.dispatch("manageGroupPanels", {
+                action: 'remove',
+                target: 'expanded',
+                groupId
+            })
+            .catch(error => {
+                this.$snotify.error("The panel could not be removed from group", "Failure")
+            })
         }
 
     }
@@ -112,6 +138,14 @@ export default {
 </script>
 
 <style lang="scss">
+.sd-panel-access-links .table td {
+    vertical-align: middle;
+}
+
+.sd-panel-access-links .table td:first-child {
+    width: 1%;
+}
+
 .sd-generate-panel-access-links {
     margin-bottom: 0.5rem;
 }

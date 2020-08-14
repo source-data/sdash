@@ -69,28 +69,44 @@ const actions = {
          })
     },
 
-    addSelectedPanelsToGroup({commit, state, rootState}, groupId) {
+    manageGroupPanels({commit, state, rootState}, params) {
+        let panels = [];
+        switch (params.target) {
+            case "selected":
+                panels = rootState.Panels.selectedPanels;
+                break;
+            case "expanded":
+                panels = [rootState.Panels.expandedPanelId];
+                break;
+        }
+        return Axios.patch("/groups/" + params.groupId + "/panels", {
+                panels: panels,
+                action: params.action
+            })
+            .then(response => {
+                let updatedGroup = Object.assign({},response.data.DATA.group)
+                updatedGroup.pivot = {
+                    group_id: response.data.DATA.group.confirmed_users[0].pivot.group_id,
+                    user_id: response.data.DATA.group.confirmed_users[0].pivot.user_id,
+                    role: response.data.DATA.group.confirmed_users[0].pivot.role,
+                }
+                delete updatedGroup.users
 
-        return Axios.patch("/groups/" + groupId, {panels: rootState.Panels.selectedPanels}).then(response => {
-            let updatedGroup = Object.assign({},response.data.DATA.group)
-            updatedGroup.pivot = {
-                group_id: response.data.DATA.group.confirmed_users[0].pivot.group_id,
-                user_id: response.data.DATA.group.confirmed_users[0].pivot.user_id,
-                role: response.data.DATA.group.confirmed_users[0].pivot.role,
-            }
-            delete updatedGroup.users
+                let updatedPanels = response.data.DATA.panels
 
-            let updatedPanels = response.data.DATA.panels
+                commit("updateUserGroup", updatedGroup)
 
-            commit("updateUserGroup", updatedGroup)
+                for (let i = 0; i < updatedPanels.length; i++) {
+                    commit("updateLoadedPanel", updatedPanels[i])
+                    if (updatedPanels[i].id === rootState.Panels.expandedPanelId) {
+                        commit("storeExpandedPanelDetail", updatedPanels[i])
+                    }
+                }
 
-            for(let i=0; i<updatedPanels.length; i++) {
-                commit("updateLoadedPanel", updatedPanels[i])
-            }
-
-            return response
-        })
+                return response
+            })
     },
+
     // Remove logged-in user from group
     removeUserFromGroup({commit, state, rootState}){
         return Axios.delete("/groups/" + state.currentGroup.id + '/users/').then(response => {
