@@ -1,6 +1,33 @@
 <template>
     <section class="sd-panel-access-links">
         <template v-if="iOwnThisPanel">
+            <div>
+                <b-button v-b-modal.sd-share-modal variant="secondary" class="py-2 sd-share-button">
+                    <font-awesome-icon icon="users" /> Share with Group
+                </b-button>
+                <b-modal id="sd-share-modal" ref="sd-share-modal" title="Share with Group" ok-only ok-variant="secondary" ok-title="Cancel" button-size="sm">
+                    <b-form-group
+                    id="sd-group-selector"
+                    label="Share with an existing group"
+                    label-for="sd-group-dropdown"
+                    >
+                        <b-form-select size="sm" id="sd-group-dropdown" :options="myGroups" v-model="selectedSharingGroupId" trim></b-form-select>
+                    </b-form-group>
+                    <p>
+                        <b-button @click="addPanelToGroup" size="sm" variant="info" :disabled="!selectedSharingGroupId">
+                            <font-awesome-icon icon="users" size="1x" />
+                            Share
+                        </b-button>
+                    </p>
+                    <p>
+                        <label class="d-block">or create a new group</label>
+                        <b-button @click="createGroup" size="sm" variant="success">
+                            <font-awesome-icon icon="users" size="1x" />
+                            Create New Group
+                        </b-button>
+                    </p>
+                </b-modal>
+            </div>
             <template v-if="expandedPanel.groups && expandedPanel.groups.length > 0">
                 <p>This figure is shared with:</p>
                 <b-table
@@ -71,6 +98,7 @@ export default {
         return {
             loading: false,
             link_base: process.env.MIX_API_PANEL_URL,
+            selectedSharingGroupId: null,
             fields:[
                 {key:'action', label:'', sortable: false},
                 {key:'group_name', label:'Group Name', sortable: false}
@@ -80,12 +108,19 @@ export default {
     }, /* end of data */
 
     computed: {
-        ...mapGetters(['expandedPanel', 'iOwnThisPanel']),
+        ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'userGroups']),
         hasLinks(){
             return this.expandedPanel.access_token.hasOwnProperty('token')
         },
         linkUrl(){
             return this.hasLinks ? this.link_base + "/" + this.expandedPanel.id + "?token=" + this.expandedPanel.access_token.token : false
+        },
+        myGroups(){
+            let groups = this.userGroups.reduce((myGroups, group) => {
+                myGroups.push({text: group.name, value: group.id})
+                return myGroups
+            },[])
+            return groups
         }
     },
 
@@ -121,6 +156,19 @@ export default {
             target.disabled="disabled"
             this.$snotify.info("The link is stored in your clipboard", "Copied Link")
         },
+        addPanelToGroup(groupId){
+            this.$store.dispatch("manageGroupPanels", {
+                action: 'add',
+                target: 'expanded',
+                groupId: this.selectedSharingGroupId
+            })
+            .then((response)=>{
+                this.$refs['sd-share-modal'].hide()
+            })
+            .catch(error => {
+                this.$snotify.error("The panel could not be added to group", "Failure")
+            })
+        },
         removePanelFromGroup(groupId){
             this.$store.dispatch("manageGroupPanels", {
                 action: 'remove',
@@ -130,8 +178,11 @@ export default {
             .catch(error => {
                 this.$snotify.error("The panel could not be removed from group", "Failure")
             })
+        },
+        createGroup(){
+            this.$refs['sd-share-modal'].hide()
+            this.$router.push({name: "creategroup"})
         }
-
     }
 
 }
@@ -146,6 +197,7 @@ export default {
     width: 1%;
 }
 
+.sd-share-button,
 .sd-generate-panel-access-links {
     margin-bottom: 0.5rem;
 }
