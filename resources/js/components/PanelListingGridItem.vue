@@ -41,6 +41,12 @@
                 :id="'scroll-anchor-' + panelId"
             >
                 <font-awesome-icon
+                    class="sd-grid-item--author-icon"
+                    icon="book"
+                    v-if="IAmAnAuthor"
+                    title="Author"
+                />
+                <font-awesome-icon
                     :class="panelAccessReason"
                     icon="lock"
                     v-if="panelAccessReason == 'private'"
@@ -158,6 +164,14 @@ export default {
         },
         IOwnThisPanel() {
             return this.thisPanel.user_id === this.currentUser.id;
+        },
+        IAmAnAuthor() {
+            let thisPanel = this.thisPanel
+            if (thisPanel.authors && thisPanel.authors.length > 0) {
+                return (thisPanel.authors.filter(({id}) => id === this.currentUser.id).length > 0)
+            }
+
+            return false
         },
         panelSelected() {
             if (this.selectedPanels.length === 0) return false;
@@ -331,6 +345,10 @@ $sd-extra-height: 800; // info box height in pixels
     .group {
         color: #235588;
     }
+}
+
+.sd-grid-item--author-icon {
+    color:#634782;
 }
 
 .sd-grid-item--image-label,

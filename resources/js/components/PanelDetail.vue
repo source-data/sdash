@@ -3,7 +3,7 @@
         <b-row class="m-3 my-4 sd-panel-detail-title-wrapper">
             <div class="sd-panel-detail-title">
                 <b-input-group
-                    v-if="iOwnThisPanel && isEditingTitle"
+                    v-if="iCanEditThisPanel && isEditingTitle"
                     class="sd-panel-detail-title--editor"
                 >
                     <b-form-input v-model="titleText"></b-form-input>
@@ -22,7 +22,7 @@
                 <h3 v-if="!isEditingTitle">{{ expandedPanel.title }}</h3>
                 <span
                     class="sd-panel-detail-title-edit-icon sd-edit-icon"
-                    v-if="iOwnThisPanel && !isEditingTitle"
+                    v-if="iCanEditThisPanel && !isEditingTitle"
                     tabindex="0"
                     @click="editPanelTitle"
                 >
@@ -79,7 +79,7 @@
                 </div>
                 <span
                     class="sd-panel-change-image-link sd-edit-icon"
-                    v-if="iOwnThisPanel"
+                    v-if="iCanEditThisPanel"
                     tabindex="0"
                     @click="displayImageUploader"
                 >
@@ -111,7 +111,7 @@
                 <div class="panel-detail-caption-edit-container">
                     <span
                         class="sd-panel-detail-caption-edit-icon sd-edit-icon"
-                        v-if="iOwnThisPanel"
+                        v-if="iCanEditThisPanel"
                         tabindex="0"
                         @click="editPanelCaption"
                     >
@@ -155,7 +155,7 @@
                     <b-button
                         id="sd-delete-panel"
                         variant="danger"
-                        v-if="iOwnThisPanel"
+                        v-if="iCanEditThisPanel"
                         class="sd-delete-panel-button"
                         ><font-awesome-icon
                             class="sd-delete-panel-icon"
@@ -240,6 +240,7 @@ export default {
         ...mapGetters([
             "expandedPanel",
             "iOwnThisPanel",
+            "iHaveAuthorPrivileges",
             "comments",
             "commentCount",
             "fileCount",
@@ -262,13 +263,15 @@ export default {
         },
         commentCountTitle() {
             return "Discuss (" + this.commentCount + ")";
+        },
+        iCanEditThisPanel() {
+            return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
         }
     },
     methods: {
         //run as event handlers, for example
 
         openLightBox() {
-            console.log(this.expandedPanelAuthors);
             this.$store.commit("toggleLightbox");
         },
         editPanelTitle() {

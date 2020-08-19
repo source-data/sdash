@@ -376,16 +376,26 @@ const getters = {
         if (!rootState.Users.user) return false;
         return state.expandedPanelDetail.user_id === rootState.Users.user.id;
     },
+    iHaveAuthorPrivileges(state, getters, rootState) {
+        if (state.expandedPanelDetail.authors.length > 0 && getters.expandedPanelAuthors.filter((author) => (author.id===rootState.Users.user.id && (author.author_role===AuthorTypes.CORRESPONDING || author.author_role===AuthorTypes.CURATOR))).length > 0) return true
+
+        return false
+    },
     iCanEditTags(state, getters, rootState) {
-        if (!state.expandedPanelDetail) return false;
-        if (state.expandedPanelDetail.user_id === rootState.Users.user.id)
-            return true;
-        if (!rootState.Users.user) return false;
+
+        if (!state.expandedPanelDetail) return false
+
+        if (state.expandedPanelDetail.user_id === rootState.Users.user.id) return true
+
+        if (!rootState.Users.user) return false
+
+        if (getters.iHaveAuthorPrivileges) return true
+
         if (
             !state.expandedPanelDetail.groups ||
             state.expandedPanelDetail.groups.length < 1
-        )
-            return false;
+        ) return false
+
         return !!state.expandedPanelDetail.groups.find(group =>
             rootState.Groups.userGroups.find(
                 userGroup =>
@@ -396,7 +406,7 @@ const getters = {
                             user.pivot.role === "admin"
                     )
             )
-        );
+        )
     },
     hasPanelDetail(state) {
         return (

@@ -77,6 +77,6 @@ class Panel extends Model
 
     public function getSavePathAttribute()
     {
-        return /*config("filesystems.disks.panels.root") 'panels' . DIRECTORY_SEPARATOR .*/ $this->id . DIRECTORY_SEPARATOR;
+        return $this->id . DIRECTORY_SEPARATOR;
     }
 }
