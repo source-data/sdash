@@ -65,3 +65,4 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 // Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
 
 Route::get('panels/public', 'API\PanelController@listPublicPanels');
+Route::get('files/categories', 'API\FileController@listFileCategories');

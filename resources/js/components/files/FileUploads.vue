@@ -23,7 +23,6 @@
                 small
                 dark
                 class="sd-file-uploads--list-table"
-                outlined
                 striped
                 :items="getFiles"
                 :fields="fields"
@@ -53,42 +52,46 @@
                         </div>
                     </b-popover>
                 </template>
-                <template v-if="!iOwnThisPanel" v-slot:cell(description)="data">
-                        <span v-if="data.item.description">{{ data.item.description }}</span>
-                        <span v-if="!data.item.description" class="text-info">Add a description</span>
-                </template>
-                <template v-if="iOwnThisPanel" v-slot:cell(description)="data">
-                    <a href="#" @click.prevent class="custom-styled-link" :id="'edit-description-' + data.item.id" title="Edit description">
-                        <span v-if="data.item.description">{{ data.item.description }}</span>
-                        <span v-if="!data.item.description" class="text-info">Add a description</span>
-                    </a>
+                <template v-slot:cell(category)="data">
+                    <template v-if="iOwnThisPanel">
+                        <a href="#" @click.prevent class="custom-styled-link" :id="'edit-category-' + data.item.id" title="Edit category">
+                            <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
+                            <span v-if="!data.item.file_category_id" class="text-info">Edit category</span>
+                        </a>
+                    </template>
+                    <template v-if="!iOwnThisPanel">
+                        <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
+                        <span v-if="!data.item.file_category_id" class="text-info">&mdash;</span>
+                    </template>
                     <b-popover
-                        :ref="'edit-description-popover-' + data.item.id"
-                        :target="'edit-description-' + data.item.id"
+                        :ref="'edit-category-popover-' + data.item.id"
+                        :target="'edit-category-' + data.item.id"
                         triggers="click"
                         placement="top"
-                        @show="updateFileDescription(data.item.id, data.item.description)"
+                        @show="updateFileCategory(data.item.id, data.item.file_category_id)"
                         @hidden="clearUpdate"
                     >
                     <template v-slot:title>
-                            Update File Description
-                        <b-button @click="closeDescriptionPopover(data.item.id)" class="close" aria-label="Close">
+                        Category
+                        <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
                             <span class="d-inline-block" aria-hidden="true">&times;</span>
                         </b-button>
                     </template>
-                        <div class="update-file-description">
+                        <div class="update-file-category">
                             <b-form-group
-                            :id="'update-description-form-group-' + data.item.id"
-                            description="Update your file descriptive text."
-                            label="File description"
-                            :label-for="'update-description-input-' + data.item.id"
+                            :id="'update-category-form-group-' + data.item.id"
+                            :label-for="'update-category-input-' + data.item.id"
                             >
-                            <b-form-input id="input-1" v-model="fileDescriptionText" trim></b-form-input>
+                            <b-form-select v-model="selectedCategoryId" :options="fileCategories">
+                                <template v-slot:first>
+                                    <b-form-select-option value="">(none)</b-form-select-option>
+                                </template>
+                            </b-form-select>
                             </b-form-group>
 
                             <div class="update-buttons">
-                                <b-button variant="success" small @click="saveFileDescription">Save</b-button>
-                                <b-button variant="outline-dark" small @click="closeDescriptionPopover(data.item.id)">Cancel</b-button>
+                                <b-button variant="success" small @click="saveFileCategory">Save</b-button>
+                                <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">Cancel</b-button>
                             </div>
                         </div>
                     </b-popover>
@@ -113,27 +116,32 @@ export default {
 
     name: 'FileUploads',
     data(){
-
         return {
             file: null,
             url:  null,
             uploadToggle: true,
             fileToDelete: {},
             fileToUpdate: {},
-            fileDescriptionText: "",
             fields:[
                 {key:'action', label:'', sortable: false},
-                {key:'description', label:'Description', sortable: true, sortByFormatted:true, formatter:"descriptionContents"},
-                {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"linkContents"},
-                ]
+                {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
+                {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"distillResourceLink"},
+            ],
+            selectedCategoryId: null
         }
-
     }, /* end of data */
     mixins: [formatter],
     computed: {
-        ...mapGetters(['getFiles', 'iOwnThisPanel']),
+        ...mapGetters(['getFiles', 'iOwnThisPanel', 'getFileCategories', 'getFileCategoryById']),
         disableSubmit(){
             return (this.file===null && this.url===null)
+        },
+        fileCategories(){
+            let categories = this.getFileCategories.reduce((categories, category) => {
+                categories.push({text: category.name, value: category.id})
+                return categories
+            },[])
+            return categories
         }
     },
     methods:{ //run as event handlers, for example
@@ -196,59 +204,72 @@ export default {
         },
         clearUpdate(){
             this.fileToUpdate = {}
-            this.fileDescriptionText = ""
-
+            this.selectedCategoryId = null
         },
-        linkContents(value, key, item){
+        distillResourceLink(value, key, item){
             return item.original_filename || item.url
         },
-        descriptionContents(value, key, item){
-            return item.description || ""
+        distillCategoryName(value, key, item){
+            return this.getFileCategoryName(item.file_category_id)
         },
         closeDeletePopover(id){
             if(this.$refs["popover-" + id]) {
                 this.$refs["popover-" + id].$emit("close")
             }
         },
-        closeDescriptionPopover(id){
-            if(this.$refs["edit-description-popover-" + id]) {
-                this.$refs["edit-description-popover-" + id].$emit("close")
+        closeCategoryPopover(id){
+            if(this.$refs["edit-category-popover-" + id]) {
+                this.$refs["edit-category-popover-" + id].$emit("close")
             }
         },
-        updateFileDescription(id, text){
-            let toUpdate = this.getFiles.filter(file => file.id === id)[0]
-            this.fileToUpdate = toUpdate
-            this.fileDescriptionText = text
+        getFileCategoryName(fileCategoryId){
+            let category = this.getFileCategoryById(fileCategoryId);
+            return (category ? category.name : "")
         },
-        saveFileDescription(){
-            if(!this.fileToUpdate || !this.fileDescriptionText){
-
-                this.$snoftify.error("Please edit the file description via the interface", "Update Failed")
+        updateFileCategory(fileId, fileCategoryId){
+            let toUpdate = this.getFiles.filter(file => file.id === fileId)[0]
+            this.fileToUpdate = toUpdate
+            this.selectedCategoryId = fileCategoryId
+        },
+        saveFileCategory(){
+            if(!this.fileToUpdate){
+                this.$snoftify.error("Please edit the category via the interface", "Update Failed")
                 return;
-
             }
 
             let updatedFile = Object.assign({}, this.fileToUpdate)
-            updatedFile.description = this.fileDescriptionText
+            updatedFile.file_category_id = this.selectedCategoryId || null
 
             this.$store.dispatch("updateFileMeta", updatedFile).then(response => {
-                this.closeDescriptionPopover(this.fileToUpdate.id)
+                this.closeCategoryPopover(this.fileToUpdate.id)
                 this.$snotify.success(response.data.MESSAGE, "File Updated")
                 this.clearUpdate()
                 this.$refs.fileUploadsTable.refresh()
             }).catch(error => {
-                this.closeDescriptionPopover(this.fileToUpdate.id)
+                this.closeCategoryPopover(this.fileToUpdate.id)
                 this.$snotify.error(error.data.message, "Update failed")
                 this.clearUpdate()
             })
-        },
 
+        }
     }
 
 }
 </script>
 
 <style lang="scss">
+
+.sd-file-uploads--list-table td {
+    vertical-align: middle;
+}
+
+.sd-file-uploads--list-table td:first-child {
+    width: 1%;
+}
+
+.sd-file-uploads--list-table td a .text-info {
+    color: #65dd65 !important;
+}
 
 .sd-file-uploads-header {
 

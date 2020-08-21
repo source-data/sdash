@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PanelsTableSeeder::class);
         $this->call(GroupsTableSeeder::class);
         $this->call(TagsTableSeeder::class);
-
+        $this->call(FileCategoriesTableSeeder::class);
 
 
     }

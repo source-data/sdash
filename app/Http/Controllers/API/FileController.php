@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use API;
 use App\User;
+use App\Models\FileCategory;
 use App\Models\File;
 use App\Models\Panel;
 use Illuminate\Http\Request;
@@ -107,13 +108,13 @@ class FileController extends Controller
         $user = auth()->user();
         $panel = $file->panel;
         $request->validate([
-            'description'  => ['required', 'max:255']
+            'file_category_id'  => ['integer', 'min:1', 'nullable']
         ]);
 
         if (!Gate::allows('modify-panel', $panel)) return API::response(401, "Access denied.", []);
 
         $file->update([
-            'description' => strip_tags($request->input("description"))
+            'file_category_id' => $request->input("file_category_id")
         ]);
 
         return API::response(200, "File updated", $file);
@@ -139,8 +140,6 @@ class FileController extends Controller
 
         return API::response(500, "Could not remove requested file", []);
     }
-
-
 
     public function download(File $file, Request $request)
     {
@@ -172,5 +171,10 @@ class FileController extends Controller
                 'Content-disposition' => 'attachment; filename="' . $file->original_filename . '"',
             ]
         );
+    }
+
+    public function listFileCategories()
+    {
+        return API::response(200, "List of file categories", FileCategory::all());
     }
 }

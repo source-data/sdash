@@ -19,6 +19,7 @@ class File extends Model
         'panel_id',
         'original_filename',
         'filename',
+        'file_category_id',
         'type',
         'url',
         'description',
@@ -32,6 +33,11 @@ class File extends Model
         'filename',
         'deleted_at',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo('App\Models\FileCategory');
+    }
 
     public function panel()
     {

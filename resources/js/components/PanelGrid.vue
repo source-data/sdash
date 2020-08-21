@@ -69,6 +69,7 @@ export default {
         store.commit("setPagination", true)
         store.commit("clearSelectedPanels")
         store.commit("setSearchMode", "user")
+        store.dispatch("fetchFileCategories")
         store.dispatch("fetchPanelList")
         .catch((error) => {
             this.$snotify.error("We couldn't find any panels for you.", "Sorry!")

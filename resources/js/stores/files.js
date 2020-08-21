@@ -3,12 +3,19 @@ import { deepStrictEqual } from "assert"
 
 //initial state
 const state = {
-    expandedPanelFiles: [],
+    categories: [],
+    expandedPanelFiles: []
 }
 
 
 
 const actions = {
+    fetchFileCategories({commit}, payload) {
+        return Axios.get("files/categories", payload).then(response => {
+            commit("loadFileCategories", response.data.DATA)
+            return response
+        })
+    },
     storeUrl({commit, state, rootState}, payload) {
 
         let panelId = rootState.Panels.expandedPanelId
@@ -48,7 +55,9 @@ const actions = {
 }
 
 const mutations = {
-
+    loadFileCategories(state, payload){
+        state.categories = payload
+    },
     storeFiles(state, payload){
         state.expandedPanelFiles = payload
     },
@@ -70,16 +79,19 @@ const mutations = {
 }
 
 const getters = {
-
+    getFileCategories(state){
+        return state.categories
+    },
+    getFileCategoryById: (state) => (id) => {
+        return state.categories.find(category => category.id === id)
+    },
     getFiles(state){
         return state.expandedPanelFiles
     },
     fileCount(state){
         return state.expandedPanelFiles.length
     }
-
 }
-
 
 export default {
     state,
