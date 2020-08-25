@@ -23,7 +23,6 @@
 <script>
 
 import { mapGetters, mapActions } from 'vuex'
-import store from '@/stores/store'
 import InfiniteLoading from 'vue-infinite-loading'
 import PanelListingGridItem from './PanelListingGridItem'
 

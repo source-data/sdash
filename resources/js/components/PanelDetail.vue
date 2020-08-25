@@ -56,6 +56,15 @@
                         >* indicates corresponding author</span
                     >
                 </div>
+                <span
+                    class="sd-panel-author-list--edit-icon sd-edit-icon"
+                    v-if="iCanEditThisPanel"
+                    tabindex="0"
+                    @click="editAuthorList"
+                >
+                    <font-awesome-icon icon="edit" title="Edit panel title" />
+                    Edit author list
+                </span>
             </div>
         </b-row>
         <b-row class="m-3 sd-panel-detail-content-wrapper">
@@ -209,7 +218,6 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import store from "@/stores/store";
 import CommentList from "@/components/comments/CommentList";
 import FileUploads from "@/components/files/FileUploads";
 import CaptionEditor from "@/components/caption/CaptionEditor";
@@ -226,7 +234,7 @@ export default {
         CaptionEditor,
         SmartTagsPanel,
         DownloadBar,
-        PanelAccessLinks
+        PanelAccessLinks,
     },
     data() {
         return {
@@ -245,7 +253,8 @@ export default {
             "commentCount",
             "fileCount",
             "editingCaption",
-            "expandedPanelAuthors"
+            "expandedPanelAuthors",
+            "showAuthorSidebar",
         ]),
         authors() {
             // don't display the curator in the author list
@@ -360,6 +369,9 @@ export default {
                 .catch(error => {
                     this.$snotify.error("Could not update panel", "Failed");
                 });
+        },
+        editAuthorList(){
+            this.$store.commit("setAuthorSidebar", true);
         }
     }
 };

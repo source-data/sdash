@@ -166,7 +166,6 @@
 
 <script>
 
-import store from '@/stores/store'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
