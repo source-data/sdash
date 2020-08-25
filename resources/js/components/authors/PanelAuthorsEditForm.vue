@@ -10,8 +10,10 @@
     </ul>
     </header>
     <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList">
-      <ul>
+      <ul class="panel-authors-order-list">
+        <draggable v-model="temporaryAuthorList">
         <li v-for="a in temporaryAuthorList">{{a.firstname}} {{a.surname}} [order: {{a.order}}, role: {{a.author_role}}]</li>
+        </draggable>
       </ul>
     </section>
   </div>
@@ -21,11 +23,12 @@
 
 import { mapGetters, mapActions } from "vuex";
 import AuthorTypes from "@/definitions/AuthorTypes";
+import draggable from 'vuedraggable';
 
 export default {
 
     name: 'PanelAuthorsEditForm',
-    components: {  },
+    components: { draggable },
     props: { },
 
     data(){
