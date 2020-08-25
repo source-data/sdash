@@ -3,7 +3,7 @@
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- drop uploader -->
-    <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file"></vue-full-screen-file-drop>
+    <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file" v-if="!showAuthorSidebarModel"></vue-full-screen-file-drop>
 
     <action-bar-top v-if="isLoggedIn"></action-bar-top>
 
