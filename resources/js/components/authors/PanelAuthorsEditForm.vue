@@ -9,7 +9,11 @@
       <li><strong>Curator (Cur)</strong> - can edit the panel and its details but is not listed in the author list.</li>
     </ul>
     </header>
-    <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList">
+    <section class="panel-authors-edit--add-author-wrapper">
+      <strong class="panel-authors-edit--reorder-title">Search for Authors by Name.</strong>
+      <author-multiselect @select="addUserAuthor"></author-multiselect>
+    </section>
+    <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
         <strong class="panel-authors-edit--reorder-title">Drag authors to reorder.</strong>
         <draggable
         tag="ul"
@@ -51,11 +55,12 @@
 import { mapGetters, mapActions } from "vuex";
 import AuthorTypes from "@/definitions/AuthorTypes";
 import draggable from 'vuedraggable';
+import AuthorMultiselect from '@/components/helpers/AuthorMultiselect';
 
 export default {
 
     name: 'PanelAuthorsEditForm',
-    components: { draggable },
+    components: { draggable, AuthorMultiselect },
     props: { },
 
     data(){
@@ -113,7 +118,7 @@ export default {
           }
         ).catch(
           (error) => {
-          const $err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.MESSAGE;
+          const $err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.message;
           this.$snotify.error($err, "Error!");
         }).finally(()=>{
           this.closeSidebar();
@@ -121,6 +126,22 @@ export default {
       },
       closeSidebar(){
         this.$store.commit("setAuthorSidebar", false);
+      },
+      addUserAuthor(userdata) {
+
+        const newAuthor = {
+          id: userdata.id,
+          institution_name: userdata.institution_name,
+          orcid: userdata.orcid,
+          firstname: userdata.firstname,
+          surname: userdata.surname,
+          author_role: AuthorTypes.AUTHOR,
+          order: this.temporaryAuthorList.length,
+          };
+
+        console.log("new author",newAuthor);
+
+        this.temporaryAuthorList.push(newAuthor);
       },
     },
     created() {
