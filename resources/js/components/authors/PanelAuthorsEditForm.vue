@@ -113,7 +113,8 @@ export default {
           }
         ).catch(
           (error) => {
-          this.$snotify.error(error.data.MESSAGE, "Error!");
+          const $err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.MESSAGE;
+          this.$snotify.error($err, "Error!");
         }).finally(()=>{
           this.closeSidebar();
         });
