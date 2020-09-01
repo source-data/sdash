@@ -56,16 +56,17 @@
                         >* indicates corresponding author</span
                     >
                 </div>
-                <span
-                    class="sd-panel-author-list--edit-icon sd-edit-icon"
-                    v-if="iCanEditThisPanel"
-                    tabindex="0"
-                    @click="editAuthorList"
-                >
-                    <font-awesome-icon icon="edit" title="Edit panel title" />
-                    Edit author list
-                </span>
             </div>
+
+        </b-row>
+        <b-row class="mx-3 my-0 sd-panel-author-list--edit-row" v-if="iCanEditThisPanel">
+            <span
+                class="sd-panel-author-list--edit-icon sd-edit-icon"
+                tabindex="0"
+                @click="editAuthorList">
+                <font-awesome-icon icon="edit" title="Edit panel title" />
+                Edit author list
+            </span>
         </b-row>
         <b-row class="m-3 sd-panel-detail-content-wrapper">
             <b-col class="sd-panel-detail-col sd-panel-detail-col--left">
@@ -378,6 +379,8 @@ export default {
 </script>
 
 <style lang="scss">
+
+
 .panel-detail-image-outer-container {
     width: 100%;
     height: 380px;
@@ -425,6 +428,11 @@ export default {
 .sd-panel-author-name {
     margin: 0;
 }
+
+.sd-panel-author-list--edit-row {
+    padding-left:15px;
+}
+
 
 .sd-panel-detail-title h3 {
     display: inline-block;
@@ -546,4 +554,5 @@ export default {
     color: orange;
     font-size: 0.85em;
 }
+
 </style>

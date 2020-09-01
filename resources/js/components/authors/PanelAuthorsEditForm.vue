@@ -35,13 +35,13 @@
             size="small"
             >
           </b-form-radio-group>
-           <!-- order: {{a.order}}, role: {{a.author_role}} -->
          </li>
         </transition-group>
         </draggable>
     </section>
     <div class="panel-authors-edit--save-wrapper">
-      <b-button variant="success">Save Authors</b-button>
+      <b-button :disabled="expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1" variant="success" @click="saveAuthors">Save Authors</b-button>
+      <b-button @click="closeSidebar">Cancel</b-button>
     </div>
   </div>
 </template>
@@ -86,11 +86,41 @@ export default {
     },
 
     methods:{
+      ...mapActions([
+        'updateExpandedPanelAuthors',
+        'setLoadingState',
+        ]),
       removeAuthor(id) {
         let index = this.temporaryAuthorList.findIndex(author => author.id === id);
         if (index > -1) this.temporaryAuthorList.splice(index,1);
       },
+      saveAuthors(){
 
+        let newAuthorList = [];
+
+        for (let i = 0; i < this.temporaryAuthorList.length ; i++) {
+          newAuthorList.push({
+            id: this.temporaryAuthorList[i].id,
+            author_role: this.temporaryAuthorList[i].author_role,
+            order: i,
+            origin: 'users',
+          })
+        };
+
+        this.updateExpandedPanelAuthors({authors: newAuthorList}).then(
+          (response) => {
+            this.$snotify.success("Authors updated.", "OK!")
+          }
+        ).catch(
+          (error) => {
+          this.$snotify.error(error.data.MESSAGE, "Error!");
+        }).finally(()=>{
+          this.closeSidebar();
+        });
+      },
+      closeSidebar(){
+        this.$store.commit("setAuthorSidebar", false);
+      },
     },
     created() {
       this.temporaryAuthorList = this.expandedPanelAuthors.slice();

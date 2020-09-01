@@ -157,6 +157,14 @@ const actions = {
             return response;
         });
     },
+    updateExpandedPanelAuthors({state, commit}, payload) {
+        return Axios.put('/panels/'+ state.expandedPanelId + "/authors", payload)
+        .then( (response) => {
+            commit("updateExpandedPanelAuthors", response.data.DATA);
+            commit("updateLoadedPanelAuthors", {id: state.expandedPanelId, authors: response.data.DATA})
+            return response;
+        });
+    },
     expandPanel({ commit }, panelId) {
         commit("toggleEditingCaption", false);
         commit("updateExpandedPanelId", panelId);
@@ -230,10 +238,21 @@ const mutations = {
         state.lastPage = payload.DATA.last_page;
     },
     updateLoadedPanel(state, updatedPanel) {
-        let index = _.findIndex(state.loadedPanels, oldPanel => {
+        const index = _.findIndex(state.loadedPanels, oldPanel => {
             return oldPanel.id === updatedPanel.id;
         });
         if (index > -1) state.loadedPanels.splice(index, 1, updatedPanel);
+    },
+    updateLoadedPanelAuthors(state, payload) {
+        const index = _.findIndex(state.loadedPanels, oldPanel => {
+            return oldPanel.id === payload.id;
+        });
+
+        if (index > -1) {
+            const updated = Object.assign({},state.loadedPanels[index]);
+            updated.authors = payload.authors;
+            Object.assign(state.loadedPanels[index], updated);
+        }
     },
     addNewlyCreatedPanelToStore(state, payload) {
         state.loadedPanels.unshift(payload.DATA);
@@ -258,26 +277,29 @@ const mutations = {
         });
         if (index > -1) state.loadedPanels[index].version = version;
     },
+    updateExpandedPanelAuthors(state, authors){
+        const detail = Object.assign({}, state.expandedPanelDetail);
+        detail.authors = authors;
+        state.expandedPanelDetail = detail;
+    },
     storeExpandedPanelDetail(state, payload) {
-        console.log("expanded panel", payload);
-        let panel = payload;
         state.expandedPanelDetail = {
-            caption: panel.caption,
-            clicks: panel.clicks,
-            authors: panel.authors,
-            created_at: panel.created_at,
-            downloads: panel.downloads,
-            id: panel.id,
-            made_public_at: panel.made_public_at,
-            subtype: panel.subtype,
-            title: panel.title,
-            type: panel.type,
-            updated_at: panel.updated_at,
-            user: panel.user,
-            user_id: panel.user_id,
-            groups: panel.groups,
-            access_token: panel.access_token ? panel.access_token : {},
-            version: panel.version
+            caption: payload.caption,
+            clicks: payload.clicks,
+            authors: payload.authors,
+            created_at: payload.created_at,
+            downloads: payload.downloads,
+            id: payload.id,
+            made_public_at: payload.made_public_at,
+            subtype: payload.subtype,
+            title: payload.title,
+            type: payload.type,
+            updated_at: payload.updated_at,
+            user: payload.user,
+            user_id: payload.user_id,
+            groups: payload.groups,
+            access_token: payload.access_token ? payload.access_token : {},
+            version: payload.version
         };
     },
     removePanelFromStore(state, id) {

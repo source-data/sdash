@@ -59,7 +59,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::patch('/groups/{group}', 'API\GroupController@update');
     Route::delete('/groups/{group}/users', 'API\UserController@removeFromGroup');
     Route::delete('/groups/{group}', 'API\GroupController@destroy');
-    Route::get('groups/{group}/panels', 'API\PanelController@listGroupPanels');
+    Route::get('/groups/{group}/panels', 'API\PanelController@listGroupPanels');
+    Route::put('/panels/{panel}/authors', 'API\PanelAuthorController@update');
 });
 
 // Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
