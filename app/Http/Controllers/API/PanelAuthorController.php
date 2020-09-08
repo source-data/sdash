@@ -31,11 +31,13 @@ class PanelAuthorController extends Controller
 
         // The submitted author list must have no repeated values in the order field
         if (!$this->authorOrderUnique($newAuthors)) return API::response(400, "Author order must have no repeated values.", []);
+
         // The order field must be sequential and start from zero
         if (!$this->authorOrderSequential($newAuthors)) return API::response(400, "Author order must be sequential from zero.", []);
+
         //check that panel owner is not removed
         $containsOwner = array_filter($newAuthors, function ($author) use ($panelOwner) {
-            return ($author["id"] === $panelOwner->id);
+            return (isset($author["id"]) && $author["id"] === $panelOwner->id);
         });
         if (!$containsOwner) return API::response(400, "Panel owner cannot be removed.", []);
         unset($containsOwner);
@@ -45,7 +47,9 @@ class PanelAuthorController extends Controller
 
         // attach new authors
         foreach ($newAuthors as $author) {
-            $panel->authors()->attach($author["id"], ["role" => $author["author_role"], "order" => $author["order"]]);
+            if ($author["origin"] === "users") {
+                $panel->authors()->attach($author["id"], ["role" => $author["author_role"], "order" => $author["order"]]);
+            }
         }
 
         return API::response(200, "Author list updated.", $panel->authors()->get());

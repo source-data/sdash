@@ -52,12 +52,11 @@ export default {
     },
     props: {
         id: String,
-        initialusers: Array,
+        initialUsers: Array,
     },
     data() {
         return {
             users: [],
-            selectedUsers: [],
             isLoading: false,
         }
     },
@@ -65,10 +64,24 @@ export default {
         ...mapActions(["findUsersByName"]),
         asyncFind: _.debounce(function(queryString){
 
+            console.log("already", this.initialUsers);
+
             if(queryString.length > 0) {
                 this.findUsersByName(queryString).then((result) => {
                     if(result.data.DATA && result.data.DATA.length > 0) {
-                        this.users = result.data.DATA
+                        const userResult = result.data.DATA;
+                        const selectList = [];
+                        const alreadySelected = this.initialUsers;
+                        userResult.map(user => {
+                            if (!_.find(alreadySelected, (already) => {
+                                return (already.id === user.id);
+                            })) {
+                                console.log(user, alreadySelected);
+                                selectList.push(user);
+                            }
+                        });
+
+                        this.users = selectList;
                     } else {
                         this.users = []
                     }
@@ -79,9 +92,6 @@ export default {
 
 
         },300),
-        clearAll () {
-            this.selectedUsers = []
-        },
         addUser(userdata) {
           console.log("authormultiselect", userdata);
           this.$emit('select', userdata);

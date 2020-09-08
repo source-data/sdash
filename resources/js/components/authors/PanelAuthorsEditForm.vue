@@ -11,7 +11,7 @@
     </header>
     <section class="panel-authors-edit--add-author-wrapper">
       <strong class="panel-authors-edit--reorder-title">Search for Authors by Name.</strong>
-      <author-multiselect @select="addUserAuthor"></author-multiselect>
+      <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
     </section>
     <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
         <strong class="panel-authors-edit--reorder-title">Drag authors to reorder.</strong>
@@ -47,6 +47,11 @@
       <b-button :disabled="expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1" variant="success" @click="saveAuthors">Save Authors</b-button>
       <b-button @click="closeSidebar">Cancel</b-button>
     </div>
+    <section class="panel-authors-edit--add-external-author-wrapper">
+      <strong class="panel-authors-edit--external-title">Add an external author.</strong>
+      <p>You may add an author who is not a member of SDash. They will be notified by email and invited to join SDash.</p>
+      <author-entry-form @created="addExternalAuthor"></author-entry-form>
+    </section>
   </div>
 </template>
 
@@ -56,11 +61,12 @@ import { mapGetters, mapActions } from "vuex";
 import AuthorTypes from "@/definitions/AuthorTypes";
 import draggable from 'vuedraggable';
 import AuthorMultiselect from '@/components/helpers/AuthorMultiselect';
+import AuthorEntryForm from './AuthorEntryForm';
 
 export default {
 
     name: 'PanelAuthorsEditForm',
-    components: { draggable, AuthorMultiselect },
+    components: { draggable, AuthorMultiselect, AuthorEntryForm },
     props: { },
 
     data(){
@@ -108,7 +114,7 @@ export default {
             id: this.temporaryAuthorList[i].id,
             author_role: this.temporaryAuthorList[i].author_role,
             order: i,
-            origin: 'users',
+            origin: (this.temporaryAuthorList[i].origin) ? this.temporaryAuthorList[i].origin : 'users',
           })
         };
 
@@ -118,8 +124,8 @@ export default {
           }
         ).catch(
           (error) => {
-          const $err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.message;
-          this.$snotify.error($err, "Error!");
+          const err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.MESSAGE;
+          this.$snotify.error(err, "Error!");
         }).finally(()=>{
           this.closeSidebar();
         });
@@ -140,6 +146,19 @@ export default {
           };
 
         console.log("new author",newAuthor);
+
+        this.temporaryAuthorList.push(newAuthor);
+      },
+      addExternalAuthor(userdata) {
+        const newAuthor = {
+          institution_name: userdata.institution_name,
+          orcid: userdata.orcid,
+          firstname: userdata.firstname,
+          surname: userdata.surname,
+          author_role: userdata.author_role,
+          origin: userdata.origin,
+          order: this.temporaryAuthorList.length,
+          };
 
         this.temporaryAuthorList.push(newAuthor);
       },
@@ -212,6 +231,10 @@ export default {
     position: absolute;
     right: -4px;
     top: -5px;
+}
+
+.panel-authors-edit--add-external-author-wrapper {
+  margin: 1rem 0;
 }
 
 
