@@ -2,7 +2,7 @@
     <section class="sd-panel-access-links">
         <template v-if="iOwnThisPanel">
             <div>
-                <b-button v-b-modal.sd-share-modal variant="secondary" class="py-2 sd-share-button">
+                <b-button v-b-modal.sd-share-modal variant="success" class="py-2 sd-share-button">
                     <font-awesome-icon icon="users" /> Share with Group
                 </b-button>
                 <b-modal id="sd-share-modal" ref="sd-share-modal" title="Share with Group" @show="resetSharingModal"
@@ -50,7 +50,7 @@
             </template>
             <template v-if="!hasLinks">
                 <div class="sd-generate-panel-access-links">
-                    <b-button variant="secondary" class="py-2" @click="generateLink"><font-awesome-icon icon="link" /> Generate Public Link</b-button>
+                    <b-button variant="success" class="py-2" @click="generateLink"><font-awesome-icon icon="link" /> Generate Public Link</b-button>
                 </div>
                 <p>This link will allow public access to this SmartFigure and create a QR code for this link.</p>
             </template>
