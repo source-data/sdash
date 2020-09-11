@@ -5,7 +5,8 @@
                 <b-button v-b-modal.sd-share-modal variant="secondary" class="py-2 sd-share-button">
                     <font-awesome-icon icon="users" /> Share with Group
                 </b-button>
-                <b-modal id="sd-share-modal" ref="sd-share-modal" title="Share with Group" ok-only ok-variant="secondary" ok-title="Cancel" button-size="sm">
+                <b-modal id="sd-share-modal" ref="sd-share-modal" title="Share with Group" @show="resetSharingModal"
+                        ok-only ok-variant="secondary" ok-title="Cancel" button-size="sm">
                     <b-form-group
                     id="sd-group-selector"
                     label="Share with an existing group"
@@ -87,7 +88,7 @@
 <script>
 
 import store from '@/stores/store'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
 
@@ -125,7 +126,7 @@ export default {
     },
 
     methods:{ //run as event handlers, for example
-
+        ...mapActions(['selectPanel']),
         generateLink () {
             this.loading = true
             this.$store.dispatch("generatePublicLink")
@@ -181,7 +182,11 @@ export default {
         },
         createGroup(){
             this.$refs['sd-share-modal'].hide()
+            this.selectPanel(this.expandedPanel.id)
             this.$router.push({name: "creategroup"})
+        },
+        resetSharingModal(){
+            this.selectedSharingGroupId = null
         }
     }
 
