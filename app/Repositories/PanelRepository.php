@@ -58,7 +58,7 @@ class PanelRepository implements PanelRepositoryInterface
             });
         });
 
-        $panelQuery->with(['groups', 'tags', 'authors']);
+        $panelQuery->with(['groups', 'tags', 'authors', 'externalAuthors']);
 
         //add order by clause
         $panelQuery->orderByUpdated();
@@ -69,7 +69,7 @@ class PanelRepository implements PanelRepositoryInterface
 
     public function groupPanels(User $user, Group $group, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
     {
-        $panelQuery = $group->panels()->with(['groups', 'tags', 'user', 'authors']);
+        $panelQuery = $group->panels()->with(['groups', 'tags', 'user', 'authors', 'externalAuthors']);
 
         // If this is a query for user's own panel, add the limit to query
         if ($private) {

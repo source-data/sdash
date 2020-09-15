@@ -40,7 +40,7 @@
                             'sd-panel-author-list--item_' + author.author_role
                         "
                     >
-                        <router-link :to="{ path: '/user/' + author.id }">
+                        <router-link v-if="author.origin==='users'" :to="{ path: '/user/' + author.id }">
                             {{ author.firstname }} {{ author.surname }}
                             <sup
                                 class="sd-panel-author-list--asterisk"
@@ -48,6 +48,7 @@
                                 >*</sup
                             ></router-link
                         >
+                        <span v-if="author.origin==='external'">{{ author.firstname }} {{ author.surname }}</span>
                     </li>
                 </ul>
                 <div class="sd-panel-author-list--note">

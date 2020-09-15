@@ -34,6 +34,7 @@ const defaultExpandedPanelState = {
     type: null,
     updated_at: null,
     authors: [],
+    external_authors: [],
     user: {},
     user_id: null,
     access_token: {},
@@ -161,7 +162,7 @@ const actions = {
         return Axios.put('/panels/'+ state.expandedPanelId + "/authors", payload)
         .then( (response) => {
             commit("updateExpandedPanelAuthors", response.data.DATA);
-            commit("updateLoadedPanelAuthors", {id: state.expandedPanelId, authors: response.data.DATA})
+            commit("updateLoadedPanelAuthors", {id: state.expandedPanelId, authors: response.data.DATA.authors, external_authors: response.data.DATA.external_authors})
             return response;
         });
     },
@@ -251,6 +252,7 @@ const mutations = {
         if (index > -1) {
             const updated = Object.assign({},state.loadedPanels[index]);
             updated.authors = payload.authors;
+            updated.external_authors = payload.external_authors;
             Object.assign(state.loadedPanels[index], updated);
         }
     },
@@ -277,9 +279,10 @@ const mutations = {
         });
         if (index > -1) state.loadedPanels[index].version = version;
     },
-    updateExpandedPanelAuthors(state, authors){
+    updateExpandedPanelAuthors(state, payload){
         const detail = Object.assign({}, state.expandedPanelDetail);
-        detail.authors = authors;
+        detail.authors = payload.authors;
+        detail.external_authors = payload.external_authors;
         state.expandedPanelDetail = detail;
     },
     storeExpandedPanelDetail(state, payload) {
@@ -287,6 +290,7 @@ const mutations = {
             caption: payload.caption,
             clicks: payload.clicks,
             authors: payload.authors,
+            external_authors: payload.external_authors,
             created_at: payload.created_at,
             downloads: payload.downloads,
             id: payload.id,
@@ -372,14 +376,25 @@ const getters = {
         return state.expandedPanelDetail;
     },
     expandedPanelAuthors(state) {
-        return state.expandedPanelDetail.authors
-            ? state.expandedPanelDetail.authors.reduce(
+
+        if (
+            !state.expandedPanelDetail.authors
+            &&
+            !state.expandedPanelDetail.external_authors
+            ) {
+                return []
+            };
+
+        const userAuthors = state.expandedPanelDetail.authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,
                           surname: author.surname,
+                          origin: 'users',
                           institution_name: author.institution_name,
+                          department_name: author.department_name,
                           orcid: author.orcid,
+                          email: author.email,
                           author_role: author.author_role.role,
                           order: author.author_role.order,
                           id: author.id,
@@ -390,8 +405,29 @@ const getters = {
                       return accumulator;
                   },
                   []
-              )
-            : null;
+              );
+        const externalAuthors = state.expandedPanelDetail.external_authors.reduce(
+                  (accumulator, author) => {
+                      accumulator.push({
+                          firstname: author.firstname,
+                          surname: author.surname,
+                          origin: 'external',
+                          institution_name: author.institution_name,
+                          department_name: author.department_name,
+                          orcid: author.orcid,
+                          email: author.email,
+                          author_role: author.author_role.role,
+                          order: author.author_role.order,
+                          id: author.id,
+                          corresponding:
+                              author.author_role.role ===
+                              AuthorTypes.CORRESPONDING
+                      });
+                      return accumulator;
+                  },
+                  []
+              );
+        return [...userAuthors, ...externalAuthors].sort((a,b) => a.order - b.order);
     },
     iOwnThisPanel(state, getters, rootState) {
         if (!state.expandedPanelDetail) return false;

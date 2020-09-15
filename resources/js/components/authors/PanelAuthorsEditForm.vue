@@ -29,7 +29,7 @@
           <div class="panel-authors-order-list-item--top-bar">
             <strong class="panel-authors-order-list-item--name">{{a.firstname}} {{a.surname}}</strong>
             <div class="panel-authors-order-list-item--remove">
-              <b-button size="sm" variant="danger" class="panel-authors-order-list-item--remove-button"><font-awesome-icon icon="trash-alt" size="sm" @click="removeAuthor(a.id)"/></b-button>
+              <b-button size="sm" variant="danger" class="panel-authors-order-list-item--remove-button"><font-awesome-icon icon="trash-alt" size="sm" @click="removeAuthor(a.order)"/></b-button>
             </div>
           </div>
           <em class="panel-authors-order-list-item--institution">{{a.institution_name}}</em>
@@ -37,6 +37,7 @@
            :options="roleOptions"
             v-model="a.author_role"
             size="small"
+            :disabled="a.origin==='external'"
             >
           </b-form-radio-group>
          </li>
@@ -101,8 +102,8 @@ export default {
         'updateExpandedPanelAuthors',
         'setLoadingState',
         ]),
-      removeAuthor(id) {
-        let index = this.temporaryAuthorList.findIndex(author => author.id === id);
+      removeAuthor(order) {
+        let index = this.temporaryAuthorList.findIndex(author => author.order === order);
         if (index > -1) this.temporaryAuthorList.splice(index,1);
       },
       saveAuthors(){
@@ -113,6 +114,12 @@ export default {
           newAuthorList.push({
             id: this.temporaryAuthorList[i].id,
             author_role: this.temporaryAuthorList[i].author_role,
+            institution_name: this.temporaryAuthorList[i].institution_name,
+            department_name: this.temporaryAuthorList[i].department_name,
+            orcid: this.temporaryAuthorList[i].orcid,
+            email: this.temporaryAuthorList[i].email,
+            firstname: this.temporaryAuthorList[i].firstname,
+            surname: this.temporaryAuthorList[i].surname,
             order: i,
             origin: (this.temporaryAuthorList[i].origin) ? this.temporaryAuthorList[i].origin : 'users',
           })
@@ -138,23 +145,25 @@ export default {
         const newAuthor = {
           id: userdata.id,
           institution_name: userdata.institution_name,
+          department_name: userdata.department_name,
           orcid: userdata.orcid,
           firstname: userdata.firstname,
           surname: userdata.surname,
+          email: userdata.email,
           author_role: AuthorTypes.AUTHOR,
           order: this.temporaryAuthorList.length,
           };
-
-        console.log("new author",newAuthor);
 
         this.temporaryAuthorList.push(newAuthor);
       },
       addExternalAuthor(userdata) {
         const newAuthor = {
           institution_name: userdata.institution_name,
+          department_name: userdata.department_name,
           orcid: userdata.orcid,
           firstname: userdata.firstname,
           surname: userdata.surname,
+          email: userdata.email,
           author_role: userdata.author_role,
           origin: userdata.origin,
           order: this.temporaryAuthorList.length,

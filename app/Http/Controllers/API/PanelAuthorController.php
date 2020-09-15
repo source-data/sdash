@@ -6,6 +6,7 @@ use API;
 use App\User;
 use App\Models\Panel;
 use Illuminate\Http\Request;
+use App\Models\ExternalAuthor;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -28,6 +29,12 @@ class PanelAuthorController extends Controller
         $user = auth()->user();
         $panelOwner = $panel->user;
         $newAuthors = $request->input("authors");
+        $userAuthors = array_filter($newAuthors, function ($author) {
+            return $author["origin"] === 'users';
+        });
+        $externalAuthors = array_filter($newAuthors, function ($author) {
+            return $author["origin"] === 'external';
+        });
 
         // The submitted author list must have no repeated values in the order field
         if (!$this->authorOrderUnique($newAuthors)) return API::response(400, "Author order must have no repeated values.", []);
@@ -36,7 +43,7 @@ class PanelAuthorController extends Controller
         if (!$this->authorOrderSequential($newAuthors)) return API::response(400, "Author order must be sequential from zero.", []);
 
         //check that panel owner is not removed
-        $containsOwner = array_filter($newAuthors, function ($author) use ($panelOwner) {
+        $containsOwner = array_filter($userAuthors, function ($author) use ($panelOwner) {
             return (isset($author["id"]) && $author["id"] === $panelOwner->id);
         });
         if (!$containsOwner) return API::response(400, "Panel owner cannot be removed.", []);
@@ -44,15 +51,28 @@ class PanelAuthorController extends Controller
 
         // remove existing authors
         $panel->authors()->detach();
+        $panel->externalAuthors()->detach();
 
-        // attach new authors
-        foreach ($newAuthors as $author) {
-            if ($author["origin"] === "users") {
-                $panel->authors()->attach($author["id"], ["role" => $author["author_role"], "order" => $author["order"]]);
-            }
+        // attach new user authors
+        foreach ($userAuthors as $author) {
+            $panel->authors()->attach($author["id"], ["role" => $author["author_role"], "order" => $author["order"]]);
         }
 
-        return API::response(200, "Author list updated.", $panel->authors()->get());
+        // attach new external authors
+        foreach ($externalAuthors as $author) {
+            $externalAuthorObject = ExternalAuthor::create([
+                'firstname' => $author["firstname"],
+                'surname' => $author["surname"],
+                'institution_name' => $author["institution_name"],
+                'department_name' => $author["department_name"],
+                'orcid' => $author["orcid"],
+                'email' => $author["email"]
+            ]);
+
+            $panel->externalAuthors()->attach($externalAuthorObject->id, ["role" => $author["author_role"], "order" => $author["order"]]);
+        }
+
+        return API::response(200, "Author list updated.", ["authors" => $panel->authors()->get(), "external_authors" => $panel->externalAuthors()->get()]);
 
         /**
          * Todo:

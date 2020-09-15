@@ -40,6 +40,11 @@ class Panel extends Model
         return $this->belongsToMany('App\User')->as('author_role')->withPivot(['role', 'order'])->orderBy('panel_user.order', 'asc');
     }
 
+    public function externalAuthors()
+    {
+        return $this->belongsToMany('App\Models\ExternalAuthor')->as('author_role')->withPivot(['role', 'order'])->orderBy('external_author_panel.order', 'asc');
+    }
+
     public function comments()
     {
         return $this->hasMany('App\Models\Comment');

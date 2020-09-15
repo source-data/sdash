@@ -63,7 +63,7 @@
 
         <b-form-group
         id="sd-institution-name-input-group"
-        label="institution name:"
+        label="Institution name:"
         label-for="sd-institution-name-input"
       >
         <b-form-input
@@ -137,7 +137,7 @@ export default {
         this.firstname = '';
         this.surname = '';
         this.department_name = '';
-        this.insitution_name = '';
+        this.institution_name = '';
         this.orcid = '';
       },
     }
