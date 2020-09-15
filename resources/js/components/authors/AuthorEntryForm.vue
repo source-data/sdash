@@ -20,7 +20,7 @@
 
         <b-form-group
         id="sd-surname-input-group"
-        label="First name:"
+        label="Surname:"
         label-for="sd-surname-input"
       >
         <b-form-input
