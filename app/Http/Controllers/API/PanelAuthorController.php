@@ -35,6 +35,7 @@ class PanelAuthorController extends Controller
         $externalAuthors = array_filter($newAuthors, function ($author) {
             return $author["origin"] === 'external';
         });
+        $existingExternalAuthors = $panel->externalAuthors()->get();
 
         // The submitted author list must have no repeated values in the order field
         if (!$this->authorOrderUnique($newAuthors)) return API::response(400, "Author order must have no repeated values.", []);
@@ -51,25 +52,47 @@ class PanelAuthorController extends Controller
 
         // remove existing authors
         $panel->authors()->detach();
-        $panel->externalAuthors()->detach();
 
         // attach new user authors
         foreach ($userAuthors as $author) {
             $panel->authors()->attach($author["id"], ["role" => $author["author_role"], "order" => $author["order"]]);
         }
 
-        // attach new external authors
+        // attach new external authors ()
         foreach ($externalAuthors as $author) {
-            $externalAuthorObject = ExternalAuthor::create([
-                'firstname' => $author["firstname"],
-                'surname' => $author["surname"],
-                'institution_name' => $author["institution_name"],
-                'department_name' => $author["department_name"],
-                'orcid' => $author["orcid"],
-                'email' => $author["email"]
-            ]);
+            // if author already exists, reattach them
+            if (isset($author["id"])) {
+                $existingExternalAuthor = $panel->externalAuthors()->where('external_authors.id', $author["id"])->first();
 
-            $panel->externalAuthors()->attach($externalAuthorObject->id, ["role" => $author["author_role"], "order" => $author["order"]]);
+                if (!empty($existingExternalAuthor)) {
+                    $panel->externalAuthors()->updateExistingPivot($existingExternalAuthor->id, [
+                        'role' => $author["author_role"],
+                        'order' => $author["order"]
+                    ]);
+                }
+            } else {
+                // otherwise, create them
+                $externalAuthorObject = ExternalAuthor::create([
+                    'firstname' => $author["firstname"],
+                    'surname' => $author["surname"],
+                    'institution_name' => $author["institution_name"],
+                    'department_name' => $author["department_name"],
+                    'orcid' => $author["orcid"],
+                    'email' => $author["email"]
+                ]);
+
+
+                $panel->externalAuthors()->attach($externalAuthorObject->id, ["role" => $author["author_role"], "order" => $author["order"]]);
+            }
+        }
+
+        // delete any external authors that are not part of the submitted dataset
+        foreach ($existingExternalAuthors as $author) {
+            if (count(array_filter($externalAuthors, function ($submittedAuthor) use ($author) {
+                return (isset($submittedAuthor["id"]) && $submittedAuthor["id"] === $author->id);
+            })) === 0) {
+                $panel->externalAuthors()->where('external_authors.id', $author["id"])->delete();
+            }
         }
 
         return API::response(200, "Author list updated.", ["authors" => $panel->authors()->get(), "external_authors" => $panel->externalAuthors()->get()]);
