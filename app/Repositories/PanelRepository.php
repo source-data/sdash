@@ -18,13 +18,12 @@ class PanelRepository implements PanelRepositoryInterface
      * @param User $user The logged-in user
      * @param string $search A search string
      * @param Array $tags An array of tags to search
-     * @param boolean $private Whether the search should only return panels owned by the user
+     * @param bool $private Whether the search should only return panels owned by the user
+     * @param bool $paginate Whether to return the results in a paginated list or a full list
      * @return void
      */
     public function userPanels(User $user, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
     {
-        // $groupAccessiblePanelIdsQuery   = User::where('id',$user->id)->with('groups.panels');
-        // $groupAccessiblePanelIds        = $groupAccessiblePanelIdsQuery->get()->pluck("groups.*.panels.*.id")->flatten()->unique();
 
         $panelQuery = Panel::where(
             function ($query) use ($user, $private) {
@@ -34,6 +33,8 @@ class PanelRepository implements PanelRepositoryInterface
                         $query->whereHas('confirmedUsers', function ($query) use ($user) {
                             $query->where('users.id', $user->id);
                         });
+                    })->orWhereHas('authors', function ($query) use ($user) {
+                        $query->where('users.id', $user->id);
                     });
                 }
             }
@@ -57,7 +58,7 @@ class PanelRepository implements PanelRepositoryInterface
             });
         });
 
-        $panelQuery->with(['groups', 'tags']);
+        $panelQuery->with(['groups', 'tags', 'authors', 'externalAuthors']);
 
         //add order by clause
         $panelQuery->orderByUpdated();
@@ -68,7 +69,7 @@ class PanelRepository implements PanelRepositoryInterface
 
     public function groupPanels(User $user, Group $group, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
     {
-        $panelQuery = $group->panels()->with(['groups', 'tags', 'user']);
+        $panelQuery = $group->panels()->with(['groups', 'tags', 'user', 'authors', 'externalAuthors']);
 
         // If this is a query for user's own panel, add the limit to query
         if ($private) {

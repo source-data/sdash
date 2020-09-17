@@ -35,7 +35,7 @@ class ImageRepository implements ImageRepositoryInterface
         $fileSize = $file->getSize();
         $previewFilename = $convertedFilename;
 
-        if($mimeType === "application/pdf") {
+        if ($mimeType === "application/pdf") {
             $convertedImage = new PdfConverter(config("filesystems.disks.panels.root") . DIRECTORY_SEPARATOR . $imagePath);
             $convertedImage->saveImage($savePath . $convertedFilename . '.jpeg');
             $previewFilename = $convertedFilename . '.jpeg';
@@ -63,7 +63,12 @@ class ImageRepository implements ImageRepositoryInterface
 
         return $image;
     }
-
+    /**
+     * Move the panel image into an archived directory and set the record in the soft-deleted state.
+     *
+     * @param Image $file
+     * @return void
+     */
     public function archiveAndRemove(Image $file)
     {
         $panel = $file->panel;
@@ -71,7 +76,7 @@ class ImageRepository implements ImageRepositoryInterface
         try {
             Storage::move($panel->save_path . DIRECTORY_SEPARATOR . $file->filename, $panel->save_path . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->filename);
             Storage::delete($panel->save_path . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . $file->filename);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
             throw new \Exception("Failed to remove physical file.");
@@ -96,8 +101,7 @@ class ImageRepository implements ImageRepositoryInterface
         Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "thumbnails");
         Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "archived");
         Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "attachments");
-        Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "attachments". DIRECTORY_SEPARATOR . "archived");
+        Storage::makeDirectory($panel->id . DIRECTORY_SEPARATOR . "attachments" . DIRECTORY_SEPARATOR . "archived");
         return (string)$panel->id;
     }
-
 }

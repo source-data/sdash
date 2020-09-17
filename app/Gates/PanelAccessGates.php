@@ -22,6 +22,8 @@ class PanelAccessGates
             $query->whereHas('confirmedUsers', function ($query) use ($userId) {
                 $query->where('users.id', $userId);
             });
+        })->orWhereHas('authors', function ($query) use ($user) {
+            $query->where('users.id', $user->id);
         })->exists();
     }
 
@@ -35,6 +37,8 @@ class PanelAccessGates
     public function canModifyPanel(User $user, Panel $panel)
     {
         if ($user->is_superadmin()) return true;
+
+        if ($this->isPanelCuratorOrCorrespondingAuthor($user, $panel)) return true;
 
         // is the logged-in user the panel owner?
         if ($user->id === $panel->user_id) return true;
@@ -50,6 +54,8 @@ class PanelAccessGates
 
         // is the logged-in user the panel owner?
         if ($userId === $panel->user_id) return true;
+
+        if ($this->isPanelCuratorOrCorrespondingAuthor($user, $panel)) return true;
 
         // is the user an admin of a group to which the panel belongs
         return Panel::where('id', $panel->id)->whereHas('groups', function ($query) use ($userId) {
@@ -86,5 +92,21 @@ class PanelAccessGates
         } else {
             return $this->canViewPanel($user, $panel);
         }
+    }
+
+    /**
+     * The corresponding author or curator of a panel can edit the panel's metadata. This
+     * protected method checks whether the user holds one of these roles on the given panel.
+     *
+     * @param User $user
+     * @param Panel $panel
+     * @return boolean true indicates that the user is either a corresponding author or curator.
+     */
+    protected function isPanelCuratorOrCorrespondingAuthor(User $user, Panel $panel): bool
+    {
+        return $panel->authors()
+            ->where('user_id', $user->id)
+            ->wherePivotIn('role', [User::PANEL_ROLE_CORRESPONDING_AUTHOR, User::PANEL_ROLE_CURATOR])
+            ->exists();
     }
 }

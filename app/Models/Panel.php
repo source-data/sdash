@@ -35,6 +35,16 @@ class Panel extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function authors()
+    {
+        return $this->belongsToMany('App\User')->as('author_role')->withPivot(['role', 'order'])->orderBy('panel_user.order', 'asc');
+    }
+
+    public function externalAuthors()
+    {
+        return $this->belongsToMany('App\Models\ExternalAuthor')->as('author_role')->withPivot(['role', 'order'])->orderBy('external_author_panel.order', 'asc');
+    }
+
     public function comments()
     {
         return $this->hasMany('App\Models\Comment');
@@ -72,6 +82,6 @@ class Panel extends Model
 
     public function getSavePathAttribute()
     {
-        return /*config("filesystems.disks.panels.root") 'panels' . DIRECTORY_SEPARATOR .*/ $this->id . DIRECTORY_SEPARATOR;
+        return $this->id . DIRECTORY_SEPARATOR;
     }
 }

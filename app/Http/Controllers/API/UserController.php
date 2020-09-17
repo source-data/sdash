@@ -103,31 +103,20 @@ class UserController extends Controller
         if (!auth()->user()) abort(404, "User could not be found.");
 
         $user = User::where('id', auth()->user()->id)
-        ->with(['groups' => function ($query) {
-            $query->with(['confirmedUsers' => function ($query) {
-                $query->withPivot(['role']);
-            }]);
-            $query->withCount(['confirmedUsers', 'panels']);
-            $query->withPivot(['role','token', 'status']);
-        }])
-        // ->with(['pendingGroups' => function ($query) {
-        //     $query->withPivot('token');
-        // }])
-        ->first();
-
-        // if($user->pendingGroups){
-        //     for($i=0; $i < count($user->pendingGroups); $i++) {
-        //         $user->pendingGroups[$i]->join_group_link = URL::signedRoute('group.join',['group' => $user->pendingGroups[$i]->id, 'token' => $user->pendingGroups[$i]->pivot->token]);
-        //         unset($user->pendingGroups[$i]->pivot);
-        //     }
-
-        // }
+            ->with(['groups' => function ($query) {
+                $query->with(['confirmedUsers' => function ($query) {
+                    $query->withPivot(['role']);
+                }]);
+                $query->withCount(['confirmedUsers', 'panels']);
+                $query->withPivot(['role', 'token', 'status']);
+            }])
+            ->first();
 
         return API::response(
             200,
             "Logged-in user.",
-            $user);
-
+            $user
+        );
     }
 
     public function removeFromGroup(Group $group)

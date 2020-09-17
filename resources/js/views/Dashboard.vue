@@ -3,7 +3,7 @@
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- drop uploader -->
-    <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file"></vue-full-screen-file-drop>
+    <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file" v-if="!showAuthorSidebarModel"></vue-full-screen-file-drop>
 
     <action-bar-top v-if="isLoggedIn"></action-bar-top>
 
@@ -25,7 +25,19 @@
 
 
     <feedback-widget></feedback-widget>
-
+    <b-sidebar
+        id="author-edit-sidebar"
+        right
+        shadow
+        lazy
+        title="Edit the list of authors"
+        width="420px"
+        bg-variant="dark"
+        text-variant="light"
+        v-model="showAuthorSidebarModel"
+    >
+        <panel-authors-edit-form></panel-authors-edit-form>
+    </b-sidebar>
 </main>
 
 </template>
@@ -41,11 +53,12 @@ import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
 import FeedbackWidget from '@/components/FeedbackWidget'
+import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
 
 export default {
 
     name: 'Dashboard',
-    components: { ActionBarTop, PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget },
+    components: { ActionBarTop, PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget, PanelAuthorsEditForm },
     props: [''],
 
     data(){
@@ -65,7 +78,16 @@ export default {
             'isLoggedIn',
             'isLightboxOpen',
             'expandedPanel',
+            'showAuthorSidebar'
         ]),
+        showAuthorSidebarModel: {
+            set(value){
+                this.$store.commit('setAuthorSidebar',value)
+            },
+            get(){
+                return this.showAuthorSidebar
+            }
+        }
 
 
     }, /* end of computed properties */
@@ -123,5 +145,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+ main .b-sidebar > .b-sidebar-header {
+     font-size:1rem;
+ }
 </style>
