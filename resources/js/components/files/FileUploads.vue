@@ -1,6 +1,6 @@
 <template>
     <div class="sd-file-uploads-container">
-        <div v-if="iOwnThisPanel" class="sd-file-uploads-header">
+        <div v-if="iCanEditThisPanel" class="sd-file-uploads-header">
             <div class="sd-file-uploads--toggle-wrapper">
                 <toggle-button v-model="uploadToggle" @change="clearUploads" :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
             </div>
@@ -28,7 +28,7 @@
                 :fields="fields"
                 ref="fileUploadsTable"
              ><!--end of table definition-->
-                <template v-if="iOwnThisPanel" v-slot:cell(action)="data">
+                <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
                     <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id"><font-awesome-icon icon="trash-alt" size="lg"/></b-button>
                     <b-popover
                         :ref="'popover-' + data.item.id"
@@ -53,13 +53,13 @@
                     </b-popover>
                 </template>
                 <template v-slot:cell(category)="data">
-                    <template v-if="iOwnThisPanel">
+                    <template v-if="iCanEditThisPanel">
                         <a href="#" @click.prevent class="custom-styled-link" :id="'edit-category-' + data.item.id" title="Edit category">
                             <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
                             <span v-if="!data.item.file_category_id" class="text-info">Edit category</span>
                         </a>
                     </template>
-                    <template v-if="!iOwnThisPanel">
+                    <template v-if="!iCanEditThisPanel">
                         <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
                         <span v-if="!data.item.file_category_id" class="text-info">&mdash;</span>
                     </template>
@@ -132,7 +132,16 @@ export default {
     }, /* end of data */
     mixins: [formatter],
     computed: {
-        ...mapGetters(['getFiles', 'iOwnThisPanel', 'getFileCategories', 'getFileCategoryById']),
+        ...mapGetters([
+            'getFiles',
+            'iOwnThisPanel',
+            'iHaveAuthorPrivileges',
+            'getFileCategories',
+            'getFileCategoryById'
+        ]),
+        iCanEditThisPanel(){
+            return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
+        },
         disableSubmit(){
             return (this.file===null && this.url===null)
         },

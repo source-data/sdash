@@ -1,6 +1,6 @@
 <template>
     <section class="sd-panel-access-links">
-        <template v-if="iOwnThisPanel">
+        <template v-if="iCanEditThisPanel">
             <div>
                 <b-button v-b-modal.sd-share-modal variant="success" class="py-2 sd-share-button">
                     <font-awesome-icon icon="users" /> Share with Group
@@ -38,7 +38,7 @@
                     :items="expandedPanel.groups"
                     :fields="fields"
                 >
-                    <template v-if="iOwnThisPanel" v-slot:cell(action)="data">
+                    <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
                         <b-button variant="link" class="text-light" @click="removePanelFromGroup(data.item.id)">
                             <font-awesome-icon icon="trash-alt" size="lg"/>
                         </b-button>
@@ -55,7 +55,7 @@
                 <p>This link will allow public access to this SmartFigure and create a QR code for this link.</p>
             </template>
         </template>
-        <b-alert show variant="primary" v-if="!hasLinks && !iOwnThisPanel">
+        <b-alert show variant="primary" v-if="!hasLinks && !iCanEditThisPanel">
             The panel owner has not created a public link.
         </b-alert>
         <b-row v-if="loading">
@@ -78,7 +78,7 @@
                 </div>
             </b-col>
         </b-row>
-        <div class="sd-modify-panel-access-links text-right" v-if="hasLinks && iOwnThisPanel">
+        <div class="sd-modify-panel-access-links text-right" v-if="hasLinks && iCanEditThisPanel">
             <b-button variant="success" class="py-2" size="sm" @click="generateLink"><font-awesome-icon icon="link" /> Refresh Link</b-button>
             <b-button variant="danger" class="py-2" size="sm" @click="revokeLink"><font-awesome-icon icon="link" /> Revoke Link</b-button>
         </div>
@@ -109,7 +109,10 @@ export default {
     }, /* end of data */
 
     computed: {
-        ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'userGroups']),
+        ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'iHaveAuthorPrivileges', 'userGroups']),
+        iCanEditThisPanel(){
+            return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
+        },
         hasLinks(){
             return this.expandedPanel.access_token.hasOwnProperty('token')
         },
