@@ -159,3 +159,19 @@ e.g.
 
 # Bootstrap-Vue
 Instructions for the pre-built component library of Bootstrap Components can be found here https://bootstrap-vue.js.org/
+
+# Post deployment notes
+The following command should be run once in the project root on the first deployment to populate the file_categories table: ```php artisan db:seed --class=FileCategoriesTableSeeder```
+
+If seeding the database with generated records, or updating the database from an earlier installation, you may need to generate the panel-author relationships. To do so, run the following mysql command:
+
+```sql
+insert into panel_user(user_id, panel_id, role, `order`, created_at, updated_at)
+select  p.user_id,
+p.id as panel_id,
+'corresponding' as role,
+0 as `order`,
+NOW() as created_at,
+NOW() as updated_at
+from panels p;
+```
