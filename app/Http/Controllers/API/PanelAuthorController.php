@@ -84,9 +84,6 @@ class PanelAuthorController extends Controller
             }
         }
 
-        Log::debug("now the authors are...");
-        Log::debug($panel->authors()->get());
-
         // attach new external authors ()
         foreach ($externalAuthors as $author) {
             // if author already exists, reattach them
