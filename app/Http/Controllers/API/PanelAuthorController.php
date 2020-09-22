@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use App\Models\ExternalAuthor;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Notifications\UserAddedAsPanelAuthor;
 
 class PanelAuthorController extends Controller
 {
@@ -36,6 +38,7 @@ class PanelAuthorController extends Controller
             return $author["origin"] === 'external';
         });
         $existingExternalAuthors = $panel->externalAuthors()->get();
+        $existingUserAuthors = $panel->authors()->get();
 
         // The submitted author list must have no repeated values in the order field
         if (!$this->authorOrderUnique($newAuthors)) return API::response(400, "Author order must have no repeated values.", []);
@@ -50,13 +53,39 @@ class PanelAuthorController extends Controller
         if (!$containsOwner) return API::response(400, "Panel owner cannot be removed.", []);
         unset($containsOwner);
 
-        // remove existing authors
-        $panel->authors()->detach();
-
         // attach new user authors
         foreach ($userAuthors as $author) {
-            $panel->authors()->attach($author["id"], ["role" => $author["author_role"], "order" => $author["order"]]);
+
+            $existingUserAuthor = $panel->authors()->where('users.id', $author["id"])->first();
+
+            // if author is already attached to panel, just update role
+            if (!empty($existingUserAuthor)) {
+                $panel->authors()->updateExistingPivot($existingUserAuthor->id, [
+                    'role' => $author["author_role"],
+                    'order' => $author["order"]
+                ]);
+            } else {
+                // attach existing user as an author AND notify them
+                $newUserAuthor = User::find($author["id"]);
+                $panel->authors()->attach($newUserAuthor->id, [
+                    'role' => $author["author_role"],
+                    'order' => $author["order"]
+                ]);
+                $newUserAuthor->notify(new UserAddedAsPanelAuthor($user, $newUserAuthor, $panel, $author["author_role"]));
+            }
         }
+
+        // if existing author is not included in the submitted dataset, detach them
+        foreach ($existingUserAuthors as $userAuthor) {
+            if (count(array_filter($userAuthors, function ($submittedAuthor) use ($userAuthor) {
+                return ($submittedAuthor["id"] === $userAuthor->id);
+            })) === 0) {
+                $panel->authors()->detach($userAuthor->id);
+            }
+        }
+
+        Log::debug("now the authors are...");
+        Log::debug($panel->authors()->get());
 
         // attach new external authors ()
         foreach ($externalAuthors as $author) {
@@ -91,29 +120,11 @@ class PanelAuthorController extends Controller
             if (count(array_filter($externalAuthors, function ($submittedAuthor) use ($author) {
                 return (isset($submittedAuthor["id"]) && $submittedAuthor["id"] === $author->id);
             })) === 0) {
-                $panel->externalAuthors()->where('external_authors.id', $author["id"])->delete();
+                $panel->externalAuthors()->where('external_authors.id', $author->id)->delete();
             }
         }
 
         return API::response(200, "Author list updated.", ["authors" => $panel->authors()->get(), "external_authors" => $panel->externalAuthors()->get()]);
-
-        /**
-         * Todo:
-         *
-         * if the submitted list of authors is empty, throw exception - cannot remove all authors
-         *
-         * The panel owner (uploader) cannot be removed
-         *
-         * Get existing panel authors
-         *
-         * 1. if any existing authors are not in the submitted list, detach them
-         * 2. if any submitted authors are not in the existing list, attach them
-         * 3. update roles and order of all submissions
-         * 4. order cannot be repeated
-         * 5. order must be sequential
-         *
-         */
-        return API::response(200, "Test Complete", ["woo" => "yeah"]);
     }
 
     protected function authorOrderUnique(array $authors)
