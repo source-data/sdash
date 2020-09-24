@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Models\ExternalAuthor;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Notifications\UserAddedAsPanelAuthor;
 

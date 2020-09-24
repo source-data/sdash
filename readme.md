@@ -175,3 +175,5 @@ NOW() as created_at,
 NOW() as updated_at
 from panels p;
 ```
+
+Note: When a new user registers, the list of external authors is checked for their email address. If anyone has added their address as an external author to a panel, this is converted into a registered author and the newly-registered user is given the author role on the panel.

@@ -53,12 +53,12 @@ class RegisterController extends Controller
             'surname' => ['required', 'string', 'max:120'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'institution_name' => ['nullable','max:120'],
-            'institution_address' => ['nullable','max:255'],
-            'department_name' => ['nullable','max:255'],
-            'linkedin' => ['nullable','max:255'],
-            'orcid' => ['nullable','max:30', 'regex:/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/i'],
-            'twitter' => ['nullable','max:255']
+            'institution_name' => ['nullable', 'max:120'],
+            'institution_address' => ['nullable', 'max:255'],
+            'department_name' => ['nullable', 'max:255'],
+            'linkedin' => ['nullable', 'max:255'],
+            'orcid' => ['nullable', 'max:30', 'regex:/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/i'],
+            'twitter' => ['nullable', 'max:255']
         ]);
     }
 
@@ -82,8 +82,6 @@ class RegisterController extends Controller
             'twitter' => $data['twitter'],
             'password' => Hash::make($data['password']),
         ]);
-
-        // $user->groups()->attach(5); // Special hack to add all users to group 5 - used to demonstrate sharing. To be removed
 
         return $user;
     }
