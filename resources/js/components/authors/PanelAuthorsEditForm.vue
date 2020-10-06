@@ -1,5 +1,5 @@
 <template>
-  <div class="panel-authors-edit--wrapper">
+  <div class="panel-authors-edit--wrapper" id="panel-authors-edit--wrapper">
     <header class="panel-authors-edit--intro">
     <p>Edit the authors assigned to this panel.</p>
     <p>Note that adding an author assigns certain permissions to the user.</p>
@@ -29,6 +29,7 @@
           <div class="panel-authors-order-list-item--top-bar">
             <strong class="panel-authors-order-list-item--name">{{a.firstname}} {{a.surname}}</strong>
             <div class="panel-authors-order-list-item--remove">
+              <b-button v-if="a.origin==='external'" size="sm" variant="success" class="panel-authors-order-list-item--edit-button"><font-awesome-icon icon="edit" size="sm" @click="editExternalAuthor(a)"/></b-button>
               <b-button size="sm" variant="danger" class="panel-authors-order-list-item--remove-button"><font-awesome-icon icon="trash-alt" size="sm" @click="removeAuthor(a.order)"/></b-button>
             </div>
           </div>
@@ -38,6 +39,7 @@
             v-model="a.author_role"
             size="small"
             :disabled="a.origin==='external'"
+            v-b-tooltip.hover="(a.origin==='external' ? 'External authors may only hold the author role.' : false)"
             >
           </b-form-radio-group>
          </li>
@@ -51,7 +53,7 @@
     <section class="panel-authors-edit--add-external-author-wrapper">
       <strong class="panel-authors-edit--external-title">Add an external author.</strong>
       <p>You may add an author who is not a member of SDash. They will be notified by email and invited to join SDash.</p>
-      <author-entry-form @created="addExternalAuthor"></author-entry-form>
+      <author-entry-form @created="addExternalAuthor" @modified="saveExternalAuthorEdits" @cancel="cancelExternalAuthorEdits" :details="editedAuthor"></author-entry-form>
     </section>
   </div>
 </template>
@@ -74,6 +76,7 @@ export default {
 
         return {
           temporaryAuthorList:[],
+          editedAuthor:{},
           drag: false,
           roleOptions: [
             {text: "Au.", value: AuthorTypes.AUTHOR},
@@ -156,6 +159,27 @@ export default {
 
         this.temporaryAuthorList.push(newAuthor);
       },
+      saveExternalAuthorEdits(userdata) {
+        const authorIndex = this.temporaryAuthorList.findIndex( item => item.editing === true);
+        const author = Object.assign({},this.temporaryAuthorList[authorIndex]);
+        author.institution_name = userdata.author.institution_name;
+        author.department_name = userdata.author.department_name;
+        author.orcid = userdata.author.orcid;
+        author.firstname = userdata.author.firstname;
+        author.surname = userdata.author.surname;
+        author.email = userdata.author.email;
+        delete author.editing;
+        this.temporaryAuthorList.splice(authorIndex,1,author);
+        this.editedAuthor = {};
+        this.scrollToForm();
+
+      },
+      cancelExternalAuthorEdits() {
+        const authorIndex = this.temporaryAuthorList.findIndex( item => item.editing === true);
+        if(authorIndex >= 0) delete this.temporaryAuthorList[authorIndex].editing;
+        this.scrollToForm();
+
+      },
       addExternalAuthor(userdata) {
         const newAuthor = {
           institution_name: userdata.institution_name,
@@ -170,6 +194,38 @@ export default {
           };
 
         this.temporaryAuthorList.push(newAuthor);
+
+        this.scrollToForm();
+      },
+      editExternalAuthor(authorData) {
+
+        document.getElementById('sd-author-entry-form').scrollIntoView({behavior: 'smooth'});
+
+        for(let i = 0; i < this.temporaryAuthorList.length; i++) {
+          if (this.temporaryAuthorList[i].id === authorData.id && this.temporaryAuthorList[i].order === authorData.order && this.temporaryAuthorList[i].origin === 'external') {
+            this.temporaryAuthorList[i].editing = true;
+          } else {
+            if(this.temporaryAuthorList[i].hasOwnProperty('editing')) {
+              delete this.temporaryAuthorList[i].editing;
+            }
+          }
+        }
+
+
+        this.editedAuthor = {
+          editing: true,
+          id: authorData.id,
+          email: authorData.email,
+          firstname: authorData.firstname,
+          surname: authorData.surname,
+          department_name: authorData.department_name,
+          institution_name: authorData.institution_name,
+          orcid: authorData.orcid,
+        }
+      },
+      scrollToForm(){
+        console.log("scrollToForm");
+        document.querySelector('#author-edit-sidebar .b-sidebar-body').scrollTo({top:0, behavior: 'smooth'});
       },
     },
     created() {
@@ -208,7 +264,9 @@ export default {
     justify-content: space-between;
     position: relative;
   }
-  .panel-authors-order-list-item--remove-button {
+  .panel-authors-order-list-item--remove-button,
+  .panel-authors-order-list-item--edit-button
+   {
     padding: 0.25rem 0.25rem;
     font-size: 0.875rem;
     line-height: 0.5;

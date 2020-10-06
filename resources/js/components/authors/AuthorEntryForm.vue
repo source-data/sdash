@@ -1,5 +1,5 @@
 <template>
- <div class="sd-author-entry-form">
+ <div class="sd-author-entry-form" id="sd-author-entry-form">
   <b-form
     @submit.prevent="createAuthor"
     @reset.prevent="resetForm"
@@ -89,7 +89,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-button type="submit" variant="success">Create Author</b-button>
+      <b-button type="submit" variant="success">{{ isEditing ? 'Save Edits' : 'Save Author' }}</b-button>
       <b-button type="reset">Cancel Entry</b-button>
 
   </b-form>
@@ -103,9 +103,11 @@ export default {
 
     name: 'AuthorEntryForm',
     components: { },
-    props: [],
+    props: {'details': Object},
     data(){
         return {
+          editing: false,
+          id: '',
           email: '',
           firstname: '',
           surname: '',
@@ -115,7 +117,11 @@ export default {
         }
 
     }, /* end of data */
-
+    computed: {
+      isEditing(){
+        return (this.editing === true)
+      },
+    },
     methods:{ //run as event handlers, for example
       createAuthor() {
         const newAuthor = {
@@ -129,16 +135,39 @@ export default {
           origin: "external",
         };
 
-        this.$emit('created', newAuthor);
+        const id = this.id;
+
+        if(this.isEditing) {
+          this.$emit('modified', {id: id, author: newAuthor});
+        } else {
+          this.$emit('created', newAuthor);
+        }
+
         this.resetForm();
       },
       resetForm() {
+        this.editing = false;
+        this.id = '';
         this.email = '';
         this.firstname = '';
         this.surname = '';
         this.department_name = '';
         this.institution_name = '';
         this.orcid = '';
+
+        this.$emit('cancel', {});
+      },
+    },
+    watch: {
+      details(values) {
+        this.editing = (values.hasOwnProperty('editing') && values.editing===true) ? true : false;
+        this.id = values.id;
+        this.email = values.email;
+        this.firstname = values.firstname;
+        this.surname = values.surname;
+        this.department_name = values.department_name;
+        this.institution_name = values.institution_name;
+        this.orcid = values.orcid;
       },
     }
 

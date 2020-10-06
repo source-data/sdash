@@ -14,6 +14,13 @@ use App\Notifications\UserAddedAsPanelAuthor;
 
 class PanelAuthorController extends Controller
 {
+    /**
+     * Update the author details attached to a panel.
+     *
+     * @param Request $request
+     * @param Panel $panel
+     * @return void
+     */
     public function update(Request $request, Panel $panel)
     {
         // the array or authors is required and must have an author_role and order and origin
@@ -90,6 +97,13 @@ class PanelAuthorController extends Controller
                 $existingExternalAuthor = $panel->externalAuthors()->where('external_authors.id', $author["id"])->first();
 
                 if (!empty($existingExternalAuthor)) {
+                    $existingExternalAuthor->firstname = $author["firstname"];
+                    $existingExternalAuthor->surname = $author["surname"];
+                    $existingExternalAuthor->email = $author["email"];
+                    $existingExternalAuthor->department_name = $author["department_name"];
+                    $existingExternalAuthor->institution_name = $author["institution_name"];
+                    $existingExternalAuthor->orcid = $author["orcid"];
+                    $existingExternalAuthor->save();
                     $panel->externalAuthors()->updateExistingPivot($existingExternalAuthor->id, [
                         'role' => $author["author_role"],
                         'order' => $author["order"]
@@ -123,6 +137,14 @@ class PanelAuthorController extends Controller
         return API::response(200, "Author list updated.", ["authors" => $panel->authors()->get(), "external_authors" => $panel->externalAuthors()->get()]);
     }
 
+    /**
+     * Accepts an array of author data and checks that there are no repeated
+     * "order" values as authors cannot share a single position in the
+     * author list.
+     *
+     * @param array $authors
+     * @return void
+     */
     protected function authorOrderUnique(array $authors)
     {
         $orderedAuthors = [];
@@ -132,6 +154,13 @@ class PanelAuthorController extends Controller
         return (count($orderedAuthors) === count($authors));
     }
 
+    /**
+     * Checks that the order assigned to each item in an array of authors
+     * is strictly sequential. e.g. 0,1,2,3 - no missing values.
+     *
+     * @param array $authors
+     * @return void
+     */
     public function authorOrderSequential(array $authors)
     {
         usort($authors, function ($a, $b) {
