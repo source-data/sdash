@@ -101,6 +101,7 @@
 import { mapGetters } from "vuex";
 import store from "@/stores/store";
 import PanelDetail from "./PanelDetail";
+import AuthorTypes from "@/definitions/AuthorTypes";
 
 export default {
     name: "PanelListingGridItem",
@@ -145,11 +146,9 @@ export default {
             return "grid-item-" + this.panelId;
         },
         panelOwnerName() {
-            return (
-                this.thisPanel.user.firstname +
-                " " +
-                this.thisPanel.user.surname
-            );
+            const authorList = [...this.thisPanel.authors, ...this.thisPanel.external_authors].sort((a,b) => a.author_role.order - b.author_role.order);
+            const firstAuthor = authorList.find( author => author.author_role.role !== AuthorTypes.CURATOR);
+            return firstAuthor.firstname + ' ' + firstAuthor.surname;
         },
         panelAccessReason() {
             let thisPanel = this.thisPanel;
