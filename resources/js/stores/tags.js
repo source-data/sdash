@@ -43,6 +43,11 @@ const actions = {
             return response
         })
     },
+    findTagsByName({ commit }, searchString){
+        return Axios.get('/tags', { params: { name: searchString } }).then(response => {
+            return response
+        })
+    }
 }
 
 const mutations = {

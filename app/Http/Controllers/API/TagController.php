@@ -16,9 +16,20 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Tag $tag, Request $request)
     {
-        //
+        $request->validate([
+            "name"  =>  ['max:40']
+        ]);
+
+        if ($request->query('name')) {
+
+            $tagList = Tag::where(\DB::raw("content"), 'like', '%' . $request->query('name') . '%')->limit(40)->get();
+
+            return ($tagList->isEmpty()) ? API::response(204, "No matching records found", []) : API::response(200, "A list of tags", $tagList);
+        }
+
+        return API::response(200, "A list of all tags.", Tag::all());
     }
 
     /**
