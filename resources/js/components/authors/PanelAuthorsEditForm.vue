@@ -109,7 +109,7 @@ export default {
         let index = this.temporaryAuthorList.findIndex(author => author.order === order);
         if (index > -1) this.temporaryAuthorList.splice(index,1);
       },
-      saveAuthors(){
+      saveAuthors(closeAfterSave = true){
 
         let newAuthorList = [];
 
@@ -137,7 +137,7 @@ export default {
           const err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.MESSAGE;
           this.$snotify.error(err, "Error!");
         }).finally(()=>{
-          this.closeSidebar();
+          if(closeAfterSave) this.closeSidebar();
         });
       },
       closeSidebar(){
@@ -172,6 +172,7 @@ export default {
         this.temporaryAuthorList.splice(authorIndex,1,author);
         this.editedAuthor = {};
         this.scrollToForm();
+        this.saveAuthors(false);
 
       },
       cancelExternalAuthorEdits() {
@@ -196,6 +197,8 @@ export default {
         this.temporaryAuthorList.push(newAuthor);
 
         this.scrollToForm();
+
+        this.saveAuthors(false);
       },
       editExternalAuthor(authorData) {
 
@@ -224,7 +227,6 @@ export default {
         }
       },
       scrollToForm(){
-        console.log("scrollToForm");
         document.querySelector('#author-edit-sidebar .b-sidebar-body').scrollTo({top:0, behavior: 'smooth'});
       },
     },
