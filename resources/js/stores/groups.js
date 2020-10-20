@@ -37,6 +37,9 @@ const actions = {
                     group_id: response.data.DATA.id,
                     role: "admin",
                     user_id: rootState.Users.user.id,
+                    status: 'confirmed',
+                    token: null,
+
                 }
             }
 
@@ -60,6 +63,8 @@ const actions = {
                     group_id: response.data.DATA.group.id,
                     role: "admin",
                     user_id: rootState.Users.user.id,
+                    status: "confirmed",
+                    token: null,
                 }
             }
 
