@@ -40,7 +40,7 @@
                 >
                     <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
                         <b-button variant="link" class="text-light" @click="removePanelFromGroup(data.item.id)">
-                            <font-awesome-icon icon="trash-alt" size="lg"/>
+                            <font-awesome-icon icon="times" size="lg"/>
                         </b-button>
                     </template>
                     <template v-slot:cell(group_name)="data">
