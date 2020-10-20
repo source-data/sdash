@@ -7,20 +7,15 @@
         </info-bar>
 
         <b-container fluid class="mt-3">
-            <b-row v-if="isLoadingPanels">
-                <b-col class="text-center">
+            <b-row>
+                <b-col cols="2" class="sd-filter-wrapper"><filter-bar></filter-bar></b-col>
+                <b-col v-if="isLoadingPanels" class="text-center">
                     <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
                 </b-col>
-            </b-row>
-            <b-row v-if="hasPanels">
-                <b-col cols="2" class="sd-filter-wrapper"><filter-bar></filter-bar></b-col>
-                <b-col>
+                <b-col v-if="hasPanels">
                     <panel-listing-grid list_root="user"></panel-listing-grid>
                 </b-col>
-            </b-row>
-            <b-row v-if="!hasPanels && !isLoadingPanels">
-                <b-col cols="2" class="sd-filter-wrapper"><filter-bar></filter-bar></b-col>
-                <b-col >
+                <b-col v-if="!hasPanels && !isLoadingPanels">
                     <b-alert show variant="danger" class="no-panel-alert">No Panels Found</b-alert>
                 </b-col>
             </b-row>
