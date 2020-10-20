@@ -46,8 +46,16 @@
         </transition-group>
         </draggable>
     </section>
+    <div class="panel-authors-edit--error-wrapper" v-if="correspondingAuthorCount<1">
+      A minimum of 1 corresponding author is required.
+    </div>
     <div class="panel-authors-edit--save-wrapper">
-      <b-button :disabled="expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1" variant="success" @click="saveAuthors">Save Authors</b-button>
+      <b-button
+      :disabled="(expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1)
+      || correspondingAuthorCount < 1"
+      variant="success"
+      @click="saveAuthors"
+      >Save Authors</b-button>
       <b-button @click="closeSidebar">Cancel</b-button>
     </div>
     <section class="panel-authors-edit--add-external-author-wrapper">
@@ -90,14 +98,17 @@ export default {
       ...mapGetters([
         "expandedPanelAuthors"
       ]),
-    dragOptions() {
-      return {
-        animation: 200,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost"
-      };
-    },
+      dragOptions() {
+        return {
+          animation: 200,
+          group: "description",
+          disabled: false,
+          ghostClass: "ghost"
+        };
+      },
+      correspondingAuthorCount() {
+        return this.temporaryAuthorList.filter( author => author.author_role === AuthorTypes.CORRESPONDING).length;
+      },
     },
 
     methods:{
@@ -131,13 +142,12 @@ export default {
         this.updateExpandedPanelAuthors({authors: newAuthorList}).then(
           (response) => {
             this.$snotify.success("Authors updated.", "OK!")
+            if(closeAfterSave) this.closeSidebar();
           }
         ).catch(
           (error) => {
           const err = (error.data.hasOwnProperty('errors')) ? error.data.errors.authors[0] : error.data.MESSAGE;
           this.$snotify.error(err, "Error!");
-        }).finally(()=>{
-          if(closeAfterSave) this.closeSidebar();
         });
       },
       closeSidebar(){
@@ -231,7 +241,7 @@ export default {
       },
     },
     created() {
-      this.temporaryAuthorList = this.expandedPanelAuthors.slice();
+      this.temporaryAuthorList = this.expandedPanelAuthors.map(author => ({...author}));
     },
 
 }
@@ -306,5 +316,13 @@ export default {
   margin: 1rem 0;
 }
 
-
+.panel-authors-edit--error-wrapper {
+    border: dashed 2px #983a3a;
+    line-height: 1.2;
+    padding: 0.15rem 0.25rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    background-color: #dab1b1;
+    color: #983a3a;
+}
 </style>

@@ -46,6 +46,9 @@ class PanelAuthorController extends Controller
         $existingExternalAuthors = $panel->externalAuthors()->get();
         $existingUserAuthors = $panel->authors()->get();
 
+        // There must be at least one corresponding author in the list
+        if (!$this->mustBeAtLeastOneCorrspondingAuthor($newAuthors)) return API::response(400, "Corresponding author is required.", []);
+
         // The submitted author list must have no repeated values in the order field
         if (!$this->authorOrderUnique($newAuthors)) return API::response(400, "Author order must have no repeated values.", []);
 
@@ -172,5 +175,15 @@ class PanelAuthorController extends Controller
             if ($authors[$i]["order"] !== $i) return false;
         }
         return true;
+    }
+
+
+    public function mustBeAtLeastOneCorrspondingAuthor(array $authors)
+    {
+        $correspondingAuthorCount = 0;
+        for ($i = 0; $i < count($authors); $i++) {
+            if ($authors[$i]["author_role"] === User::PANEL_ROLE_CORRESPONDING_AUTHOR) $correspondingAuthorCount++;
+        }
+        return ($correspondingAuthorCount > 0);
     }
 }
