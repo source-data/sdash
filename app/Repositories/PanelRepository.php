@@ -11,7 +11,6 @@ use App\Repositories\Interfaces\PanelRepositoryInterface;
 
 class PanelRepository implements PanelRepositoryInterface
 {
-
     /**
      * return all panels accessible to this user, either through group membership, ownership, or if the panel is public
      *
@@ -22,7 +21,7 @@ class PanelRepository implements PanelRepositoryInterface
      * @param bool $paginate Whether to return the results in a paginated list or a full list
      * @return void
      */
-    public function userPanels(User $user, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
+    public function userPanels(User $user, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $private = false, bool $paginate = true)
     {
 
         $panelQuery = Panel::where(
@@ -40,34 +39,16 @@ class PanelRepository implements PanelRepositoryInterface
             }
         ); //Grouped query select ... where (x and y and z) and a and b;
 
-
-        // If there's a search string, add it to the where clause
-        if (isset($search)) $panelQuery->where(function ($query) use ($search) {
-            $query
-                ->where("title", "like", "%{$search}%")
-                ->orWhere("caption", "like", "%{$search}%")
-                ->orWhereHas("tags", function ($query) use ($search) {
-                    $query->where("content", "like", "%{$search}%");
-                });
-        });
-
-        //if there's a tag search, add it to the where clause
-        if (isset($tags)) $panelQuery->where(function ($query) use ($tags) {
-            $query->whereHas("tags", function ($query) use ($tags) {
-                $query->whereIn("content", $tags);
-            });
-        });
+        insertQueryConditions($panelQuery, $search, $authors, $tags);
 
         $panelQuery->with(['groups', 'tags', 'authors', 'externalAuthors']);
 
-        //add order by clause
-        $panelQuery->orderByUpdated();
+        insertOrderByClause($panelQuery, $sortOrder);
 
         return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
     }
 
-
-    public function groupPanels(User $user, Group $group, string $search = null, array $tags = null, bool $private = false, bool $paginate = true)
+    public function groupPanels(User $user, Group $group, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $private = false, bool $paginate = true)
     {
         $panelQuery = $group->panels()->with(['groups', 'tags', 'user', 'authors', 'externalAuthors']);
 
@@ -78,62 +59,27 @@ class PanelRepository implements PanelRepositoryInterface
             });
         }
 
-        // If there's a search string, add it to the where clause
-        if (isset($search)) $panelQuery->where(function ($query) use ($search) {
-            $query
-                ->where("title", "like", "%{$search}%")
-                ->orWhere("caption", "like", "%{$search}%")
-                ->orWhereHas("tags", function ($query) use ($search) {
-                    $query->where("content", "like", "%{$search}%");
-                });
-        });
+        insertQueryConditions($panelQuery, $search, $authors, $tags);
 
-        //if there's a tag search, add it to the where clause
-        if (isset($tags)) $panelQuery->where(function ($query) use ($tags) {
-            $query->whereHas("tags", function ($query) use ($tags) {
-                $query->whereIn("content", $tags);
-            });
-        });
-
-        //add order by clause
-        $panelQuery->orderByUpdated();
+        insertOrderByClause($panelQuery, $sortOrder);
 
         return ($paginate) ? $panelQuery->with('user')->paginate(20) : ["data" => $panelQuery->with('user')->get()];
     }
 
-
-    public function publicPanels(string $search = null, array $tags = null, bool $paginate = true)
+    public function publicPanels(string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true)
     {
         $panelQuery = Panel::whereNotNull('made_public_at');
 
-        // If there's a search string, add it to the where clause
-        if (isset($search)) $panelQuery->where(function ($query) use ($search) {
-            $query
-                ->where("title", "like", "%{$search}%")
-                ->orWhere("caption", "like", "%{$search}%")
-                ->orWhereHas("tags", function ($query) use ($search) {
-                    $query->where("content", "like", "%{$search}%");
-                });
-        });
-
-        //if there's a tag search, add it to the where clause
-        if (isset($tags)) $panelQuery->where(function ($query) use ($tags) {
-            $query->whereHas("tags", function ($query) use ($tags) {
-                $query->whereIn("content", $tags);
-            });
-        });
+        insertQueryConditions($panelQuery, $search, $authors, $tags);
 
         if (env("APP_ENV") === "local") {
             $panelQuery->with(['confirmedGroups', 'tags']);
         }
 
-        //add order by clause
-        $panelQuery->orderByUpdated();
-
+        insertOrderByClause($panelQuery, $sortOrder);
 
         return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
     }
-
 
     public function destroyPanel(Panel $panel)
     {
@@ -148,5 +94,49 @@ class PanelRepository implements PanelRepositoryInterface
         $panel->delete();
 
         return true;
+    }
+}
+
+function insertQueryConditions(&$panelQuery, $search, $authors, $tags)
+{
+    // If there's a search string, add it to the where clause
+    if (isset($search)) $panelQuery->where(function ($query) use ($search) {
+        $query
+            ->where("title", "like", "%{$search}%")
+            ->orWhere("caption", "like", "%{$search}%")
+            ->orWhereHas("tags", function ($query) use ($search) {
+                $query->where("content", "like", "%{$search}%");
+            });
+    });
+
+    // Filter by authors
+    if (isset($authors)) $panelQuery->where(function ($query) use ($authors) {
+        $query->whereHas("authors", function ($query) use ($authors) {
+            $query->select(\DB::raw('count(distinct panel_user.user_id)'))->whereIn("panel_user.user_id", $authors);
+        }, '=', count($authors));
+    });
+
+    // Filter by keywords
+    if (isset($tags)) $panelQuery->where(function ($query) use ($tags) {
+        $query->whereHas("tags", function ($query) use ($tags) {
+            $query->select(\DB::raw('count(distinct tags.id)'))->whereIn("tags.id", $tags);
+        }, '=', count($tags));
+    });
+}
+
+function insertOrderByClause(&$panelQuery, $sortOrder)
+{
+    $useAscendingOrder = (substr($sortOrder, -4) === '-asc');
+    switch ($sortOrder) {
+        case 'title-asc':
+        case 'title-desc':
+            $panelQuery->orderByTitle($useAscendingOrder);
+            break;
+        case 'creation-date-asc':
+        case 'creation-date-desc':
+            $panelQuery->orderByCreated($useAscendingOrder);
+            break;
+        default:
+            $panelQuery->orderByUpdated($useAscendingOrder);
     }
 }

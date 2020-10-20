@@ -75,9 +75,19 @@ class Panel extends Model
         return $this->hasOne('App\Models\PanelAccessToken');
     }
 
-    public function scopeOrderByUpdated($query)
+    public function scopeOrderByTitle($query, $useAscendingOrder = true)
     {
-        return $query->orderBy('updated_at', 'desc');
+        return $query->orderBy('title', ($useAscendingOrder ? 'asc' : 'desc'));
+    }
+
+    public function scopeOrderByCreated($query, $useAscendingOrder = true)
+    {
+        return $query->orderBy('created_at', ($useAscendingOrder ? 'asc' : 'desc'));
+    }
+
+    public function scopeOrderByUpdated($query, $useAscendingOrder = true)
+    {
+        return $query->orderBy('updated_at', ($useAscendingOrder ? 'asc' : 'desc'));
     }
 
     public function getSavePathAttribute()

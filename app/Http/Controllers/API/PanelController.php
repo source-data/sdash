@@ -55,13 +55,15 @@ class PanelController extends Controller
     {
         $user       = auth()->user();
         $search     = $request->input("search");
-        $tags       = $request->input("tags");
+        $tags       = $request->input("keywords");
+        $authors    = $request->input("authors");
+        $sortOrder  = $request->input("sortOrder");
         $private    = $request->has("private");
 
         return API::response(
             200,
             "A list of panels accessible to the logged-in user.",
-            $this->panelRepository->userPanels($user, $search, $tags, $private)
+            $this->panelRepository->userPanels($user, $search, $tags, $authors, $sortOrder, $private)
         );
     }
 
@@ -76,7 +78,9 @@ class PanelController extends Controller
     {
         $user       = auth()->user();
         $search     = $request->input("search");
-        $tags       = $request->input("tags");
+        $tags       = $request->input("keywords");
+        $authors    = $request->input("authors");
+        $sortOrder  = $request->input("sortOrder");
         $private    = $request->has("private");
         $paginate   = $request->has("paginate") ? strtoupper($request->get("paginate")) === 'TRUE' : true;
 
@@ -85,7 +89,7 @@ class PanelController extends Controller
         return API::response(
             200,
             "A list of panels accessible to chosen group.",
-            $this->panelRepository->groupPanels($user, $group, $search, $tags, $private, $paginate)
+            $this->panelRepository->groupPanels($user, $group, $search, $tags, $authors, $sortOrder, $private, $paginate)
         );
     }
 
@@ -97,10 +101,12 @@ class PanelController extends Controller
      */
     public function listPublicPanels(Request $request)
     {
-        $search = $request->input('search');
-        $tags   = $request->input("tags");
+        $search     = $request->input('search');
+        $tags       = $request->input("keywords");
+        $authors    = $request->input("authors");
+        $sortOrder  = $request->input("sortOrder");
 
-        return API::response(200, "A list of public panels.", $this->panelRepository->publicPanels($search, $tags));
+        return API::response(200, "A list of public panels.", $this->panelRepository->publicPanels($search, $tags, $authors, $sortOrder));
     }
 
 

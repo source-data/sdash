@@ -10,6 +10,9 @@ const defaultState = {
     searchGroup: null,
     searchText: null,
     searchTags: [],
+    filterAuthors: [],
+    filterKeywords: [],
+    sortOrder: null,
     onlyMyPanels: false,
     loading: true,
     panelsLoaded: 0,
@@ -61,8 +64,10 @@ const actions = {
             params.params.page = state.nextPage;
         if (state.searchText) params.params.search = state.searchText;
         if (state.searchTags) params.params.tags = state.searchTags;
+        if (state.filterAuthors) params.params.authors = state.filterAuthors.map(a => a.id);
+        if (state.filterKeywords) params.params.keywords = state.filterKeywords.map(k => k.id);
+        if (state.sortOrder) params.params.sortOrder = state.sortOrder;
         if (state.onlyMyPanels) params.params.private = true;
-        console.table(params.params);
 
         return Axios.get(searchUrl, params).then(response => {
             commit("addToLoadedPanels", response.data);
@@ -337,6 +342,24 @@ const mutations = {
         state.searchTags = [];
         state.onlyMyPanels = false;
         state.paginate = true;
+    },
+    setAuthorFilter(state, payload) {
+        state.filterAuthors = payload;
+    },
+    setKeywordFilter(state, payload) {
+        state.filterKeywords = payload;
+    },
+    setSortOrder(state, payload) {
+        state.sortOrder = payload;
+    },
+    resetAuthorFilter(state) {
+        state.filterAuthors = [];
+    },
+    resetKeywordFilter(state) {
+        state.filterKeywords = [];
+    },
+    resetSortOrder(state) {
+        state.sortOrder = null;
     },
     setPrivate(state, payload) {
         state.onlyMyPanels = payload;
