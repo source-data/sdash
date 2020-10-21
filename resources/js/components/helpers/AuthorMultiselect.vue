@@ -64,8 +64,6 @@ export default {
         ...mapActions(["findUsersByName"]),
         asyncFind: _.debounce(function(queryString){
 
-            console.log("already", this.initialUsers);
-
             if(queryString.length > 0) {
                 this.findUsersByName(queryString).then((result) => {
                     if(result.data.DATA && result.data.DATA.length > 0) {
@@ -76,7 +74,6 @@ export default {
                             if (!_.find(alreadySelected, (already) => {
                                 return (already.id === user.id);
                             })) {
-                                console.log(user, alreadySelected);
                                 selectList.push(user);
                             }
                         });
@@ -93,7 +90,6 @@ export default {
 
         },300),
         addUser(userdata) {
-          console.log("authormultiselect", userdata);
           this.$emit('select', userdata);
         }
     },
