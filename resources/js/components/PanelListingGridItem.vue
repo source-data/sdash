@@ -148,6 +148,9 @@ export default {
         panelOwnerName() {
             const authorList = [...this.thisPanel.authors, ...this.thisPanel.external_authors].sort((a,b) => a.author_role.order - b.author_role.order);
             const firstAuthor = authorList.find( author => author.author_role.role !== AuthorTypes.CURATOR);
+            if (firstAuthor === undefined) {
+                return this.thisPanel.user.firstname + ' ' + this.thisPanel.user.surname
+            }
             return firstAuthor.firstname + ' ' + firstAuthor.surname;
         },
         panelAccessReason() {
