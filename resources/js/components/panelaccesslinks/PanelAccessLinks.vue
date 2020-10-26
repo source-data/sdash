@@ -12,7 +12,11 @@
                     label="Share with an existing group"
                     label-for="sd-group-dropdown"
                     >
-                        <b-form-select size="sm" id="sd-group-dropdown" :options="myGroups" v-model="selectedSharingGroupId" trim></b-form-select>
+                        <b-form-select size="sm" id="sd-group-dropdown" :options="myGroups" v-model="selectedSharingGroupId" trim>
+                            <template #first>
+                                <b-form-select-option :value="null">Select group</b-form-select-option>
+                            </template>
+                        </b-form-select>
                     </b-form-group>
                     <p>
                         <b-button @click="addPanelToGroup" size="sm" variant="info" :disabled="!selectedSharingGroupId">

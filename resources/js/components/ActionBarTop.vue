@@ -130,7 +130,11 @@
                                 label="Add to existing group"
                                 label-for="sd-group-select"
                                 >
-                                <b-form-select size="sm" id="sd-group-select" :options="myGroups" v-model="selectedSharingGroupId" trim></b-form-select>
+                                <b-form-select size="sm" id="sd-group-select" :options="myGroups" v-model="selectedSharingGroupId" trim>
+                                    <template #first>
+                                        <b-form-select-option :value="null">Select group</b-form-select-option>
+                                    </template>
+                                </b-form-select>
                                 </b-form-group>
                                 <p>
                                     <b-button @click="addPanelsToGroup" size="sm" variant="info" :disabled="!selectedSharingGroupId">
