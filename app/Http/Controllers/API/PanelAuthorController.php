@@ -102,10 +102,10 @@ class PanelAuthorController extends Controller
                 if (!empty($existingExternalAuthor)) {
                     $existingExternalAuthor->firstname = $author["firstname"];
                     $existingExternalAuthor->surname = $author["surname"];
-                    $existingExternalAuthor->email = $author["email"];
-                    $existingExternalAuthor->department_name = $author["department_name"];
-                    $existingExternalAuthor->institution_name = $author["institution_name"];
-                    $existingExternalAuthor->orcid = $author["orcid"];
+                    if (isset($author["email"])) $existingExternalAuthor->email = $author["email"];
+                    if (isset($author["department_name"])) $existingExternalAuthor->department_name = $author["department_name"];
+                    if (isset($author["institution_name"])) $existingExternalAuthor->institution_name = $author["institution_name"];
+                    if (isset($author["orcid"])) $existingExternalAuthor->orcid = $author["orcid"];
                     $existingExternalAuthor->save();
                     $panel->externalAuthors()->updateExistingPivot($existingExternalAuthor->id, [
                         'role' => $author["author_role"],

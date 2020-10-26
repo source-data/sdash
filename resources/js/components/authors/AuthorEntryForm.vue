@@ -42,7 +42,6 @@
           id="sd-email-input"
           v-model="email"
           type="email"
-          required
           placeholder="Author's email address"
         ></b-form-input>
       </b-form-group>
@@ -56,7 +55,6 @@
           size="sm"
           id="sd-department-name-input"
           v-model="department_name"
-          required
           placeholder="Dept. name"
         ></b-form-input>
       </b-form-group>
@@ -70,7 +68,6 @@
           size="sm"
           id="sd-institution-name-input"
           v-model="institution_name"
-          required
           placeholder="Institution name"
         ></b-form-input>
       </b-form-group>
@@ -84,7 +81,6 @@
           size="sm"
           id="sd-orcid-input"
           v-model="orcid"
-          required
           placeholder="ORCID"
         ></b-form-input>
       </b-form-group>
