@@ -79,8 +79,32 @@
             </b-col>
         </b-row>
         <div class="sd-modify-panel-access-links text-right" v-if="hasLinks && iCanEditThisPanel">
-            <b-button variant="success" class="py-2" size="sm" @click="generateLink"><font-awesome-icon icon="link" /> Refresh Link</b-button>
+            <b-button variant="success" class="py-2" size="sm" id="sd-refresh-link" ref="sd-refresh-link"><font-awesome-icon icon="link" /> Refresh Link</b-button>
             <b-button variant="danger" class="py-2" size="sm" @click="revokeLink"><font-awesome-icon icon="link" /> Revoke Link</b-button>
+                <b-popover
+                    ref="refresh-link-popover"
+                    target="sd-refresh-link"
+                    triggers="click"
+                    placement="top"
+                    selector="sd-refresh-link"
+                >
+                <template v-slot:title>
+                        Refresh the public link?
+                    <b-button @click="closeRefreshLinkPopover" class="close" aria-label="Close">
+                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                    </b-button>
+                </template>
+                    <div class="confirm-refresh-link">
+                        <p>
+                            Refreshing the external link will revoke the existing link and
+                            generate a new one. Do you wish to continue?
+                        </p>
+                        <div class="refresh-buttons">
+                            <b-button variant="success" small @click="generateLink">Yes</b-button>
+                            <b-button variant="outline-dark" small @click="closeRefreshLinkPopover">No</b-button>
+                        </div>
+                    </div>
+                </b-popover>
         </div>
     </section>
 </template>
@@ -132,6 +156,7 @@ export default {
         ...mapActions(['selectPanel']),
         generateLink () {
             this.loading = true
+            this.closeRefreshLinkPopover()
             this.$store.dispatch("generatePublicLink")
             .then(response => {
                 this.loading = false
@@ -190,7 +215,12 @@ export default {
         },
         resetSharingModal(){
             this.selectedSharingGroupId = null
-        }
+        },
+        closeRefreshLinkPopover() {
+            if(this.$refs["refresh-link-popover"]) {
+                this.$refs["refresh-link-popover"].$emit("close")
+            }
+        },
     }
 
 }
@@ -218,5 +248,9 @@ export default {
 .sd-qr-code-container {
     text-align: center;
     padding: 0.5rem 0 1.5rem;
+}
+
+.refresh-buttons {
+  text-align: right;
 }
 </style>
