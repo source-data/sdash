@@ -40,6 +40,39 @@
                             'sd-panel-author-list--item_' + author.author_role
                         "
                     >
+                        <button class="sd-panel-author-list--remove-me"
+                            v-if="author.origin==='users' && author.id===currentUser.id && !iOwnThisPanel"
+                            v-b-tooltip.hover.left="{ customClass: 'sd-remove-author-tooltip' }" title="Remove me"
+                            id="sd-panel-author-list--remove-me"
+                            ref="sd-panel-author-list--remove-me"
+                        >&times;</button>
+
+                        <!-- remove me popover-->
+                        <b-popover
+                            v-if="author.origin==='users' && author.id===currentUser.id"
+                            :ref="'remove-me-popover-' + currentUser.id"
+                            target="sd-panel-author-list--remove-me"
+                            triggers="click"
+                            placement="bottom"
+                        >
+                        <template v-slot:title>
+                                Remove yourself as author?
+                            <b-button @click="closeRemoveMePopover" class="close" aria-label="Close">
+                                <span class="d-inline-block" aria-hidden="true">&times;</span>
+                            </b-button>
+                        </template>
+                            <div class="confirm-refresh-link">
+                                <p>
+                                    Delete yourself from the author list of this panel?
+                                </p>
+                                <div class="refresh-buttons">
+                                    <b-button variant="danger" small @click="removeMeAsAuthor">Remove Me</b-button>
+                                    <b-button variant="outline-dark" small @click="closeRemoveMePopover">Cancel</b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                        <!-- end of remove me popover -->
+
                         <router-link v-if="author.origin==='users'" :to="{ path: '/user/' + author.id }">
                             {{ author.firstname }} {{ author.surname }}
                             <sup
@@ -251,12 +284,14 @@ export default {
             "expandedPanel",
             "iOwnThisPanel",
             "iHaveAuthorPrivileges",
+            "iCanSeeThisPanelViaAGroup",
             "comments",
             "commentCount",
             "fileCount",
             "editingCaption",
             "expandedPanelAuthors",
             "showAuthorSidebar",
+            "currentUser",
         ]),
         authors() {
             // don't display the curator in the author list
@@ -374,7 +409,48 @@ export default {
         },
         editAuthorList(){
             this.$store.commit("setAuthorSidebar", true);
-        }
+        },
+        removeMeAsAuthor() {
+            let panelId = this.expandedPanel.id;
+            let authorId = this.currentUser.id;
+
+            this.closeRemoveMePopover();
+            this.$store.dispatch("removeUserFromExpandedPanelAuthors")
+            .then(response => {
+                this.$snotify.success(response.data.MESSAGE, "Author removed");
+                // remove author from expanded panel detail and loaded panel detail
+                this.$store.commit("removeAuthorFromPanel",{
+                    author_id: authorId,
+                    panel_id: panelId
+                });
+
+
+                /*
+                    How can an person have access to a panel?
+                    It's public
+                    They're an owner
+                    They're an author
+                    They're a group member
+                */
+
+                if (!this.expandedPanel.made_public_at
+                && !this.iCanSeeThisPanelViaAGroup
+                && !this.iOwnThisPanel) {
+                    // remove panel from loaded/expanded panels
+                    this.$store.commit("clearExpandedPanelDetail");
+                    this.$store.commit("removePanelFromStore", panelId);
+                }
+
+            }).catch(error => {
+                this.$snotify.error(error.data.MESSAGE, "Error");
+            });
+        },
+        closeRemoveMePopover() { console.log(this.$refs);
+            const popupRef = 'remove-me-popover-' + this.currentUser.id;
+            if (this.$refs[popupRef][0]) {
+                this.$refs[popupRef][0].$emit("close");
+            }
+        },
     }
 };
 </script>
@@ -554,6 +630,32 @@ export default {
 .sd-panel-author-list--corresponding-author-note {
     color: orange;
     font-size: 0.85em;
+}
+
+.sd-panel-author-list--remove-me {
+    border: none;
+    padding: 0;
+    line-height: 1px;
+    border-radius: 50%;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    background-color: red;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sd-remove-author-tooltip {
+    .tooltip-inner {
+        background-color:#eee;
+        color: #333;
+    }
+    .arrow:before {
+        border-left-color:#eee;
+    }
+
 }
 
 </style>

@@ -171,6 +171,11 @@ const actions = {
             return response;
         });
     },
+    removeUserFromExpandedPanelAuthors({state, commit}) {
+        return Axios.delete('/panels/' + state.expandedPanelId + "/users/me").then( response => {
+            return response;
+        });
+    },
     expandPanel({ commit }, panelId) {
         commit("toggleEditingCaption", false);
         commit("updateExpandedPanelId", panelId);
@@ -375,6 +380,33 @@ const mutations = {
     },
     setPublicAccessToken(state, tokenObject) {
         state.expandedPanelDetail.access_token = tokenObject;
+    },
+    removeAuthorFromPanel(state, params) {
+        const authorId = params.author_id;
+        const panelId = params.panel_id;
+
+        // find the index of the removed author in the user-authors
+        const index = _.findIndex(state.expandedPanelDetail.authors , author => {
+            return author.id === authorId;
+        });
+        // remove the author from the  expanded panel detail
+        if(index > -1) {
+            state.expandedPanelDetail.authors.splice(index,1);
+        }
+        // find the index of the loaded panel with the removed author
+        const loadedPanelIndex = _.findIndex(state.loadedPanels, panel => {
+            return panel.id === panelId;
+        })
+        // find the index of the author within that panel
+        if(loadedPanelIndex > -1) {
+            const loadedPanelAuthorIndex = _.findIndex(state.loadedPanels[loadedPanelIndex].authors , author => {
+                return author.id === authorId;
+            });
+
+            if(loadedPanelAuthorIndex > -1) {
+                state.loadedPanels[loadedPanelIndex].authors.splice(loadedPanelAuthorIndex,1);
+            }
+        }
     }
 };
 
@@ -461,6 +493,26 @@ const getters = {
         if (state.expandedPanelDetail.authors.length > 0 && getters.expandedPanelAuthors.filter((author) => (author.id===rootState.Users.user.id && (author.author_role===AuthorTypes.CORRESPONDING || author.author_role===AuthorTypes.CURATOR))).length > 0) return true
 
         return false
+    },
+    iCanSeeThisPanelViaAGroup(state, getters, rootState) {
+        if (!state.expandedPanelDetail) return false
+
+        if (
+            !state.expandedPanelDetail.groups ||
+            state.expandedPanelDetail.groups.length < 1
+        ) return false
+
+        return !!state.expandedPanelDetail.groups.find(group =>
+            rootState.Groups.userGroups.find(
+                userGroup =>
+                    userGroup.id === group.id &&
+                    userGroup.confirmed_users.find(
+                        user =>
+                            user.pivot.user_id === rootState.Users.user.id
+                    )
+            )
+        )
+
     },
     iCanEditTags(state, getters, rootState) {
 

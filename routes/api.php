@@ -41,6 +41,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::patch('/panels/{panel}/image', 'API\PanelController@changeImage');
     Route::post('/panels/{panel}/tokens', 'API\AccessTokenController@create');
     Route::delete('/panels/{panel}/tokens', 'API\AccessTokenController@destroy');
+    Route::delete('/panels/{panel}/users/me', 'API\PanelAuthorController@remove');
     Route::post('/panels/{panel}/tags', 'API\TagController@store');
     Route::post('/panels/{panel}/files', 'API\FileController@store');
     Route::post('/panels/{panel}/comments', 'API\CommentController@store');

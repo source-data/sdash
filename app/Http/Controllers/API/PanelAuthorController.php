@@ -140,6 +140,33 @@ class PanelAuthorController extends Controller
         return API::response(200, "Author list updated.", ["authors" => $panel->authors()->get(), "external_authors" => $panel->externalAuthors()->get()]);
     }
 
+
+    public function remove(Panel $panel)
+    {
+        $user = auth()->user();
+
+        /*
+        User must be an author of the panel
+        User cannot be the last author
+        User cannot be the panel owner
+        */
+
+        // 1. check user is a panel author
+        if (!$panel->authors()->where('users.id', $user->id)->exists()) return API::response(401, "You are not an author of the panel.", []);
+
+        // 2. check that user is not the last remaining author
+        if ($panel->authors()->count() < 2) return API::response(401, "You cannot remove the only author.", []);
+
+        // 3. check that author is not the panel owner
+        $panelOwner = $panel->user;
+        if ($panelOwner->id === $user->id) return API::response(401, "Panel owner cannot be removed.", []);
+
+        // detach the author
+        $panel->authors()->detach($user->id);
+
+        return API::response(200, "Author removed.", []);
+    }
+
     /**
      * Accepts an array of author data and checks that there are no repeated
      * "order" values as authors cannot share a single position in the
