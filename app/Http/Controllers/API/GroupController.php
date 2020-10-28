@@ -197,7 +197,7 @@ class GroupController extends Controller
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
                         $query->withPivot(['role','token', 'status']);
                     }])->withCount(['confirmedUsers', 'panels'])->first(),
-                    "panels" => Panel::whereIn('id', $affectedPanelIds)->with(['accessToken', 'groups', 'tags', 'user'])->get()
+                    "panels" => Panel::whereIn('id', $affectedPanelIds)->with(['accessToken', 'groups', 'tags', 'user', 'authors', 'externalAuthors'])->get()
                 ]
             );
         } else {

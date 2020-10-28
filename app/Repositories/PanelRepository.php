@@ -106,20 +106,26 @@ function insertQueryConditions(&$panelQuery, $search, $authors, $tags)
             ->orWhere("caption", "like", "%{$search}%")
             ->orWhereHas("tags", function ($query) use ($search) {
                 $query->where("content", "like", "%{$search}%");
+            })
+            ->orWhereHas("authors", function ($query) use ($search) {
+                $query->where(DB::raw("concat(firstname, ' ', surname)"), "like", "%{$search}%");
+            })
+            ->orWhereHas("externalAuthors", function ($query) use ($search) {
+                $query->where(DB::raw("concat(firstname, ' ', surname)"), "like", "%{$search}%");
             });
     });
 
     // Filter by authors
     if (isset($authors)) $panelQuery->where(function ($query) use ($authors) {
         $query->whereHas("authors", function ($query) use ($authors) {
-            $query->select(\DB::raw('count(distinct panel_user.user_id)'))->whereIn("panel_user.user_id", $authors);
+            $query->select(DB::raw('count(distinct panel_user.user_id)'))->whereIn("panel_user.user_id", $authors);
         }, '=', count($authors));
     });
 
     // Filter by keywords
     if (isset($tags)) $panelQuery->where(function ($query) use ($tags) {
         $query->whereHas("tags", function ($query) use ($tags) {
-            $query->select(\DB::raw('count(distinct tags.id)'))->whereIn("tags.id", $tags);
+            $query->select(DB::raw('count(distinct tags.id)'))->whereIn("tags.id", $tags);
         }, '=', count($tags));
     });
 }
