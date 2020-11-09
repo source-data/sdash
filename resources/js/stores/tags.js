@@ -55,7 +55,24 @@ const mutations = {
         state.expandedPanelTags = payload
     },
     suggestedSmartTags(state, payload){
-        state.suggestedSmartTags = payload //.map((tag, index) => { return {...tag, array_position:index} })
+        /*
+         Deduplicate the suggested tags against the ones already stored on the panel
+        */
+        let deduplicatedSuggestions = payload.filter( suggestedTag => {
+            for(let i = 0; i < state.expandedPanelTags.length; i++) {
+                if(
+                    state.expandedPanelTags[i].content === suggestedTag.name &&
+                    (state.expandedPanelTags[i].meta.role === suggestedTag.role || (!state.expandedPanelTags[i].meta.role && !suggestedTag.role))&&
+                    (state.expandedPanelTags[i].meta.category === suggestedTag.category || (!state.expandedPanelTags[i].meta.category && !suggestedTag.category))
+                    ) {
+                        return false
+                    }
+            }
+            return true
+        })
+        state.suggestedSmartTags = deduplicatedSuggestions
+        // state.suggestedSmartTags = payload
+        //.map((tag, index) => { return {...tag, array_position:index} })
     },
     clearSuggestedTags(state){
         state.suggestedSmartTags = []
