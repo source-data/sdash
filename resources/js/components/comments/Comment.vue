@@ -142,8 +142,8 @@ export default {
                     this.$snotify.success("Comment deleted", "Success!")
                 }).catch(error => {
                     this.$snotify.error(error.data.message, "Sorry!")
-                }).finally(() => {
                     this.closeDeleteCommentPopover()
+
                 })
             }
         },
