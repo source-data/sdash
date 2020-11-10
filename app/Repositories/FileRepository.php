@@ -13,7 +13,7 @@ use App\Repositories\Interfaces\FileRepositoryInterface;
 class FileRepository implements FileRepositoryInterface
 {
 
-    public function storePanelFile(Panel $panel, UploadedFile $file)
+    public function storePanelFile(Panel $panel, UploadedFile $file, $fileCategoryId = null)
     {
         $originalFilename = $file->getClientOriginalName();
         $convertedFilename = $file->hashName();
@@ -35,6 +35,7 @@ class FileRepository implements FileRepositoryInterface
             'panel_id'          =>  $panel->id,
             'original_filename' =>  $originalFilename,
             'filename'          =>  $convertedFilename,
+            'file_category_id'  =>  $fileCategoryId,
             'type'              =>  'file',
             'mime_type'         =>  $mimeType,
             'file_size'         =>  $fileSize,

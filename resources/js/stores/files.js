@@ -28,7 +28,8 @@ const actions = {
     storeFile({commit, state, rootState}, payload){
         let panelId = rootState.Panels.expandedPanelId
         let form = new FormData()
-        form.append('file', payload)
+        form.append('file', payload.file)
+        form.append('file_category_id', payload.file_category_id)
 
         return Axios.post("panels/" + panelId + "/files", form, {headers: { 'Content-Type' : 'multipart/form-data' }}).then(response => {
             commit("addToFiles", response.data.DATA)

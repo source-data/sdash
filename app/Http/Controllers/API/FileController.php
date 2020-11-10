@@ -53,11 +53,14 @@ class FileController extends Controller
 
         if (Gate::allows('modify-panel', $panel)) {
 
+            $fileCategoryId = $request->input('file_category_id');
+
             if ($request->input('url')) {
                 $fileCreated = File::create([
-                    'panel_id'  => $panel->id,
-                    'url'       => $request->input('url'),
-                    'type'      => 'url'
+                    'panel_id'          => $panel->id,
+                    'url'               => $request->input('url'),
+                    'file_category_id'  => $fileCategoryId,
+                    'type'              => 'url'
                 ]);
 
                 return API::response(200, "External URL stored.", File::find($fileCreated->id));
@@ -65,7 +68,7 @@ class FileController extends Controller
 
             if ($file = $request->file('file')) {
 
-                return API::response(200, "File uploaded successfully", $this->fileRepository->storePanelFile($panel, $file));
+                return API::response(200, "File uploaded successfully", $this->fileRepository->storePanelFile($panel, $file, $fileCategoryId));
             }
 
             return API::response(400, "Malformed upload attempt - did you submit a file or url?", []);

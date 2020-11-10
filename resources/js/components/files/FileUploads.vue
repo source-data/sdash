@@ -4,6 +4,13 @@
             <div class="sd-file-uploads--toggle-wrapper">
                 <toggle-button v-model="uploadToggle" @change="clearUploads" :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
             </div>
+            <div class="sd-file-uploads--category-wrapper">
+                <b-form-select class="sd-file-uploads--category-selector" v-model="categoryId" :options="fileCategories">
+                    <template v-slot:first>
+                        <b-form-select-option value="null">Select category</b-form-select-option>
+                    </template>
+                </b-form-select>
+            </div>
             <div class="sd-file-uploads--file-wrapper" v-if="!uploadToggle">
                 <b-form-file @change="updatedFile" no-drop single v-model="file" placeholder="Select a file to attach"></b-form-file>
             </div>
@@ -166,6 +173,7 @@ export default {
         return {
             file: null,
             url:  null,
+            categoryId: null,
             uploadToggle: true,
             fileToDelete: {},
             fileToUpdate: {},
@@ -206,21 +214,22 @@ export default {
     methods:{ //run as event handlers, for example
 
         updatedFile(){
-            this.url = null;
+            this.url = null
         },
         updatedUrl(){
-            this.file = null;
+            this.file = null
         },
         clearUploads(){
             this.updatedFile()
             this.updatedUrl()
+            this.categoryId = null
         },
         submitFile(){
             if(this.file) this.sendFile()
             if(this.url) this.sendUrl()
         },
         sendFile(){
-            this.$store.dispatch("storeFile", this.file).then(response => {
+            this.$store.dispatch("storeFile", {file:this.file, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
                 this.clearUploads()
             }).catch(error => {
@@ -228,7 +237,7 @@ export default {
             })
         },
         sendUrl(){
-            this.$store.dispatch("storeUrl", {url:this.url}).then(response => {
+            this.$store.dispatch("storeUrl", {url:this.url, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "URL Stored")
                 this.clearUploads()
             }).catch(error => {
@@ -418,6 +427,10 @@ export default {
 .sd-file-uploads--toggle-wrapper {
     display:flex;
     align-items: center;
+}
+
+.sd-file-uploads--category-wrapper {
+    padding: 0 1rem;
 }
 
 label.vue-js-switch {
