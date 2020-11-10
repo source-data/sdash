@@ -45,6 +45,7 @@ export default {
         replyingTo(){
             let replyingToComment = this.comments.filter( cmnt => cmnt.id === this.replyingToId )
             if (replyingToComment.length === 0) return false
+            if (!replyingToComment[0].user) return false
             return replyingToComment[0]
 
         },

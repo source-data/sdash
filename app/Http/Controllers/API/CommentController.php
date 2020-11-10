@@ -42,6 +42,11 @@ class CommentController extends Controller
 
             $replyIsTo = $request->input('reply_to') ? $request->input('reply_to') : null;
 
+            //check that reply is not to a deleted comment
+            if ($replyIsTo && !$replyComment = Comment::find($replyIsTo)) {
+                return API::response(400, "You cannot reply to deleted comment.", []);
+            }
+
             $comment = $panel->comments()->create([
                 'user_id'   => $user->id,
                 'comment'   => strip_tags($request->input('comment')),
@@ -50,24 +55,20 @@ class CommentController extends Controller
 
             $panelOwner = User::find($panel->user_id);
 
-            if( $panelOwner->id !== $user->id){
+            if ($panelOwner->id !== $user->id) {
                 $panelOwner->notify(new NewCommentOnYourPanel($user, $panel, $comment));
             }
 
 
-            if($replyIsTo){
+            if ($replyIsTo) {
 
-                $replyComment = Comment::find($replyIsTo);
                 $recipient = $replyComment->user;
-                $recipient->notify(new NewReplyToYourPanelComment($user, $panel, $comment));
-
+                if ($recipient) $recipient->notify(new NewReplyToYourPanelComment($user, $panel, $comment));
             }
 
             return API::response(200, 'Comment successfully posted.', $comment->load(['user']));
-
-
         } else {
-            return API::response(401,"Access denied.",[]);
+            return API::response(401, "Access denied.", []);
         }
     }
 
@@ -102,7 +103,7 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        if(Gate::allows('modify-comment', $comment)){
+        if (Gate::allows('modify-comment', $comment)) {
             $request->validate([
                 'comment'   => 'required|string'
             ]);
@@ -112,9 +113,8 @@ class CommentController extends Controller
             $comment->save();
 
             return API::response(200, 'Comment updated.', $comment->load(['user']));
-
         } else {
-            return API::response(401,"Access denied.",[]);
+            return API::response(401, "Access denied.", []);
         }
     }
 
@@ -124,13 +124,18 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy(Panel $panel, Comment $comment)
     {
-        if(Gate::allows('modify-comment', $comment)){
+        if (Gate::allows('modify-comment', $comment)) {
+            $comment->user()->dissociate();
+            $comment->save();
             $comment->delete();
-            return API::response(200, "Comment deleted", []);
+            // return all comments for this panel, as there may be replies which
+            // use this comment
+            $comments = $panel->comments()->with('user')->get();
+            return API::response(200, "Comment deleted", $comments);
         } else {
-            return API::response(401,"Access denied.",[]);
+            return API::response(401, "Access denied.", []);
         }
     }
 }

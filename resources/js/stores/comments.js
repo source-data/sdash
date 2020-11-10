@@ -25,6 +25,17 @@ const actions = {
         })
     },
 
+    deleteComment({commit, state, rootState}, payload ) {
+
+        const panelId = rootState.Panels.expandedPanelId
+        const commentId = payload
+
+        return Axios.delete("/panels/" + panelId + "/comments/" + commentId).then(response => {
+            commit('storeComments', response.data.DATA)
+        })
+
+    },
+
 
 }
 

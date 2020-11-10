@@ -445,7 +445,7 @@ export default {
                 this.$snotify.error(error.data.MESSAGE, "Error");
             });
         },
-        closeRemoveMePopover() { console.log(this.$refs);
+        closeRemoveMePopover() {
             const popupRef = 'remove-me-popover-' + this.currentUser.id;
             if (this.$refs[popupRef][0]) {
                 this.$refs[popupRef][0].$emit("close");

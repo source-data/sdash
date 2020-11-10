@@ -4,14 +4,14 @@
             <article class="sd-user-comment" :id="'sd-user-comment-' + thisComment.id">
                 <header  class="sd-user-comment--header sd-user-comment--block">
                     <strong class="sd-user-comment--user-name">
-                        {{ thisComment.user.firstname }} {{ thisComment.user.surname }}
+                        {{ commentorName }}
                     </strong>
                      posted on {{ this.formattedPostDate }}
                 </header>
                 <div class="sd-user-comment--content sd-user-comment--block">
                     <div v-if="thisComment.reply_to" class="sd-user-comment--reply-quote-block">
                         <span class="sd-user-comment--reply-quote-meta">
-                            @{{replyToComment.user.firstname}} {{ replyToComment.user.surname }} ({{ formattedReplyDate }})
+                            @{{ replyToCommentorName }} ({{ formattedReplyDate }})
                         </span>
                         <blockquote class="sd-user-comment--reply-quote-text">
                             {{ replyToComment.comment }}
@@ -22,6 +22,47 @@
                 </div>
                 <footer class="sd-user-comment--actions sd-user-comment--block">
                     <b-button
+                        size="sm"
+                        variant="danger"
+                        v-b-tooltip.hover.left="{ customClass: 'sd-remove-comment-tooltip' }" title="Delete your comment"
+                        v-if="thisIsMyComment"
+                        :id="'remove-comment-' + thisComment.id"
+                    >
+                        <font-awesome-icon
+                            class="sd-delete-comment-icon"
+                            icon="trash-alt"
+                            title="Delete panel"
+                        />
+                    </b-button>
+
+                    <!-- remove me popover-->
+                    <b-popover
+                        v-if="thisIsMyComment"
+                        :ref="'remove-comment-popover-' + thisComment.id"
+                        :target="'remove-comment-' + thisComment.id"
+                        triggers="click"
+                        placement="topleft"
+                    >
+                    <template v-slot:title>
+                            Delete Comment?
+                        <b-button @click="closeDeleteCommentPopover" class="close" aria-label="Close">
+                            <span class="d-inline-block" aria-hidden="true">&times;</span>
+                        </b-button>
+                    </template>
+                        <div class="confirm-refresh-link">
+                            <p>
+                                Are you sure you want to delete your comment?
+                            </p>
+                            <div class="refresh-buttons">
+                                <b-button variant="danger" small @click="deleteThisComment">Delete it!</b-button>
+                                <b-button variant="outline-dark" small @click="closeDeleteCommentPopover">Cancel</b-button>
+                            </div>
+                        </div>
+                    </b-popover>
+                    <!-- end of remove me popover -->
+
+                    <b-button
+                        v-if="!isDeleted"
                         type="submit"
                         size="sm"
                         variant="light"
@@ -59,9 +100,12 @@ export default {
 
     },
     computed: {
-        ...mapGetters(['comments']),
+        ...mapGetters(['comments', 'currentUser',]),
         thisComment(){
             return this.comments.filter(comment => comment.id === this.comment_id)[0]
+        },
+        isDeleted() {
+            return !!this.thisComment.deleted_at
         },
         replyToComment(){
             if(!this.thisComment.reply_to) return false
@@ -72,6 +116,17 @@ export default {
         },
         formattedReplyDate(){
             return moment(this.replyToComment.created_at).format("D MMM YY HH:mm")
+        },
+        thisIsMyComment() {
+            return this.currentUser.id === this.thisComment.user_id
+        },
+        commentorName() {
+            const comment = this.thisComment
+            return comment.user ? comment.user.firstname + " " + comment.user.surname : "Comment Deleted"
+        },
+        replyToCommentorName() {
+            const comment = this.replyToComment
+            return comment.user ? comment.user.firstname + " " + comment.user.surname : "Comment Deleted"
         }
     },
     methods:{ //run as event handlers, for example
@@ -79,7 +134,23 @@ export default {
         setReply(){
             this.$store.commit("setReplyingToId", this.thisComment.id)
             document.getElementById("sd-post-content-area").focus()
-        }
+        },
+        deleteThisComment() {
+            const commentId = this.thisComment.id
+            if(this.thisIsMyComment) {
+                this.$store.dispatch("deleteComment", commentId).then( response =>{
+                    this.$snotify.success("Comment deleted", "Success!")
+                }).catch(error => {
+                    this.$snotify.error(error.data.message, "Sorry!")
+                }).finally(() => {
+                    this.closeDeleteCommentPopover()
+                })
+            }
+        },
+        closeDeleteCommentPopover() {
+            const popupRef = 'remove-comment-popover-' + this.thisComment.id
+            this.$refs[popupRef].$emit("close")
+        },
 
     }
 
@@ -124,5 +195,16 @@ export default {
     .sd-user-comment--reply-quote-meta {
         font-style:italic;
     }
+
+.sd-remove-comment-tooltip {
+    .tooltip-inner {
+        background-color:#eee;
+        color: #333;
+    }
+    .arrow:before {
+        border-left-color:#eee;
+    }
+
+}
 
 </style>

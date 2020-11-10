@@ -44,6 +44,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::delete('/panels/{panel}/users/me', 'API\PanelAuthorController@remove');
     Route::post('/panels/{panel}/tags', 'API\TagController@store');
     Route::post('/panels/{panel}/files', 'API\FileController@store');
+    Route::delete('/panels/{panel}/comments/{comment}', 'API\CommentController@destroy');
     Route::post('/panels/{panel}/comments', 'API\CommentController@store');
     Route::post('/panels', 'API\PanelController@store');
     Route::get('/panels/{panel}', 'API\PanelController@show');
