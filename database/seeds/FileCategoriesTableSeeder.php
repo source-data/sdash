@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\FileCategory;
 
 class FileCategoriesTableSeeder extends Seeder
 {
@@ -11,12 +12,23 @@ class FileCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('file_categories')->insert([
-            ['name' => 'Paper'],
-            ['name' => 'Code'],
-            ['name' => 'Data'],
-            ['name' => 'Methods'],
-            ['name' => 'Reagents'],
-        ]);
+        $fileCategoryNames = [
+            'Paper',
+            'Code',
+            'Data',
+            'Methods',
+            'Reagents',
+            'Repository',
+            'Other',
+        ];
+        $fileCategoryId = 1;
+        foreach ($fileCategoryNames as $fileCategoryName) {
+            $fileCategory = [
+                'id' => $fileCategoryId,
+                'name' => $fileCategoryName,
+            ];
+            FileCategory::updateOrCreate(['id' => $fileCategoryId], $fileCategory);
+            $fileCategoryId++;
+        }
     }
 }
