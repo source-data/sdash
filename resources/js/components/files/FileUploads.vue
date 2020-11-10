@@ -56,7 +56,10 @@
                     <template v-if="iCanEditThisPanel">
                         <a href="#" @click.prevent class="custom-styled-link" :id="'edit-category-' + data.item.id" title="Edit category">
                             <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
-                            <span v-if="!data.item.file_category_id" class="text-info">Edit category</span>
+                            <span class="sd-edit-icon" v-if="!data.item.file_category_id">
+                                <font-awesome-icon icon="edit" title="Edit category" />
+                                Edit category
+                            </span>
                         </a>
                     </template>
                     <template v-if="!iCanEditThisPanel">
@@ -99,7 +102,9 @@
                 <template v-slot:cell(link)="data">
                     <a class="text-light" :href="data.item.url" target="_blank">{{data.item.url}}</a>
                     <a class="text-light" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
-                    <span class="sd-file-size" v-if="data.item.file_size">&bull; {{formatBytes(data.item.file_size)}}</span>
+                </template>
+                <template v-slot:cell(size)="data">
+                    <span v-if="data.item.file_size">{{formatBytes(data.item.file_size)}}</span>
                 </template>
             </b-table>
         </div>
@@ -126,6 +131,7 @@ export default {
                 {key:'action', label:'', sortable: false},
                 {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
                 {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"distillResourceLink"},
+                {key:'size', label: 'Size', sortable: true, sortByFormatted:true, formatter:"distillFileSize"},
             ],
             selectedCategoryId: null
         }
@@ -218,6 +224,9 @@ export default {
         distillResourceLink(value, key, item){
             return item.original_filename || item.url
         },
+        distillFileSize(value, key, item){
+            return item.file_size || ""
+        },
         distillCategoryName(value, key, item){
             return this.getFileCategoryName(item.file_category_id)
         },
@@ -262,11 +271,14 @@ export default {
 
         }
     }
-
 }
 </script>
 
 <style lang="scss">
+
+.sd-file-uploads--list-container {
+    overflow-x: auto;
+}
 
 .sd-file-uploads--list-table td {
     vertical-align: middle;
@@ -276,25 +288,34 @@ export default {
     width: 1%;
 }
 
+.sd-file-uploads--list-table td:nth-child(3) {
+    max-width: 10rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sd-file-uploads--list-table th:nth-child(4),
+.sd-file-uploads--list-table td:nth-child(4) {
+    white-space: nowrap;
+    text-align: right;
+}
+
 .sd-file-uploads--list-table td a .text-info {
     color: #65dd65 !important;
 }
 
 .sd-file-uploads-header {
-
     display: flex;
     flex-wrap: nowrap;
     padding-bottom: 1em;
     margin-bottom: 1em;
     border-bottom: solid 1px #eee;
-
 }
 
 .sd-file-uploads-header > div {
-
     flex-grow: 1;
     align-items: center;
-
 }
 
 .sd-file-uploads--file-wrapper .custom-file-label {
@@ -304,17 +325,14 @@ export default {
 }
 
 .sd-file-uploads--or {
-
     padding: 0 1em;
     max-width: 45px;
     text-align: center;
     line-height: 2em;
-
 }
 
-.sd-file-uploads--submit-wrapper{
+.sd-file-uploads--submit-wrapper {
     text-align:center;
-
     button {
         margin:0 3px;
     }
@@ -325,23 +343,19 @@ export default {
     align-items: center;
 }
 
-.sd-file-size {
-    color: #b0cddb;
-}
-
 label.vue-js-switch {
     margin: 0;
 }
 
-.custom-styled-link{
-    color: #65dd65;
+.custom-styled-link {
+    color: #b0cddb;
     cursor: pointer;
 }
+
 .custom-styled-link:hover,
 .custom-styled-link:focus,
-.custom-styled-link:active
-{
-    color: darken(#65dd65, 15%);
+.custom-styled-link:active {
+    color: darken(#b0cddb, 15%);
 }
 
 </style>
