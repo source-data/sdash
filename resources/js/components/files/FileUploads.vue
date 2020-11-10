@@ -99,6 +99,48 @@
                         </div>
                     </b-popover>
                 </template>
+                <template v-slot:cell(description)="data">
+                    <template v-if="!iOwnThisPanel">
+                        <span v-if="data.item.description">{{ data.item.description }}</span>
+                    </template>
+                    <template v-if="iOwnThisPanel">
+                        <a href="#" @click.prevent class="custom-styled-link" :id="'edit-description-' + data.item.id" title="Edit description">
+                            <span v-if="data.item.description">{{ data.item.description }}</span>
+                            <span class="sd-edit-icon" v-if="!data.item.description">
+                                <font-awesome-icon icon="edit" title="Edit description" />
+                                Edit description
+                            </span>
+                        </a>
+                        <b-popover
+                            :ref="'edit-description-popover-' + data.item.id"
+                            :target="'edit-description-' + data.item.id"
+                            triggers="click"
+                            placement="top"
+                            @show="updateFileDescription(data.item.id, data.item.description)"
+                            @hidden="clearUpdate"
+                        >
+                            <template v-slot:title>
+                                Description
+                                <b-button @click="closeDescriptionPopover(data.item.id)" class="close" aria-label="Close">
+                                    <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                </b-button>
+                            </template>
+                            <div class="update-file-description">
+                                <b-form-group
+                                :id="'update-description-form-group-' + data.item.id"
+                                :label-for="'update-description-input-' + data.item.id"
+                                >
+                                <b-form-input id="input-1" v-model="fileDescriptionText" trim></b-form-input>
+                                </b-form-group>
+
+                                <div class="update-buttons">
+                                    <b-button variant="success" small @click="saveFileDescription">Save</b-button>
+                                    <b-button variant="outline-dark" small @click="closeDescriptionPopover(data.item.id)">Cancel</b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                    </template>
+                </template>
                 <template v-slot:cell(link)="data">
                     <a class="text-light" :href="data.item.url" target="_blank">{{data.item.url}}</a>
                     <a class="text-light" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
@@ -130,10 +172,12 @@ export default {
             fields:[
                 {key:'action', label:'', sortable: false},
                 {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
+                {key:'description', label:'Description', sortable: true, sortByFormatted:true, formatter:"distillDescription"},
                 {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"distillResourceLink"},
                 {key:'size', label: 'Size', sortable: true, sortByFormatted:true, formatter:"distillFileSize"},
             ],
-            selectedCategoryId: null
+            selectedCategoryId: null,
+            fileDescriptionText: ""
         }
     }, /* end of data */
     mixins: [formatter],
@@ -220,6 +264,7 @@ export default {
         clearUpdate(){
             this.fileToUpdate = {}
             this.selectedCategoryId = null
+            this.fileDescriptionText = ""
         },
         distillResourceLink(value, key, item){
             return item.original_filename || item.url
@@ -229,6 +274,9 @@ export default {
         },
         distillCategoryName(value, key, item){
             return this.getFileCategoryName(item.file_category_id)
+        },
+        distillDescription(value, key, item){
+            return item.description || ""
         },
         closeDeletePopover(id){
             if(this.$refs["popover-" + id]) {
@@ -268,7 +316,36 @@ export default {
                 this.$snotify.error(error.data.message, "Update failed")
                 this.clearUpdate()
             })
+        },
+        closeDescriptionPopover(id){
+            if(this.$refs["edit-description-popover-" + id]) {
+                this.$refs["edit-description-popover-" + id].$emit("close")
+            }
+        },
+        updateFileDescription(id, text){
+            let toUpdate = this.getFiles.filter(file => file.id === id)[0]
+            this.fileToUpdate = toUpdate
+            this.fileDescriptionText = text
+        },
+        saveFileDescription(){
+            if (!this.fileToUpdate){
+                this.$snoftify.error("Please edit the file description via the interface", "Update Failed")
+                return;
+            }
 
+            let updatedFile = Object.assign({}, this.fileToUpdate)
+            updatedFile.description = this.fileDescriptionText
+
+            this.$store.dispatch("updateFileMeta", updatedFile).then(response => {
+                this.closeDescriptionPopover(this.fileToUpdate.id)
+                this.$snotify.success(response.data.MESSAGE, "File Updated")
+                this.clearUpdate()
+                this.$refs.fileUploadsTable.refresh()
+            }).catch(error => {
+                this.closeDescriptionPopover(this.fileToUpdate.id)
+                this.$snotify.error(error.data.message, "Update failed")
+                this.clearUpdate()
+            })
         }
     }
 }
@@ -288,15 +365,15 @@ export default {
     width: 1%;
 }
 
-.sd-file-uploads--list-table td:nth-child(3) {
+.sd-file-uploads--list-table td:nth-child(4) {
     max-width: 10rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.sd-file-uploads--list-table th:nth-child(4),
-.sd-file-uploads--list-table td:nth-child(4) {
+.sd-file-uploads--list-table th:nth-child(5),
+.sd-file-uploads--list-table td:nth-child(5) {
     white-space: nowrap;
     text-align: right;
 }

@@ -108,13 +108,15 @@ class FileController extends Controller
         $user = auth()->user();
         $panel = $file->panel;
         $request->validate([
-            'file_category_id'  => ['integer', 'min:1', 'nullable']
+            'file_category_id'  => ['integer', 'min:1', 'nullable'],
+            'description'  => ['max:255', 'nullable']
         ]);
 
         if (!Gate::allows('modify-panel', $panel)) return API::response(401, "Access denied.", []);
 
         $file->update([
-            'file_category_id' => $request->input("file_category_id")
+            'file_category_id' => $request->input("file_category_id"),
+            'description' => strip_tags($request->input("description"))
         ]);
 
         return API::response(200, "File updated", $file);
