@@ -33,12 +33,13 @@
                 striped
                 :items="getFiles"
                 :fields="fields"
+                primary-key="id"
                 ref="fileUploadsTable"
              ><!--end of table definition-->
                 <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
                     <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id"><font-awesome-icon icon="trash-alt" size="lg"/></b-button>
                     <b-popover
-                        :ref="'popover-' + data.item.id"
+                        :ref="'delete-popover-' + data.item.id"
                         :target="'delete-button-' + data.item.id"
                         triggers="click"
                         placement="top"
@@ -251,13 +252,11 @@ export default {
                 return;
 
             }
-
+            this.closeDeletePopover(this.fileToDelete.id)
             this.$store.dispatch("deleteFile", this.fileToDelete).then(response => {
-                this.closeDeletePopover(this.fileToDelete.id)
                 this.$snotify.success(response.data.MESSAGE, "File Deleted")
                 this.clearDeletion()
             }).catch(error => {
-                this.closeDeletePopover(this.fileToDelete.id)
                 this.$snotify.error(error.data.message, "Deletion failed")
                 this.clearDeletion()
             })
@@ -288,8 +287,8 @@ export default {
             return item.description || ""
         },
         closeDeletePopover(id){
-            if(this.$refs["popover-" + id]) {
-                this.$refs["popover-" + id].$emit("close")
+            if(this.$refs["delete-popover-" + id]) {
+                this.$refs["delete-popover-" + id].$emit("close")
             }
         },
         closeCategoryPopover(id){
