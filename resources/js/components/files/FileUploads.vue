@@ -2,7 +2,8 @@
     <div class="sd-file-uploads-container">
         <div v-if="iCanEditThisPanel" class="sd-file-uploads-header">
             <div class="sd-file-uploads--toggle-wrapper">
-                <toggle-button v-model="uploadToggle" @change="clearUploads" :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
+                <toggle-button v-model="uploadToggle" @change="clearUploads" :disabled="pendingUpload"
+                    :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
             </div>
             <div class="sd-file-uploads--category-wrapper">
                 <b-form-select class="sd-file-uploads--category-selector" v-model="categoryId" :options="fileCategories">
@@ -12,7 +13,7 @@
                 </b-form-select>
             </div>
             <div class="sd-file-uploads--file-wrapper" v-if="!uploadToggle">
-                <b-form-file @change="updatedFile" no-drop single v-model="file" placeholder="Select a file to attach"></b-form-file>
+                <b-form-file @change="updatedFile" no-drop single v-model="file" :disabled="pendingUpload" placeholder="Select a file to attach"></b-form-file>
             </div>
             <div class="sd-file-uploads--url-wrapper" v-if="uploadToggle">
                 <b-form-input @change="updatedUrl" v-model="url" type="url" placeholder="Enter a URL to link remote resource"></b-form-input>
@@ -156,6 +157,16 @@
                 <template v-slot:cell(size)="data">
                     <span v-if="data.item.file_size">{{formatBytes(data.item.file_size)}}</span>
                 </template>
+                <template v-slot:custom-foot>
+                    <b-tr v-if="pendingUpload">
+                        <b-td class="text-center">
+                            <b-button variant="link" class="text-light">
+                                <b-spinner small label="Uploading"></b-spinner>
+                            </b-button>
+                        </b-td>
+                        <b-td colspan="4">Uploading <span class="font-italic">{{ file.name }}</span></b-td>
+                    </b-tr>
+                </template>
             </b-table>
         </div>
     </div>
@@ -176,6 +187,7 @@ export default {
             url:  null,
             categoryId: null,
             uploadToggle: true,
+            pendingUpload: false,
             fileToDelete: {},
             fileToUpdate: {},
             fields:[
@@ -202,7 +214,7 @@ export default {
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
         },
         disableSubmit(){
-            return (this.file===null && this.url===null)
+            return (this.file===null && this.url===null) || this.pendingUpload
         },
         fileCategories(){
             let categories = this.getFileCategories.reduce((categories, category) => {
@@ -230,11 +242,14 @@ export default {
             if(this.url) this.sendUrl()
         },
         sendFile(){
+            this.pendingUpload = true
             this.$store.dispatch("storeFile", {file:this.file, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
                 this.clearUploads()
+                this.pendingUpload = false
             }).catch(error => {
                 this.$snotify.error(error.data.message, "Upload failed")
+                this.pendingUpload = false
             })
         },
         sendUrl(){
