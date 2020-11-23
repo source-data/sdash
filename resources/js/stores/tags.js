@@ -9,7 +9,6 @@ const state = {
 
 }
 
-
 const actions = {
     fetchSmartTags({ commit, state }, payload) {
 
@@ -45,6 +44,15 @@ const actions = {
     },
     findTagsByName({ commit }, searchString){
         return Axios.get('/tags', { params: { name: searchString } }).then(response => {
+            return response
+        })
+    },
+    pasteTagsFromCache({ commit, state, rootState }) {
+        const panelId = rootState.Panels.expandedPanelId
+        return Axios.patch("/panels/" + panelId + "/tags/", {
+            tags: state.tagCache,
+        }).then(response => {
+            commit("storeTags", response.data.DATA)
             return response
         })
     }
@@ -85,16 +93,6 @@ const mutations = {
     },
     copyTagsToCache(state){
         state.tagCache = [].concat(state.expandedPanelTags)
-    },
-    pasteTagsFromCache(state){
-        for(let i=0; i<state.tagCache.length; i++){
-            state.suggestedSmartTags.push({
-                category: state.tagCache[i].meta.category,
-                role: state.tagCache[i].meta.role,
-                name: state.tagCache[i].content,
-                type: state.tagCache[i].meta.type,
-            })
-        }
     },
 }
 

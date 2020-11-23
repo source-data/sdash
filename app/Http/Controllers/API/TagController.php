@@ -100,15 +100,40 @@ class TagController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Connect the supplied array of tag IDs to the given Panel.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Tag  $tag
+     * @param  \App\Models\Panel  $panel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tag $tag)
+    public function addToPanelTags(Request $request, Panel $panel)
     {
-        //
+        $request->validate([
+            'tags.*.id' => ['required', 'numeric', 'exists:tags,id'],
+            'tags.*.meta.category' => ['nullable', 'string'],
+            'tags.*.meta.role' => ['nullable', 'string'],
+            'tags.*.meta.type' => ['nullable', 'string'],
+            'tags.*.meta.origin' => ['required', 'string', 'in:user,smarttag'],
+        ]);
+
+        if (!Gate::allows('modify-panel-tags', $panel)) return API::response(401, "Permission denied.", []);
+
+        $newTags = $request->get('tags');
+        $existingTags = $panel->tags->pluck('id')->toArray();
+        // loop through submitted tags and only attach
+        // tags that are not already attached
+        foreach ($newTags as $newTag) {
+            if (!in_array($newTag['id'], $existingTags)) {
+                $panel->tags()->attach($newTag['id'], [
+                    'origin' => strip_tags($newTag['meta']['origin']),
+                    'type' => strip_tags($newTag['meta']['type']),
+                    'role' => strip_tags($newTag['meta']['role']),
+                    'category' => strip_tags($newTag['meta']['category'])
+                ]);
+            }
+        }
+
+        return API::response(200, "Tags added to panel", $panel->tags()->withPivot(['id', 'origin', 'role', 'type', 'category'])->get());
     }
 
     /**

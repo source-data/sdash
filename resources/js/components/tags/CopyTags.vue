@@ -32,8 +32,11 @@ export default {
         },
         pasteTags(){
             if(this.iCanEditTags){
-                this.$store.commit("pasteTagsFromCache")
-                this.$snotify.info("Tags pasted", "OK!")
+                this.$store.dispatch("pasteTagsFromCache").then(response => {
+                    this.$snotify.info("Tags pasted", "OK!")
+                }).catch(error => {
+                    this.$snotify.error("Could not paste tags", "Error!")
+                })
             } else {
                 this.$snotify.info("You can't modify another user's panel.", "No Action")
             }

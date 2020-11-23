@@ -50,6 +50,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/panels/{panel}', 'API\PanelController@show');
     Route::delete('/panels', 'API\PanelController@deleteMultiple');
     Route::delete('/panels/{panel}/tags/{tag}', 'API\TagController@detachPanel');
+    Route::patch('/panels/{panel}/tags', 'API\TagController@addToPanelTags');
     Route::delete('/panels/{panel}', 'API\PanelController@destroy');
     Route::patch('/comments/{comment}', 'API\CommentController@update');
     Route::delete('/comments/{comment}', 'API\CommentController@destroy');
