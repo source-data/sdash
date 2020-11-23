@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Panel;
 use App\Models\Tag;
@@ -119,11 +120,19 @@ class TagController extends Controller
         if (!Gate::allows('modify-panel-tags', $panel)) return API::response(401, "Permission denied.", []);
 
         $newTags = $request->get('tags');
-        $existingTags = $panel->tags->pluck('id')->toArray();
+        $existingTags = $panel->tags()->withPivot(['category', 'origin', 'role', 'type'])->get()->toArray();
+        Log::debug($existingTags);
+
         // loop through submitted tags and only attach
         // tags that are not already attached
         foreach ($newTags as $newTag) {
-            if (!in_array($newTag['id'], $existingTags)) {
+            if (!array_filter($existingTags, function ($existingTag) use ($newTag) {
+                return ($existingTag['id'] == $newTag['id'] &&
+                    $existingTag['meta']['role'] == $newTag['meta']['role'] &&
+                    $existingTag['meta']['category'] == $newTag['meta']['category'] &&
+                    $existingTag['meta']['origin'] == $newTag['meta']['origin'] &&
+                    $existingTag['meta']['type'] == $newTag['meta']['type']);
+            })) {
                 $panel->tags()->attach($newTag['id'], [
                     'origin' => strip_tags($newTag['meta']['origin']),
                     'type' => strip_tags($newTag['meta']['type']),
