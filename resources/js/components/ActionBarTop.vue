@@ -363,6 +363,10 @@ export default {
     color: #6d767e;
 }
 
+.sd-action-bar--file-upload .custom-file-label:after {
+    background-color:#b4c9ea;
+}
+
 #sd-quit-group {
     margin-left:0.5rem;
 }
