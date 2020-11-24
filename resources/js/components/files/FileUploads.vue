@@ -151,8 +151,8 @@
                     </template>
                 </template>
                 <template v-slot:cell(link)="data">
-                    <a class="text-light" :href="data.item.url" v-b-tooltip.hover :title="data.item.url" target="_blank">{{data.item.url}}</a>
-                    <a class="text-light" v-b-tooltip.hover :title="data.item.original_filename" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
+                    <a class="text-light" :href="data.item.url" v-b-tooltip.hover.left :title="data.item.url" target="_blank">{{data.item.url}}</a>
+                    <a class="text-light" v-b-tooltip.hover.left :title="data.item.original_filename" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
                 </template>
                 <template v-slot:cell(size)="data">
                     <span v-if="data.item.file_size">{{formatBytes(data.item.file_size)}}</span>
