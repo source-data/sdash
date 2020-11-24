@@ -1,7 +1,7 @@
 <template>
     <b-container fluid class="sd-info-bar">
         <b-row>
-            <b-col offset-sm="2" sm="10" class="mt-4 mb-2 sd-info-bar-title-wrapper">
+            <b-col sm="10" class="mt-4 mb-2 sd-info-bar-title-wrapper">
                 <slot name="above-title">
                 </slot>
                 <slot name="title">
@@ -48,7 +48,8 @@ export default {
 }
 
 .sd-info-bar-title-wrapper {
-    padding-left:40px;
+    padding-left:62px;
+    margin-left:300px;
 }
 
 .sd-info-bar-text {
