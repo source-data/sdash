@@ -52,8 +52,8 @@ class FileController extends Controller
         ]);
 
         if (Gate::allows('modify-panel', $panel)) {
-
-            $fileCategoryId = $request->input('file_category_id');
+            
+            $fileCategoryId = (int) $request->input('file_category_id') ?: null;
 
             if ($request->input('url')) {
                 $fileCreated = File::create([
