@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import router from './routes/router'
-import store from './stores/store'
-import Dashboard from './views/Dashboard'
+import router from './routes/publicRouter'
+import store from '@/public_app/stores/store'
+import PublicDashboard from './views/PublicDashboard'
 import BootstrapVue from 'bootstrap-vue'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
 import './bootstrap';
@@ -15,7 +15,7 @@ import ToggleButton from 'vue-js-toggle-button'
 import VueTagsInput from '@johmun/vue-tags-input'
 
 //set Axios base url
-window.axios.defaults.baseURL = process.env.MIX_API_URL;
+window.axios.defaults.baseURL = process.env.MIX_PUBLIC_API_URL;
 
 // register tags box component globally
 Vue.component('vue-tags-input', VueTagsInput)
@@ -54,10 +54,10 @@ Vue.component('avatar', Avatar)
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-if(document.getElementById("dashboard")) {
+if(document.getElementById("open-dashboard")) {
   const app = new Vue({
       router,
       store,
-      render: h => h(Dashboard)
-  }).$mount('#dashboard');
+      render: h => h(PublicDashboard)
+  }).$mount('#open-dashboard');
 }

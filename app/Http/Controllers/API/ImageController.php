@@ -30,48 +30,58 @@ class ImageController extends Controller
     public function showPanelImage(Panel $panel, Request $request)
     {
 
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             ['string', 'exists:panel_access_tokens,token']
         );
 
-        if($validator->fails()) abort(401, "Access Denied");
+        if ($validator->fails()) abort(401, "Access Denied");
 
         $token = $request->get('token', null);
 
         if (Gate::allows('view-single-panel', [$panel, $token])) {
-
-            $image = $panel->image()->first();
-            if(!$image) abort(404, "Resource not found.");
-            $filepath = config("filesystems.disks.panels.root") . DIRECTORY_SEPARATOR . $image->panel_id. DIRECTORY_SEPARATOR . $image->preview_filename;
-            if(file_exists($filepath)){
-                return response()->file($filepath);
-            }else{
-                abort(404, "Resource not found.");
-            }
-
-
-        }else{
-            abort(401,"Access denied.");
+            return $this->returnImagePath($panel);
+        } else {
+            abort(401, "Access denied.");
         }
+    }
+
+    public function showPublicPanelImage(Panel $panel)
+    {
+        return $this->returnImagePath($panel);
     }
 
 
     public function showPanelThumbnail(Panel $panel)
     {
-        if(Gate::allows('view-panel', $panel)) {
+        if (Gate::allows('view-panel', $panel)) {
+            return $this->returnThumbnailPath($panel);
+        } else {
+            abort(401, "Access denied.");
+        }
+    }
 
-            $image = $panel->image()->first();
-            if(!$image) abort(404, "Resource not found.");
-            $filepath = config("filesystems.disks.panels.root") . DIRECTORY_SEPARATOR . $panel->id . DIRECTORY_SEPARATOR . 'thumbnails'. DIRECTORY_SEPARATOR . $image->preview_filename;
-            if(file_exists($filepath)){
-                return response()->file($filepath);
-            }else{
-                abort(404, "Resource not found.");
-            }
+    protected function returnImagePath(Panel $panel)
+    {
+        $image = $panel->image()->first();
+        if (!$image) abort(404, "Resource not found.");
+        $filepath = config("filesystems.disks.panels.root") . DIRECTORY_SEPARATOR . $image->panel_id . DIRECTORY_SEPARATOR . $image->preview_filename;
+        if (file_exists($filepath)) {
+            return response()->file($filepath);
+        } else {
+            abort(404, "Resource not found.");
+        }
+    }
 
-
-        }else{
-            abort(401,"Access denied.");
+    protected function returnThumbnailPath(Panel $panel)
+    {
+        $image = $panel->image()->first();
+        if (!$image) abort(404, "Resource not found.");
+        $filepath = config("filesystems.disks.panels.root") . DIRECTORY_SEPARATOR . $panel->id . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . $image->preview_filename;
+        if (file_exists($filepath)) {
+            return response()->file($filepath);
+        } else {
+            abort(404, "Resource not found.");
         }
     }
 }

@@ -1,5 +1,9 @@
 @extends('layouts.global')
 
+@section('header-scripts')
+<script src="{{ mix('js/main.js') }}" defer></script>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row pt-4">

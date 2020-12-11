@@ -11,7 +11,9 @@
     <title>{{ config('app.name', 'SDash') }}</title>
     <meta name="description" content="SDash is the SourceData dashboard. Accelerate data sharing and improve research data management.">
     <!-- Scripts -->
-    <script src="{{ mix('js/main.js') }}" defer></script>
+    <script src="{{ mix('js/manifest.js') }}" defer></script>
+    <script src="{{ mix('js/vendor.js') }}" defer></script>
+    @yield('header-scripts')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">

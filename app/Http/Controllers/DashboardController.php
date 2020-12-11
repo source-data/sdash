@@ -7,15 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Show the application dashboard.
@@ -25,5 +16,11 @@ class DashboardController extends Controller
     public function index()
     {
         return (Auth::user()->hasVerifiedEmail()) ? view('dashboard') : view('auth.verify');
+    }
+
+
+    public function showPublicDashboard()
+    {
+        return view('public_dashboard');
     }
 }

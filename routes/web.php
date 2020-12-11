@@ -10,20 +10,19 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Auth::routes(['verify' => true]);
 
 Route::get('/', 'WelcomeController@index');
 Route::get('/about', 'WelcomeController@about');
-
-Auth::routes(['verify' => true]);
-
-Route::get('/dashboard', 'DashboardController@index')->name('home');
+Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
 Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*');
+Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
 // Special single panel route
 Route::get('/panel/{panel}', 'PanelController@show');
 
-// download routes - special access gates for these routes are defined incrr the controller
+// download routes - special access gates for these routes are defined in the controller
 Route::get('/panels/{panel}/pdf', 'DownloadController@downloadPdf');
 Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint');
 Route::get('/panels/{panel}/zip', 'DownloadController@downloadZip');

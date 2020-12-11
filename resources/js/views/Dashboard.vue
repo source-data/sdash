@@ -1,5 +1,5 @@
 <template>
-<main>
+<div id="sdash-wrapper">
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- drop uploader -->
@@ -38,7 +38,7 @@
     >
         <panel-authors-edit-form></panel-authors-edit-form>
     </b-sidebar>
-</main>
+</div>
 
 </template>
 
