@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
  *
  */
 Route::get('/panels', 'API\PanelController@listPublicPanels');
-Route::get('/panels/{panel}', 'API\PanelController@show');
+Route::get('/panels/{panel}', 'API\PanelController@showPublic');
 Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
 Route::get('/files/categories', 'API\FileController@listFileCategories');
 
