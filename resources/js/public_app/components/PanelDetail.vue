@@ -76,7 +76,8 @@
                     </b-tab>
                     <b-tab title="Keywords">
                         <b-card-text>
-                            <smart-tags-panel></smart-tags-panel>
+                            <smart-tags-panel v-if="expandedPanel.tags.length > 0"></smart-tags-panel>
+                            <p v-if="expandedPanel.tags.length === 0">No tags assigned</p>
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Share">
