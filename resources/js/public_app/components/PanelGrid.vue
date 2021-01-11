@@ -12,7 +12,7 @@
         <b-container fluid class="mt-3">
             <b-row>
                 <b-col cols="2" class="sd-filter-wrapper">
-                <!--filter-bar></filter-bar-->Filter here
+                <filter-bar></filter-bar>
                 </b-col>
                 <b-col v-if="isLoadingPanels" class="text-center">
                     <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
@@ -32,7 +32,7 @@
 
 import store from '@/public_app/stores/store'
 import { mapGetters } from 'vuex'
-// import FilterBar from '@/components//FilterBar'
+import FilterBar from './FilterBar'
 import InfoBar from '@/components/InfoBar'
 import PanelListingGrid from './PanelListingGrid'
 
@@ -41,7 +41,7 @@ export default {
 
     name: 'PanelGrid',
     components: {
-        // FilterBar,
+        FilterBar,
         PanelListingGrid,
         InfoBar,
       }, /* end of data */

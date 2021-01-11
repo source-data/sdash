@@ -65,7 +65,7 @@ export default {
     },
     methods: {
       tagSearch(searchString){
-          this.$store.commit("setLoadingState", true)
+          this.$store.commit("setPanelLoadingState", true)
           this.$store.commit("clearLoadedPanels")
           this.$store.commit("setSearchString", searchString)
           this.$store.dispatch("fetchPanelList")
