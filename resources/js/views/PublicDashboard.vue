@@ -2,6 +2,7 @@
 <div id="sdash-wrapper">
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
+    <action-bar-top></action-bar-top>
     <router-view></router-view>
 
         <lightbox
@@ -19,6 +20,7 @@
 import store from '@/public_app/stores/store'
 import { mapGetters, mapActions } from 'vuex'
 import PanelGrid from '@/public_app/components/PanelGrid'
+import ActionBarTop from '@/public_app/components/ActionBarTop'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
 
@@ -27,7 +29,8 @@ export default {
     name: 'Dashboard',
     components: {
         PanelGrid,
-        Lightbox
+        Lightbox,
+        ActionBarTop,
         },
     computed: {
 
