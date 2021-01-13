@@ -54,4 +54,14 @@ export default {
         return response
     })
   },
+  findTagsByName({ commit }, searchString){
+    return Axios.get('/tags', { params: { name: searchString } }).then(response => {
+        return response
+    })
+},
+  findUsersByName({ commit }, searchString){
+    return Axios.get('/users', { params: { name: searchString } }).then(response => {
+        return response
+    })
+},
 }

@@ -49,8 +49,8 @@
 
 <script>
 import store from "@/stores/store"
-import AuthorMultiselect from '@/components/helpers/AuthorMultiselect'
-import KeywordMultiselect from '@/components/helpers/KeywordMultiselect'
+import AuthorMultiselect from '../helpers/AuthorMultiselect'
+import KeywordMultiselect from '../helpers/KeywordMultiselect'
 
 export default {
     components: {
