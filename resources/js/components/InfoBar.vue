@@ -45,6 +45,7 @@ export default {
 
 .sd-info-bar {
     padding-bottom: 1em;
+    overflow: hidden;
 }
 
 .sd-info-bar-title-wrapper {
