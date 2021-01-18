@@ -170,7 +170,26 @@ class DownloadController extends Controller
                 $query->withPivot(['id', 'origin', 'role', 'type', 'category']);
             }]);
 
-            $dar->appendAuthor($panel->user->firstname, $panel->user->surname, $panel->user->department_name . ', ' . $panel->user->institution_name . ', ' . $panel->user->institution_address);
+            $registeredAuthors = $panel->authors->toArray();
+            $externalAuthors = $panel->externalAuthors->toArray();
+            $allAuthors = array_filter(array_merge($registeredAuthors, $externalAuthors), function ($authorItem) {
+                return $authorItem["author_role"]["role"] !== 'curator';
+            });
+            $sortedAuthors = [];
+            for ($i = 0; $i < count($allAuthors); $i++) {
+                $sortedAuthors[$allAuthors[$i]["author_role"]["order"]] = [
+                    "firstname" =>  $allAuthors[$i]["firstname"],
+                    "surname" =>  $allAuthors[$i]["surname"],
+                    "department_name" =>  $allAuthors[$i]["department_name"],
+                    "institution_name" =>  $allAuthors[$i]["institution_name"],
+                    "institution_address" =>  isset($allAuthors[$i]["institution_address"]) ? $allAuthors[$i]["institution_address"] : ''
+                ];
+            }
+
+            foreach ($sortedAuthors as $auth) {
+                $dar->appendAuthor($auth["firstname"], $auth["surname"], $auth["department_name"] . ', ' . $auth["institution_name"] . ', ' . $auth["institution_address"]);
+            }
+
             $dar->appendPanel($panel);
 
             $zip->addFile($this->getImageFilePath($panel), $panel->image->original_filename);
