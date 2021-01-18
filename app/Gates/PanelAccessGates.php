@@ -80,6 +80,9 @@ class PanelAccessGates
     {
         if (!$user) {
 
+            // if the panel is a public panel, allow access
+            if ($panel->made_public_at) return true;
+
             // no access token was submitted by the user
             if (!$token) return false;
 
