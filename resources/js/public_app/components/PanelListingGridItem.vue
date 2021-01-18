@@ -178,7 +178,7 @@ $sd-extra-height: 800; // info box height in pixels
     margin-top: 6px;
     max-height: 0;
     height: 0;
-    overflow: hidden;
+    // overflow: hidden;
     transition: all 0.3s ease-in;
     z-index: 5;
 }
