@@ -18,6 +18,16 @@ class Tag extends Model
         'type'
     ];
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     public function panels(Type $var = null)
     {
         return $this->belongsToMany('App\Models\Panel')->withTimestamps();
