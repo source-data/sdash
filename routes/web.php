@@ -12,11 +12,12 @@
 */
 Auth::routes(['verify' => true]);
 
-Route::get('/', 'WelcomeController@index');
+// Route::get('/', 'WelcomeController@index');
+// Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
+Route::get('/', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/about', 'WelcomeController@about');
 Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
 Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*');
-Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
 // Special single panel route
