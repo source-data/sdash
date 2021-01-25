@@ -17,7 +17,8 @@ class MergeAndSortAuthors
         "surname" =>  $allAuthors[$i]["surname"],
         "department_name" =>  $allAuthors[$i]["department_name"],
         "institution_name" =>  $allAuthors[$i]["institution_name"],
-        "institution_address" =>  isset($allAuthors[$i]["institution_address"]) ? $allAuthors[$i]["institution_address"] : ''
+        "institution_address" =>  isset($allAuthors[$i]["institution_address"]) ? $allAuthors[$i]["institution_address"] : '',
+        "role"  =>  $allAuthors[$i]["author_role"]["role"]
       ];
     }
     ksort($sortedAuthors);
