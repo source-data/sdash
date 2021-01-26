@@ -102,4 +102,8 @@ export default {
   margin-top:0;
 }
 
+.sd-public-tags-list--item {
+  cursor: pointer;
+}
+
 </style>
