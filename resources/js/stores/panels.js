@@ -31,7 +31,7 @@ const defaultExpandedPanelState = {
     created_at: null,
     downloads: null,
     id: null,
-    made_public_at: null,
+    is_public: null,
     subtype: null,
     title: null,
     type: null,
@@ -64,8 +64,10 @@ const actions = {
             params.params.page = state.nextPage;
         if (state.searchText) params.params.search = state.searchText;
         if (state.searchTags) params.params.tags = state.searchTags;
-        if (state.filterAuthors) params.params.authors = state.filterAuthors.map(a => a.id);
-        if (state.filterKeywords) params.params.keywords = state.filterKeywords.map(k => k.id);
+        if (state.filterAuthors)
+            params.params.authors = state.filterAuthors.map(a => a.id);
+        if (state.filterKeywords)
+            params.params.keywords = state.filterKeywords.map(k => k.id);
         if (state.sortOrder) params.params.sortOrder = state.sortOrder;
         if (state.onlyMyPanels) params.params.private = true;
 
@@ -92,32 +94,37 @@ const actions = {
         });
     },
     updatePanel({ commit }, payload) {
-        return Axios.patch("/panels/" + payload.id, payload).then(response => {
-            commit("storeExpandedPanelDetail", response.data.DATA);
-            return response;
-        });
+        return Axios.patch("/panels/" + payload.id, payload)
+            .then(response => {
+                commit("storeExpandedPanelDetail", response.data.DATA);
+                return response;
+            });
+    },
+    updatePanelStatus({ commit }, payload) {
+        return Axios.patch("/panels/" + payload.id + '/status', payload)
+            .then(response => {
+                commit("updateExpandedPanelStatus", response.data.DATA);
+                return response;
+            });
     },
     changeImage({ commit, state }, payload) {
         const data = new FormData();
         data.append("file", payload);
         data.append("_method", "PATCH");
-        return Axios.post(
-            "/panels/" + state.expandedPanelId + "/image",
-            data
-        ).then(response => {
-            commit("updateExpandedPanelVersion", response.data.DATA);
-            return response;
-        });
+        return Axios.post("/panels/" + state.expandedPanelId + "/image", data)
+            .then(response => {
+                commit("updateExpandedPanelVersion", response.data.DATA);
+                return response;
+            });
     },
     deleteExpandedPanel({ commit, state, dispatch }) {
-        return Axios.delete("/panels/" + state.expandedPanelId).then(
-            response => {
+        return Axios.delete("/panels/" + state.expandedPanelId)
+            .then(response => {
                 commit("removePanelFromStore", state.expandedPanelId);
                 commit("closeExpandedPanels");
                 commit("setPanelLoadingState", false);
                 return response;
-            }
-        );
+            });
     },
     deleteSelectedPanels({ commit, state }) {
         if (!state.selectedPanels)
@@ -163,16 +170,24 @@ const actions = {
             return response;
         });
     },
-    updateExpandedPanelAuthors({state, commit}, payload) {
-        return Axios.put('/panels/'+ state.expandedPanelId + "/authors", payload)
-        .then( (response) => {
+    updateExpandedPanelAuthors({ state, commit }, payload) {
+        return Axios.put(
+            "/panels/" + state.expandedPanelId + "/authors",
+            payload
+        ).then(response => {
             commit("updateExpandedPanelAuthors", response.data.DATA);
-            commit("updateLoadedPanelAuthors", {id: state.expandedPanelId, authors: response.data.DATA.authors, external_authors: response.data.DATA.external_authors})
+            commit("updateLoadedPanelAuthors", {
+                id: state.expandedPanelId,
+                authors: response.data.DATA.authors,
+                external_authors: response.data.DATA.external_authors
+            });
             return response;
         });
     },
-    removeUserFromExpandedPanelAuthors({state, commit}) {
-        return Axios.delete('/panels/' + state.expandedPanelId + "/users/me").then( response => {
+    removeUserFromExpandedPanelAuthors({ state, commit }) {
+        return Axios.delete(
+            "/panels/" + state.expandedPanelId + "/users/me"
+        ).then(response => {
             return response;
         });
     },
@@ -289,6 +304,13 @@ const mutations = {
         });
         if (index > -1) state.loadedPanels[index].version = version;
     },
+    updateExpandedPanelStatus(state, isPublic) {
+        state.expandedPanelDetail.is_public = isPublic;
+        let index = _.findIndex(state.loadedPanels, panel => {
+            return panel.id === state.expandedPanelId;
+        });
+        if (index > -1) state.loadedPanels[index].is_public = isPublic;
+    },
     updateExpandedPanelAuthors(state, payload){
         const detail = Object.assign({}, state.expandedPanelDetail);
         detail.authors = payload.authors;
@@ -304,7 +326,7 @@ const mutations = {
             created_at: payload.created_at,
             downloads: payload.downloads,
             id: payload.id,
-            made_public_at: payload.made_public_at,
+            is_public: payload.is_public,
             subtype: payload.subtype,
             title: payload.title,
             type: payload.type,

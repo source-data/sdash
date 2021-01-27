@@ -39,6 +39,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
     Route::patch('/panels/{panel}', 'API\PanelController@update');
     Route::patch('/panels/{panel}/image', 'API\PanelController@changeImage');
+    Route::patch('/panels/{panel}/status', 'API\PanelController@updateStatus');
     Route::post('/panels/{panel}/tokens', 'API\AccessTokenController@create');
     Route::delete('/panels/{panel}/tokens', 'API\AccessTokenController@destroy');
     Route::delete('/panels/{panel}/users/me', 'API\PanelAuthorController@remove');

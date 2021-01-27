@@ -5,18 +5,13 @@ namespace App\Http\Controllers\API;
 use API;
 use App\User;
 use App\Models\Panel;
-use App\Models\Image;
+use App\Models\PanelLog;
+use App\Models\License;
 use App\Models\Group;
 use Obiefy\API\APIResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
-use App\Repositories\ImageRepository;
-use App\Repositories\PanelRepository;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Spatie\PdfToImage\Pdf as PdfConverter;
-use Intervention\Image\Facades\Image as ImageService;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
 
@@ -189,8 +184,8 @@ class PanelController extends Controller
         if (Gate::allows('modify-panel', $panel)) {
 
             $request->validate([
-                "title"         =>      "nullable|max:255|min:1",
-                "caption"       =>      "nullable|min:1"
+                "title"     =>  "nullable|max:255|min:1",
+                "caption"   =>  "nullable|min:1",
             ]);
 
             $toUpdate = [];
@@ -200,7 +195,48 @@ class PanelController extends Controller
 
             $panel->update($toUpdate);
 
-            return API::response(200, "Panel info updated.", $panel->load(['groups', 'user', 'authors', 'externalAuthors']));
+            return API::response(200, "Panel info updated.", $panel->load(['groups', 'user', 'authors', 'accessToken', 'externalAuthors']));
+        } else {
+            return API::response(401, "Permission denied.", []);
+        }
+    }
+
+    /**
+     * Update the status of a panel.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatus(Request $request, Panel $panel)
+    {
+        if (Gate::allows('modify-panel', $panel)) {
+
+            $request->validate([
+                "is_public" => "boolean"
+            ]);
+
+            $toUpdate = [];
+
+            if ($request->has("is_public")) $toUpdate["is_public"] = $request->input("is_public");
+
+            $licenseId = null;
+            
+            if ($toUpdate["is_public"]) {
+                $license = License::where('code', 'CC BY 4.0')->firstOrFail();
+                $licenseId = $license->id;
+            }
+
+            $panel->update($toUpdate);
+
+            PanelLog::create([
+                'user_id' => auth()->user()->id,
+                'panel_id' => $panel->id,
+                'action_type' => ($toUpdate["is_public"] ? 'publish' : 'unpublish'),
+                'license_id' => $licenseId,
+            ]);
+
+            return API::response(200, "Panel status updated.", $panel->is_public);
         } else {
             return API::response(401, "Permission denied.", []);
         }

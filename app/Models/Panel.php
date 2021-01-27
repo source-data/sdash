@@ -20,9 +20,10 @@ class Panel extends Model
         'user_id',
         'type',
         'subtype',
+        'version',
+        'is_public',
         'clicks',
         'downloads',
-        'made_public_at'
     ];
 
     public function image()
@@ -73,6 +74,11 @@ class Panel extends Model
     public function accessToken()
     {
         return $this->hasOne('App\Models\PanelAccessToken');
+    }
+
+    public function panelLogRecords()
+    {
+        return $this->hasMany('App\Models\PanelLog');
     }
 
     public function scopeOrderByTitle($query, $useAscendingOrder = true)

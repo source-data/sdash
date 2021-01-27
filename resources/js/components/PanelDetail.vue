@@ -165,6 +165,12 @@
                         />
                         Edit description
                     </span>
+                    <span class="sd-license-notice" v-if="isPublic">
+                        <font-awesome-icon :icon="['fab', 'creative-commons']" />
+                        2021 The Authors. Published under the terms of the
+                        <a href="https://creativecommons.org/licenses/by/4.0/"
+                            target="_blank">CC BY 4.0</a> license.
+                    </span>
                 </div>
             </b-col>
             <b-col class="sd-panel-detail-col sd-panel-detail-col--right">
@@ -312,6 +318,9 @@ export default {
         },
         iCanEditThisPanel() {
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
+        },
+        isPublic(){
+            return !!(this.expandedPanel.is_public);
         }
     },
     methods: {
@@ -433,7 +442,7 @@ export default {
                     They're a group member
                 */
 
-                if (!this.expandedPanel.made_public_at
+                if (!this.expandedPanel.is_public
                 && !this.iCanSeeThisPanelViaAGroup
                 && !this.iOwnThisPanel) {
                     // remove panel from loaded/expanded panels
@@ -658,4 +667,18 @@ export default {
 
 }
 
+.sd-license-notice {
+    float: right;
+    font-size: 0.7rem;
+    line-height: 1.7rem;
+    color: #aaa;
+}
+
+.sd-license-notice a {
+    color: #b0cddb;
+}
+
+.sd-license-notice a:hover {
+    color: darken(#b0cddb, 15%);
+}
 </style>

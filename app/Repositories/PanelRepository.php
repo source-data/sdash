@@ -28,7 +28,7 @@ class PanelRepository implements PanelRepositoryInterface
             function ($query) use ($user, $private) {
                 $query->where('user_id', $user->id);
                 if (!$private) {
-                    $query->orWhereNotNull('made_public_at')->orWhereHas('groups', function ($query) use ($user) {
+                    $query->orWhere('is_public', true)->orWhereHas('groups', function ($query) use ($user) {
                         $query->whereHas('confirmedUsers', function ($query) use ($user) {
                             $query->where('users.id', $user->id);
                         });
@@ -68,7 +68,7 @@ class PanelRepository implements PanelRepositoryInterface
 
     public function publicPanels(string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true)
     {
-        $panelQuery = Panel::whereNotNull('made_public_at');
+        $panelQuery = Panel::where('is_public', true);
 
         insertQueryConditions($panelQuery, $search, $authors, $tags);
 

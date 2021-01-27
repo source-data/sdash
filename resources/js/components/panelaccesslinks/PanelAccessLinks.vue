@@ -42,7 +42,7 @@
                     :items="expandedPanel.groups"
                     :fields="fields"
                 >
-                    <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
+                    <template v-slot:cell(action)="data">
                         <b-button variant="link" class="text-light" @click="removePanelFromGroup(data.item.id)">
                             <font-awesome-icon icon="times" size="lg"/>
                         </b-button>
@@ -52,12 +52,19 @@
                     </template>
                 </b-table>
             </template>
-            <template v-if="!hasLinks">
-                <div class="sd-generate-panel-access-links">
-                    <b-button variant="success" class="py-2" @click="generateLink"><font-awesome-icon icon="link" /> Generate Public Link</b-button>
-                </div>
-                <p>This link will allow public access to this SmartFigure and create a QR code for this link.</p>
-            </template>
+            <b-row>
+                <b-col class="sd-button-container">
+                    <b-button variant="success" class="py-2" @click="generateLink" v-if="!hasLinks">
+                        <font-awesome-icon icon="link" /> Get Link + QR Code
+                    </b-button>
+                    <b-button variant="danger" class="py-2" @click="revokeLink" v-if="hasLinks">
+                        <font-awesome-icon icon="unlink" /> Revoke Link
+                    </b-button>
+                </b-col>
+                <b-col>
+                    <p>Anyone with this link can view this SmartFigure and add comments.</p>
+                </b-col>
+            </b-row>
         </template>
         <b-alert show variant="primary" v-if="!hasLinks && !iCanEditThisPanel">
             The panel owner has not created a public link.
@@ -67,49 +74,90 @@
                 <b-spinner variant="primary" label="Spinning" class="m-2" style="width: 2rem; height: 2rem;"></b-spinner>
             </b-col>
         </b-row>
-        <b-row v-if="hasLinks">
+        <b-row v-if="!loading && hasLinks">
+            <b-col class="sd-button-container">
+                <b-button variant="light" class="py-2" @click="copyLink">
+                    <font-awesome-icon icon="copy" /> Copy Link
+                </b-button>
+                <b-form-input :value="tokenizedPanelUrl" id="sd-public-link" size="sm" readonly></b-form-input>
+            </b-col>
             <b-col>
-                <b-input-group class="my-3">
-                    <b-form-input :value="linkUrl" id="sd-public-link" disabled></b-form-input>
-                    <b-input-group-append>
-                        <b-button variant="light" @click.prevent="copyLink"><font-awesome-icon icon="copy" /> Copy</b-button>
-                    </b-input-group-append>
-                </b-input-group>
-                <div class="sd-qr-code-container">
-                    <a v-if="!loading" :href="'/panels/' + expandedPanel.id + '/token/qr'" download="qr_code.jpg">
-                        <img class="sd-qr-code" :src="'/panels/' + expandedPanel.id + '/token/qr'" alt="QR code leading to the public panel link">
-                    </a>
-                </div>
+                <a :href="'/panels/' + expandedPanel.id + '/token/qr'" download="qr_code.jpg">
+                    <img class="sd-qr-code" :src="'/panels/' + expandedPanel.id + '/token/qr'" alt="QR code leading to the public panel link">
+                </a>
             </b-col>
         </b-row>
-        <div class="sd-modify-panel-access-links text-right" v-if="hasLinks && iCanEditThisPanel">
-            <b-button variant="success" class="py-2" size="sm" id="sd-refresh-link" ref="sd-refresh-link"><font-awesome-icon icon="link" /> Refresh Link</b-button>
-            <b-button variant="danger" class="py-2" size="sm" @click="revokeLink"><font-awesome-icon icon="link" /> Revoke Link</b-button>
-                <b-popover
-                    ref="refresh-link-popover"
-                    target="sd-refresh-link"
-                    triggers="click"
-                    placement="top"
-                    selector="sd-refresh-link"
-                >
-                <template v-slot:title>
-                        Refresh the public link?
-                    <b-button @click="closeRefreshLinkPopover" class="close" aria-label="Close">
-                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+        <template v-if="iCanEditThisPanel">
+            <hr />
+            <b-row v-if="!isPublic">
+                <b-col class="sd-button-container">
+                    <b-button variant="success" class="py-2" id="sd-publish-button" ref="sd-publish-button">
+                        <font-awesome-icon :icon="['fab', 'creative-commons']" /> Make Public
                     </b-button>
-                </template>
-                    <div class="confirm-refresh-link">
-                        <p>
-                            Refreshing the external link will revoke the existing link and
-                            generate a new one. Do you wish to continue?
-                        </p>
-                        <div class="refresh-buttons">
-                            <b-button variant="success" small @click="generateLink">Yes</b-button>
-                            <b-button variant="outline-dark" small @click="closeRefreshLinkPopover">No</b-button>
+                    <b-popover
+                        ref="sd-publish-popover"
+                        target="sd-publish-button"
+                        triggers="click"
+                        placement="top"
+                        selector="sd-publish-button"
+                    >
+                        <template v-slot:title>
+                            Make Public 
+                            <b-button @click="closePublishPopover" class="close" aria-label="Close">
+                                <span class="d-inline-block" aria-hidden="true">&times;</span>
+                            </b-button>
+                        </template>
+                        <div class="sd-popover-content">
+                            <p>Are you sure?</p>
+                            <div>
+                                <b-button variant="success" small @click="updatePublicStatus(1)">Yes</b-button>
+                                <b-button variant="outline-dark" small @click="closePublishPopover">No</b-button>
+                            </div>
                         </div>
-                    </div>
-                </b-popover>
-        </div>
+                    </b-popover>
+                </b-col>
+                <b-col>
+                    <p>
+                        A public SmartFigure will be accessible to everyone from the SDash 
+                        <a :href="dashboardUrl">public page</a> under a CC BY 4.0 license
+                        (use, distribution, and reproduction in any medium allowed,
+                        provided the original work is properly cited).
+                    </p>
+                </b-col>
+            </b-row>
+            <b-row v-if="isPublic">
+                <b-col class="text-center">
+                    <p>
+                        This panel is publicly visible to all on SDash at<br />
+                        <a :href="panelUrl">{{panelUrl}}</a>
+                    </p>
+                    <b-button variant="danger" class="py-2" id="sd-unpublish-button" ref="sd-unpublish-button">
+                        Make Private
+                    </b-button>
+                    <b-popover
+                        ref="sd-unpublish-popover"
+                        target="sd-unpublish-button"
+                        triggers="click"
+                        placement="top"
+                        selector="sd-unpublish-button"
+                    >
+                        <template v-slot:title>
+                            Make Private 
+                            <b-button @click="closeUnpublishPopover" class="close" aria-label="Close">
+                                <span class="d-inline-block" aria-hidden="true">&times;</span>
+                            </b-button>
+                        </template>
+                        <div class="sd-popover-content">
+                            <p>Are you sure?</p>
+                            <div>
+                                <b-button variant="success" small @click="updatePublicStatus(0)">Yes</b-button>
+                                <b-button variant="outline-dark" small @click="closeUnpublishPopover">No</b-button>
+                            </div>
+                        </div>
+                    </b-popover>
+                </b-col>
+            </b-row>
+        </template>
     </section>
 </template>
 
@@ -141,11 +189,20 @@ export default {
         iCanEditThisPanel(){
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
         },
+        isPublic(){
+            return !!(this.expandedPanel.is_public);
+        },
         hasLinks(){
             return this.expandedPanel.access_token.hasOwnProperty('token')
         },
-        linkUrl(){
-            return this.hasLinks ? this.link_base + "/" + this.expandedPanel.id + "?token=" + this.expandedPanel.access_token.token : false
+        dashboardUrl(){
+            return window.location.origin + '/dashboard'
+        },
+        panelUrl(){
+            return this.link_base + '/' + this.expandedPanel.id
+        },
+        tokenizedPanelUrl(){
+            return this.panelUrl + '?token=' + this.expandedPanel.access_token.token
         },
         myGroups(){
             let groups = this.userGroups.reduce((myGroups, group) => {
@@ -160,7 +217,6 @@ export default {
         ...mapActions(['selectPanel']),
         generateLink () {
             this.loading = true
-            this.closeRefreshLinkPopover()
             this.$store.dispatch("generatePublicLink")
             .then(response => {
                 this.loading = false
@@ -183,10 +239,8 @@ export default {
         },
         copyLink () {
             let target = document.getElementById("sd-public-link")
-            target.disabled = false
             target.select()
             document.execCommand("copy")
-            target.disabled="disabled"
             this.$snotify.info("The link is stored in your clipboard", "Copied Link")
         },
         addPanelToGroup(groupId){
@@ -217,12 +271,32 @@ export default {
             this.selectPanel(this.expandedPanel.id)
             this.$router.push({name: "creategroup"})
         },
+        updatePublicStatus(status){
+            this.closePublishPopover()
+            this.closeUnpublishPopover()
+            this.$store.dispatch("updatePanelStatus", {
+                id: this.expandedPanel.id,
+                is_public: Boolean(status)
+            })
+            .then(response => {
+                const status = response.data.DATA ? "public" : "private"
+                this.$snotify.success("The panel is now " + status, "Success!")
+            })
+            .catch(error => {
+                this.$snotify.error(error.data.MESSAGE, "Action Failed!")
+            });
+        },
         resetSharingModal(){
             this.selectedSharingGroupId = null
         },
-        closeRefreshLinkPopover() {
-            if(this.$refs["refresh-link-popover"]) {
-                this.$refs["refresh-link-popover"].$emit("close")
+        closePublishPopover() {
+            if(this.$refs["sd-publish-popover"]) {
+                this.$refs["sd-publish-popover"].$emit("close")
+            }
+        },
+        closeUnpublishPopover() {
+            if(this.$refs["sd-unpublish-popover"]) {
+                this.$refs["sd-unpublish-popover"].$emit("close")
             }
         },
     }
@@ -239,8 +313,35 @@ export default {
     width: 1%;
 }
 
-.sd-share-button,
-.sd-generate-panel-access-links {
+.sd-panel-access-links hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid white;
+}
+
+.sd-panel-access-links a {
+    color: #b0cddb;
+    text-decoration: underline;
+}
+
+.sd-panel-access-links a {
+    color: #b0cddb;
+}
+
+.sd-panel-access-links a:hover {
+    color: darken(#b0cddb, 15%);
+}
+
+.sd-button-container {
+    flex: 0 0 250px;
+}
+
+.sd-popover-content {
+    width: 200px;
+}
+
+.sd-share-button {
     margin-bottom: 0.5rem;
 }
 
@@ -249,12 +350,9 @@ export default {
     width: auto;
 }
 
-.sd-qr-code-container {
-    text-align: center;
-    padding: 0.5rem 0 1.5rem;
+#sd-public-link {
+    display: block;
+    margin-top: 1rem;
 }
 
-.refresh-buttons {
-  text-align: right;
-}
 </style>

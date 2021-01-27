@@ -6,7 +6,7 @@ import BootstrapVue from 'bootstrap-vue'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
 import './bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faLink, faHome, faEdit, faSearchPlus, faDownload, faSave, faTrashAlt, faCheck, faPlus, faLock, faLockOpen,
+import { faLink, faUnlink, faHome, faEdit, faSearchPlus, faDownload, faSave, faTrashAlt, faCheck, faPlus, faLock, faLockOpen,
   faExchangeAlt, faUsers, faLayerGroup, faFilter, faCircle, faSignOutAlt, faCopy, faPaste, faExternalLinkAlt,
   faStar, faBook, faInfoCircle, faTimes, faSearch, faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons'
 import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
@@ -38,7 +38,7 @@ Vue.use(VueScrollTo)
 
 
 // Add Fontawesome to the global Vue App
-library.add([faLink, faHome, faEdit, faSave, faCheck, faTrashAlt, faSearchPlus, faCopy, faPaste, faDownload, faPlus,
+library.add([faLink, faUnlink, faHome, faEdit, faSave, faCheck, faTrashAlt, faSearchPlus, faCopy, faPaste, faDownload, faPlus,
   faLock, faLockOpen, faExchangeAlt, faUsers, faLayerGroup, faFilter, faCircle, faSignOutAlt, faExternalLinkAlt,
   faStar, faBook, faInfoCircle, faTimes, faSearch, faChevronLeft, faChevronRight, faCreativeCommons])
 Vue.component('font-awesome-icon', FontAwesomeIcon)

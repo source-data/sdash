@@ -29,7 +29,7 @@ class PanelAccessGates
 
     public function canViewPanel(User $user = null, Panel $panel)
     {
-        if ($panel->made_public_at) return true;
+        if ($panel->is_public) return true;
         if (!$user) return false;
         return $this->canAccessPanel($user, $panel);
     }

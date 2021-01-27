@@ -31,7 +31,7 @@ class PanelsTableSeeder extends Seeder
         });
 
         //create public panels
-        factory(App\Models\Panel::class, 5)->create(["made_public_at" => now()])->each(function ($panel) {
+        factory(App\Models\Panel::class, 5)->create(["is_public" => true])->each(function ($panel) {
             factory(App\Models\Comment::class, 6)->create(['panel_id' => $panel->id]);
         });
     }

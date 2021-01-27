@@ -156,12 +156,12 @@ export default {
         panelAccessReason() {
             let thisPanel = this.thisPanel;
             if (
-                !thisPanel.made_public_at &&
+                !thisPanel.is_public &&
                 thisPanel.groups.length === 0 &&
                 thisPanel.user_id === this.currentUser.id
             )
                 return "private";
-            if (thisPanel.made_public_at) return "public";
+            if (thisPanel.is_public) return "public";
             if (thisPanel.groups.length > 0) return "group";
         },
         IOwnThisPanel() {
