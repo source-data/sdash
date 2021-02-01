@@ -77,11 +77,6 @@
                             <p v-if="expandedPanel.tags.length === 0">No tags assigned</p>
                         </b-card-text>
                     </b-tab>
-                    <b-tab title="Share">
-                        <b-card-text>
-                            <!--panel-access-links></panel-access-links-->
-                        </b-card-text>
-                    </b-tab>
                 </b-tabs>
 
                 <div class="sd-panel-detail--panel-actions">
