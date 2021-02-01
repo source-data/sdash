@@ -18,12 +18,12 @@
                 @if($author["role"]==='corresponding')
                 <li class="sd-single-panel--author list-inline-item">
                     <strong>{{ $author["firstname"] }} {{ $author["surname"] }}
-                        @if($author["department_name"] && $author["institution_name"])({{$author["department_name"]}}, {{$author["institution_name"]}})@endif</strong><sup>*</sup>@if(!$loop->last),
+                        @if($author["department_name"] && $author["institution_name"]) ({{$author["department_name"]}}, {{$author["institution_name"]}})@endif</strong><sup>*</sup>@if(!$loop->last),
                     @endif
                 </li>
                 @else
                 <li class="sd-single-panel--author list-inline-item">
-                    {{ $author["firstname"] }} {{ $author["surname"] }}@if($author["department_name"] && $author["institution_name"])({{$author["department_name"]}}, {{$author["institution_name"]}})@endif @if(!$loop->last),
+                    {{ $author["firstname"] }} {{ $author["surname"] }}@if($author["department_name"] && $author["institution_name"]) ({{$author["department_name"]}}, {{$author["institution_name"]}})@endif @if(!$loop->last),
                     @endif
                 </li>
                 @endif

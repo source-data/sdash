@@ -16,7 +16,7 @@ class PublicPanelsOnly
      */
     public function handle($request, Closure $next)
     {
-        if (!isset($request->route('panel')->made_public_at)) abort(401, "Access denied");
+        if (!isset($request->route('panel')->is_public)) abort(401, "Access denied");
         return $next($request);
     }
 }

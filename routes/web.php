@@ -17,7 +17,7 @@ Auth::routes(['verify' => true]);
 Route::get('/', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/about', 'WelcomeController@about');
 Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
-Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*');
+Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*')->middleware('auth');
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
 // Special single panel route

@@ -76,7 +76,7 @@ export default {
           created_at: payload.created_at,
           downloads: payload.downloads,
           id: payload.id,
-          made_public_at: payload.made_public_at,
+          is_public: payload.is_public,
           subtype: payload.subtype,
           title: payload.title,
           type: payload.type,

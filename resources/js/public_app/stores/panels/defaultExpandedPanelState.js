@@ -5,7 +5,7 @@ export default {
   created_at: null,
   downloads: null,
   id: null,
-  made_public_at: null,
+  is_public: null,
   subtype: null,
   title: null,
   type: null,
