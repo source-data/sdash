@@ -3,6 +3,7 @@
     "scripts": {
         "dev": "npm run development",
         "development": "mix",
+        "devcompile": "ENV_FILE=./.env.dev npm run production",
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
@@ -34,6 +35,7 @@
         "@johmun/vue-tags-input": "^2.1.0",
         "bootstrap-vue": "^2.14.0",
         "font-awesome": "^4.7.0",
+        "mix-env-file": "^0.1.0",
         "moment": "^2.25.3",
         "vue-avatar": "^2.2.0",
         "vue-easy-lightbox": "^0.5.0",
