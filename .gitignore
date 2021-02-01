@@ -9,6 +9,7 @@
 /vendor
 .DS_Store
 .env
+.env.dev
 .env.backup
 .env.testing
 .phpunit.result.cache
