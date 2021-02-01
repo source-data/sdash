@@ -163,6 +163,8 @@ Instructions for the pre-built component library of Bootstrap Components can be 
 # Post deployment notes
 The following command should be run once in the project root on the first deployment to populate the file_categories table: ```php artisan db:seed --class=FileCategoriesTableSeeder```
 
+This command should be run to populate the licenses database: ```php artisan db:seed --class=LicensesTableSeeder```
+
 If seeding the database with generated records, or updating the database from an earlier installation, you may need to generate the panel-author relationships. To do so, run the following mysql command:
 
 ```sql
