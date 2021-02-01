@@ -38,7 +38,19 @@ Deployer will be installed as a project dependency when you run ```composer inst
 
 You should configure the deploy.php file to contain the correct hostname and deploy path for this project.
 
-Running ```php vendor/bin/dep deploy dev``` will deploy the **master** branch to the host called "dev" in the config file.
+Running ```php vendor/bin/dep deploy dev``` will deploy the **dev_server** branch to the host called "dev" in the config file.
+
+The dev_server branch has certain special configurations to permit deploying to the dev server. It has a .env.dev file containing only the variables used by Webpack to configure the Vue application on a server-by-server basis. These have the prefix MIX_. The .env.dev file can look like this, for example:
+
+```
+MIX_DASHBOARD_URL=/dashboard/
+MIX_API_URL=https://sdash-dev.com/api
+MIX_PUBLIC_API_URL=https://sdash-dev.com/public-api
+MIX_API_PANEL_URL=https://sdash-dev.com/panel
+MIX_SMART_TAG_URL=https://smtag.com/api/v1/tag
+```
+
+To compile the javascript ready for deployment to the dev server, use ```npm run devcompile``` then push the results to github on the dev_server branch before running ```dep deploy dev```.
 
 ### ImageMagick
 
