@@ -15,14 +15,11 @@
                         "
                     >
 
-                        <router-link v-if="author.origin==='users'" :to="{ path: '/user/' + author.id }">
-                            {{ author.firstname }} {{ author.surname }}
-                            <sup
+                            {{ author.firstname }} {{ author.surname }}<sup
                                 class="sd-panel-author-list--asterisk"
                                 v-if="author.corresponding"
                                 >*</sup
-                            ></router-link
-                        >
+                            >
                         <span v-if="author.origin==='external'">{{ author.firstname }} {{ author.surname }}</span>
                     </li>
                 </ul>
