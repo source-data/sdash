@@ -1,10 +1,10 @@
 @extends('layouts.global')
 
 @section('header-scripts')
-<script src="{{ mix('js/main.js') }}" defer></script>
+<script src="{{ mix('js/publicApp.js') }}" defer></script>
 @endsection
 
 @section('content')
-<div id="dashboard">
+<div id="open-dashboard">
 </div>
 @endsection

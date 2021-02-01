@@ -173,6 +173,43 @@ class PanelController extends Controller
     }
 
     /**
+     * Display the specified public panel resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showPublic(Panel $panel)
+    {
+        if (Gate::allows('view-panel', $panel)) {
+            return API::response(
+                200,
+                "Detailed view of Public Panel.",
+                Panel::where('id', $panel->id)
+                    ->with([
+                        'user' => function ($query) {
+                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "role"]);
+                        },
+                        'tags' => function ($query) {
+                            $query->withPivot('id', 'origin', 'role', 'type', 'category');
+                        },
+                        'groups',
+                        'authors'  => function ($query) {
+                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
+                        },
+                        'externalAuthors' => function ($query) {
+                            $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
+                        },
+                        'files' => function ($query) {
+                            $query->where('is_archived', false);
+                        }
+                    ])->get()
+            );
+        } else {
+            return API::response(401, "Access denied.", []);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

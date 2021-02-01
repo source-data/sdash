@@ -70,7 +70,7 @@ export default {
             return this.isSidebarExpanded ? 'Hide sidebar' : 'Show sidebar';
         }
     },
-    
+
     methods: {
         toggleSidebar() {
             this.isSidebarExpanded = !this.isSidebarExpanded;

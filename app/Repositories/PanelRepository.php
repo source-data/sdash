@@ -70,15 +70,23 @@ class PanelRepository implements PanelRepositoryInterface
     {
         $panelQuery = Panel::where('is_public', true);
 
-        insertQueryConditions($panelQuery, $search, $authors, $tags);
+        $panelQuery->with([
+            'user' => function ($query) {
+                $query->select(["id", "firstname", "surname", "role", "department_name", "institution_name"]);
+            }, 'groups', 'tags',
+            'authors'  => function ($query) {
+                $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
+            },
+            'externalAuthors'   => function ($query) {
+                $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
+            }
+        ]);
 
-        if (env("APP_ENV") === "local") {
-            $panelQuery->with(['confirmedGroups', 'tags']);
-        }
+        insertQueryConditions($panelQuery, $search, $authors, $tags);
 
         insertOrderByClause($panelQuery, $sortOrder);
 
-        return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
+        return ($paginate) ? $panelQuery->paginate(20) : $panelQuery->get();
     }
 
     public function destroyPanel(Panel $panel)

@@ -20,7 +20,12 @@ mix.webpackConfig({
 });
 
 mix.js("resources/js/main.js", "public/js")
-    .vue()
+    .extract(['bootstrap', 'bootstrap-vue'])
     .sourceMaps()
     .sass("resources/sass/app.scss", "public/css")
     .version();
+
+mix.js("resources/js/publicApp.js", "public/js")
+.sourceMaps()
+.sass("resources/sass/public.scss", "public/css")
+.version();

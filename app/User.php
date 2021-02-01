@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -36,7 +37,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'twitter',
         'orcid'
     ];
-
 
     public function is_superadmin()
     {
@@ -71,12 +71,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function confirmedGroups()
     {
-        return $this->belongsToMany('App\Models\Group')->wherePivot('status','confirmed');
+        return $this->belongsToMany('App\Models\Group')->wherePivot('status', 'confirmed');
     }
 
     public function pendingGroups()
     {
-        return $this->belongsToMany('App\Models\Group')->wherePivot('status','pending');
+        return $this->belongsToMany('App\Models\Group')->wherePivot('status', 'pending');
     }
 
     public function panelLogRecords()
@@ -90,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token'
+        'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'
     ];
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use App\Services\MergeAndSortAuthors;
 
 class PanelController extends Controller
 {
@@ -33,8 +34,13 @@ class PanelController extends Controller
 
             $tags = $panel->tags()->withPivot('id', 'origin', 'role', 'type', 'category')->get();
 
+            $authors = $panel->authors->toArray();
+            $externalAuthors = $panel->externalAuthors->toArray();
+
+            $sortedAuthors = MergeAndSortAuthors::mergeAndSort($authors, $externalAuthors);
+
             $panel->load(['groups', 'user', 'files']);
-            return View::make('singlepanel', ['panel' => $panel, 'token' => $token, 'tags' => $this->sortTags($tags)]);
+            return View::make('singlepanel', ['panel' => $panel, 'token' => $token, 'tags' => $this->sortTags($tags), 'authors' => $sortedAuthors]);
         } else {
 
             abort(401, "Access Denied");

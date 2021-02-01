@@ -16,6 +16,7 @@ use App\Services\DarManifest;
 use App\Services\SDPowerpoint;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use App\Services\MergeAndSortAuthors;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -170,7 +171,15 @@ class DownloadController extends Controller
                 $query->withPivot(['id', 'origin', 'role', 'type', 'category']);
             }]);
 
-            $dar->appendAuthor($panel->user->firstname, $panel->user->surname, $panel->user->department_name . ', ' . $panel->user->institution_name . ', ' . $panel->user->institution_address);
+            $registeredAuthors = $panel->authors->toArray();
+            $externalAuthors = $panel->externalAuthors->toArray();
+
+            $sortedAuthors = MergeAndSortAuthors::mergeAndSort($registeredAuthors, $externalAuthors);
+
+            foreach ($sortedAuthors as $auth) {
+                $dar->appendAuthor($auth["firstname"], $auth["surname"], $auth["department_name"] . ', ' . $auth["institution_name"] . ', ' . $auth["institution_address"]);
+            }
+
             $dar->appendPanel($panel);
 
             $zip->addFile($this->getImageFilePath($panel), $panel->image->original_filename);
