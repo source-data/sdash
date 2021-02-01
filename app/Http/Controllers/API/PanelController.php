@@ -192,14 +192,18 @@ class PanelController extends Controller
                 Panel::where('id', $panel->id)
                     ->with([
                         'user' => function ($query) {
-                            $query->exclude(['email']);
+                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "role"]);
                         },
                         'tags' => function ($query) {
                             $query->withPivot('id', 'origin', 'role', 'type', 'category');
                         },
                         'groups',
-                        'authors',
-                        'externalAuthors',
+                        'authors'  => function ($query) {
+                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
+                        },
+                        'externalAuthors' => function ($query) {
+                            $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
+                        },
                         'files' => function ($query) {
                             $query->where('is_archived', false);
                         }

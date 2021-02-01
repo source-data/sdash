@@ -49,12 +49,12 @@ class UserController extends Controller
 
         if ($request->query('name')) {
 
-            $userList = User::where(\DB::raw("CONCAT(firstname, ' ', surname)"), 'like', '%' . $request->query('name') . '%')->limit(40)->get();
+            $userList = User::select(["id", "firstname", "surname", "institution_name"])->where(\DB::raw("CONCAT(firstname, ' ', surname)"), 'like', '%' . $request->query('name') . '%')->limit(40)->get();
 
             return ($userList->isEmpty()) ? API::response(204, "No matching records found", []) : API::response(200, "A list of users", $userList);
         }
-
-        return API::response(200, "A list of all users.", User::all()->except(['email']));
+        return API::response(204, "No matching records found", []);
+        // return API::response(200, "A list of all users.", User::all()->except(['email']));
     }
 
 

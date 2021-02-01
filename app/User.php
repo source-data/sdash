@@ -38,12 +38,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'orcid'
     ];
 
-    protected function columns()
-    {
-        return Schema::getColumnListing('users');
-    }
-
-
     public function is_superadmin()
     {
         return $this->role === 'superadmin';
@@ -83,11 +77,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function pendingGroups()
     {
         return $this->belongsToMany('App\Models\Group')->wherePivot('status', 'pending');
-    }
-
-    public function scopeExclude($query, $value = [])
-    {
-        return $query->select(array_diff($this->columns(), $value));
     }
 
     /**

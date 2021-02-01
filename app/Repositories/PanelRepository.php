@@ -70,10 +70,17 @@ class PanelRepository implements PanelRepositoryInterface
     {
         $panelQuery = Panel::whereNotNull('made_public_at');
 
-        $panelQuery->with(['user' => function ($query) {
-            // don't include email address in public api
-            $query->exclude(['email']);
-        }, 'groups', 'tags', 'authors', 'externalAuthors']);
+        $panelQuery->with([
+            'user' => function ($query) {
+                $query->select(["id", "firstname", "surname", "role", "department_name", "institution_name"]);
+            }, 'groups', 'tags',
+            'authors'  => function ($query) {
+                $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
+            },
+            'externalAuthors'   => function ($query) {
+                $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
+            }
+        ]);
 
         insertQueryConditions($panelQuery, $search, $authors, $tags);
 
