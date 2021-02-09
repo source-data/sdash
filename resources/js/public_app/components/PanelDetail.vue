@@ -20,7 +20,6 @@
                                 v-if="author.corresponding"
                                 >*</sup
                             >
-                        <span v-if="author.origin==='external'">{{ author.firstname }} {{ author.surname }}</span>
                     </li>
                 </ul>
                 <div class="sd-panel-author-list--note">
