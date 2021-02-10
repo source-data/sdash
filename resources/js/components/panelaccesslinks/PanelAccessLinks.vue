@@ -108,7 +108,7 @@
                             </b-button>
                         </template>
                         <div class="sd-popover-content">
-                            <p>Are you sure?</p>
+                            <p>I confirm that all co-authors agreed to make this figure public.</p>
                             <div>
                                 <b-button variant="success" small @click="updatePublicStatus(1)">Yes</b-button>
                                 <b-button variant="outline-dark" small @click="closePublishPopover">No</b-button>
