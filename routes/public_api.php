@@ -21,7 +21,7 @@ Route::get('/panels', 'API\PanelController@listPublicPanels');
 Route::get('/panels/{panel}', 'API\PanelController@showPublic');
 Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
 Route::get('/files/categories', 'API\FileController@listFileCategories');
-Route::get('/tags', 'API\TagController@index');
+Route::get('/tags', 'API\TagController@publicIndex');
 Route::get('/users', 'API\UserController@publicIndex');
 Route::get('/groups/{group}/panels', 'API\PanelController@listPublicGroupPanels');
 

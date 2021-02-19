@@ -34,6 +34,30 @@ class TagController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function publicIndex(Tag $tag, Request $request)
+    {
+        $request->validate([
+            "name"  =>  ['max:40']
+        ]);
+
+        if ($request->query('name')) {
+
+            $tagList = Tag::whereHas('panels', function ($query) {
+                    $query->where('is_public', true);
+                })
+                ->where(\DB::raw("content"), 'like', '%' . $request->query('name') . '%')
+                ->limit(40)->get();
+
+            return ($tagList->isEmpty()) ? API::response(204, "No matching records found", []) : API::response(200, "A list of tags", $tagList);
+        }
+        return API::response(204, "No matching records found", []);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
