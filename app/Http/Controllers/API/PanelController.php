@@ -229,6 +229,44 @@ class PanelController extends Controller
     }
 
     /**
+     * List files of a public panel
+     *
+     * @param Request $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function listPublicPanelFiles(Request $request, Panel $panel)
+    {
+        $categoryId = (int) $request->input('categoryId');
+
+        if (Gate::allows('view-panel', $panel)) {
+            $files = Panel::where('id', $panel->id)->first()->files();
+            
+            if ($categoryId) {
+                $files->where('file_category_id', '=', $categoryId);
+            }
+
+            $files = $files->select('id', 'type', 'description', 'url', 'file_category_id AS category_id')->get();
+
+            foreach ($files as $i => $file) {
+                if ($file['type'] === 'file') {
+                    $file['url'] = $request->getSchemeAndHttpHost() . '/files/' . $file['id'];
+                }
+                unset($file['type']);
+                $files[$i] = $file;
+            }
+
+            return API::response(
+                200,
+                "A list of sources of a public panel.",
+                $files
+            );
+        } else {
+            return API::response(401, "Access denied.", []);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
