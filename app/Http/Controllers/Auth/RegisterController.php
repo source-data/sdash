@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Models\UserConsent;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -58,7 +59,10 @@ class RegisterController extends Controller
             'department_name' => ['nullable', 'max:255'],
             'linkedin' => ['nullable', 'max:255'],
             'orcid' => ['nullable', 'max:30', 'regex:/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/i'],
-            'twitter' => ['nullable', 'max:255']
+            'twitter' => ['nullable', 'max:255'],
+            'confirmation.0' => ['accepted'],
+            'confirmation.1' => ['accepted'],
+            'confirmation.2' => ['accepted'],
         ]);
     }
 
@@ -81,6 +85,11 @@ class RegisterController extends Controller
             'orcid' => $data['orcid'],
             'twitter' => $data['twitter'],
             'password' => Hash::make($data['password']),
+            'has_consented' => true,
+        ]);
+
+        UserConsent::create([
+            'user_id' => $user->id,
         ]);
 
         return $user;

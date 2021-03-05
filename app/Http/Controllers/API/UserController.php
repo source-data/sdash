@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use API;
 use App\User;
 use App\Models\Group;
+use App\Models\UserConsent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
@@ -96,6 +97,31 @@ class UserController extends Controller
         ]);
 
         $user->update($data);
+
+        return API::response(200, "User record updated.", $user);
+    }
+
+    public function updateConsent(User $user, Request $request)
+    {
+        $loggedInUser = auth()->user();
+
+        if ($loggedInUser->id !== $user->id) {
+            abort(403, 'Access denied');
+        }
+
+        $hasConsented = $request->boolean('has_consented');
+
+        if (!$hasConsented) {
+            abort(403, 'Consent withdrawal is not allowed');
+        }
+
+        $user->update(['has_consented' => $hasConsented]);
+
+        if ($hasConsented) {
+            UserConsent::create([
+                'user_id' => $user->id,
+            ]);
+        }
 
         return API::response(200, "User record updated.", $user);
     }
