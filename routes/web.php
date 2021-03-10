@@ -29,10 +29,10 @@ Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint'
 Route::get('/panels/{panel}/zip', 'DownloadController@downloadZip');
 Route::get('/panels/{panel}/dar', 'DownloadController@downloadDar');
 Route::get('/panels/{panel}', 'DownloadController@downloadOriginal');
+Route::get('/files/{file}', 'API\FileController@download');
 
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
-    Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');
-    Route::get('/files/{file}', 'API\FileController@download');
+    Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');    
 });
