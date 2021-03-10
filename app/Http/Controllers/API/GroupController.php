@@ -53,9 +53,9 @@ class GroupController extends Controller
             'name'          => ['required', 'min:5'],
             'url'           => ['nullable', 'url'],
             'description'   => ['required'],
+            'is_public'     => ['boolean'],
             'members.*.id'  => ['exists:users'],
-            'panels.*'      => ['exists:panels,id']
-
+            'panels.*'      => ['exists:panels,id'],
         ]);
 
         $user = auth()->user();
@@ -66,7 +66,8 @@ class GroupController extends Controller
             'user_id'       => $user->id,
             'name'          => $request->input("name"),
             'description'   => $request->input("description"),
-            'url'           => $request->input("url")
+            'url'           => $request->input("url"),
+            'is_public'     => $request->input("is_public", false),
         ]);
 
         // add logged in user as admin
@@ -219,6 +220,7 @@ class GroupController extends Controller
             'name'                  => ['required', 'min:5'],
             'url'                   => ['nullable', 'url'],
             'description'           => ['required'],
+            'is_public'             => ['boolean'],
             'members.*.id'          => ['exists:users'],
             'panels.*'              => ['exists:panels,id']
         ]);
@@ -232,6 +234,8 @@ class GroupController extends Controller
             $group->url = $request->input('url');
 
             $group->description = $request->input('description');
+
+            $group->is_public = $request->input('is_public');
 
             //make sure all the admins aren't being removed
             if (!array_filter($request->input('members'), function ($members) {

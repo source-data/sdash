@@ -104,6 +104,25 @@ class PanelController extends Controller
         return API::response(200, "A list of public panels.", $this->panelRepository->publicPanels($search, $tags, $authors, $sortOrder));
     }
 
+    /**
+     * List only the public panels of a public group
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function listPublicGroupPanels(Request$request, Group $group)
+    {
+        if (!$group->is_public) {
+            return API::response(401, "Access denied.", []);
+        }
+
+        $search     = $request->input('search');
+        $tags       = $request->input("keywords");
+        $authors    = $request->input("authors");
+        $sortOrder  = $request->input("sortOrder");
+
+        return API::response(200, "A list of public panels.", $this->panelRepository->publicGroupPanels($group, $search, $tags, $authors, $sortOrder));
+    }
 
 
     /**

@@ -110,11 +110,14 @@
                         v-b-toggle="'group-' + group.id"
                         class="sd-filter-accordion-header"
                         variant="light"
-                        >{{ group.name }} <br />|
+                        >{{ group.name }} <br />
                         <font-awesome-icon icon="users" />
                         {{ group.confirmed_users_count }} |
                         <font-awesome-icon icon="layer-group" />
                         {{ group.panels_count }} |
+                        <span v-if="group.is_public">
+                            <font-awesome-icon icon="lock-open" title="Public group" /> |
+                        </span>
                         <router-link :to="{ path: '/group/' + group.id }"
                             ><font-awesome-icon icon="external-link-alt" />
                             Go</router-link

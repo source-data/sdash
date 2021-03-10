@@ -15,7 +15,8 @@ class Group extends Model
         'name',
         'user_id',
         'description',
-        'url'
+        'url',
+        'is_public',
     ];
 
     public function panels()

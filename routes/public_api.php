@@ -23,6 +23,7 @@ Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThum
 Route::get('/files/categories', 'API\FileController@listFileCategories');
 Route::get('/tags', 'API\TagController@index');
 Route::get('/users', 'API\UserController@publicIndex');
+Route::get('/groups/{group}/panels', 'API\PanelController@listPublicGroupPanels');
 
 /**
  * These routes use a middleware to check that the Panel ID passed in the route refers to

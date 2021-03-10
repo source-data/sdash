@@ -19,6 +19,8 @@ class User extends Authenticatable implements MustVerifyEmail
     const PANEL_ROLE_CURATOR = 'curator';
     const PANEL_ROLE_CORRESPONDING_AUTHOR = 'corresponding';
 
+    const ORCID_REGEX = '/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/';
+
     /**
      * The attributes that are mass assignable.
      *

@@ -9,6 +9,9 @@
                 </router-link>
             </div>
             <group-title-icon></group-title-icon>
+            <span class="sd-group-visibility-icon-wrapper text-muted" v-if="currentGroup.is_public">
+                <font-awesome-icon icon="lock-open" /> Public
+            </span>
         </template>
         <template v-slot:title>
             <h1 class="pb-0 mb-0">{{ currentGroup.name }}</h1>
@@ -129,5 +132,12 @@ export default {
         font-size: 1rem;
         padding: 0.5rem 0;
         color: #459939;
+    }
+
+    .sd-group-visibility-icon-wrapper {
+        display: inline-block;
+        padding: 2px 8px 2px 4px;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        border-radius: 12px;
     }
 </style>

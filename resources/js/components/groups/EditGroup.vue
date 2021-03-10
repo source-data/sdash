@@ -63,6 +63,17 @@
                         <user-multiselect id="sd-new-group-members-input" v-if="loaded" :initialusers="groupMembers" @userdataChange="updatedUserdata">
                         </user-multiselect>
                     </b-form-group>
+
+                    <b-form-group
+                    id="sd-new-group-is-public"
+                    label-cols-sm="3"
+                    label-cols-lg="2"
+                    label="Public"
+                    label-for="sd-new-group-is-public-input"
+                    >
+                        <b-form-checkbox v-model="isPublicGroup" id="sd-new-group-is-public-input" switch></b-form-checkbox>
+                        <span class="text-muted" v-if="isPublicGroup">This group's information will be publicly available.</span>
+                    </b-form-group>
                 </b-col>
             </b-row>
             <b-row>
@@ -79,7 +90,7 @@
             <b-row>
                 <b-col>
                     <section v-if="selectedPanels" class="sd-group-panel-list">
-                        <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper">
+                        <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper" :key="panel.id">
                             <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
                             <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
                         </div>
@@ -116,7 +127,8 @@ export default {
             groupName: "",
             groupUrl: "",
             groupDescription: "",
-            groupMembers:[],
+            groupMembers: [],
+            isPublicGroup: false,
             loaded: false,
         }
     },
@@ -210,6 +222,7 @@ export default {
                 name: this.groupName,
                 url: this.groupUrl,
                 description: this.groupDescription,
+                is_public: this.isPublicGroup,
                 members: members,
                 panels: panels,
             }
@@ -232,6 +245,7 @@ export default {
             this.groupName = group.name
             this.groupUrl =  group.url || ""
             this.groupDescription =  group.description
+            this.isPublicGroup = !!group.is_public
             this.groupMembers = group.users
             this.loaded = true
 

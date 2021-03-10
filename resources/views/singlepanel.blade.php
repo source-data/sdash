@@ -159,7 +159,14 @@
                     </p>
 
                 </div>
-
+                @if($panel["is_public"])
+                <div class="card-body">
+                    <p class="card-text">&copy; 2021 The Authors. This figure is licensed under the terms of the
+                        <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License</a>,
+                        which permits use, distribution and reproduction in any medium, provided the original work is properly cited.
+                    </p>
+                </div>
+                @endif
                 <ul class="sd-single-panel-update-details list-group list-group-flush">
                     <li class="list-group-item list-group-item-secondary"><Strong>Created:</Strong> {{$panel["created_at"]->format("d M Y h:m:s")}} | <strong>Last updated:</strong> {{$panel["updated_at"]->format("d M Y h:m:s")}}</li>
                 </ul>

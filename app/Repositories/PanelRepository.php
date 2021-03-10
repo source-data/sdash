@@ -70,17 +70,22 @@ class PanelRepository implements PanelRepositoryInterface
     {
         $panelQuery = Panel::where('is_public', true);
 
-        $panelQuery->with([
-            'user' => function ($query) {
-                $query->select(["id", "firstname", "surname", "role", "department_name", "institution_name"]);
-            }, 'groups', 'tags',
-            'authors'  => function ($query) {
-                $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
-            },
-            'externalAuthors'   => function ($query) {
-                $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
-            }
-        ]);
+        loadRelatedModels($panelQuery);
+
+        insertQueryConditions($panelQuery, $search, $authors, $tags);
+
+        insertOrderByClause($panelQuery, $sortOrder);
+
+        return ($paginate) ? $panelQuery->paginate(20) : $panelQuery->get();
+    }
+
+    public function publicGroupPanels(Group $group, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true)
+    {
+        $panelQuery = $group->panels();
+
+        loadRelatedModels($panelQuery);
+
+        $panelQuery->where("is_public", true);
 
         insertQueryConditions($panelQuery, $search, $authors, $tags);
 
@@ -105,6 +110,25 @@ class PanelRepository implements PanelRepositoryInterface
     }
 }
 
+function loadRelatedModels(&$panelQuery)
+{
+    $panelQuery->with([
+        'user' => function ($query) {
+            $query->select(["id", "firstname", "surname", "role", "department_name", "institution_name", "orcid"]);
+        },
+        'groups' => function ($query) {
+            $query->where('is_public', true);
+        },
+        'tags',
+        'authors'  => function ($query) {
+            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "orcid"]);
+        },
+        'externalAuthors'   => function ($query) {
+            $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name", "orcid"]);
+        }
+    ]);
+}
+
 function insertQueryConditions(&$panelQuery, $search, $authors, $tags)
 {
     // If there's a search string, add it to the where clause
@@ -124,18 +148,23 @@ function insertQueryConditions(&$panelQuery, $search, $authors, $tags)
     });
 
     // Filter by authors
-    if (isset($authors)) $panelQuery->where(function ($query) use ($authors) {
-        $query->whereHas("authors", function ($query) use ($authors) {
-            $query->select(DB::raw('count(distinct panel_user.user_id)'))->whereIn("panel_user.user_id", $authors);
-        }, '=', count($authors));
-    });
+    if (isset($authors)) {
+        $authors = resolveUserIds($authors);
+        $panelQuery->where(function ($query) use ($authors) {
+            $query->whereHas("authors", function ($query) use ($authors) {
+                $query->select(DB::raw('count(distinct panel_user.user_id)'))->whereIn("panel_user.user_id", $authors);
+            }, '=', count($authors));
+        });
+    }
 
     // Filter by keywords
-    if (isset($tags)) $panelQuery->where(function ($query) use ($tags) {
-        $query->whereHas("tags", function ($query) use ($tags) {
-            $query->select(DB::raw('count(distinct tags.id)'))->whereIn("tags.id", $tags);
-        }, '=', count($tags));
-    });
+    if (isset($tags)) {
+        $panelQuery->where(function ($query) use ($tags) {
+            $query->whereHas("tags", function ($query) use ($tags) {
+                $query->select(DB::raw('count(distinct tags.id)'))->whereIn("tags.id", $tags);
+            }, '=', count($tags));
+        });
+    }
 }
 
 function insertOrderByClause(&$panelQuery, $sortOrder)
@@ -153,4 +182,19 @@ function insertOrderByClause(&$panelQuery, $sortOrder)
         default:
             $panelQuery->orderByUpdated($useAscendingOrder);
     }
+}
+
+function resolveUserIds(array $ids)
+{
+    foreach ($ids as $i => $id) {
+        $id = strval($id);
+        if (!is_numeric($id) && preg_match(User::ORCID_REGEX, $id)) {
+            $user = User::select(["id"])->where("orcid", '=', $id)->first();
+            $id = $user ? $user->id : 0;
+        } else {
+            $id = ctype_digit($id) ? intval($id) : 0;
+        }
+        $ids[$i] = $id;
+    }
+    return array_unique($ids);
 }

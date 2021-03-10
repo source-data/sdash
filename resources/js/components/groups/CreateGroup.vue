@@ -42,7 +42,7 @@
                 >
                 <b-form-textarea :state="groupDescriptionState" v-model="groupDescription" id="sd-new-group-description-input" placeholder="About this group"></b-form-textarea>
                 </b-form-group>
-                </b-form-group>
+
                 <b-form-group
                 id="sd-new-group-members"
                 label-cols-sm="3"
@@ -53,6 +53,17 @@
                 >
                     <user-multiselect id="sd-new-group-members-input" @userdataChange="updatedUserdata">
                     </user-multiselect>
+                </b-form-group>
+
+                <b-form-group
+                id="sd-new-group-is-public"
+                label-cols-sm="3"
+                label-cols-lg="2"
+                label="Public"
+                label-for="sd-new-group-is-public-input"
+                >
+                    <b-form-checkbox v-model="isPublicGroup" id="sd-new-group-is-public-input" switch></b-form-checkbox>
+                    <span class="text-muted" v-if="isPublicGroup">This group's information will be publicly available.</span>
                 </b-form-group>
             </b-col>
         </b-row>
@@ -70,7 +81,7 @@
         <b-row>
             <b-col>
                 <section v-if="selectedPanels" class="sd-group-panel-list">
-                    <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper">
+                    <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper" :key="panel.id">
                         <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
                         <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
                     </div>
@@ -103,7 +114,8 @@ export default {
             groupName: "",
             groupUrl: "",
             groupDescription: "",
-            groupMembers:[],
+            groupMembers: [],
+            isPublicGroup: false,
         }
     },
     computed: {
@@ -192,6 +204,7 @@ export default {
                 name: this.groupName,
                 url: this.groupUrl,
                 description: this.groupDescription,
+                is_public: this.isPublicGroup,
                 members: members,
                 panels: panels,
 
@@ -260,5 +273,9 @@ export default {
     cursor: not-allowed;
 }
 
+#sd-new-group-is-public .custom-switch {
+    display: inline-block;
+    margin-top: 7px;
+}
 
 </style>

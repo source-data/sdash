@@ -546,14 +546,15 @@ export default {
     text-decoration: underline;
 }
 .panel-detail-caption-edit-container {
+    display: flex;
+    flex-wrap: wrap;
     height: 32px;
     padding: 6px 0;
 }
 
 .sd-panel-change-image-link {
     display: inline-block;
-    margin-top: 8px;
-    margin-bottom: 6px;
+    margin: 6px 0;
 }
 
 .panel-detail-caption-wrapper {
@@ -668,9 +669,12 @@ export default {
 }
 
 .sd-license-notice {
-    float: right;
+    flex-basis: 0;
+    flex-grow: 1;
+    padding-top: 0.25rem;
     font-size: 0.7rem;
-    line-height: 1.7rem;
+    line-height: 0.85rem;
+    text-align: right;
     color: #aaa;
 }
 

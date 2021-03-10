@@ -27,6 +27,7 @@ const actions = {
                 user_id: response.data.DATA.user_id,
                 name: response.data.DATA.name,
                 description: response.data.DATA.description,
+                is_public: response.data.DATA.is_public,
                 url: response.data.DATA.url,
                 updated_at: response.data.DATA.updated_at,
                 created_at: response.data.DATA.created_at,
@@ -37,11 +38,10 @@ const actions = {
                     group_id: response.data.DATA.id,
                     role: "admin",
                     user_id: rootState.Users.user.id,
-                    status: 'confirmed',
-                    token: null,
-
+                    status: "confirmed",
+                    token: null
                 }
-            }
+            };
 
             commit("addGroupToUserGroups", newGroup)
 
@@ -55,6 +55,7 @@ const actions = {
                 user_id: response.data.DATA.group.user_id,
                 name: response.data.DATA.group.name,
                 description: response.data.DATA.group.description,
+                is_public: response.data.DATA.group.is_public,
                 url: response.data.DATA.group.url,
                 updated_at: response.data.DATA.group.updated_at,
                 created_at: response.data.DATA.group.created_at,
@@ -64,9 +65,9 @@ const actions = {
                     role: "admin",
                     user_id: rootState.Users.user.id,
                     status: "confirmed",
-                    token: null,
+                    token: null
                 }
-            }
+            };
 
             commit("updateUserGroup", modifiedGroup)
 
