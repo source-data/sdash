@@ -19,7 +19,12 @@
                     </b-input-group-append>
                 </b-input-group>
 
-                <h3 v-if="!isEditingTitle">{{ expandedPanel.title }}</h3>
+                <h3 v-if="!isEditingTitle">
+                    <a :href="panelUrl" target="_blank" title="Open panel in a new tab">
+                    {{ expandedPanel.title }}
+                    <font-awesome-icon icon="external-link-alt" size="sm" />
+                    </a>
+                </h3>
                 <span
                     class="sd-panel-detail-title-edit-icon sd-edit-icon"
                     v-if="iCanEditThisPanel && !isEditingTitle"
@@ -279,6 +284,7 @@ export default {
     },
     data() {
         return {
+            link_base: process.env.MIX_API_PANEL_URL,
             isEditingTitle: false,
             titleText: "",
             showDeleteConfirmation: false,
@@ -304,6 +310,9 @@ export default {
             return this.expandedPanelAuthors.filter(
                 author => author.author_role !== AuthorTypes.CURATOR
             );
+        },
+        panelUrl(){
+            return this.link_base + '/' + this.expandedPanel.id
         },
         fullImageUrl() {
             return (
@@ -486,6 +495,10 @@ export default {
 
 .sd-panel-detail-title-wrapper a {
     color: white;
+}
+
+.sd-panel-detail-title a {
+    color: #6e89aa;
 }
 
 .sd-panel-detail-content-wrapper {
