@@ -20,6 +20,7 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    @yield('header-stylesheets')
 </head>
 
 <body>
