@@ -31,6 +31,10 @@
                 <a class="navbar-brand" href="{{ url('/dashboard') }}">
                     <i class="fa fa-home"></i> My Dashboard
                 </a>
+                @else
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    <i class="fa fa-home"></i> SDash Home
+                </a>
                 @endif
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
