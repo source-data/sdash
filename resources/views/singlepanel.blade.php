@@ -153,7 +153,9 @@
                         <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/dar?token={{$token}}" @else href="/panels/{{$panel["id"]}}/dar" @endif>SmartFigure Editor document (.smartfigure)</a></li>
                         <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/pdf?token={{$token}}" @else href="/panels/{{$panel["id"]}}/pdf" @endif>Adobe Acrobat Reader file (.pdf)</a></li>
                         <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}/powerpoint?token={{$token}}" @else href="/panels/{{$panel["id"]}}/powerpoint" @endif>Microsoft Powerpoint slide (.pptx)</a></li>
-                        <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}?token={{$token}}" @else href="/panels/{{$panel["id"]}}/zip" @endif>Original image file (MIME type: {{$panel["image"]["mime_type"]}})</a></li>
+                        @if($panel["image"])
+                        <li><a target="_blank" @if($token) href="/panels/{{$panel["id"]}}?token={{$token}}" @else href="/panels/{{$panel["id"]}}" @endif>Original image file (MIME type: {{$panel["image"]["mime_type"]}})</a></li>
+                        @endif
                     </ul>
 
                     </p>
