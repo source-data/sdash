@@ -16,6 +16,7 @@ Auth::routes(['verify' => true]);
 // Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/about', 'WelcomeController@about');
+Route::get('/docs', 'WelcomeController@docs');
 Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
 Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*')->middleware('auth');
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
@@ -29,10 +30,10 @@ Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint'
 Route::get('/panels/{panel}/zip', 'DownloadController@downloadZip');
 Route::get('/panels/{panel}/dar', 'DownloadController@downloadDar');
 Route::get('/panels/{panel}', 'DownloadController@downloadOriginal');
+Route::get('/files/{file}', 'API\FileController@download');
 
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
-    Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');
-    Route::get('/files/{file}', 'API\FileController@download');
+    Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');    
 });

@@ -55,7 +55,8 @@ class UserAddedAsPanelAuthor extends Notification
             ->greeting("You have been added as a panel author.")
             ->line("{$this->user->firstname} {$this->user->surname} has given you an author credit on the panel \"{$this->panel->title}\".")
             ->line("You have been given the role: {$this->role}.")
-            ->line("You will see the panel on your dashboard next time you log in.");
+            ->line("You will see the panel on your dashboard next time you log in or by clicking on the button below.")
+            ->action('View Panel', $this->panelUrl());
     }
 
     /**
@@ -69,5 +70,10 @@ class UserAddedAsPanelAuthor extends Notification
         return [
             //
         ];
+    }
+
+    protected function panelUrl()
+    {
+        return url('/panel/' . $this->panel->id);
     }
 }

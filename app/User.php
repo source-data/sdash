@@ -37,7 +37,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'department_name',
         'linkedin',
         'twitter',
-        'orcid'
+        'orcid',
+        'has_consented',
     ];
 
     public function is_superadmin()
@@ -84,6 +85,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function panelLogRecords()
     {
         return $this->hasMany('App\Models\PanelLog');
+    }
+
+    public function consents()
+    {
+        return $this->hasMany('App\Models\UserConsent');
     }
 
     /**

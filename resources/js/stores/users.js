@@ -14,6 +14,7 @@ const state = {
         linkedin: null,
         twitter: null,
         orcid: null,
+        has_consented: null,
     },
 
 }
@@ -58,20 +59,19 @@ const mutations = {
             linkedin: user.linkedin,
             twitter: user.twitter,
             orcid: user.orcid,
-        }
+            has_consented: user.has_consented,
+        };
     }
 }
 
 const getters = {
-    currentUser( state ){
-        return state.user
+    currentUser(state) {
+        return state.user;
     },
-    isLoggedIn( state ){
-        return !!state.user.id
-    },
-
-}
-
+    isLoggedIn(state) {
+        return !!state.user.id;
+    }
+};
 
 export default {
     state,
