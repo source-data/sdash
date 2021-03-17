@@ -8,8 +8,8 @@ import './bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faLink, faUnlink, faHome, faEdit, faSearchPlus, faDownload, faSave, faTrashAlt, faCheck, faPlus, faLock, faLockOpen,
   faExchangeAlt, faUsers, faLayerGroup, faFilter, faCircle, faSignOutAlt, faCopy, faPaste, faExternalLinkAlt,
-  faStar, faBook, faInfoCircle, faTimes, faSearch, faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons'
-import { faCreativeCommons } from "@fortawesome/free-brands-svg-icons";
+  faStar, faBook, faInfoCircle, faTimes, faSearch, faChevronLeft, faChevronRight, faEnvelope, faSitemap, faBuilding} from '@fortawesome/free-solid-svg-icons'
+import { faCreativeCommons, faOrcid } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
 import VueLazyload from 'vue-lazyload'
 import Avatar from 'vue-avatar'
@@ -41,9 +41,10 @@ Vue.use(VueScrollTo)
 
 
 // Add Fontawesome to the global Vue App
-library.add([faLink, faUnlink, faHome, faEdit, faSave, faCheck, faTrashAlt, faSearchPlus, faCopy, faPaste, faDownload, faPlus,
-  faLock, faLockOpen, faExchangeAlt, faUsers, faLayerGroup, faFilter, faCircle, faSignOutAlt, faExternalLinkAlt,
-  faStar, faBook, faInfoCircle, faTimes, faSearch, faChevronLeft, faChevronRight, faCreativeCommons])
+library.add([faLink, faUnlink, faHome, faEdit, faSave, faCheck, faTrashAlt, faSearchPlus, faCopy, faPaste, faDownload,
+  faPlus, faLock, faLockOpen, faExchangeAlt, faUsers, faLayerGroup, faFilter, faCircle, faSignOutAlt, faExternalLinkAlt,
+  faEnvelope, faSitemap, faBuilding, faStar, faBook, faInfoCircle, faTimes, faSearch, faChevronLeft, faChevronRight,
+  faCreativeCommons, faOrcid])
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('font-awesome-layers', FontAwesomeLayers)
 

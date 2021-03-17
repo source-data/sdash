@@ -19,20 +19,40 @@
                             'sd-panel-author-list--item_' + author.author_role
                         "
                     >
-
-                            {{ author.firstname }} {{ author.surname }}<sup
-                                class="sd-panel-author-list--asterisk"
-                                v-if="author.corresponding"
-                                >*</sup
-                            >
+                        <b-link v-if="author.corresponding" :id="'popover-' + author.origin + '-' + author.id" href="#">
+                            {{ author.firstname }} {{ author.surname }}
+                            <font-awesome-icon icon="envelope" />
+                        </b-link>
+                        <span v-else>{{ author.firstname }} {{ author.surname }}</span>
                     </li>
                 </ul>
                 <div class="sd-panel-author-list--note">
-                    <span
-                        class="sd-panel-author-list--corresponding-author-note"
-                        >* indicates corresponding author</span
-                    >
+                    <span class="sd-panel-author-list--corresponding-author-note">
+                        <font-awesome-icon icon="envelope" />
+                        indicates corresponding author
+                    </span>
                 </div>
+                <b-popover v-for="author in correspondingAuthors" :key="'author-' + author.order + '-' + author.id"
+                    :target="'popover-' + author.origin + '-' + author.id" triggers="click blur" placement="bottom">
+                    <ul class="list-unstyled mt-1 mb-1">
+                        <li v-if="author.email">
+                            <font-awesome-icon icon="envelope" fixed-width />
+                            <a :href="'mailto:' + author.email">{{ author.email }}</a>
+                        </li>
+                        <li v-if="author.orcid">
+                            <font-awesome-icon :icon="['fab', 'orcid']" fixed-width />
+                            <a :href="'https://orcid.org/' + author.orcid">{{ 'orcid.org/' + author.orcid }}</a>
+                        </li>
+                        <li v-if="author.institution_name">
+                            <font-awesome-icon icon="building" fixed-width />
+                            {{ author.institution_name }}
+                        </li>
+                        <li v-if="author.department_name">
+                            <font-awesome-icon icon="sitemap" fixed-width />
+                            {{ author.department_name }}
+                        </li>
+                    </ul>
+                </b-popover>
             </div>
 
         </b-row>
@@ -126,6 +146,11 @@ export default {
             // don't display the curator in the author list
             return this.expandedPanelAuthors.filter(
                 author => author.author_role !== AuthorTypes.CURATOR
+            );
+        },
+        correspondingAuthors() {
+            return this.expandedPanelAuthors.filter(
+                author => author.author_role === AuthorTypes.CORRESPONDING
             );
         },
         panelUrl() {
