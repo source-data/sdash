@@ -201,28 +201,36 @@ class PanelController extends Controller
     public function showPublic(Panel $panel)
     {
         if (Gate::allows('view-panel', $panel)) {
+            $panels = Panel::where('id', $panel->id)
+                ->with([
+                    'user' => function ($query) {
+                        $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "role"]);
+                    },
+                    'tags' => function ($query) {
+                        $query->withPivot('id', 'origin', 'role', 'type', 'category');
+                    },
+                    'groups',
+                    'authors'  => function ($query) {
+                        $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "orcid", "email"]);
+                    },
+                    'externalAuthors' => function ($query) {
+                        $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name", "orcid"]);
+                    },
+                    'files' => function ($query) {
+                        $query->where('is_archived', false);
+                    }
+                ])->get();
+            foreach ($panels as $i => $panel) {
+                foreach ($panel['authors'] as $j => $author) {
+                    if ($author['author_role']['role'] !== User::PANEL_ROLE_CORRESPONDING_AUTHOR) {
+                        unset($panels[$i]['authors'][$j]['email']);
+                    }
+                }
+            }
             return API::response(
                 200,
                 "Detailed view of Public Panel.",
-                Panel::where('id', $panel->id)
-                    ->with([
-                        'user' => function ($query) {
-                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "role"]);
-                        },
-                        'tags' => function ($query) {
-                            $query->withPivot('id', 'origin', 'role', 'type', 'category');
-                        },
-                        'groups',
-                        'authors'  => function ($query) {
-                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
-                        },
-                        'externalAuthors' => function ($query) {
-                            $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
-                        },
-                        'files' => function ($query) {
-                            $query->where('is_archived', false);
-                        }
-                    ])->get()
+                $panels
             );
         } else {
             return API::response(401, "Access denied.", []);
