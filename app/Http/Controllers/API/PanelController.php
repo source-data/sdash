@@ -98,7 +98,7 @@ class PanelController extends Controller
     public function listPublicPanels(Request $request)
     {
         $search     = $request->input('search');
-        $tags       = $request->input("keywords");
+        $tags       = $request->input("keywords") ?: $request->input("tags");
         $authors    = $request->input("authors");
         $sortOrder  = $request->input("sortOrder");
 
@@ -118,7 +118,7 @@ class PanelController extends Controller
         }
 
         $search     = $request->input('search');
-        $tags       = $request->input("keywords");
+        $tags       = $request->input("keywords") ?: $request->input("tags");
         $authors    = $request->input("authors");
         $sortOrder  = $request->input("sortOrder");
 
