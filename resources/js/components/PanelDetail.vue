@@ -180,7 +180,7 @@
                         <caption-editor></caption-editor>
                     </div>
                 </div>
-                <div class="panel-detail-caption-edit-container">
+                <div class="panel-detail-caption-edit-link-container">
                     <span
                         class="sd-panel-detail-caption-edit-icon sd-edit-icon"
                         v-if="iCanEditThisPanel"
@@ -586,7 +586,12 @@ export default {
 .sd-edit-icon:active {
     text-decoration: underline;
 }
+
 .panel-detail-caption-edit-container {
+    padding-top: 6px;
+}
+
+.panel-detail-caption-edit-link-container {
     display: flex;
     flex-wrap: wrap;
     height: 32px;
