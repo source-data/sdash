@@ -89,7 +89,12 @@
         </b-row>
         <template v-if="iCanEditThisPanel">
             <hr />
-            <b-row v-if="!isPublic">
+            <b-row v-if="loadingStatus">
+                <b-col class="text-center">
+                    <b-spinner variant="light" label="Loading..."></b-spinner>
+                </b-col>
+            </b-row>
+            <b-row v-if="!isPublic && !loadingStatus">
                 <b-col class="sd-button-container">
                     <b-button variant="success" class="py-2" id="sd-publish-button" ref="sd-publish-button">
                         <font-awesome-icon :icon="['fab', 'creative-commons']" /> Make Public
@@ -125,7 +130,7 @@
                     </p>
                 </b-col>
             </b-row>
-            <b-row v-if="isPublic">
+            <b-row v-if="isPublic && !loadingStatus">
                 <b-col class="text-center">
                     <p>
                         This panel is publicly visible to all on SDash at<br />
@@ -174,6 +179,7 @@ export default {
 
         return {
             loading: false,
+            loadingStatus: false,
             link_base: process.env.MIX_API_PANEL_URL,
             selectedSharingGroupId: null,
             fields:[
@@ -272,6 +278,7 @@ export default {
             this.$router.push({name: "creategroup"})
         },
         updatePublicStatus(status){
+            this.loadingStatus = true
             this.closePublishPopover()
             this.closeUnpublishPopover()
             this.$store.dispatch("updatePanelStatus", {
@@ -279,10 +286,12 @@ export default {
                 is_public: Boolean(status)
             })
             .then(response => {
+                this.loadingStatus = false
                 const status = response.data.DATA ? "public" : "private"
                 this.$snotify.success("The panel is now " + status, "Success!")
             })
             .catch(error => {
+                this.loadingStatus = false
                 this.$snotify.error(error.data.MESSAGE, "Action Failed!")
             });
         },

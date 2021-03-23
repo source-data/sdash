@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
 
 class ExternalAuthor extends Model
 {
+    use Notifiable;
+
     protected $fillable = [
         'firstname',
         'surname',

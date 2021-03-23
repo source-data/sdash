@@ -12,6 +12,7 @@ use Obiefy\API\APIResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use App\Notifications\PanelMadePublic;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
 
@@ -306,6 +307,8 @@ class PanelController extends Controller
     {
         if (Gate::allows('modify-panel', $panel)) {
 
+            $user = auth()->user();
+
             $request->validate([
                 "is_public" => "boolean"
             ]);
@@ -329,6 +332,19 @@ class PanelController extends Controller
                 'action_type' => ($toUpdate["is_public"] ? 'publish' : 'unpublish'),
                 'license_id' => $licenseId,
             ]);
+
+            if ($panel->is_public) {
+                foreach ($panel->authors()->get() as $author) {
+                    if ($author->id !== $user->id) {
+                        $author->notify(new PanelMadePublic($user, $author, $panel));
+                    }
+                }
+                foreach ($panel->externalAuthors()->get() as $externalAuthor) {
+                    if ($externalAuthor->email) {
+                        $externalAuthor->notify(new PanelMadePublic($user, $externalAuthor, $panel));
+                    }
+                }
+            }
 
             return API::response(200, "Panel status updated.", $panel->is_public);
         } else {
