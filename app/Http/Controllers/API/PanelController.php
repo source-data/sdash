@@ -12,6 +12,7 @@ use Obiefy\API\APIResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use App\Notifications\PanelMadePublic;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
 
@@ -97,7 +98,7 @@ class PanelController extends Controller
     public function listPublicPanels(Request $request)
     {
         $search     = $request->input('search');
-        $tags       = $request->input("keywords");
+        $tags       = $request->input("keywords") ?: $request->input("tags");
         $authors    = $request->input("authors");
         $sortOrder  = $request->input("sortOrder");
 
@@ -117,7 +118,7 @@ class PanelController extends Controller
         }
 
         $search     = $request->input('search');
-        $tags       = $request->input("keywords");
+        $tags       = $request->input("keywords") ?: $request->input("tags");
         $authors    = $request->input("authors");
         $sortOrder  = $request->input("sortOrder");
 
@@ -200,28 +201,38 @@ class PanelController extends Controller
     public function showPublic(Panel $panel)
     {
         if (Gate::allows('view-panel', $panel)) {
+            $panels = Panel::where('id', $panel->id)
+                ->with([
+                    'user' => function ($query) {
+                        $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "role"]);
+                    },
+                    'tags' => function ($query) {
+                        $query->withPivot('id', 'origin', 'role', 'type', 'category');
+                    },
+                    'groups' => function ($query) {
+                        $query->where('is_public', true);
+                    },
+                    'authors'  => function ($query) {
+                        $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "orcid", "email"]);
+                    },
+                    'externalAuthors' => function ($query) {
+                        $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name", "orcid"]);
+                    },
+                    'files' => function ($query) {
+                        $query->where('is_archived', false);
+                    }
+                ])->get();
+            foreach ($panels as $i => $panel) {
+                foreach ($panel['authors'] as $j => $author) {
+                    if ($author['author_role']['role'] !== User::PANEL_ROLE_CORRESPONDING_AUTHOR) {
+                        unset($panels[$i]['authors'][$j]['email']);
+                    }
+                }
+            }
             return API::response(
                 200,
                 "Detailed view of Public Panel.",
-                Panel::where('id', $panel->id)
-                    ->with([
-                        'user' => function ($query) {
-                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "role"]);
-                        },
-                        'tags' => function ($query) {
-                            $query->withPivot('id', 'origin', 'role', 'type', 'category');
-                        },
-                        'groups',
-                        'authors'  => function ($query) {
-                            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name"]);
-                        },
-                        'externalAuthors' => function ($query) {
-                            $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name"]);
-                        },
-                        'files' => function ($query) {
-                            $query->where('is_archived', false);
-                        }
-                    ])->get()
+                $panels
             );
         } else {
             return API::response(401, "Access denied.", []);
@@ -306,6 +317,8 @@ class PanelController extends Controller
     {
         if (Gate::allows('modify-panel', $panel)) {
 
+            $user = auth()->user();
+
             $request->validate([
                 "is_public" => "boolean"
             ]);
@@ -329,6 +342,19 @@ class PanelController extends Controller
                 'action_type' => ($toUpdate["is_public"] ? 'publish' : 'unpublish'),
                 'license_id' => $licenseId,
             ]);
+
+            if ($panel->is_public) {
+                foreach ($panel->authors()->get() as $author) {
+                    if ($author->id !== $user->id) {
+                        $author->notify(new PanelMadePublic($user, $author, $panel));
+                    }
+                }
+                foreach ($panel->externalAuthors()->get() as $externalAuthor) {
+                    if ($externalAuthor->email) {
+                        $externalAuthor->notify(new PanelMadePublic($user, $externalAuthor, $panel));
+                    }
+                }
+            }
 
             return API::response(200, "Panel status updated.", $panel->is_public);
         } else {

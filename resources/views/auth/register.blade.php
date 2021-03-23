@@ -204,7 +204,7 @@
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" name="confirmation[]" id="confirmation-3" value="true">
                                     <label class="custom-control-label" for="confirmation-3">
-                                        I will obtain permission from any relevant co-authors before posting content.</label>
+                                        I will obtain permission from any relevant co-authors before publicly posting or sharing content.</label>
                                 </div>
                                 @if ($errors->has('confirmation.*'))
                                 <div class="alert alert-danger mb-0 mt-4" role="alert">

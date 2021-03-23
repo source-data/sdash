@@ -65,7 +65,7 @@
         <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" id="confirmation-3" v-model="confCheckbox3">
             <label class="custom-control-label" for="confirmation-3">
-                I will obtain permission from any relevant co-authors before posting content.</label>
+                I will obtain permission from any relevant co-authors before publicly posting or sharing content.</label>
         </div>
         <template #modal-footer>
             <b-button variant="primary" size="sm" class="float-right" :disabled="!hasAcceptedTerms" @click="submitConsent">Accept</b-button>

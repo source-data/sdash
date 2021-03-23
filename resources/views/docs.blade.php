@@ -106,7 +106,7 @@
                                 <td>search panel titles, tags, authors and captions for the given string</td>
                             </tr>
                             <tr>
-                                <td>keywords</td>
+                                <td>tags</td>
                                 <td><code>integer[]</code></td>
                                 <td><code>body</code></td>
                                 <td><code>optional</code></td>

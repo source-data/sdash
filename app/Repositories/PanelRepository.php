@@ -76,7 +76,17 @@ class PanelRepository implements PanelRepositoryInterface
 
         insertOrderByClause($panelQuery, $sortOrder);
 
-        return ($paginate) ? $panelQuery->paginate(20) : $panelQuery->get();
+        $panels = ($paginate) ? $panelQuery->paginate(20) : $panelQuery->get();
+
+        foreach ($panels as $i => $panel) {
+            foreach ($panel['authors'] as $j => $author) {
+                if ($author['author_role']['role'] !== User::PANEL_ROLE_CORRESPONDING_AUTHOR) {
+                    unset($panels[$i]['authors'][$j]['email']);
+                }
+            }
+        }
+
+        return $panels;
     }
 
     public function publicGroupPanels(Group $group, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true)
@@ -121,7 +131,7 @@ function loadRelatedModels(&$panelQuery)
         },
         'tags',
         'authors'  => function ($query) {
-            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "orcid"]);
+            $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "orcid", "email"]);
         },
         'externalAuthors'   => function ($query) {
             $query->select(["external_authors.id", "firstname", "surname", "department_name", "institution_name", "orcid"]);
