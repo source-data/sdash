@@ -209,7 +209,9 @@ class PanelController extends Controller
                     'tags' => function ($query) {
                         $query->withPivot('id', 'origin', 'role', 'type', 'category');
                     },
-                    'groups',
+                    'groups' => function ($query) {
+                        $query->where('is_public', true);
+                    },
                     'authors'  => function ($query) {
                         $query->select(["users.id", "firstname", "surname", "department_name", "institution_name", "orcid", "email"]);
                     },
