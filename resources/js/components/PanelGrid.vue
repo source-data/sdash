@@ -5,7 +5,7 @@
                 <h1>My Dashboard</h1>
             </template>
         </info-bar>
-        <b-container fluid class="mt-3">
+        <b-container fluid class="mt-3" style="overflow: hidden;">
             <div id="wrapper" class="wrapper">
                 <filter-bar class="sidebar" v-bind:class="{collapsed: !isSidebarExpanded}"></filter-bar>
                 <div id="content" class="content" v-bind:class="{expanded: !isSidebarExpanded}">
@@ -132,6 +132,7 @@ export default {
 }
 
 .content {
+    flex: auto;
     position: relative;
     transition: all .25s ease-in;
 }
