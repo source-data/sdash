@@ -314,6 +314,11 @@ export default {
 </script>
 
 <style lang="scss">
+
+.sd-panel-access-links {
+    overflow: hidden;
+}
+
 .sd-panel-access-links .table td {
     vertical-align: middle;
 }
