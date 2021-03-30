@@ -66,7 +66,9 @@ services:
     image: sdash_frontend
     volumes:
       - ./:/app
-    command: ['npm', 'run', 'dev']
+      # anonymous volume here; bind mapping to ./node_modules does not work! Permission issue bc app is user www?
+      - /app/node_modules
+    command: ['npm', 'run', 'dev', '&&', 'npm', 'run', 'watch']
 
 # secret passwords
 secrets:
