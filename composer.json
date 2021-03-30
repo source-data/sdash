@@ -34,11 +34,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "platform": {
-            "php": "7.4",
-            "ext-imagick": "2.2.3"
-        }
+        "sort-packages": true
     },
     "extra": {
         "laravel": {

@@ -1,5 +1,5 @@
 FROM php:7.4-fpm
-
+# based on https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /var/www/
 
@@ -30,7 +30,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # removed mbstring to avoid "No package 'oniguruma' found"
 RUN docker-php-ext-install pdo_mysql zip exif pcntl
 # PHP 7.4 issue:
-# updated --with-<blahblah> without the '-dir' https://github.com/docker-library/php/issues/931
+# updated options --with-<blahblah> to remove the '-dir' https://github.com/docker-library/php/issues/931
 # removed --with-gd  and --with-png=/usr/include/
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ 
 RUN docker-php-ext-install gd
