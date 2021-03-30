@@ -28,17 +28,18 @@ Update `.env.exemple` into `.env` and make sure the following variables are set:
     DB_USERNAME=laraveluser
     DB_PASSWORD=dbpass
 
-Note that `DB_PASSWORD` is the password for the laravel database accessed from within the container. `DB_HOST` is `db` because this is the name of the service within the container as defined in `docker-compose.yml`.
+Note that `DB_PASSWORD` is the password for the `laravel` database and NOT the root password. `DB_HOST` is `db` because this is the name of the service within the container as defined in `docker-compose.yml`.
 
-Save the root password for mysql in `mysql/root_password.txt` The file is used to define the secret `db_pwd` in `docker-compose.yml` that is securly transmitted to the `mysql` container.
+Save the root password for mysql in `mysql/root_password.txt` The file is used to define the secret `db_pwd` in `docker-compose.yml` which is securly transmitted to the `mysql` container.
 
-The main Dockerfile uses the php:7.4-fpm image. Essential packages and PHP extensions are installed.
+The main Dockerfile uses the `php:7.4-fpm` image. Essential packages and PHP extensions are installed.
 The  local working directory is copied into the container's `/var/www` whcih is the working directory in the container.
-A user www is created and the `php-fpm` is run as last command by default.
+A user www is created, port 9000 exposed and the `php-fpm` is run as last command by default.
 
 A second Dockerfile is in `frontend-docker/` to run the installation of the Node modules. 
 
 The docker-compose.yml file sets up 4 services:
+
 - `app`: the main App build with the main Dockerfile. Binds mounts `./php/local.ini`
 - `webserver`: nginx server. Mount binds `./nginx/conf.d/` where server configuration is specified, in particular the root of the served files as `root /var/www/public`
 - `db`: the mysql database. Uses the `laravel` database, bind mounts `./mysql/my.cnf` and uses secrets to access the root password in mysql/root_password.txt . The data is in permanent named volume `dbdata`.
@@ -75,6 +76,6 @@ Install composer and migrate
     php artisan migrate
     php artisan passport:install
 
-(maybe do docker-compose down and docker-compose up -d again)
+(maybe do `docker-compose down` and `docker-compose up -d` again)
 
 Visit http://localhost 
