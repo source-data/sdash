@@ -54,5 +54,6 @@ Migrate
     php artisan migrate
     php artisan passport:install
 
+(maybe do docker-compose down and docker-compose up -d again)
 
-Visit http://localhost
+Visit http://localhost 
