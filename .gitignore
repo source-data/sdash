@@ -10,6 +10,7 @@
 .DS_Store
 .env
 .env.dev
+.env.prod
 .env.backup
 .env.testing
 .phpunit.result.cache
