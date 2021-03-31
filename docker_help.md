@@ -78,4 +78,10 @@ Install composer and migrate
 
 (maybe do `docker-compose down` and `docker-compose up -d` again)
 
-Visit http://localhost 
+Visit http://localhost
+
+To visualize the database schema:
+
+    docker-compose exec db mysqldump --no-data -u laraveluser -pdbpass laravel > dump.sql
+
+Import `dump.sql` into https://dbdiagram.io/d to visualize the tables and relationships.
