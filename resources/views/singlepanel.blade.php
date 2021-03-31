@@ -122,7 +122,7 @@
                                             <ul class="list-unstyled">
                                                 @foreach($panel["files"] as $file)
                                                 @if($file["type"]==="file")
-                                                <li class="sd-file-list"><a @if($token)href="/files/{{$file["id"]}}" @else href="/files/{{$file["id"]}}?token={{$token}}" @endif>{{ $file["original_filename"] }}</a>@if($file["description"]): {{ $file["description"]}} @endif</li>
+                                                <li class="sd-file-list"><a @if($token)href="/files/{{$file["id"]}}?token={{$token}}" @else href="/files/{{$file["id"]}}" @endif>{{ $file["original_filename"] }}</a>@if($file["description"]): {{ $file["description"]}} @endif</li>
                                                 @endif
                                                 @endforeach
                                             </ul>
