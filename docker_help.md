@@ -69,12 +69,16 @@ Grant permission to `laraveluser` for the `laravel` database:
     GRANT ALL ON laravel.* TO 'laraveluser'@'%' IDENTIFIED BY 'dbpass';
     FLUSH PRIVILEGES;
 
-Install composer and migrate 
+Install composer, migrate and seed the database:
 
+    docker-compose exec app bash
     composer update
-    composer installdocker-compose exec app bash
+    composer install
     php artisan migrate
     php artisan passport:install
+    php artisan db:seed --class=FileCategoriesTableSeeder
+    php artisan db:seed --class=LicensesTableSeeder
+
 
 (maybe do `docker-compose down` and `docker-compose up -d` again)
 
