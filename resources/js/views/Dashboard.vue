@@ -2,8 +2,6 @@
 <div id="sdash-wrapper">
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
-    <!-- drop uploader -->
-    <!-- <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file" v-if="!showAuthorSidebarModel"></vue-full-screen-file-drop> -->
 
     <action-bar-top v-if="isLoggedIn"></action-bar-top>
 
@@ -83,7 +81,6 @@ import { mapGetters, mapActions } from 'vuex'
 import ActionBarTop from '@/components/ActionBarTop'
 import PanelGrid from '@/components/PanelGrid'
 import InfoBar from '@/components/InfoBar'
-// import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
 import FeedbackWidget from '@/components/FeedbackWidget'
@@ -92,7 +89,7 @@ import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
 export default {
 
     name: 'Dashboard',
-    components: { ActionBarTop, PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget, PanelAuthorsEditForm },
+    components: { ActionBarTop, PanelGrid, InfoBar, Lightbox, FeedbackWidget, PanelAuthorsEditForm },
     props: [''],
 
     data(){
