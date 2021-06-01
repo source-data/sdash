@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Panels from '@/public_app/stores/panels/panels'
+import Groups from '@/public_app/stores/groups';
 
 Vue.use(Vuex)
 
@@ -33,6 +34,7 @@ const getters = {
 export default new Vuex.Store({
   modules: {
       Panels,
+      Groups,
   },
   state: {
     lightboxOpen: false,

@@ -15,6 +15,7 @@ Auth::routes(['verify' => true]);
 // Route::get('/', 'WelcomeController@index');
 // Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
 Route::get('/', 'DashboardController@showPublicDashboard')->name('public.dashboard');
+Route::get('/public/{vue?}', 'DashboardController@showPublicDashboard')->where('vue', '[\/\w\.-]*');
 Route::get('/about', 'WelcomeController@about');
 Route::get('/docs', 'WelcomeController@docs');
 Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
