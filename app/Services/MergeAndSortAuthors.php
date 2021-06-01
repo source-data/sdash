@@ -7,9 +7,9 @@ class MergeAndSortAuthors
 
   static function mergeAndSort(array $registeredAuthors, array $externalAuthors): array
   {
-    $allAuthors = array_filter(array_merge($registeredAuthors, $externalAuthors), function ($authorItem) {
+    $allAuthors = array_values(array_filter(array_merge($registeredAuthors, $externalAuthors), function ($authorItem) {
       return $authorItem["author_role"]["role"] !== 'curator';
-    });
+    }));
     $sortedAuthors = [];
     for ($i = 0; $i < count($allAuthors); $i++) {
       $sortedAuthors[$allAuthors[$i]["author_role"]["order"]] = [
