@@ -41,6 +41,28 @@ class GroupController extends Controller
     }
 
     /**
+     * List only the public panels
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function listPublicGroups(Request $request)
+    {
+        $groups = Group::where('is_public', true)
+            ->with([
+                'administrators' => function ($query) {
+                    $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
+                },
+                'publicPanels' => function ($query) {
+                    $query->select(['panels.id', 'title', 'version']);
+                },
+            ])
+            ->withCount(['confirmedUsers', 'publicPanels'])
+            ->get();
+        return API::response(200, "A list of public groups", $groups);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

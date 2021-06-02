@@ -24,6 +24,14 @@ class Group extends Model
         return $this->belongsToMany('App\Models\Panel')->withTimestamps();
     }
 
+    public function publicPanels()
+    {
+        return $this->belongsToMany('App\Models\Panel')
+            ->where('is_public', true)
+            ->withTimestamps()
+            ->orderBy('pivot_created_at', 'asc');
+    }
+
     public function users()
     {
         return $this->belongsToMany('App\User')->withTimestamps();
@@ -32,6 +40,13 @@ class Group extends Model
     public function confirmedUsers()
     {
         return $this->belongsToMany('App\User')->wherePivot('status','confirmed');
+    }
+
+    public function administrators()
+    {
+        return $this->belongsToMany('App\User')
+            ->wherePivot('status', 'confirmed')
+            ->wherePivot('role', 'admin');
     }
 
     public function owner()

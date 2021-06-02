@@ -46,6 +46,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('/about') }}">{{ __('About') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/public/groups') }}">{{ __('Groups') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
