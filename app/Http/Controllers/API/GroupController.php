@@ -8,11 +8,13 @@ use App\Models\Group;
 use App\Models\Panel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Repositories\GroupRepository;
 use App\Notifications\UserAddedToGroup;
+use App\Notifications\UserAppliedToJoinGroup;
 use App\Repositories\Interfaces\GroupRepositoryInterface;
 use FFI;
 
@@ -57,7 +59,7 @@ class GroupController extends Controller
                     $query->select(['panels.id', 'title', 'version']);
                 },
             ])
-            ->withCount(['confirmedUsers', 'publicPanels'])
+            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers'])
             ->get();
         return API::response(200, "A list of public groups", $groups);
     }
@@ -108,7 +110,7 @@ class GroupController extends Controller
         }
 
         $newGroup->load(['confirmedUsers' => function ($query) {
-            $query->withPivot(['role','token', 'status']);
+            $query->withPivot(['role', 'token', 'status']);
         }])->loadCount(['confirmedUsers', 'panels']);
 
         return API::response(200, "Group created", $newGroup);
@@ -132,7 +134,7 @@ class GroupController extends Controller
             }])->loadCount(['users', 'panels']);
         } else {
             $group->load(['confirmedUsers' => function ($query) {
-                $query->withPivot(['role','token', 'status']);
+                $query->withPivot(['role', 'token', 'status']);
             }])->loadCount(['confirmedUsers', 'panels']);
         }
 
@@ -218,8 +220,8 @@ class GroupController extends Controller
                 sprintf($responseMessage, $affectedPanelsCount, $ignoredPanelsCount),
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role','token', 'status']);
-                    }])->withCount(['confirmedUsers', 'panels'])->first(),
+                        $query->withPivot(['role', 'token', 'status']);
+                    }])->withCount(['confirmedUsers', 'panels', 'requestedUsers'])->first(),
                     "panels" => Panel::whereIn('id', $affectedPanelIds)->with(['accessToken', 'groups', 'tags', 'user', 'authors', 'externalAuthors'])->get()
                 ]
             );
@@ -244,6 +246,7 @@ class GroupController extends Controller
             'description'           => ['required'],
             'is_public'             => ['boolean'],
             'members.*.id'          => ['exists:users'],
+            'members.*.status'      => Rule::in(['pending', 'requested', 'confirmed']),
             'panels.*'              => ['exists:panels,id']
         ]);
 
@@ -286,6 +289,10 @@ class GroupController extends Controller
 
                     $this->groupRepository->addMemberToGroup($group, $newMember);
                 } else {
+
+                    // accept any newly accepted users to the group
+                    $this->groupRepository->acceptMembershipRequest($group, $newMember["id"], $newMember["status"]);
+
                     // if the new member (submitted) has a different group role (user / admin) from the existing (stored) member
                     // update the stored member's status to match the submitted one.
                     if (isset($newMember["admin"])) {
@@ -325,8 +332,8 @@ class GroupController extends Controller
                 "Panel Updated.",
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role','token', 'status']);
-                    }])->withCount(['confirmedUsers', 'panels'])->first(),
+                        $query->withPivot(['role', 'token', 'status']);
+                    }])->withCount(['confirmedUsers', 'panels', 'requestedUsers'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
             );
@@ -376,9 +383,9 @@ class GroupController extends Controller
 
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
         return API::response(200, "Group updated.", [
-                "group" => $user->groups()->where('groups.id', $group->id)->with(['confirmedUsers' => function ($query) {
-                    $query->withPivot(['role']);
-                }])->withCount(['confirmedUsers', 'panels'])->withPivot(["role", "status", "token"])->first()
+            "group" => $user->groups()->where('groups.id', $group->id)->with(['confirmedUsers' => function ($query) {
+                $query->withPivot(['role']);
+            }])->withCount(['confirmedUsers', 'panels', 'requestedUsers'])->withPivot(["role", "status", "token"])->first()
         ]);
     }
 
@@ -387,7 +394,7 @@ class GroupController extends Controller
         $user = auth()->user();
 
         // a user can only remove themselves and only from the pending state
-        if($user && $group->users()->where('users.id', $user->id)->wherePivot("status", "pending")->wherePivot("token", $token)->exists() ) {
+        if ($user && $group->users()->where('users.id', $user->id)->wherePivot("status", "pending")->wherePivot("token", $token)->exists()) {
             $group->users()->detach($user->id);
             return API::response(200, "User removed from group.", []);
         } else {
@@ -397,4 +404,50 @@ class GroupController extends Controller
 
 
 
+    /**
+     * Allows an authenticated user to apply to join a panel group
+     *
+     * @param Group $group
+     * @return void
+     */
+    public function apply(Group $group)
+    {
+        $user = auth()->user();
+
+        try {
+            $token = $this->groupRepository->applyToGroup($group, $user);
+            $groupAdmins = $group->users()->wherePivot('role', 'admin')->get();
+            foreach ($groupAdmins as $groupAdmin) {
+                $groupAdmin->notify(new UserAppliedToJoinGroup($user, $group, $token));
+            }
+            return API::response(200, "You have applied to join the group.", []);
+        } catch (\App\Exceptions\UserAlreadyAppliedToGroupException $e) {
+            return API::response(400, "You have  already applied to join the group.", []);
+        } catch (\App\Exceptions\UserAlreadyInGroupException $e) {
+            return API::response(400, "You are already a group member.", []);
+        }
+    }
+
+    /**
+     * Accepts a user into a panel group by changing their status from requested to confirmed
+     *
+     * @param Group $group
+     * @param string $token
+     * @return void
+     */
+    public function acceptUser(Group $group, string $token)
+    {
+        $user = auth()->user();
+
+        if (Gate::allows('modify-group', $group)) {
+            $userRecord = $group->users()->wherePivot("token", "=", $token)->first();
+            // if user is already accepted, return to group page
+            if (!isset($userRecord)) return redirect('/dashboard/group/' . $group->id);
+
+            $group->users()->updateExistingPivot($userRecord->id, ["status" => "confirmed", "token" => null]);
+            return redirect('/dashboard/group/' . $group->id);
+        } else {
+            throw new \Exception("You are not permitted to perform this action.");
+        }
+    }
 }

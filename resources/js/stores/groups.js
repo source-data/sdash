@@ -60,6 +60,8 @@ const actions = {
                 updated_at: response.data.DATA.group.updated_at,
                 created_at: response.data.DATA.group.created_at,
                 confirmed_users: response.data.DATA.group.confirmed_users,
+                confirmed_users_count: response.data.DATA.group.confirmed_users_count,
+                requested_users_count:  response.data.DATA.group.requested_users_count,
                 pivot: {
                     group_id: response.data.DATA.group.id,
                     role: "admin",
@@ -168,7 +170,7 @@ const getters = {
         return state.userGroups
     },
     confirmedUserGroups( state ) {
-        return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'confirmed' ) : null
+        return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'confirmed' ).sort((firstItem, secondItem) => (secondItem.requested_users_count - firstItem.requested_users_count)) : null
     },
     pendingUserGroups( state ) {
         return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'pending' ) : null

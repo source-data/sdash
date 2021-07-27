@@ -6,11 +6,11 @@ use App\User;
 use App\Models\Group;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class UserAddedToGroup extends Notification
+class UserAppliedToJoinGroup extends Notification
 {
     use Queueable;
 
@@ -18,13 +18,12 @@ class UserAddedToGroup extends Notification
     protected $group;
     protected $token;
 
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $user, Group $group, String $token)
+    public function __construct(User $user, Group $group, string $token)
     {
         $this->user = $user;
         $this->group = $group;
@@ -51,11 +50,11 @@ class UserAddedToGroup extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Group Invitation')
-            ->line('You have been invited to join a sharing group.')
-            ->line('If you would like to join the group "' . $this->group->name . '", click below to confirm.')
-            ->action('Join Group', $this->confirmationUrl())
-            ->line('If you do not wish to join the group, feel free to ignore this message');
+            ->subject('A user has applied to join your group: ' . $this->group->name)
+            ->line('The following user has applied to join your group: ' . $this->group->name)
+            ->line('Name: ' . $this->user->firstname . ' ' . $this->user->surname)
+            ->line('Organisation: ' . $this->user->department_name . ', ' . $this->user->institution_name)
+            ->action('Accept user', $this->confirmationUrl());
     }
 
     /**

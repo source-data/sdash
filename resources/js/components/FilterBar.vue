@@ -110,7 +110,10 @@
                         v-b-toggle="'group-' + group.id"
                         class="sd-filter-accordion-header"
                         variant="light"
-                        >{{ group.name }} <br />
+                        >
+                        <b-badge pill variant="info" v-if="group.requested_users_count > 0 && group.pivot.role==='admin' && group.pivot.status==='confirmed'"><font-awesome-icon icon="user-plus" class="sd-group-new-icon"/>New member request!</b-badge>
+                        <br v-if="group.requested_users_count > 0 && group.pivot.role==='admin' && group.pivot.status==='confirmed'"/>
+                        {{ group.name }} <br />
                         <font-awesome-icon icon="users" />
                         {{ group.confirmed_users_count }} |
                         <font-awesome-icon icon="layer-group" />
@@ -273,7 +276,7 @@ export default {
             this.$store.dispatch("setLoadingState", true)
             this.$store.dispatch("clearLoadedPanels")
             this.$store.dispatch("fetchPanelList")
-        }
+        },
     }
 };
 </script>

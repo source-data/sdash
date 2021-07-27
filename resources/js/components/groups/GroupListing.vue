@@ -9,6 +9,7 @@
                 </router-link>
             </div>
             <group-title-icon></group-title-icon>
+            <group-member-request-icon v-if="shouldShowMembershipRequest" :caption="membershipRequestCaption"></group-member-request-icon>
             <span class="sd-group-visibility-icon-wrapper text-muted" v-if="currentGroup.is_public">
                 <font-awesome-icon icon="lock-open" /> Public
             </span>
@@ -56,6 +57,7 @@ import FilterBar from '../FilterBar'
 import PanelListingGrid from '../PanelListingGrid'
 import InfoBar from '../InfoBar'
 import GroupTitleIcon from '../helpers/GroupTitleIcon'
+import GroupMemberRequestIcon from '../helpers/GroupMemberRequestIcon'
 import GroupUserIcon from '../helpers/GroupUserIcon'
 
 export default {
@@ -67,6 +69,7 @@ export default {
         InfoBar,
         GroupTitleIcon,
         GroupUserIcon,
+        GroupMemberRequestIcon,
     },
     props: [
         'group_id'
@@ -88,7 +91,15 @@ export default {
             'hasPanels',
             'hasLoadedAllResults',
             'isGroupAdmin',
-            ])
+            ]),
+        shouldShowMembershipRequest(){
+            return (this.currentGroup && this.isGroupAdmin && this.currentGroup.requested_users_count)
+        },
+        membershipRequestCaption(){
+            if(!this.shouldShowMembershipRequest) return '';
+            if(this.currentGroup.requested_users_count === 1) return '1 member request';
+            return this.currentGroup.requested_users_count + ' member requests';
+        },
 
     },
     methods:{
@@ -136,8 +147,9 @@ export default {
 
     .sd-group-visibility-icon-wrapper {
         display: inline-block;
-        padding: 2px 8px 2px 4px;
+        padding: 2px 8px 2px 8px;
         border: 1px solid rgba(0, 0, 0, 0.125);
         border-radius: 12px;
     }
+
 </style>

@@ -36,6 +36,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::patch('/users/{user}/consent', 'API\UserController@updateConsent');
     Route::delete('/users/{user}', 'API\UserController@destroy');
+    Route::post('/users/me/groups/{group}/applications', 'API\GroupController@apply');
     Route::patch('/users/me/groups/{group}/join/{token}', 'API\GroupController@joinViaApi');
     Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
     Route::patch('/panels/{panel}', 'API\PanelController@update');

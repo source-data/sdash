@@ -158,7 +158,7 @@ class UserController extends Controller
                 $query->with(['confirmedUsers' => function ($query) {
                     $query->withPivot(['role']);
                 }]);
-                $query->withCount(['confirmedUsers', 'panels']);
+                $query->withCount(['confirmedUsers', 'requestedUsers', 'panels']);
                 $query->withPivot(['role', 'token', 'status']);
             }])
             ->first();
