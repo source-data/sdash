@@ -32,6 +32,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
+    Route::patch('/users/{user}/password', 'API\UserController@changePassword');
     Route::get('/users/{user}', 'API\UserController@show');
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::patch('/users/{user}/consent', 'API\UserController@updateConsent');

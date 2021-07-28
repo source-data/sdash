@@ -145,18 +145,72 @@
                     <b-card-body>
                         <b-form @submit.prevent>
                             <b-form-group
-                            label-cols="4"
-                            content-cols="6"
-                            label-text-align="right"
+                            label-align-md="right"
+                            label-cols-md="4"
+                            content-cols-md="6"
                             id="change-password-1"
                             label="Current password"
-                            label-for="exiting-password-input"
+                            label-for="existing-password-input"
                             valid-feedback="Password entered."
-                            :invalid-feedback="invalidExistinPasswordFeedback"
+                            :invalid-feedback="invalidExistingPasswordFeedback"
                             :state="validExistingPassword"
                             >
-                            <b-form-input id="exiting-password-input" v-model="existingPassword" :state="validExistingPassword" type="password" trim></b-form-input>
+                            <b-form-input
+                            id="existing-password-input"
+                            v-model="existingPassword"
+                            :state="validExistingPassword"
+                            type="password"
+                            @change="clearValidationErrors('existingPassword')"
+                            trim
+                            ></b-form-input>
                             </b-form-group>
+
+                            <b-form-group
+                            label-cols-md="4"
+                            content-cols-md="6"
+                            label-align-md="right"
+                            id="change-password-new-1"
+                            label="Your new password"
+                            label-for="new-password-input-1"
+                            valid-feedback="OK."
+                            :invalid-feedback="invalidNewPassword1Feedback"
+                            :state="validNewPassword1"
+                            >
+                            <b-form-input
+                            id="new-password-input-1"
+                            v-model="newPassword1"
+                            :state="validNewPassword1"
+                            type="password"
+                            @change="clearValidationErrors('newPassword1')"
+                            trim></b-form-input>
+                            </b-form-group>
+
+                            <b-form-group
+                            label-cols-md="4"
+                            content-cols-md="6"
+                            label-align-md="right"
+                            id="change-password-new-2"
+                            label="Your new password"
+                            label-for="new-password-input-2"
+                            valid-feedback="OK."
+                            :invalid-feedback="invalidNewPassword2Feedback"
+                            :state="validNewPassword2"
+                            >
+                            <b-form-input
+                            id="new-password-input-2"
+                            v-model="newPassword2"
+                            :state="validNewPassword2"
+                            type="password"
+                            @change="clearValidationErrors('newPassword2')"
+                            trim></b-form-input>
+                            </b-form-group>
+                            <div class="form-group row mb-0">
+                                <b-col md="6" offset-md="4">
+                                    <b-button variant="primary"  @click="updatePassword"><i class="fas fa-spinner fa-spin" v-if="submiting"></i> Change password</b-button>
+                                    <b-button variant="light" @click="clearPasswords">Cancel</b-button>
+
+                                </b-col>
+                            </div>
                         </b-form>
                     </b-card-body>
                 </b-card>
@@ -177,6 +231,7 @@ export default {
         return {
             user: {},
             errors: {},
+            passwordErrors: {},
             submiting: false,
             existingPassword: "",
             newPassword1: "",
@@ -188,10 +243,36 @@ export default {
             'currentUser',
         ]),
         validExistingPassword() {
-            return true;
+            if(this.passwordErrors.existingPassword) return false;
+            if(!this.existingPassword) return null;
+            return this.existingPassword.length >= 8;
         },
-        invalidExistinPasswordFeedback() {
-            return 'hey';
+        validNewPassword1() {
+            if(this.passwordErrors.newPassword1) return false;
+            if(!this.newPassword1) return null;
+            return (this.newPassword1.length >= 8 && this.newPassword1 === this.newPassword2);
+        },
+        validNewPassword2() {
+            if(this.passwordErrors.newPassword2) return false;
+            if(!this.newPassword2) return null;
+            return (this.newPassword2.length >= 8 && this.newPassword1 === this.newPassword2);
+        },
+        invalidExistingPasswordFeedback() {
+            if(this.passwordErrors.existingPassword) return this.passwordErrors.existingPassword.join(' ');
+            return 'Password must be at least 8 characters';
+        },
+        invalidNewPassword1Feedback() {
+            if(this.passwordErrors.newPassword1) return this.passwordErrors.newPassword1.join(' ');
+            if(this.newPassword1.length < 8) return "The password must be at least 8 characters";
+            if(this.newPassword1 !== this.newPassword2) return "Enter the same new password to confirm."
+        },
+        invalidNewPassword2Feedback() {
+            if(this.passwordErrors.newPassword2) return this.passwordErrors.newPassword2.join(' ');
+            if(this.newPassword2.length < 8) return "The password must be at least 8 characters";
+            if(this.newPassword1 !== this.newPassword2) return "Enter the same new password to confirm."
+        },
+        disablePasswordButton() {
+            return !(!this.submiting && this.validExistingPassword && this.validNewPassword1 && this.validNewPassword2);
         },
     },
     created() {
@@ -224,9 +305,38 @@ export default {
                     this.submiting = false
                 })
         },
+        updatePassword() {
+            this.submitting = true;
+            Axios.patch('/users/' + this.user_id + '/password', {existingPassword: this.existingPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2}).then(response => {
+                this.passwordErrors = {};
+                this.submiting = false;
+                this.clearPasswords();
+                this.$snotify.success("Password changed.", "OK!");
+                console.log(response);
+            }).catch(error => {
+                this.passwordErrors = error.data.errors;
+                this.submiting = false;
+                console.log(error);
+            });
+
+        },
+        clearValidationErrors(toClear) {
+            if(this.passwordErrors[toClear]) {
+                let tempErrors = Object.assign({}, this.passwordErrors);
+                delete tempErrors[toClear];
+                this.passwordErrors = tempErrors;
+            }
+        },
         cancelEdit() {
             this.$router.push({path: `/user/${this.user_id}`})
-        }
+        },
+        clearPasswords() {
+            this.passwordErrors = {};
+            this.existingPassword = '';
+            this.newPassword1 = '';
+            this.newPassword2 = '';
+
+        },
     }
 }
 </script>

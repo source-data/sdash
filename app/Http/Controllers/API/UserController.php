@@ -5,14 +5,16 @@ namespace App\Http\Controllers\API;
 use API;
 use App\User;
 use App\Models\Group;
+use Obiefy\API\APIResponse;
 use App\Models\UserConsent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Obiefy\API\Facades\API as FacadesAPI;
 
 class UserController extends Controller
 {
@@ -206,5 +208,32 @@ class UserController extends Controller
         } else {
             return API::response(403, "You are forbidden from removing this user from the group.", []);
         }
+    }
+
+    /**
+     * Allow logged-in user to modify their own password
+     *
+     * @param User $user
+     * @param Request $request
+     * @return APIResponse
+     */
+    public function changePassword(User $user, Request $request)
+    {
+        $request->validate([
+            'existingPassword'  => ['required', 'password'],
+            'newPassword1'      => ['required', 'same:newPassword2', 'min:8'],
+            'newPassword2'      => ['required', 'same:newPassword1', 'min:8']
+        ]);
+
+        $loggedInUser = auth()->user();
+
+        if (!$loggedInUser->id === $user->id) return API::response(403, "You cannot change another user's password.", ["success" => false]);
+
+        $user->password = Hash::make($request->input('newPassword1'));
+        $user->save();
+
+        return API::response(200, "Password changed", ["success" => true]);
+
+        return $request;
     }
 }
