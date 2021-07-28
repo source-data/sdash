@@ -206,7 +206,7 @@
                             </b-form-group>
                             <div class="form-group row mb-0">
                                 <b-col md="6" offset-md="4">
-                                    <b-button variant="primary"  @click="updatePassword"><i class="fas fa-spinner fa-spin" v-if="submiting"></i> Change password</b-button>
+                                    <b-button variant="primary"  @click="updatePassword" :disabled="disablePasswordButton"><i class="fas fa-spinner fa-spin" v-if="submiting"></i> Change password</b-button>
                                     <b-button variant="light" @click="clearPasswords">Cancel</b-button>
 
                                 </b-col>
