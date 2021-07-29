@@ -1,6 +1,5 @@
 <template>
     <div>
-        <b-breadcrumb :items="breadcrumbItems"></b-breadcrumb>
         <b-container class="sd-group-grid-container" fluid>
             <b-row class="sd-group-grid" cols="1" cols-sm="2" cols-md="3" cols-lg="4">
                 <b-col class="sd-group-grid-item" v-for="group in publicGroups" :key="group.id">
@@ -16,9 +15,9 @@
                         </div>
                         <b-card-body>
                             <b-card-title>
-                                <a :href="'/dashboard/group/' + group.id">
+                                <router-link :to="{ path: '/group/' + group.id }">
                                     {{ group.name }}
-                                </a>
+                                </router-link>
                             </b-card-title>
                             <b-card-text>
                                 {{ group.description | truncate(100, "...") }}
@@ -64,9 +63,9 @@
                             </ul>
                         </b-popover>
                         <template #footer>
-                            <a :href="'/dashboard/group/' + group.id">
+                            <router-link :to="{ path: '/group/' + group.id }">
                                 <b-button size="sm" variant="outline-secondary">View SmartFigures</b-button>
-                            </a>
+                            </router-link>
                         </template>
                     </b-card>
                 </b-col>
@@ -104,16 +103,6 @@ export default {
                 '#64b5f6', // blue
                 '#ff8a65', // deep-orange
                 '#4fc3f7', // light-blue
-            ],
-            breadcrumbItems: [
-                {
-                    text: 'My Dashboard',
-                    to: { name: 'dashboard' }
-                },
-                {
-                    text: 'Groups',
-                    active: true
-                }
             ]
         }
     },
