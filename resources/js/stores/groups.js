@@ -171,9 +171,20 @@ const mutations = {
         if (index > -1) state.userGroups.splice(index, 1, group);
     },
     setCurrentGroup(state, group_id) {
-        state.currentGroup = group_id
-            ? state.userGroups.find(group => group.id === parseInt(group_id))
-            : null;
+        const groupId = parseInt(group_id);
+        if (isNaN(groupId) || (groupId === 0)) {
+            state.currentGroup = null;
+        } else {
+            let currentGroup = state.userGroups.find(
+                    group => group.id === groupId
+                );
+            if (!currentGroup) {
+                currentGroup = state.publicGroups.find(
+                    group => group.id === groupId
+                );
+            }
+            state.currentGroup = currentGroup || null;
+        }
     },
     setCurrentGroupFromApi(state, group) {
         state.currentGroup = group;
@@ -215,6 +226,9 @@ const getters = {
             )
                 ? true
                 : false;
+        if (!state.currentGroup.confirmed_users) {
+            return false;
+        }
         return state.currentGroup.confirmed_users.find(
             user =>
                 user.id === rootState.Users.user.id &&
@@ -226,6 +240,16 @@ const getters = {
     isGroupOwner(state, getters, rootState) {
         if (!state.currentGroup) return false;
         return state.currentGroup.user_id === rootState.Users.user.id;
+    },
+    isGroupMember(state, getters, rootState) {
+        if (!state.currentGroup || !state.currentGroup.confirmed_users) {
+            return false;
+        }
+        return state.currentGroup.confirmed_users.find(
+            user => user.id === rootState.Users.user.id
+        )
+            ? true
+            : false;
     }
 };
 
