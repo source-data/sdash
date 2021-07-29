@@ -1,11 +1,15 @@
 <template>
 <div id="sdash-wrapper">
+    <header>
+        <top-bar home-url="/dashboard"></top-bar>
+        <navigation-bar :user="currentUser"></navigation-bar>
+    </header>
+
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- drop uploader -->
     <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file" v-if="!showAuthorSidebarModel"></vue-full-screen-file-drop>
 
-    <action-bar-top v-if="isLoggedIn"></action-bar-top>
 
     <router-view></router-view>
 
@@ -80,22 +84,23 @@
 import Axios from "axios"
 import store from '@/stores/store'
 import { mapGetters, mapActions } from 'vuex'
-import ActionBarTop from '@/components/ActionBarTop'
 import PanelGrid from '@/components/PanelGrid'
 import InfoBar from '@/components/InfoBar'
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
 import FeedbackWidget from '@/components/FeedbackWidget'
-import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
+import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm"
+import TopBar from '@/components/TopBar'
+import NavigationBar from '@/components/NavigationBar'
 
 export default {
 
     name: 'Dashboard',
-    components: { ActionBarTop, PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget, PanelAuthorsEditForm },
+    components: { PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget, PanelAuthorsEditForm, TopBar, NavigationBar },
     props: [''],
 
-    data(){
+    data() {
 
         return {
             confCheckbox1: false,
