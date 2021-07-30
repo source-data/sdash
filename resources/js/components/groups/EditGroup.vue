@@ -56,10 +56,11 @@
                     label-cols-sm="3"
                     label-cols-lg="2"
                     members="Select the group members."
-                    label="Group members"
+                    label="Group Members"
                     label-for="sd-new-group-members-input"
                     description="Note: removing a member will also remove their panels"
                     >
+                        <div class="sd-group-members-message text-info small" v-if="membershipRequestCount">{{membershipRequestCount}} membership request(s) awaiting approval.</div>
                         <user-multiselect id="sd-new-group-members-input" v-if="loaded" :initialusers="groupMembers" @userdataChange="updatedUserdata">
                         </user-multiselect>
                     </b-form-group>
@@ -130,6 +131,7 @@ export default {
             groupMembers: [],
             isPublicGroup: false,
             loaded: false,
+            membershipRequestCount: 0,
         }
     },
     computed: {
@@ -210,6 +212,7 @@ export default {
                 members.push({
                     id: member.id,
                     admin: member.isGroupAdmin,
+                    status: member.pivot.status,
                 })
             })
 
@@ -246,7 +249,8 @@ export default {
             this.groupUrl =  group.url || ""
             this.groupDescription =  group.description
             this.isPublicGroup = !!group.is_public
-            this.groupMembers = group.users
+            this.groupMembers = group.users.sort((user1, user2)=> user1.pivot.status === 'requested' ? -1 : 0 )
+            this.membershipRequestCount = this.groupMembers.filter((item) => item.pivot.status === 'requested').length
             this.loaded = true
 
             this.$store.commit("clearLoadedPanels")

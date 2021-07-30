@@ -8,6 +8,8 @@ use App\Models\Group;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\UserAddedToGroup;
+use App\Exceptions\UserAlreadyInGroupException;
+use App\Exceptions\UserAlreadyAppliedToGroupException;
 use App\Repositories\Interfaces\GroupRepositoryInterface;
 
 class GroupRepository implements GroupRepositoryInterface
@@ -44,7 +46,7 @@ class GroupRepository implements GroupRepositoryInterface
 
         // Log::debug("make admin: " . $user->surname . ' ' . $user->pivot->role);
 
-        if ($user->pivot->role == 'admin') return true;
+        if ($user->pivot->role === 'admin') return true;
 
         $group->users()->updateExistingPivot($user, ['role' => 'admin']);
 
@@ -55,12 +57,40 @@ class GroupRepository implements GroupRepositoryInterface
     {
         $user = $group->users()->where("users.id", $user_id)->withPivot("role")->first();
 
-        // Log::debug("remove admin: " . $user->surname . ' ' . $user->pivot->role);
-
-        if ($user->pivot->role == 'user') return true;
+        if ($user->pivot->role === 'user') return true;
 
         $group->users()->updateExistingPivot($user, ['role' => 'user']);
 
         return true;
+    }
+
+    public function acceptMembershipRequest(Group $group, String $user_id, String $new_status)
+    {
+        $user = $group->users()->where("users.id", $user_id)->withPivot("status")->first();
+
+        if ($user->pivot->status === 'requested' && $new_status === 'confirmed') {
+            $group->users()->updateExistingPivot($user, ['status' => 'confirmed']);
+            $group->users()->updateExistingPivot($user, ['token' => null]);
+        }
+
+        return true;
+    }
+
+    public function applyToGroup(Group $group, User $user): string
+    {
+        // does user already exist in group?
+        $existingUser = $group->users()->where("users.id", $user->id)->withPivot("status")->first();
+
+        if (empty($existingUser)) {
+            $token = sha1(now()->timestamp . $user->id . Str::random(24));
+            $group->users()->attach($user->id, ["status" => "requested", "token" => $token]);
+            return $token;
+        }
+
+        if ($existingUser->pivot->status === 'pending') {
+            throw new UserAlreadyAppliedToGroupException();
+        }
+
+        throw new UserAlreadyInGroupException();
     }
 }

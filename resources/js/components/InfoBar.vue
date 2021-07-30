@@ -1,7 +1,7 @@
 <template>
     <b-container fluid class="sd-info-bar">
         <b-row>
-            <b-col sm="10" class="mt-4 mb-2 sd-info-bar-title-wrapper">
+            <b-col sm="10" class="mt-4 mb-2">
                 <slot name="above-title">
                 </slot>
                 <slot name="title">
@@ -9,6 +9,8 @@
                 <p class="sd-info-bar-text">
                     <slot name="text"></slot>
                 </p>
+                <slot name="extra-content">
+                </slot>
                 <slot name="footer">
                 </slot>
             </b-col>
@@ -44,17 +46,12 @@ export default {
 <style lang="scss">
 
 .sd-info-bar {
-    padding-bottom: 1em;
+    padding: 10px 48px;
     overflow: hidden;
-}
-
-.sd-info-bar-title-wrapper {
-    padding-left:62px;
-    margin-left:300px;
+    background: #e9eef5;
 }
 
 .sd-info-bar-text {
     max-width: 600px;
-    // color: #eee;
 }
 </style>

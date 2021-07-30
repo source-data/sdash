@@ -39,7 +39,12 @@ class Group extends Model
 
     public function confirmedUsers()
     {
-        return $this->belongsToMany('App\User')->wherePivot('status','confirmed');
+        return $this->belongsToMany('App\User')->wherePivot('status', 'confirmed');
+    }
+
+    public function requestedUsers()
+    {
+        return $this->belongsToMany('App\User')->wherePivot('status', 'requested');
     }
 
     public function administrators()
@@ -58,6 +63,4 @@ class Group extends Model
     {
         return $this->hasMany('App\Models\Comment');
     }
-
-
 }

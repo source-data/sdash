@@ -45,12 +45,18 @@ open-direction="bottom"
             <div class="sd-group-user--selected-info">
                 <div class="sd-group-user--selected-name">
                     {{ option.firstname + ' ' + option.surname }}
-                    <span class="sd-unconfirmed-user" v-if="option.pivot && option.pivot.status && option.pivot.status=='pending'">(user has not opted-in)</span>
+                    <span class="sd-unconfirmed-user small" v-if="option.pivot && option.pivot.status && option.pivot.status=='pending'">(user invited)</span>
+                    <span class="sd-requested-user text-info small" v-if="option.showAcceptControl">* (user has requested access)</span>
                 </div>
                 <div class="sd-group-user--selected-affiliation">
                     {{ option.institution_name }}
                 </div>
             </div>
+                <div class="sd-group-user--accept" @mousedown.stop.prevent v-if="option.showAcceptControl">
+                Accept user&nbsp;
+                <b-form-checkbox @click.stop.prevent :checked="false" @change="acceptUser(option.id)" title="Accept user">
+                </b-form-checkbox>
+                </div>
                 <div class="sd-group-user--make-admin" @mousedown.stop.prevent>
                                     Make admin&nbsp;
 
@@ -128,6 +134,12 @@ export default {
             if(userIndex >=0) {
                 this.selectedUsers[userIndex].isGroupAdmin = !this.selectedUsers[userIndex].isGroupAdmin
             }
+        },
+        acceptUser (user_id) {
+            let userIndex = _.findIndex(this.selectedUsers, (user) => user.id === user_id)
+            if(userIndex >=0) {
+                this.selectedUsers[userIndex].pivot.status = (this.selectedUsers[userIndex].pivot.status === 'requested') ? 'confirmed' : 'requested';
+            }
         }
     },
     watch: {
@@ -142,11 +154,13 @@ export default {
         if(this.initialusers){
             let tempUser = _.clone(this.initialusers, true)
             for(let i = 0; i < tempUser.length; i++){
-                if(tempUser[i].pivot.role == 'admin') {
+                if(tempUser[i].pivot.role === 'admin') {
                     tempUser[i].isGroupAdmin = true;
                 } else {
                     tempUser[i].isGroupAdmin = false;
                 }
+
+                tempUser[i].showAcceptControl = (tempUser[i].pivot.status === 'requested');
             }
 
             this.selectedUsers = tempUser

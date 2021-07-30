@@ -35,6 +35,7 @@ Route::get('/files/{file}', 'API\FileController@download');
 
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
+    Route::get('/groups/{group}/accept/{token}', 'API\GroupController@acceptUser')->name("group.accept")->middleware('signed');
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
-    Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');    
+    Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');
 });

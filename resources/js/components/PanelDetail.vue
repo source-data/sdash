@@ -159,7 +159,7 @@
                     Change image
                 </span>
                 <b-form-file
-                    ref="uploader"
+                    ref="imageUploader"
                     class="d-none"
                     accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
                     v-model="imageFile"
@@ -404,7 +404,7 @@ export default {
             this.$store.commit("toggleEditingCaption");
         },
         displayImageUploader() {
-            this.$refs.uploader.$el.childNodes[0].click();
+            this.$refs.imageUploader.$el.childNodes[0].click();
         },
         changeImage() {
             if (this.imageFile === null) {

@@ -32,10 +32,12 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
+    Route::patch('/users/{user}/password', 'API\UserController@changePassword');
     Route::get('/users/{user}', 'API\UserController@show');
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::patch('/users/{user}/consent', 'API\UserController@updateConsent');
     Route::delete('/users/{user}', 'API\UserController@destroy');
+    Route::post('/users/me/groups/{group}/applications', 'API\GroupController@apply');
     Route::patch('/users/me/groups/{group}/join/{token}', 'API\GroupController@joinViaApi');
     Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
     Route::patch('/panels/{panel}', 'API\PanelController@update');
@@ -59,6 +61,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::delete('/files/{file}', 'API\FileController@destroy');
     Route::patch('/files/{file}', 'API\FileController@update');
     Route::post('/groups', 'API\GroupController@store');
+    Route::get('/groups', 'API\GroupController@listPublicGroups');
     Route::get('/groups/{group}', 'API\GroupController@show');
     Route::put('/groups/{group}', 'API\GroupController@replace');
     Route::patch('/groups/{group}/panels', 'API\GroupController@managePanels');
