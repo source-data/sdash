@@ -1,14 +1,5 @@
 <template>
     <div>
-        <info-bar>
-            <template v-slot:title>
-                <h1>Published Panels</h1>
-            </template>
-            <template v-slot:text>
-                Browse the latest panels that have been made public by their authors.
-            </template>
-        </info-bar>
-
         <b-container fluid class="mt-3" style="overflow: hidden;">
             <div id="wrapper" class="wrapper">
                 <filter-bar class="sidebar" v-bind:class="{collapsed: !isSidebarExpanded}"></filter-bar>

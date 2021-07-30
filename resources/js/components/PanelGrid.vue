@@ -1,19 +1,35 @@
 <template>
     <div>
-        <info-bar>
-            <template v-slot:title>
-                <h1>My Dashboard</h1>
-            </template>
-        </info-bar>
-        <b-container fluid class="mt-3" style="overflow: hidden;">
+        <b-container fluid class="mt-3">
             <div id="wrapper" class="wrapper">
-                <filter-bar class="sidebar" v-bind:class="{collapsed: !isSidebarExpanded}"></filter-bar>
-                <div id="content" class="content" v-bind:class="{expanded: !isSidebarExpanded}">
-                    <ul class="toolbar" v-bind:class="{expanded: !isSidebarExpanded}">
+                <filter-bar
+                    class="sidebar"
+                    v-bind:class="{ collapsed: !isSidebarExpanded }"
+                ></filter-bar>
+                <div
+                    id="content"
+                    class="content"
+                    v-bind:class="{ expanded: !isSidebarExpanded }"
+                >
+                    <panel-action-bar></panel-action-bar>
+                    <ul
+                        class="toolbar"
+                        v-bind:class="{ expanded: !isSidebarExpanded }"
+                    >
                         <li class="sidebar-toggle">
-                            <b-link href="#" @click="toggleSidebar" v-bind:title="sidebarToggleText">
-                                <font-awesome-icon icon="chevron-left" v-if="isSidebarExpanded" />
-                                <font-awesome-icon icon="chevron-right" v-if="!isSidebarExpanded" />
+                            <b-link
+                                href="#"
+                                @click="toggleSidebar"
+                                v-bind:title="sidebarToggleText"
+                            >
+                                <font-awesome-icon
+                                    icon="chevron-left"
+                                    v-if="isSidebarExpanded"
+                                />
+                                <font-awesome-icon
+                                    icon="chevron-right"
+                                    v-if="!isSidebarExpanded"
+                                />
                             </b-link>
                         </li>
                         <li><font-awesome-icon icon="search" /></li>
@@ -21,13 +37,22 @@
                         <li><font-awesome-icon icon="users" /></li>
                     </ul>
                     <div v-if="isLoadingPanels" class="text-center">
-                        <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
+                        <b-spinner
+                            variant="primary"
+                            label="Spinning"
+                            class="m-5"
+                            style="width: 4rem; height: 4rem;"
+                        ></b-spinner>
                     </div>
                     <div v-if="hasPanels">
-                        <panel-listing-grid list_root="user"></panel-listing-grid>
+                        <panel-listing-grid
+                            list_root="user"
+                        ></panel-listing-grid>
                     </div>
                     <div v-if="!hasPanels && !isLoadingPanels">
-                        <b-alert show variant="danger" class="no-panel-alert">No Panels Found</b-alert>
+                        <b-alert show variant="danger" class="no-panel-alert"
+                            >No Panels Found</b-alert
+                        >
                     </div>
                 </div>
             </div>
@@ -36,38 +61,31 @@
 </template>
 
 <script>
-
-import store from '@/stores/store'
-import { mapGetters } from 'vuex'
-import FilterBar from './FilterBar'
-import InfoBar from './InfoBar'
-import PanelListingGrid from './PanelListingGrid'
-
+import store from "@/stores/store";
+import { mapGetters } from "vuex";
+import FilterBar from "./FilterBar";
+import PanelActionBar from "./PanelActionBar";
+import PanelListingGrid from "./PanelListingGrid";
 
 export default {
-
-    name: 'PanelGrid',
+    name: "PanelGrid",
     components: {
         FilterBar,
-        PanelListingGrid,
-        InfoBar,
-      },
-    props: [''],
+        PanelActionBar,
+        PanelListingGrid
+    },
+    props: [""],
 
     data() {
         return {
-            isSidebarExpanded: true,
-        }
-    }, /* end of data */
+            isSidebarExpanded: true
+        };
+    } /* end of data */,
 
     computed: {
-        ...mapGetters([
-            'isLoadingPanels',
-            'hasPanels',
-            'hasLoadedAllResults',
-        ]),
+        ...mapGetters(["isLoadingPanels", "hasPanels", "hasLoadedAllResults"]),
         sidebarToggleText: function() {
-            return this.isSidebarExpanded ? 'Hide sidebar' : 'Show sidebar';
+            return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
         }
     },
 
@@ -78,31 +96,34 @@ export default {
     },
 
     mounted() {
-        store.commit("clearLoadedPanels")
-        store.commit("setPagination", true)
-        store.commit("clearSelectedPanels")
-        store.commit("setSearchMode", "user")
-        store.dispatch("fetchFileCategories")
-        store.dispatch("fetchPanelList")
-        .catch((error) => {
-            this.$snotify.error("We couldn't find any panels for you.", "Sorry!")
-        })
+        store.commit("clearLoadedPanels");
+        store.commit("setPagination", true);
+        store.commit("clearSelectedPanels");
+        store.commit("setSearchMode", "user");
+        store.dispatch("fetchFileCategories");
+        store.dispatch("fetchPanelList").catch(error => {
+            this.$snotify.error(
+                "We couldn't find any panels for you.",
+                "Sorry!"
+            );
+        });
         if (localStorage.getItem("isSidebarExpanded") !== null) {
-            this.isSidebarExpanded = localStorage.getItem("isSidebarExpanded") === 'true'
+            this.isSidebarExpanded =
+                localStorage.getItem("isSidebarExpanded") === "true";
         }
     },
 
     watch: {
         isSidebarExpanded(newStatus) {
-            localStorage.setItem("isSidebarExpanded", newStatus)
+            localStorage.setItem("isSidebarExpanded", newStatus);
         }
     }
-}
+};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .no-panel-alert {
-    max-width:480px;
+    max-width: 480px;
     margin: 0 auto;
 }
 
@@ -124,7 +145,7 @@ export default {
 .sidebar {
     flex: 0 0 300px;
     padding-right: 15px;
-    transition: all .25s ease-in;
+    transition: all 0.25s ease-in;
 }
 
 .sidebar.collapsed {
@@ -134,7 +155,7 @@ export default {
 .content {
     flex: auto;
     position: relative;
-    transition: all .25s ease-in;
+    transition: all 0.25s ease-in;
 }
 
 .content.expanded {
@@ -149,7 +170,7 @@ export default {
     margin: 0;
     padding: 0;
     list-style: none;
-    background:#A6B2C6;
+    background: #a6b2c6;
     li,
     li a {
         color: white;
@@ -163,8 +184,6 @@ export default {
     li.sidebar-toggle {
         opacity: 1;
         font-size: 24px;
-
     }
 }
-
 </style>

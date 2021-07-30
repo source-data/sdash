@@ -1,8 +1,12 @@
 <template>
 <div id="sdash-wrapper">
+    <header>
+        <top-bar home-url="/" is-public></top-bar>
+        <navigation-bar></navigation-bar>
+    </header>
+
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
-    <action-bar-top></action-bar-top>
     <router-view></router-view>
 
         <lightbox
@@ -20,9 +24,10 @@
 import store from '@/public_app/stores/store'
 import { mapGetters, mapActions } from 'vuex'
 import PanelGrid from '@/public_app/components/PanelGrid'
-import ActionBarTop from '@/public_app/components/ActionBarTop'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
+import TopBar from '@/components/TopBar'
+import NavigationBar from '@/components/NavigationBar'
 
 export default {
 
@@ -30,7 +35,8 @@ export default {
     components: {
         PanelGrid,
         Lightbox,
-        ActionBarTop,
+        TopBar,
+        NavigationBar,
         },
     computed: {
 

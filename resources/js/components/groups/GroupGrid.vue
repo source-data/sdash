@@ -2,7 +2,7 @@
     <div>
         <b-container class="sd-group-grid-container" fluid>
             <b-row class="sd-group-grid" cols="1" cols-sm="2" cols-md="3" cols-lg="4">
-                <b-col class="sd-group-grid-item" v-for="group in groups" :key="group.id">
+                <b-col class="sd-group-grid-item" v-for="group in publicGroups" :key="group.id">
                     <b-card no-body>
                         <div class="card-img-container" :style="group.public_panels.length == 0 ? imageContainerColor(group.id) : ''">
                             <b-card-img
@@ -15,9 +15,9 @@
                         </div>
                         <b-card-body>
                             <b-card-title>
-                                <a :href="'/dashboard/group/' + group.id">
+                                <router-link :to="{ path: '/group/' + group.id }">
                                     {{ group.name }}
-                                </a>
+                                </router-link>
                             </b-card-title>
                             <b-card-text>
                                 {{ group.description | truncate(100, "...") }}
@@ -63,9 +63,9 @@
                             </ul>
                         </b-popover>
                         <template #footer>
-                            <a :href="'/dashboard/group/' + group.id">
+                            <router-link :to="{ path: '/group/' + group.id }">
                                 <b-button size="sm" variant="outline-secondary">View SmartFigures</b-button>
-                            </a>
+                            </router-link>
                         </template>
                     </b-card>
                 </b-col>
@@ -108,11 +108,11 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["groups"])
+        ...mapGetters(["publicGroups"])
     },
 
     methods: {
-        ...mapActions(["fetchGroups"]),
+        ...mapActions(["fetchPublicGroups"]),
         thumbnailUrl(panels) {
             if (panels.length) {
                 const panel = panels[0];
@@ -138,7 +138,7 @@ export default {
     },
 
     mounted() {
-        this.fetchGroups();
+        this.fetchPublicGroups();
     }
 };
 </script>
