@@ -80,13 +80,23 @@ class PanelController extends Controller
         $private    = $request->has("private");
         $paginate   = $request->has("paginate") ? strtoupper($request->get("paginate")) === 'TRUE' : true;
 
-        if (!Gate::allows('view-group', $group)) return API::response(401, "Permission denied", []);
+        if (!$group->is_public && !Gate::allows('view-group', $group)) {
+            return API::response(401, "Access denied", []);
+        }
 
-        return API::response(
-            200,
-            "A list of panels accessible to chosen group.",
-            $this->panelRepository->groupPanels($user, $group, $search, $tags, $authors, $sortOrder, $private, $paginate)
-        );
+        if (Gate::allows('view-group', $group)) {
+            return API::response(
+                200,
+                "A list of panels accessible to chosen group.",
+                $this->panelRepository->groupPanels($user, $group, $search, $tags, $authors, $sortOrder, $private, $paginate)
+            );
+        } else {
+            return API::response(
+                200,
+                "A list of public panels accessible to chosen group.",
+                $this->panelRepository->publicGroupPanels($group, $search, $tags, $authors, $sortOrder)
+            );
+        }
     }
 
     /**
