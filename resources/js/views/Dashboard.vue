@@ -1,7 +1,7 @@
 <template>
 <div id="sdash-wrapper">
     <header>
-        <top-bar home-url="/dashboard"></top-bar>
+        <top-bar :user="currentUser"></top-bar>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
 
