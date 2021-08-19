@@ -762,7 +762,7 @@ export default {
     },
 
     created() {
-        this.$loadScript("/js/toc.js").then(() => {
+        this.$loadScript("/vendor/toc.js").then(() => {
             Toc.init({
                 $nav: jQuery("#toc"),
                 $scope: jQuery("#api-docs"),
@@ -771,7 +771,7 @@ export default {
                 target: "#toc"
             });
         });
-        this.$loadScript("/js/prism.js").then(() => {
+        this.$loadScript("/vendor/prism.js").then(() => {
             Prism.highlightAll();
         });
     },
@@ -780,8 +780,8 @@ export default {
 
 <style lang="scss">
 
-@import '/css/toc.css';
-@import '/css/prism.css';
+@import '/vendor/toc.css';
+@import '/vendor/prism.css';
 
 #toc {
     position: -webkit-sticky;
