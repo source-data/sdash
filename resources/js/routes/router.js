@@ -7,6 +7,8 @@ import GroupGrid from "@/components/groups/GroupGrid";
 import GroupInfo from '@/components/groups/GroupInfo'
 import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
+import About from '@/views/About';
+import Api from '@/views/Api';
 
 Vue.use(Router)
 
@@ -52,6 +54,16 @@ export default new Router({
             name: "group",
             component: GroupInfo,
             props: true
+        },
+        {
+            path: "/about",
+            name: "about",
+            component: About
+        },
+        {
+            path: "/docs/api",
+            name: "api",
+            component: Api
         }
     ]
 });
