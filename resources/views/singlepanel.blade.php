@@ -51,7 +51,7 @@
                         @if ( !empty($tags) )
                         <div class="col-md">
 
-                            <h4>Structured Tags</h4>
+                            <h4>Keywords</h4>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -62,7 +62,7 @@
                                 <tbody>
                                     @if( isset($tags["methods"]) )
                                     <tr>
-                                        <td>Methods</td>
+                                        <td>Instruments / Methods</td>
                                         <td>
                                             @foreach($tags["methods"] as $item)
                                             <span class="badge badge-info">{{ $item->content }}</span>
@@ -72,7 +72,7 @@
                                     @endif
                                     @if( isset($tags["interventions"]) )
                                     <tr>
-                                        <td>Interventions</td>
+                                        <td>Controlled Variables</td>
                                         <td>
                                             @foreach($tags["interventions"] as $item)
                                             <span class="badge badge-danger">{{ $item->content }}</span>
@@ -82,7 +82,7 @@
                                     @endif
                                     @if( isset($tags["assays"]) )
                                     <tr>
-                                        <td>Assays</td>
+                                        <td>Measured Variables</td>
                                         <td>
                                             @foreach($tags["assays"] as $item)
                                             <span class="badge badge-primary">{{ $item->content }}</span>
@@ -92,7 +92,7 @@
                                     @endif
                                     @if( isset($tags["other"]) )
                                     <tr>
-                                        <td>Other Tags</td>
+                                        <td>General Keywords</td>
                                         <td>
                                             @foreach($tags["other"] as $item)
                                             <span class="badge badge-secondary">{{ $item->content }}</span>
@@ -107,12 +107,12 @@
 
                         <div class="col-md">
                             @if(!empty($panel["files"]->toArray()))
-                            <h4>Supplementary Materials</h4>
+                            <h4>Sources</h4>
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Link</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Filename / URL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
