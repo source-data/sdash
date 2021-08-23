@@ -48,9 +48,49 @@
                 <div class="card-body">
                     <p class="card-text">
                     <div class="row">
-                        @if ( !empty($tags) )
+                        @if(!empty($panel["files"]->toArray()))
                         <div class="col-md">
 
+                            <h4>Sources</h4>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Filename / URL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Attached Files</td>
+                                        <td>
+                                            <ul class="list-unstyled">
+                                                @foreach($panel["files"] as $file)
+                                                @if($file["type"]==="file")
+                                                <li class="sd-file-list"><a @if($token)href="/files/{{$file["id"]}}?token={{$token}}" @else href="/files/{{$file["id"]}}" @endif>{{ $file["original_filename"] }}</a>@if($file["description"]): {{ $file["description"]}} @endif</li>
+                                                @endif
+                                                @endforeach
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>External Resources</td>
+                                        <td>
+                                            <ul class="list-unstyled">
+                                                @foreach($panel["files"] as $file)
+                                                @if($file["type"]==="url")
+                                                <li><a href="{{$file["url"]}}">{{ $file["url"] }}</a>@if($file["description"]) - {{ $file["description"]}} @endif</li>
+                                                @endif
+                                                @endforeach
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @endif
+
+                        <div class="col-md">
+                            @if ( !empty($tags) )
                             <h4>Keywords</h4>
                             <table class="table">
                                 <thead>
@@ -100,46 +140,6 @@
                                         </td>
                                     </tr>
                                     @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        @endif
-
-                        <div class="col-md">
-                            @if(!empty($panel["files"]->toArray()))
-                            <h4>Sources</h4>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Filename / URL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Attached Files</td>
-                                        <td>
-                                            <ul class="list-unstyled">
-                                                @foreach($panel["files"] as $file)
-                                                @if($file["type"]==="file")
-                                                <li class="sd-file-list"><a @if($token)href="/files/{{$file["id"]}}?token={{$token}}" @else href="/files/{{$file["id"]}}" @endif>{{ $file["original_filename"] }}</a>@if($file["description"]): {{ $file["description"]}} @endif</li>
-                                                @endif
-                                                @endforeach
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>External Resources</td>
-                                        <td>
-                                            <ul class="list-unstyled">
-                                                @foreach($panel["files"] as $file)
-                                                @if($file["type"]==="url")
-                                                <li><a href="{{$file["url"]}}">{{ $file["url"] }}</a>@if($file["description"]) - {{ $file["description"]}} @endif</li>
-                                                @endif
-                                                @endforeach
-                                            </ul>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                             @endif
