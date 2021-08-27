@@ -1,8 +1,6 @@
 <template>
 
-<div v-if="hasUserGroups">
-    <group-listing :group_id="group_id"></group-listing>
-</div>
+<group-listing :group_id="group_id"></group-listing>
 
 </template>
 
@@ -29,10 +27,7 @@ export default {
             'isLoadingPanels',
             'hasPanels',
             'hasLoadedAllResults',
-            ]),
-        hasUserGroups () {
-            return this.confirmedUserGroups.length > 0
-        }
+            ])
 
     },
     created () {
