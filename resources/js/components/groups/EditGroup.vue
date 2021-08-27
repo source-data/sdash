@@ -212,7 +212,7 @@ export default {
                 members.push({
                     id: member.id,
                     admin: member.isGroupAdmin,
-                    status: member.pivot.status,
+                    status: member.pivot ? member.pivot.status : 'pending',
                 })
             })
 
