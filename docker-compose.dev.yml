@@ -6,7 +6,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./docker-compose/dev/app/Dockerfile
     image: digitalocean.com/php
     container_name: app
     restart: unless-stopped
@@ -34,7 +34,7 @@ services:
       - app-network
     volumes:
       - ./:/var/www
-      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./docker-compose/dev/nginx/conf.d/:/etc/nginx/conf.d/
 
   # MySQL Service
   db:
@@ -56,13 +56,13 @@ services:
       - app-network
     volumes:
       - dbdata:/var/lib/mysql
-      - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./docker-compose/dev/mysql/my.cnf:/etc/mysql/my.cnf
 
   # frontend
   frontend:
     build:
       context: .
-      dockerfile: ./frontend-docker/Dockerfile
+      dockerfile: ./docker-compose/dev/frontend/Dockerfile
     image: sdash_frontend
     volumes:
       - ./:/app
@@ -73,7 +73,7 @@ services:
 # secret passwords
 secrets:
   db_pwd:
-    file: ./mysql/root_password.txt
+    file: ./docker-compose/dev/mysql/root_password.txt
 
 # Docker Networks
 networks:
