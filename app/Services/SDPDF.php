@@ -66,13 +66,17 @@ class SDPDF extends TCPDF
         $this->setXY(10, 15);
         $this->MultiCell(0, 0, $this->title, 0, 'L');
 
-        $nextYPosition = $this->getY() + 2;
+        // if there are authors, write them to the file
+        if (!empty($this->authors)) {
 
-        // set start point on page for authors
-        $this->setXY(10, $nextYPosition);
+            $nextYPosition = $this->getY() + 2;
 
-        $this->SetFont('helvetica', 'I', '12');
-        $this->MultiCell(0, 0, $this->authors, 0, 'L');
+            // set start point on page for authors
+            $this->setXY(10, $nextYPosition);
+
+            $this->SetFont('helvetica', 'I', '12');
+            $this->MultiCell(0, 0, $this->authors, 0, 'L');
+        }
 
         $nextYPosition = $this->getY() + 10;
 
