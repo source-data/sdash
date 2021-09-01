@@ -4,7 +4,7 @@ import PanelGrid from '@/components/PanelGrid'
 import UserProfile from '@/components/users/UserProfile'
 import EditUser from '@/components/users/EditUser'
 import GroupGrid from "@/components/groups/GroupGrid";
-import GroupInfo from '@/components/groups/GroupInfo'
+import GroupListing from '@/components/groups/GroupListing'
 import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
 
@@ -50,7 +50,7 @@ export default new Router({
         {
             path: "/group/:group_id",
             name: "group",
-            component: GroupInfo,
+            component: GroupListing,
             props: true
         }
     ]
