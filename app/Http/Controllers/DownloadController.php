@@ -67,8 +67,10 @@ class DownloadController extends Controller
         try {
 
             $imagePath = $this->getImageFilePath($panel);
+            $authors = MergeAndSortAuthors::mergeAndSort($panel->authors->toArray(), $panel->externalAuthors->toArray());
+            $authorString = (count($authors) === 0) ? null : $this->authorsToString($authors);
 
-            $pdf = new SDPowerpoint(($panel->title) ? $panel->title : "", ($panel->caption) ? $panel->caption : "", $imagePath, $request->url());
+            $pdf = new SDPowerpoint(($panel->title) ? $panel->title : "", ($panel->caption) ? $panel->caption : "", $imagePath, $request->url(), $authorString);
 
             $pdf->generateAndReturn();
         } catch (\Exception $e) {

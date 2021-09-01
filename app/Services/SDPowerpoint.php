@@ -20,28 +20,30 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Illuminate\Support\Facades\Log;
 
-class SDPowerpoint {
+class SDPowerpoint
+{
 
     protected $title = '';
     protected $caption = '';
     protected $imagePath = '';
     protected $imageFormat = '';
+    protected $authors = '';
     protected $url = null;
     protected $document = null;
 
 
-    public function __construct(string $title, string $caption, string $imagePath, string $url = null, string $imageFormat = null)
+    public function __construct(string $title, string $caption, string $imagePath, string $url = null, string $authors = null, string $imageFormat = null)
     {
 
-        if(!file_exists($imagePath)) throw new Exception('Attempted to export from a non-existent image path', 500);
+        if (!file_exists($imagePath)) throw new Exception('Attempted to export from a non-existent image path', 500);
 
         $this->title = $title;
         $this->caption = $caption;
         $this->imagePath = $imagePath;
         if (isset($url)) $this->url = $url;
+        if (isset($authors)) $this->authors = $authors;
         $this->imageFormat = $imageFormat;
         $this->document = new PhpPresentation();
-
     }
 
     public function generateAndReturn()
@@ -53,16 +55,28 @@ class SDPowerpoint {
         // Create slide
         $currentSlide = $this->document->getActiveSlide();
 
-        // Create a shape (text)
+        // Create a shape (text) for the title
         $oShapeRichText = new RichText();
         $oShapeRichText->setWidth(800)
-            ->setHeight(80)
+            ->setHeight(40)
             ->setOffsetX(40)
             ->setOffsetY(40);
-        $oShapeRichText->getActiveParagraph()->getAlignment()->setHorizontal( Alignment::HORIZONTAL_LEFT );
+        $oShapeRichText->getActiveParagraph()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $textRun = $oShapeRichText->createTextRun($this->title);
         $textRun->getFont()->setBold(true)
-            ->setSize(18);
+            ->setSize(16);
+        $currentSlide->addShape($oShapeRichText);
+
+        // Create a shape (text) for the authors
+        $oShapeRichText = new RichText();
+        $oShapeRichText->setWidth(800)
+            ->setHeight(40)
+            ->setOffsetX(40)
+            ->setOffsetY(85);
+        $oShapeRichText->getActiveParagraph()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $textRun = $oShapeRichText->createTextRun($this->authors);
+        $textRun->getFont()->setBold(false)->setItalic(true)
+            ->setSize(14);
         $currentSlide->addShape($oShapeRichText);
 
 
@@ -85,7 +99,7 @@ class SDPowerpoint {
         $oShapeRichText->setWidth(800)
             ->setOffsetX(40)
             ->setOffsetY(560);
-        $oShapeRichText->getActiveParagraph()->getAlignment()->setHorizontal( Alignment::HORIZONTAL_LEFT );
+        $oShapeRichText->getActiveParagraph()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $textRun = $oShapeRichText->createTextRun($this->caption);
         $textRun->getFont()->setBold(false)
             ->setSize(12);
@@ -128,10 +142,5 @@ class SDPowerpoint {
         header("Content-Disposition: attachment; filename=\"{$this->title}.pptx\"");
 
         $oWriter->save('php://output');
-
-
     }
-
-
-
 }
