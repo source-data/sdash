@@ -263,7 +263,6 @@ export default {
     computed: {
         ...mapGetters([
             "currentUser",
-            'userGroups',
             'currentGroup',
             'isLoadingPanels',
             'hasPanels',
@@ -285,16 +284,12 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["removeUserFromGroup", "deleteUserGroup"]),
-        fetchData() {
-            this.$store.commit("clearLoadedPanels");
-            this.$store.commit("updateExpandedPanelId");
-            this.$store.commit("clearExpandedPanelDetail");
-            this.$store.commit("clearSearchCriteria");
-            this.$store.commit("setCurrentGroup", this.group_id);
-            if (this.$route.query.search)
-                this.$store.commit("setSearchString", this.$route.query.search);
-            this.$store.commit("setPanelLoadingState", true);
+        ...mapActions([
+            "removeUserFromGroup",
+            "deleteUserGroup",
+            "fetchCurrentGroup",    
+        ]),
+        fetchPanels() {
             store
                 .dispatch("fetchPanelList")
                 .then(response => {
@@ -350,7 +345,22 @@ export default {
         }
     },
     created() {
-        this.fetchData();
+        this.$store.commit("clearLoadedPanels");
+        this.$store.commit("updateExpandedPanelId");
+        this.$store.commit("clearExpandedPanelDetail");
+        this.$store.commit("clearSearchCriteria");
+        this.$store.commit("setSearchMode", "group");
+        if (this.$route.query.search)
+            this.$store.commit("setSearchString", this.$route.query.search);
+        this.$store.commit("setPanelLoadingState", true);
+        this.fetchCurrentGroup(this.group_id);
+    },
+
+    destroyed() {
+        // Make sure the dashboard or another group's detail view doesn't start out displaying this group's panels
+        this.$store.commit("clearLoadedPanels");
+        // Make sure another group's detail view doesn't start out displaying this group's info
+        this.$store.commit("setCurrentGroup", null);
     },
 
     mounted() {
@@ -364,8 +374,8 @@ export default {
         isSidebarExpanded(newStatus) {
             localStorage.setItem("isSidebarExpanded", newStatus);
         },
-        $route(to, from) {
-            this.fetchData();
+        currentGroup() {
+            this.fetchPanels();
         }
     }
 };

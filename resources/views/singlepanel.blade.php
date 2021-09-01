@@ -48,71 +48,15 @@
                 <div class="card-body">
                     <p class="card-text">
                     <div class="row">
-                        @if ( !empty($tags) )
+                        @if(!empty($panel["files"]->toArray()))
                         <div class="col-md">
 
-                            <h4>Structured Tags</h4>
+                            <h4>Sources</h4>
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Role</th>
-                                        <th scope="col">Tags</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if( isset($tags["methods"]) )
-                                    <tr>
-                                        <td>Methods</td>
-                                        <td>
-                                            @foreach($tags["methods"] as $item)
-                                            <span class="badge badge-info">{{ $item->content }}</span>
-                                            @endforeach
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    @if( isset($tags["interventions"]) )
-                                    <tr>
-                                        <td>Interventions</td>
-                                        <td>
-                                            @foreach($tags["interventions"] as $item)
-                                            <span class="badge badge-danger">{{ $item->content }}</span>
-                                            @endforeach
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    @if( isset($tags["assays"]) )
-                                    <tr>
-                                        <td>Assays</td>
-                                        <td>
-                                            @foreach($tags["assays"] as $item)
-                                            <span class="badge badge-primary">{{ $item->content }}</span>
-                                            @endforeach
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    @if( isset($tags["other"]) )
-                                    <tr>
-                                        <td>Other Tags</td>
-                                        <td>
-                                            @foreach($tags["other"] as $item)
-                                            <span class="badge badge-secondary">{{ $item->content }}</span>
-                                            @endforeach
-                                        </td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        @endif
-
-                        <div class="col-md">
-                            @if(!empty($panel["files"]->toArray()))
-                            <h4>Supplementary Materials</h4>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Link</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Filename / URL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,6 +84,62 @@
                                             </ul>
                                         </td>
                                     </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @endif
+
+                        <div class="col-md">
+                            @if ( !empty($tags) )
+                            <h4>Keywords</h4>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Role</th>
+                                        <th scope="col">Tags</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if( isset($tags["methods"]) )
+                                    <tr>
+                                        <td>Instruments / Methods</td>
+                                        <td>
+                                            @foreach($tags["methods"] as $item)
+                                            <span class="badge badge-info">{{ $item->content }}</span>
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                    @endif
+                                    @if( isset($tags["interventions"]) )
+                                    <tr>
+                                        <td>Controlled Variables</td>
+                                        <td>
+                                            @foreach($tags["interventions"] as $item)
+                                            <span class="badge badge-danger">{{ $item->content }}</span>
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                    @endif
+                                    @if( isset($tags["assays"]) )
+                                    <tr>
+                                        <td>Measured Variables</td>
+                                        <td>
+                                            @foreach($tags["assays"] as $item)
+                                            <span class="badge badge-primary">{{ $item->content }}</span>
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                    @endif
+                                    @if( isset($tags["other"]) )
+                                    <tr>
+                                        <td>General Keywords</td>
+                                        <td>
+                                            @foreach($tags["other"] as $item)
+                                            <span class="badge badge-secondary">{{ $item->content }}</span>
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                             @endif
