@@ -48,8 +48,10 @@ class DownloadController extends Controller
         try {
 
             $imagePath = $this->getImageFilePath($panel);
+            $authors = MergeAndSortAuthors::mergeAndSort($panel->authors->toArray(), $panel->externalAuthors->toArray());
+            $authorString = (count($authors) === 0) ? null : $this->authorsToString($authors);
 
-            $pdf = new SDPDF(($panel->title) ? $panel->title : "", ($panel->caption) ? $panel->caption : "", $imagePath);
+            $pdf = new SDPDF(($panel->title) ? $panel->title : "", ($panel->caption) ? $panel->caption : "", $imagePath, $authorString);
 
             $pdf->generateAndReturn();
         } catch (\Exception $e) {
@@ -233,5 +235,23 @@ class DownloadController extends Controller
     {
         $panel->load('image');
         return Storage::disk()->path($panel->save_path) . $panel->image->preview_filename;
+    }
+
+
+    protected function authorsToString(array $authors)
+    {
+        $authorCount = count($authors);
+
+        if ($authorCount === 0) {
+            return null;
+        }
+
+        $authorList = '';
+
+        foreach ($authors as $author) {
+            $authorList .= $author['firstname'] . ' ' . $author['surname'] . ', ';
+        }
+
+        return substr($authorList, 0, -2);
     }
 }
