@@ -30,6 +30,8 @@ MIX_SMART_TAG_URL=https://smtag.sourcedata.io/api/v1/tag
 
 ```
 
+For local deployment and development with docker and docker-compose see `docker-compose/docker_help.md`.
+
 ### Deployment
 
 Project deployment is in the process of being configured with [Deployer](https://deployer.org/).
