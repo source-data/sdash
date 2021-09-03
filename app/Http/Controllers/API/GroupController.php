@@ -86,7 +86,7 @@ class GroupController extends Controller
         }
 
         $newGroup->load(['confirmedUsers' => function ($query) {
-            $query->withPivot(['role','token', 'status']);
+            $query->withPivot(['role', 'token', 'status']);
         }])->loadCount(['confirmedUsers', 'panels']);
 
         return API::response(200, "Group created", $newGroup);
@@ -110,13 +110,34 @@ class GroupController extends Controller
             }])->loadCount(['users', 'panels']);
         } else {
             $group->load(['confirmedUsers' => function ($query) {
-                $query->withPivot(['role','token', 'status']);
+                $query->withPivot(['role', 'token', 'status']);
             }])->loadCount(['confirmedUsers', 'panels']);
         }
 
         return API::response(200, "Group loaded", $group);
     }
 
+    /**
+     * List only the public panels
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function listPublicGroups(Request $request)
+    {
+        $groups = Group::where('is_public', true)
+            ->with([
+                'administrators' => function ($query) {
+                    $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
+                },
+                'publicPanels' => function ($query) {
+                    $query->select(['panels.id', 'title', 'version']);
+                },
+            ])
+            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers'])
+            ->get();
+        return API::response(200, "A list of public groups", $groups);
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -196,7 +217,7 @@ class GroupController extends Controller
                 sprintf($responseMessage, $affectedPanelsCount, $ignoredPanelsCount),
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role','token', 'status']);
+                        $query->withPivot(['role', 'token', 'status']);
                     }])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => Panel::whereIn('id', $affectedPanelIds)->with(['accessToken', 'groups', 'tags', 'user', 'authors', 'externalAuthors'])->get()
                 ]
@@ -303,7 +324,7 @@ class GroupController extends Controller
                 "Panel Updated.",
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
-                        $query->withPivot(['role','token', 'status']);
+                        $query->withPivot(['role', 'token', 'status']);
                     }])->withCount(['confirmedUsers', 'panels'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
@@ -354,9 +375,9 @@ class GroupController extends Controller
 
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
         return API::response(200, "Group updated.", [
-                "group" => $user->groups()->where('groups.id', $group->id)->with(['confirmedUsers' => function ($query) {
-                    $query->withPivot(['role']);
-                }])->withCount(['confirmedUsers', 'panels'])->withPivot(["role", "status", "token"])->first()
+            "group" => $user->groups()->where('groups.id', $group->id)->with(['confirmedUsers' => function ($query) {
+                $query->withPivot(['role']);
+            }])->withCount(['confirmedUsers', 'panels'])->withPivot(["role", "status", "token"])->first()
         ]);
     }
 
@@ -365,14 +386,11 @@ class GroupController extends Controller
         $user = auth()->user();
 
         // a user can only remove themselves and only from the pending state
-        if($user && $group->users()->where('users.id', $user->id)->wherePivot("status", "pending")->wherePivot("token", $token)->exists() ) {
+        if ($user && $group->users()->where('users.id', $user->id)->wherePivot("status", "pending")->wherePivot("token", $token)->exists()) {
             $group->users()->detach($user->id);
             return API::response(200, "User removed from group.", []);
         } else {
             return API::response(403, "You cannot decline this group invitation.", []);
         }
     }
-
-
-
 }
