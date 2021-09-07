@@ -82,6 +82,5 @@ class AccessControlTest extends TestCase
         $response = $this->actingAs($user, 'api')->get('/dashboard');
 
         $response->assertStatus(200);
-        $response->assertSee($user->firstname . ' ' . $user->lastname);
     }
 }

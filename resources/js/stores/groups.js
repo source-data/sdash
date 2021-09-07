@@ -8,6 +8,41 @@ const state = {
 };
 
 const actions = {
+    /**
+     * Fetches all groups known to the user, i.e. all groups they are part of plus all public groups.
+     * 
+     * If one of these group categories has already been fetched it is not fetched again.
+     * 
+     * @param {*} vuex internals
+     * @returns a Promise that resolves when all necessary groups have been fetched.
+     */
+    fetchAllGroups({ dispatch, state }) {
+        const necessaryFetchActions = [],
+            // This a very basic heuristic for wether the groups have been fetched: are the lists empty? Seems to work
+            // for now but maybe add another state variable that is set when a group is fetched.
+            havePublicGroupsBeenFetched = state.publicGroups && state.publicGroups.length,
+            haveUserGroupsBeenFetched = state.userGroups && state.userGroups.length;
+        if (! havePublicGroupsBeenFetched) {
+            necessaryFetchActions.push(dispatch("fetchPublicGroups"));
+        }
+        if (! haveUserGroupsBeenFetched) {
+            necessaryFetchActions.push(dispatch("fetchCurrentUser"));
+        }
+        // Use the built-in Promise API to resolve when all fetch actions have completed. If the given list is empty
+        // the promise is resolved instantly.
+        return Promise.all(necessaryFetchActions);
+    },
+    /**
+     * Fetch and set the current group with the given group ID.
+     * 
+     * @param {*} vuex internals
+     * @param {*} group_id The ID of the current group.
+     * @returns a Promise that resolves when the current group has been set.
+     */
+    fetchCurrentGroup({ dispatch, commit }, group_id) {
+        return dispatch("fetchAllGroups")
+            .then(() => commit("setCurrentGroup", group_id));
+    },
     getGroupById(
         { commit, state, rootState },
         { group_id, unconfirmed_users }

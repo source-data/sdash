@@ -279,8 +279,11 @@ export default {
                 this.$router.push({path: '/'})
             }
         })
+    },
+    destroyed() {
+        // deselect all the panels we selected in beforeMount()
+        this.$store.commit('clearSelectedPanels');
     }
-
 }
 </script>
 

@@ -54,6 +54,11 @@ Vue.use(VueLazyload, {error:"/images/broken-image.jpg"})
 //create Avatars dynamically
 Vue.component('avatar', Avatar)
 
+// this is for easier external CSS manipulation of the website.
+router.beforeEach((to, _, next) => {
+  document.body.id = 'route-' + to.name;
+  next();
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

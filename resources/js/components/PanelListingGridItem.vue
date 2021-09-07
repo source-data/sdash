@@ -207,7 +207,7 @@ export default {
 </script>
 
 <style lang="scss">
-$sd-extra-height: 800; // info box height in pixels
+$sd-extra-height: 1200; // info box height in pixels
 
 .sd-grid-item {
     cursor: pointer;
