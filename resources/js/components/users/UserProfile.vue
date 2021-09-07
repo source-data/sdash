@@ -51,6 +51,9 @@
                     </template>
                 </dl>
             </template>
+            <template v-slot:footer>
+                <p>To delete your account, please send an email to <a :href="'mailto:sourcedata@embo.org'" target="_blank" class="pb-2">sourcedata@embo.org</a>.</p>
+            </template>
         </info-bar>
         <b-container v-if="loading" fluid class="mt-3">
             <b-row>
