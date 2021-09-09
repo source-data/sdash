@@ -46,13 +46,13 @@ jobs:
         composer update --no-ansi --no-interaction
         composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
+    - name: Create Database and User
+      run: mysql -e "CREATE DATABASE ${{ env.DB_NAME }}; CREATE USER '${{ env.DB_USER }}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASSWORD }}'; GRANT ALL ON ${{ env.DB_NAME }}.* TO '${{ env.DB_USER }}'@'localhost';" -u${{ env.DB_ROOT_USER }} -p${{ env.DB_ROOT_PASSWORD }}
+
     - name: Generate key and passport encryption keys
       run: |
         php artisan key:generate
         php artisan passport:install
-
-    - name: Create Database and User
-      run: mysql -e "CREATE DATABASE ${{ env.DB_NAME }}; CREATE USER '${{ env.DB_USER }}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASSWORD }}'; GRANT ALL ON ${{ env.DB_NAME }}.* TO '${{ env.DB_USER }}'@'localhost';" -u${{ env.DB_ROOT_USER }} -p${{ env.DB_ROOT_PASSWORD }}
 
     - name: Migrate Database
       run: php artisan migrate
