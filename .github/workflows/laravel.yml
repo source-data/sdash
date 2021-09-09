@@ -42,7 +42,9 @@ jobs:
       run: php -r "file_exists('.env.ci') || copy('.env.ci.example', '.env.ci');"
 
     - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      run: |
+        composer update --no-ansi --no-interaction
+        composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
     - name: Generate key and passport encryption keys
       run: |
