@@ -16,6 +16,7 @@ jobs:
           ubuntu-version: [18.04]
           redis-version: [6]
           php-version: [7.4]
+          node-version: [14]
 
     runs-on: ubuntu-${{ matrix.ubuntu-version }}
 
@@ -41,7 +42,7 @@ jobs:
     - name: Copy .env
       run: cp .env.ci .env
 
-    - name: Install Dependencies
+    - name: Install Backend Dependencies
       run: |
         composer update --no-ansi --no-interaction
         composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -56,6 +57,15 @@ jobs:
       run: |
         php artisan key:generate
         php artisan passport:install
+
+    - name: Set up npm
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+      
+    - name: Install Frontend Dependencies
+      run: npm install
 
     - name: Build frontend
       run: npm run production
