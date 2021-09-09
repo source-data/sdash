@@ -58,7 +58,7 @@ jobs:
         php artisan passport:install
 
     - name: Build frontend
-      run: npm run devcompile
+      run: npm run production
 
     - name: Run tests
       run: php artisan test
