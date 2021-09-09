@@ -15,7 +15,7 @@ jobs:
         matrix:
           ubuntu-version: [20.04]
           redis-version: [6]
-          php-version: [7]
+          php-version: [7.4]
 
     runs-on: ubuntu-${{ matrix.ubuntu-version }}
 
