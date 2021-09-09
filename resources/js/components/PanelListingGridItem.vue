@@ -6,9 +6,14 @@
     >
         <div class="sd-grid-image-container">
             <header class="sd-grid-item--image-header">
-                <span class="sd-grid-item--image-label">{{
+                <span class="sd-grid-item--image-label">
+                    <div class="sd-grid-item--image-title">{{
+                        thisPanel.title
+                    }}</div>
+                    <div class="sd-grid-item--image-first-author">{{
                     panelOwnerName
-                }}</span>
+                    }}</div>
+                </span>
                 <button
                     class="panel-select-button"
                     @click="toggleSelected"
