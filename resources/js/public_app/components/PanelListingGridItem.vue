@@ -16,7 +16,7 @@
                 tabindex="0"
                 :id="'scroll-anchor-' + panelId"
             >
-                <img class="sd-grid-image" v-lazy="thumbnailUrl" />
+                <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
             </div>
             <div class="css_arrow" v-if="isExpanded"></div>
         </div>
