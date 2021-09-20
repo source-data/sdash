@@ -170,7 +170,7 @@
                 </div>
                 @endif
                 <ul class="sd-single-panel-update-details list-group list-group-flush">
-                    <li class="list-group-item list-group-item-secondary"><Strong>Created:</Strong> {{$panel["created_at"]->format("d M Y h:m:s")}} | <strong>Last updated:</strong> {{$panel["updated_at"]->format("d M Y h:m:s")}}</li>
+                    <li class="list-group-item list-group-item-secondary"><Strong>Created:</Strong> {{$panel["created_at"]->format("d M Y h:m e")}} | <strong>Last updated:</strong> {{$panel["updated_at"]->format("d M Y h:m e")}}</li>
                 </ul>
             </figure>
         </div>
