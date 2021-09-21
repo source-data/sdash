@@ -58,6 +58,23 @@
 
         <h4 class="pt-2 pb-1">My Groups</h4>
         <div role="tablist" class="sd-group-list-wrapper">
+            <b-card class="mb-1" no-body>
+                <b-card-header
+                    header-tag="header"
+                    class="p-1"
+                    role="tab"
+                    >
+                    <router-link
+                        :to="{ name: 'creategroup' }"
+                        class="sd-filter-accordion-header create-group-link btn-block"
+                        variant="light"
+                        >
+                        Create New Group
+                        <font-awesome-icon icon="external-link-alt" />
+                    </router-link>
+                </b-card-header>
+            </b-card>
+
             <b-card
                 v-for="group in pendingUserGroups"
                 :key="group.id"
@@ -320,5 +337,9 @@ export default {
 .filter-author-list-item .close,
 .filter-keyword-list-item .close {
     font-size: 1.38rem;
+}
+
+.create-group-link {
+    padding: 0.75rem;
 }
 </style>
