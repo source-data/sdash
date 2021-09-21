@@ -8,7 +8,12 @@
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- drop uploader -->
-    <vue-full-screen-file-drop @drop='uploadPanel' formFieldName="file" text="Please drop a JPG, PNG, GIF, TIF or PDF file" v-if="!showAuthorSidebarModel"></vue-full-screen-file-drop>
+    <vue-full-screen-file-drop
+        @drop='uploadPanel'
+        formFieldName="file"
+        text="Please drop a JPG, PNG, GIF, TIF or PDF file"
+        v-if="panelDropEnabled">
+    </vue-full-screen-file-drop>
 
 
     <router-view></router-view>
@@ -115,6 +120,7 @@ export default {
         ...mapGetters([
             'currentUser',
             'currentGroup',
+            'mayAddPanelToGroup',
             'isLoggedIn',
             'isLightboxOpen',
             'expandedPanel',
@@ -130,6 +136,18 @@ export default {
         },
         hasAcceptedTerms() {
             return this.confCheckbox1 && this.confCheckbox2 && this.confCheckbox3;
+        },
+        panelDropEnabled() {
+            // Disallow file dropping if the sidebar to edit a panel's authors is open.
+            if (this.showAuthorSidebarModel) {
+                return false;
+            }
+            // Disallow file dropping if we're on a group's page and not allowed to add panels to it.
+            if (this.currentGroup && ! this.mayAddPanelToGroup) {
+                return false;
+            }
+            return true;
+
         }
 
     }, /* end of computed properties */

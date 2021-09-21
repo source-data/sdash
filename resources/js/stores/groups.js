@@ -290,7 +290,11 @@ const getters = {
         )
             ? true
             : false;
-    }
+    },
+    mayAddPanelToGroup(state, getters) {
+        // We're only allowed to add panels to a group if we're an owner or a member.
+        return getters.isGroupOwner || getters.isGroupMember;
+    },
 };
 
 export default {
