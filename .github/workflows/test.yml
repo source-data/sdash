@@ -76,4 +76,4 @@ jobs:
       run: php artisan serve --port 8080 &
 
     - name: Run frontend tests
-      run: npx nightwatch --env firefox,chrome
+      run: npx nightwatch --headless --env firefox,chrome
