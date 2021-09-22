@@ -10,7 +10,7 @@ env:
   DB_ROOT_PASSWORD: root
 
 jobs:
-  laravel-tests:
+  tests:
     strategy:
         matrix:
           ubuntu-version: [18.04]
@@ -73,7 +73,7 @@ jobs:
       run: php artisan test
 
     - name: Start the server for the frontend tests
-      run: php artisan serve --port 8080
+      run: php artisan serve --port 8080 &
 
     - name: Run frontend tests
       run: npx nightwatch --env firefox,chrome
