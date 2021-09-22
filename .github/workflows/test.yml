@@ -1,4 +1,4 @@
-name: SDash Tests
+name: SDash tests
 
 on: [push, pull_request]
 
@@ -69,5 +69,11 @@ jobs:
     - name: Build frontend
       run: npm run production
 
-    - name: Run tests
+    - name: Run backend tests
       run: php artisan test
+
+    - name: Start the server for the frontend tests
+      run: php artisan serve --port 8080
+
+    - name: Run frontend tests
+      run: npx nightwatch --env firefox,chrome

@@ -1,5 +1,5 @@
 describe('SDash Public Dashboard', function() {
-  const url_public_dashboard = 'http://localhost/'
+  const url_public_dashboard = 'http://localhost:8080/'
   const public_dashboard = (browser) => browser.url(url_public_dashboard)
 
   test('check that the basic navigation links & the search bar are present', function(browser) {
