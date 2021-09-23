@@ -31,7 +31,7 @@
                 @click="toggleExpanded"
                 tabindex="0"
             >
-                <img class="sd-grid-image" v-lazy="thumbnailUrl" />
+                <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
             </div>
             <footer
                 class="sd-grid-item--image-footer"

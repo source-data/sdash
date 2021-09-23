@@ -140,6 +140,7 @@
                         tabindex="0"
                         @click="openLightBox"
                         style="cursor:pointer"
+                        draggable="false"
                     />
                     <font-awesome-icon
                         @click="openLightBox"
