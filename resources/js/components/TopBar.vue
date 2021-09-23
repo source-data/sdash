@@ -1,9 +1,9 @@
 <template>
     <div class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
-        <a class="navbar-brand" :href="homeUrl">
+        <router-link class="nav-link navbar-brand" :to="{ name: 'dashboard'}">
             <font-awesome-icon icon="home" /> SDash
-        </a>
-        <search-bar :exclude-groups="isPublic"></search-bar>
+        </router-link>
+        <search-bar :exclude-groups="isGuest"></search-bar>
     </div>
 </template>
 
@@ -18,17 +18,19 @@ export default {
     },
 
     props: {
-        homeUrl: {
-            type: String,
-            required: true
-        },
-        isPublic: {
-            type: Boolean
+        user: {
+            type: Object
         }
     },
 
     data() {
         return {};
+    },
+
+    computed: {
+        isGuest() {
+            return this.user === undefined;
+        }
     }
 };
 </script>
@@ -41,5 +43,6 @@ export default {
 
 .navbar-brand {
     margin-right: 1rem;
+    padding-left: 0;
 }
 </style>

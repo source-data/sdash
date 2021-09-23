@@ -1,7 +1,7 @@
 <template>
 <div id="sdash-wrapper">
     <header>
-        <top-bar home-url="/" is-public></top-bar>
+        <top-bar></top-bar>
         <navigation-bar></navigation-bar>
     </header>
 

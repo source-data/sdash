@@ -1,12 +1,6 @@
-@extends('layouts.global')
-
-@section('header-scripts')
-<script src="{{ mix('js/main.js') }}" defer></script>
-@endsection
-
-@section('content')
+<template>
 <div class="container">
-    <div class="row" style="margin: 50px auto;">
+    <div class="row" style="margin: 10px auto;">
         <div class="col-md-8">
             <h2 class="pb-3 mb-4 border-bottom">
                 About
@@ -74,10 +68,26 @@
                             </div>
                         </a></li>
                     <li class="list-group-item"><a href="https://www.sib.swiss/"><img src="/images/logo_sib.png" alt="Swiss Institute of Bioinformatics" class="sd-sidebar--sib-logo"></a></li>
-                    <li class="list-group-item"><a href="https://substance.io/"><img src="/images/substance_logo.svg" alt="Substance - self-publish your research" class="sd-sidebar--substance-logo"></a></a></li>
+                    <li class="list-group-item"><a href="https://substance.io/"><img src="/images/substance_logo.svg" alt="Substance - self-publish your research" class="sd-sidebar--substance-logo"></a></li>
                 </ul>
             </div>
         </aside>
     </div>
 </div>
-@endsection
+</template>
+
+<script>
+export default {
+    name: 'About',
+    
+    data(){
+        return {
+
+        }
+    },
+}
+</script>
+
+<style lang="scss">
+
+</style>

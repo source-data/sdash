@@ -188,8 +188,8 @@
                         </template>
                         <template v-slot:footer>
                             <div class="sd-group-users mt-3">
-                                <h5>Group Members</h5>
-                                <div class="sd-group-user-icons-wrapper">
+                                <h5 v-if="isGroupMember">Group Members</h5>
+                                <div v-if="isGroupMember" class="sd-group-user-icons-wrapper">
                                     <group-user-icon
                                         v-for="user in currentGroup.confirmed_users"
                                         :user="user"
@@ -198,13 +198,18 @@
                                     ></group-user-icon>
                                 </div>
                                 <b-button
-                                    v-if="!isGroupMember"
+                                    v-if="!isGroupMember && !hasRequestedMembership"
                                     variant="outline-secondary"
                                     class="my-2"
+                                    :disabled="sendingMembershipRequest"
+                                    @click="applyToJoin"
                                 >
                                     <font-awesome-icon icon="plus" />
                                     Apply to Join
                                 </b-button>
+                                <b-alert show v-if="hasRequestedMembership" variant="primary">
+                                    Your request to join is pending approval
+                                </b-alert>
                             </div>
                         </template>
                     </info-bar>
@@ -222,7 +227,7 @@
                         ></panel-listing-grid>
                     </div>
                     <div v-if="!hasPanels && !isLoadingPanels">
-                        <b-alert show variant="danger" class="no-panel-alert"
+                        <b-alert show variant="danger" class="no-panel-alert mt-3"
                             >No Panels Found</b-alert
                         >
                     </div>
@@ -257,7 +262,8 @@ export default {
 
     data() {
         return {
-            isSidebarExpanded: true
+            isSidebarExpanded: true,
+            sendingMembershipRequest: false,
         };
     } /* end of data */,
     computed: {
@@ -269,7 +275,8 @@ export default {
             'hasLoadedAllResults',
             'isGroupAdmin',
             "isGroupOwner",
-            "isGroupMember"
+            "isGroupMember",
+            "hasRequestedMembership",
             ]),
         shouldShowMembershipRequest(){
             return (this.currentGroup && this.isGroupAdmin && this.currentGroup.requested_users_count)
@@ -315,6 +322,16 @@ export default {
             if (this.$refs["delete-group-popover"]) {
                 this.$refs["delete-group-popover"].$emit("close");
             }
+        },
+        applyToJoin() {
+            this.sendingMembershipRequest = true;
+            this.$store.dispatch("applyToJoin", {groupId: this.group_id})
+            .then(response => {
+                this.sendingMembershipRequest = false;
+                this.$snotify.success("Application Sent!", "OK")
+            }).catch(err => {
+                this.$snotify.error("Could not complete the action", "Sorry!")
+            })
         },
         quitGroup() {
             this.removeUserFromGroup(this.currentUser.id)
@@ -388,13 +405,6 @@ export default {
     justify-content: flex-start;
 }
 
-// .sd-group-visibility-icon-wrapper {
-//     display: inline-block;
-//     padding: 2px 8px 2px 4px;
-//     border: 1px solid rgba(0, 0, 0, 0.125);
-//     border-radius: 12px;
-// }
-
 .sd-filter-wrapper {
     flex: 0 0 300px;
     max-width: 300px;
@@ -420,13 +430,6 @@ export default {
     padding-right: 15px;
     transition: all 0.25s ease-in;
 }
-
-    .sd-group-visibility-icon-wrapper {
-        display: inline-block;
-        padding: 2px 8px 2px 8px;
-        border: 1px solid rgba(0, 0, 0, 0.125);
-        border-radius: 12px;
-    }
 
 .sidebar.collapsed {
     transform: translateX(-100%);

@@ -16,6 +16,7 @@ import Avatar from 'vue-avatar'
 import VueScrollTo from 'vue-scrollto'
 import ToggleButton from 'vue-js-toggle-button'
 import VueTagsInput from '@johmun/vue-tags-input'
+import LoadScript from 'vue-plugin-load-script';
 
 //set Axios base url
 window.axios.defaults.baseURL = process.env.MIX_PUBLIC_API_URL;
@@ -39,6 +40,8 @@ Vue.use(ToggleButton)
 // Add scroll to links behaviour
 Vue.use(VueScrollTo)
 
+// Include a method for injection of remote scripts
+Vue.use(LoadScript);
 
 // Add Fontawesome to the global Vue App
 library.add([faLink, faHome, faEdit, faSave, faCheck, faTrashAlt, faSearchPlus, faCopy, faPaste, faDownload, faPlus,

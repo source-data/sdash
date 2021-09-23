@@ -97,7 +97,7 @@ const actions = {
                 created_at: response.data.DATA.group.created_at,
                 confirmed_users: response.data.DATA.group.confirmed_users,
                 confirmed_users_count: response.data.DATA.group.confirmed_users_count,
-                requested_users_count:  response.data.DATA.group.requested_users_count,
+                requested_users_count: response.data.DATA.group.requested_users_count,
                 pivot: {
                     group_id: response.data.DATA.group.id,
                     role: "admin",
@@ -163,6 +163,15 @@ const actions = {
                 return response;
             }
         );
+    },
+    applyToJoin({ commit, state }, payload) {
+        return Axios.patch(
+            "/users/me/groups/" + payload.groupId + "/apply"
+        ).then(response => {
+            commit("addGroupToUserGroups", response.data.DATA.group);
+            commit("setCurrentGroupFromApi", response.data.DATA.group);
+            return response;
+        });
     },
     acceptGroupMembership({ commit, state }, payload) {
         return Axios.patch(
@@ -232,8 +241,18 @@ const getters = {
     publicGroups(state) {
         return state.publicGroups;
     },
-    confirmedUserGroups( state ) {
-        return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'confirmed' ).sort((firstItem, secondItem) => (secondItem.requested_users_count - firstItem.requested_users_count)) : null
+    confirmedUserGroups(state) {
+        if (!state.userGroups) {
+            return null;
+        }
+        return state.userGroups
+            .filter(group => group.pivot.status === "confirmed")
+            .sort((firstItem, secondItem) => {
+                return (
+                    secondItem.requested_users_count -
+                    firstItem.requested_users_count
+                );
+            });
     },
     userGroups(state) {
         return state.userGroups;
@@ -295,6 +314,12 @@ const getters = {
         // We're only allowed to add panels to a group if we're an owner or a member.
         return getters.isGroupOwner || getters.isGroupMember;
     },
+    hasRequestedMembership(state) {
+        if (!state.currentGroup || !state.currentGroup.pivot) {
+            return false;
+        }
+        return state.currentGroup.pivot.status === "requested";
+    }
 };
 
 export default {
