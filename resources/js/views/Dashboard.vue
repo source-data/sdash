@@ -156,7 +156,6 @@ export default {
         ...mapActions([
             'uploadNewPanel',
             'toggleLightbox',
-            'addSelectedPanelsToGroup',
         ]),
         methodName(){
             //do stuff here
@@ -168,15 +167,16 @@ export default {
                 if(this.currentGroup) {
                     this.$store.commit("clearSelectedPanels")
                     this.$store.commit("addPanelToSelections", response.data.DATA.id)
-                    this.addSelectedPanelsToGroup(this.currentGroup.id)
-                      .then(response => {
-                          this.$snotify.success("Panel added to this group", "Group updated")
-                      })
-                      .catch(error => {
-                          console.log(error)
-                          this.$snotify.error("Cannot add panel to this group", "Update failed")
-                      })
-
+                    this.$store.dispatch("manageGroupPanels", {
+                        action: "add",
+                        target: "selected",
+                        groupId: this.currentGroup.id
+                    }).then(response => {
+                        this.$snotify.success("Panel added to this group", "Group updated")
+                    }).catch(error => {
+                        console.log(error)
+                        this.$snotify.error("Cannot add panel to this group", "Update failed")
+                    })
                 }
                 })
                 .catch(error => {
