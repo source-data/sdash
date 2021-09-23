@@ -27,7 +27,7 @@ use Illuminate\Http\Request;
 */
 
 // authenticated routes
-Route::middleware(['auth:api', 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users/me', 'API\UserController@me');
