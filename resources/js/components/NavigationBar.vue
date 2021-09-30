@@ -1,22 +1,16 @@
 <template>
     <div class="main-navbar navbar navbar-expand-md">
-        <ul v-if="isGuest" class="main-menu navbar-nav mr-auto">
+        <ul class="main-menu navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">SmartFigures</a>
+                <router-link class="nav-link" :to="{ name: 'dashboard'}">{{
+                    isGuest ? 'SmartFigures' : 'My Dashboard'
+                }}</router-link>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
-            </li>
-        </ul>
-        <ul v-else class="main-menu navbar-nav mr-auto">
-            <li class="nav-item">
-                <router-link class="nav-link" :to="{ name: 'dashboard'}">My Dashboard</router-link>
-            </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="!isGuest">
                 <router-link class="nav-link" :to="{ name: 'groups'}">Groups</router-link>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
+                <router-link class="nav-link" :to="{ name: 'about'}">About</router-link>
             </li>
         </ul>
         <ul v-if="isGuest" class="user-menu navbar-nav ml-auto">
@@ -46,15 +40,7 @@
                     class="dropdown-menu dropdown-menu-right"
                     aria-labelledby="navbarDropdown"
                 >
-                    <a class="dropdown-item" href="/dashboard">
-                        My Dashboard
-                    </a>
-                    <a
-                        class="dropdown-item"
-                        :href="'/dashboard/user/' + user.id"
-                    >
-                        Profile
-                    </a>
+                    <router-link class="dropdown-item" :to="{path: 'user/' + user.id}">Profile</router-link>
                     <a
                         class="dropdown-item"
                         href="/logout"

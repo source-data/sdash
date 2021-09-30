@@ -55,22 +55,6 @@ class AccessControlTest extends TestCase
         $response->assertLocation('/login');
     }
     /**
-     * A logged out user should be able to see the about page.
-     *
-     * @return void
-     */
-    public function testUnauthenticatedUserCanAccessTheAboutPage()
-    {
-        $response = $this->get('/about');
-
-        $this->assertGuest();
-
-        $response->assertStatus(200);
-
-        $response->assertSee('About');
-    }
-
-    /**
      * A logged-in user should be able to access their dashboard
      *
      * @return void

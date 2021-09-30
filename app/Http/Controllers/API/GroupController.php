@@ -420,7 +420,16 @@ class GroupController extends Controller
             foreach ($groupAdmins as $groupAdmin) {
                 $groupAdmin->notify(new UserAppliedToJoinGroup($user, $group, $token));
             }
-            return API::response(200, "You have applied to join the group.", []);
+            return API::response(200, "You have applied to join the group.", [
+                "group" => $user->groups()
+                    ->where('groups.id', $group->id)
+                    ->with(['confirmedUsers' => function ($query) {
+                        $query->withPivot(['role']);
+                    }])
+                    ->withCount(['confirmedUsers', 'panels', 'requestedUsers'])
+                    ->withPivot(["role", "status", "token"])
+                    ->first()
+            ]);
         } catch (\App\Exceptions\UserAlreadyAppliedToGroupException $e) {
             return API::response(400, "You have  already applied to join the group.", []);
         } catch (\App\Exceptions\UserAlreadyInGroupException $e) {
