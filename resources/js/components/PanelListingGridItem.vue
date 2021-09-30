@@ -6,6 +6,9 @@
     >
         <div class="sd-grid-image-container">
             <header class="sd-grid-item--image-header">
+                <span class="sd-grid-item--image-label">{{
+                    panelOwnerName
+                }}</span>
                 <button
                     class="panel-select-button"
                     @click="toggleSelected"
@@ -62,17 +65,6 @@
                     title="Shared with group"
                 />
             </footer>
-        </div>
-
-        <div class="sd-grid-title-container">
-            <div class="sd-grid-item--image-title">{{
-                thisPanel.title
-            }}</div>
-
-            <div class="sd-grid-item--image-first-author">{{
-                panelOwnerName
-            }}</div>
-
             <div class="css_arrow" v-if="isExpanded"></div>
         </div>
 
@@ -215,9 +207,10 @@ export default {
 </script>
 
 <style lang="scss">
-$sd-extra-height: 1200; // info box height in pixels
+$sd-extra-height: 800; // info box height in pixels
 
 .sd-grid-item {
+    cursor: pointer;
     flex-grow: 1;
     box-sizing: border-box;
     height: 280px;
@@ -233,15 +226,7 @@ $sd-extra-height: 1200; // info box height in pixels
 }
 
 .sd-grid-image-container {
-    height: 75%;
-    position: relative;
-    background: rgb(166, 178, 198);
-    background: linear-gradient(145deg, #a6b2c6 31%, #8caeb5 98%);
-    padding: 12px;
-}
-
-.sd-grid-title-container {
-    height: 25%;
+    height: 100%;
     position: relative;
     background: rgb(166, 178, 198);
     background: linear-gradient(145deg, #a6b2c6 31%, #8caeb5 98%);
@@ -249,7 +234,6 @@ $sd-extra-height: 1200; // info box height in pixels
 }
 
 .sd-grid-image-container-inner {
-    cursor: pointer;
     height: 100%;
     width: 100%;
     display: flex;
@@ -369,6 +353,12 @@ $sd-extra-height: 1200; // info box height in pixels
     color:#634782;
 }
 
+.sd-grid-item--image-label,
+.panel-select-button {
+    position: absolute;
+    top: 6px;
+}
+
 .sd-grid-item--image-label {
     left: 6px;
     padding: 5px 10px;
@@ -378,16 +368,7 @@ $sd-extra-height: 1200; // info box height in pixels
     background-color: rgb(96, 125, 139);
 }
 
-.sd-grid-item--image-title,
-.sd-grid-item--image-first-author {
-    height: 50%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .panel-select-button {
-    position: absolute;
-    top: 6px;
     right: 6px;
     padding: 0;
     margin: 0;

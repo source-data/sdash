@@ -201,12 +201,6 @@
                             target="_blank">CC BY 4.0</a> license.
                     </span>
                 </div>
-                <div class="panel-detail-sharing-wrapper">
-                    <span>
-                        {{ commentCountTitle }}
-                    </span>
-                    <comment-list></comment-list>
-                </div>
             </b-col>
             <b-col class="sd-panel-detail-col sd-panel-detail-col--right">
                 <b-tabs
@@ -224,15 +218,17 @@
                             <smart-tags-panel></smart-tags-panel>
                         </b-card-text>
                     </b-tab>
+                    <b-tab title="Share">
+                        <b-card-text>
+                            <panel-access-links></panel-access-links>
+                        </b-card-text>
+                    </b-tab>
+                    <b-tab :title="commentCountTitle">
+                        <b-card-text>
+                            <comment-list></comment-list>
+                        </b-card-text>
+                    </b-tab>
                 </b-tabs>
-
-                <div class="panel-detail-sharing-wrapper">
-                    <span>
-                        Share
-                    </span>
-
-                    <panel-access-links></panel-access-links>
-                </div>
 
                 <div class="sd-panel-detail--panel-actions">
                     <b-button

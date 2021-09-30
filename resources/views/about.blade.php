@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div id="content-about-page" class="container">
+<div class="container">
     <div class="row" style="margin: 50px auto;">
         <div class="col-md-8">
             <h2 class="pb-3 mb-4 border-bottom">

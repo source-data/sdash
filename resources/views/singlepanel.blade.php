@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div id="content-singlepanel-page" class="container">
+<div class="container">
     <div class="row pt-4">
         <div class="col-sm">
             <h1>{{ $panel["title"] }}</h1>
