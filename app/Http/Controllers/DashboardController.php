@@ -15,7 +15,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return (Auth::user()->hasVerifiedEmail()) ? view('dashboard') : view('auth.verify');
+        // return (Auth::user()->hasVerifiedEmail()) ? view('dashboard') : view('auth.verify');
+        return view('dashboard');
     }
 
 

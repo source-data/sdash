@@ -26,8 +26,11 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::post('/login', 'API\Authentication\LoginController@login');
+
 // authenticated routes
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
     Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users/me', 'API\UserController@me');
