@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import router from './routes/router'
 import store from './stores/store'
-import Dashboard from './views/Dashboard'
+import Application from './views/Application'
 import BootstrapVue from 'bootstrap-vue'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
 import './bootstrap';
@@ -64,6 +64,6 @@ if(document.getElementById("dashboard")) {
   const app = new Vue({
       router,
       store,
-      render: h => h(Dashboard)
+      render: h => h(Application)
   }).$mount('#dashboard');
 }

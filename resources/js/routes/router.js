@@ -7,17 +7,23 @@ import GroupGrid from "@/components/groups/GroupGrid";
 import GroupListing from '@/components/groups/GroupListing'
 import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
+import LoginForm from '@/components/authentication/LoginForm'
 
 Vue.use(Router)
 
 export default new Router({
     mode: "history",
-    base: "/dashboard/",
+    base: "/",
     routes: [
         {
             path: "/",
             name: "dashboard",
             component: PanelGrid
+        },
+        {
+            path: "/login",
+            name: "login",
+            component: LoginForm
         },
         {
             path: "/user/:user_id",
