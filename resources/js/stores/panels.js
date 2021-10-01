@@ -244,6 +244,9 @@ const actions = {
 };
 
 const mutations = {
+    clearPanels(state) {
+        state = Object.assign(state, defaultState);
+    },
     setPanelLoadingState(state, value) {
         state.loading = value;
     },

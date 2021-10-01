@@ -2,7 +2,7 @@
 <div id="sdash-wrapper">
     <header>
         <top-bar home-url="/"></top-bar>
-        <navigation-bar v-if="isLoggedIn" :user="currentUser"></navigation-bar>
+        <navigation-bar :user="currentUser"></navigation-bar>
     </header>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>

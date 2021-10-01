@@ -15,7 +15,14 @@
                             :state="emailCheck"
                             :disabled="loading"
                         >
-                        <b-form-input id="login-email" v-model="email" :state="emailCheck" debounce="500" trim></b-form-input>
+                        <b-form-input
+                        id="login-email"
+                        v-model="email"
+                        autocomplete="username"
+                        :state="emailCheck"
+                        debounce="500"
+                        trim
+                        ></b-form-input>
                         </b-form-group>
                         <b-form-group
                             id="password-fieldset"
@@ -25,7 +32,9 @@
                             :state="passwordCheck"
                             :disabled="loading"
                         >
-                            <b-form-input id="login-password" v-model="password" :state="passwordCheck"                             type="password"
+                            <b-form-input id="login-password" v-model="password"
+                            autocomplete="current-password"
+                            :state="passwordCheck"                             type="password"
                             debounce="500" trim>
                             </b-form-input>
                         </b-form-group>
@@ -50,6 +59,7 @@
 
 import AuthService from '@/services/AuthService';
 import store from '@/stores/store';
+import { mapGetters } from 'vuex';
 
 export default {
 
@@ -70,6 +80,7 @@ export default {
 
     }, /* end of data */
     computed: {
+        ...mapGetters(['currentUser']),
         emailCheck(){
             this.emailFeedback = '';
             this.loginFeedback = '';
@@ -106,11 +117,9 @@ export default {
     methods:{ //run as event handlers, for example
 
         sendLogin() {
-            let that = this;
             this.loading = true;
             let destination = this.$route.query.next || 'dashboard';
             AuthService.login(this.email, this.password).then((loginData) => {
-
                 this.loading = false;
                 this.$snotify.success(loginData.MESSAGE, "OK!");
                 store.dispatch('fetchCurrentUser')
@@ -124,16 +133,16 @@ export default {
                         this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
                     });
                 this.$router.push({name:destination});
-            }).catch((errorData) => {
+            }).catch((errorData) => { console.log(errorData);
                 this.loading = false;
 
                 if(errorData.message) {
                     this.$snotify.error(errorData.message, "Login Failed");
                 }
-                if(errorData.errors.email) {
+                if(errorData.errors && errorData.errors.email) {
                     this.loginFeedback = errorData.errors.email.join(' ');
                 }
-                if(errorData.errors.password) {
+                if(errorData.errors && errorData.errors.password) {
                     this.loginFeedback = errorData.errors.password.join(' ');
                 }
             });

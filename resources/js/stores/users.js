@@ -1,21 +1,24 @@
 import Axios from "axios"
 
+//default user state
+const defaultUserState = {
+    id: null,
+    email: null,
+    firstname: null,
+    surname: null,
+    role: null,
+    insitution_name: null,
+    institution_address: null,
+    department_name: null,
+    linkedin: null,
+    twitter: null,
+    orcid: null,
+    has_consented: null,
+}
+
 //initial state
 const state = {
-    user: {
-        id: null,
-        email: null,
-        firstname: null,
-        surname: null,
-        role: null,
-        insitution_name: null,
-        institution_address: null,
-        department_name: null,
-        linkedin: null,
-        twitter: null,
-        orcid: null,
-        has_consented: null,
-    },
+    user: Object.assign({}, defaultUserState),
 
 }
 
@@ -61,7 +64,10 @@ const mutations = {
             orcid: user.orcid,
             has_consented: user.has_consented,
         };
-    }
+    },
+    expireCurrentUser(state) {
+        state.user = Object.assign({}, defaultUserState);
+    },
 }
 
 const getters = {

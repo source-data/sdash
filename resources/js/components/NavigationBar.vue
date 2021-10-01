@@ -57,20 +57,11 @@
                     </a>
                     <a
                         class="dropdown-item"
-                        href="/logout"
-                        onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                        href="#"
+                        @click.prevent="logOut"
                     >
                         Logout
                     </a>
-
-                    <form
-                        id="logout-form"
-                        action="/logout"
-                        method="POST"
-                        style="display: none;"
-                    >
-                        <input type="hidden" name="_token" :value="csrf" />
-                    </form>
                 </div>
             </li>
         </ul>
@@ -78,6 +69,9 @@
 </template>
 
 <script>
+import AuthService from '@/services/AuthService';
+import {mapMutations} from 'vuex';
+
 export default {
     name: "NavigationBar",
 
@@ -89,18 +83,32 @@ export default {
 
     data() {
         return {
-            csrf: document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content")
+            // csrf: document
+            //     .querySelector('meta[name="csrf-token"]')
+            //     .getAttribute("content")
         };
     },
 
     computed: {
         isGuest() {
-            return this.user === undefined;
+            return this.user.id === null;
         },
         fullName() {
             return this.isGuest ? '' : (this.user.firstname + ' ' + this.user.surname);
+        }
+    },
+    methods: {
+        ...mapMutations(['expireCurrentUser', 'clearPanels', 'clearGroups']),
+        logOut() {
+            AuthService.logout().then(response => {
+                this.expireCurrentUser();
+                this.clearPanels();
+                this.clearGroups();
+                this.$router.push('/');
+            }).catch(error=>{
+                console.log('!!!!', error);
+                this.$snotify.error("Could not log you out due to an error.","Error!");
+            });
         }
     }
 };

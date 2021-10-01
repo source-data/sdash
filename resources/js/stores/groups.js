@@ -10,9 +10,9 @@ const state = {
 const actions = {
     /**
      * Fetches all groups known to the user, i.e. all groups they are part of plus all public groups.
-     * 
+     *
      * If one of these group categories has already been fetched it is not fetched again.
-     * 
+     *
      * @param {*} vuex internals
      * @returns a Promise that resolves when all necessary groups have been fetched.
      */
@@ -34,7 +34,7 @@ const actions = {
     },
     /**
      * Fetch and set the current group with the given group ID.
-     * 
+     *
      * @param {*} vuex internals
      * @param {*} group_id The ID of the current group.
      * @returns a Promise that resolves when the current group has been set.
@@ -186,6 +186,11 @@ const actions = {
 };
 
 const mutations = {
+    clearGroups(state) {
+        state.publicGroups = [];
+       state.userGroups = [];
+        state.currentGroup = null;
+    },
     setPublicGroups(state, groups) {
         state.publicGroups = groups;
     },
