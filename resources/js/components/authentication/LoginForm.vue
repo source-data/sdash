@@ -118,12 +118,14 @@ export default {
 
         sendLogin() {
             this.loading = true;
-            let destination = this.$route.query.next || 'dashboard';
+            let destination = this.$route.query.next || '/';
             AuthService.login(this.email, this.password).then((loginData) => {
                 this.loading = false;
                 this.$snotify.success(loginData.MESSAGE, "OK!");
                 store.dispatch('fetchCurrentUser')
                     .then(() => {
+                        this.$router.push({path:destination}).catch(error => {});
+
                         if (!this.currentUser.has_consented) {
                             this.showConsentModal();
                         }
@@ -132,7 +134,6 @@ export default {
                         console.log(error)
                         this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
                     });
-                this.$router.push({name:destination});
             }).catch((errorData) => { console.log(errorData);
                 this.loading = false;
 

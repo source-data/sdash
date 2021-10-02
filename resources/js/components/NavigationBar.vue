@@ -104,9 +104,9 @@ export default {
                 this.expireCurrentUser();
                 this.clearPanels();
                 this.clearGroups();
-                this.$router.push('/');
+                if(this.$route.path !== '/') this.$router.push('/');
             }).catch(error=>{
-                console.log('!!!!', error);
+                console.log(error);
                 this.$snotify.error("Could not log you out due to an error.","Error!");
             });
         }

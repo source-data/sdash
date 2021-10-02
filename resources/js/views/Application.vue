@@ -17,6 +17,7 @@
 import TopBar from '@/components/TopBar'
 import NavigationBar from '@/components/NavigationBar'
 import { mapGetters, mapActions } from 'vuex';
+import queryStringDehasher from '@/services/queryStringDehasher';
 
 export default {
 
@@ -37,13 +38,27 @@ export default {
             'isLoggedIn',
         ]),
     },
-    methods:{ //run as event handlers, for example
+    methods: {
+        ...mapActions(['fetchCurrentUser']),
+    },
+    created(){
+        let query = queryStringDehasher(this.$route)
+        if(query) this.$store.commit("setSearchString", query)
+        this.fetchCurrentUser()
+            .then(() => {
+                if (!this.currentUser.has_consented) {
+                    this.showConsentModal();
+                }
+            })
+            .catch((error) => {
+                if(error.status === 401) {
+                    console.log('No logged-in user found.');
+                } else {
+                    this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
+                }
+            });
+    },
 
-        methodName(){
-            //do stuff here
-        }
-
-    }
 
 }
 </script>
