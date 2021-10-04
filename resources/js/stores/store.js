@@ -22,6 +22,7 @@ export default new Vuex.Store({
     lightboxOpen: false,
     searchMode: 'user',
     showAuthorSidebar: false,
+    applicationLoaded: false,
   },
   getters: {
     isLightboxOpen(state) {
@@ -32,6 +33,9 @@ export default new Vuex.Store({
     },
     showAuthorSidebar(state){
       return state.showAuthorSidebar
+    },
+    applicationIsLoaded(state){
+      return state.applicationLoaded
     }
 
    },
@@ -50,6 +54,9 @@ export default new Vuex.Store({
     },
     setAuthorSidebar(state, value) {
       state.showAuthorSidebar = value
+    },
+    setApplicationLoaded(state, value) {
+      state.applicationLoaded = value;
     }
 
   }
