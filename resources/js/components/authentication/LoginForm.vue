@@ -72,6 +72,7 @@ export default {
         return {
             email: '',
             password: '',
+            remember: false,
             emailFeedback: '',
             passwordFeedback: '',
             loginFeedback: '',
@@ -151,6 +152,11 @@ export default {
 
         },
 
+    },
+    created() {
+        if(this.isLoggedIn) {
+            this.$router.push('/');
+        }
     }
 
 }
