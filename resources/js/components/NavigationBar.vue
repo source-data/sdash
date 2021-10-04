@@ -21,10 +21,10 @@
         </ul>
         <ul v-if="isGuest" class="user-menu navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
+                <router-link class="nav-link" :to="{ name: 'login'}">Log in</router-link>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/register">Register</a>
+                <router-link class="nav-link" :to="{ name: 'register'}">Register</router-link>
             </li>
         </ul>
         <ul v-else class="user-menu navbar-nav ml-auto">
@@ -46,15 +46,8 @@
                     class="dropdown-menu dropdown-menu-right"
                     aria-labelledby="navbarDropdown"
                 >
-                    <a class="dropdown-item" href="/dashboard">
-                        My Dashboard
-                    </a>
-                    <a
-                        class="dropdown-item"
-                        :href="'/dashboard/user/' + user.id"
-                    >
-                        Profile
-                    </a>
+                <router-link class="dropdown-item" :to="{ name: 'dashboard'}">My dashboard</router-link>
+                <router-link class="dropdown-item" :to="{ path: '/user/' + user.id }">My profile</router-link>
                     <a
                         class="dropdown-item"
                         href="#"
