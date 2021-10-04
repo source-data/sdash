@@ -6,8 +6,17 @@
     </header>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
+    <!-- loading placeholder while checking for login -->
+    <div v-if="!applicationIsLoaded" class="text-center">
+        <b-spinner
+            variant="primary"
+            label="Spinning"
+            class="m-5"
+            style="width: 4rem; height: 4rem;"
+        ></b-spinner>
+    </div>
     <!-- vue router mounts components here -->
-    <router-view></router-view>
+    <router-view v-if="applicationIsLoaded"></router-view>
 
 </div>
 
@@ -16,7 +25,7 @@
 <script>
 import TopBar from '@/components/TopBar'
 import NavigationBar from '@/components/NavigationBar'
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 
 export default {
@@ -36,10 +45,12 @@ export default {
         ...mapGetters([
             'currentUser',
             'isLoggedIn',
+            'applicationIsLoaded',
         ]),
     },
     methods: {
         ...mapActions(['fetchCurrentUser']),
+        ...mapMutations(['setApplicationLoaded']),
     },
     created(){
         let query = queryStringDehasher(this.$route)
@@ -49,6 +60,7 @@ export default {
                 if (!this.currentUser.has_consented) {
                     this.showConsentModal();
                 }
+                this.setApplicationLoaded(true);
             })
             .catch((error) => {
                 if(error.status === 401) {
@@ -56,6 +68,7 @@ export default {
                 } else {
                     this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
                 }
+                this.setApplicationLoaded(true);
             });
     },
 
