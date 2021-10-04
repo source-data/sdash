@@ -38,9 +38,20 @@
                             debounce="500" trim>
                             </b-form-input>
                         </b-form-group>
+                        <b-form-group
+                            id="remember-input-group"
+                        >
+                        <b-form-checkbox
+                            id="sd-remember-checkbox"
+                            v-model="remember"
+                            name="remember"
+                        >Remember me</b-form-checkbox>
+
+                        </b-form-group>
                         <b-form-invalid-feedback force-show v-if="showInvalidFormFeedback">
                             {{loginFeedback}}
                         </b-form-invalid-feedback>
+
                         <b-button
                         :disabled="submitDisabled"
                         type="submit"
@@ -120,7 +131,7 @@ export default {
         sendLogin() {
             this.loading = true;
             let destination = this.$route.query.next || '/';
-            AuthService.login(this.email, this.password).then((loginData) => {
+            AuthService.login(this.email, this.password, this.remember).then((loginData) => {
                 this.loading = false;
                 this.$snotify.success(loginData.MESSAGE, "OK!");
                 store.dispatch('fetchCurrentUser')

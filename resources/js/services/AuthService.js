@@ -7,9 +7,9 @@ const AuthService = {
    * @param {string} password
    * @returns Promise
    */
-  async login(email, password) {
+  async login(email, password, remember = false) {
     try {
-      let loginTransaction = await this.executeAuthMethod('/login', {email, password});
+      let loginTransaction = await this.executeAuthMethod('/login', {email, password, remember});
       return loginTransaction.data;
     } catch (error) {
       throw(error.data);
