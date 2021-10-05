@@ -1,5 +1,5 @@
 <template>
-  <section id="login-page">
+  <section id="sd-login-page">
     <b-container class="mt-5">
         <b-row align-h="center">
             <b-col cols md="6">

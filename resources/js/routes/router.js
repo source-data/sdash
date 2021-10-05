@@ -10,6 +10,7 @@ import GroupListing from '@/components/groups/GroupListing'
 import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
 import LoginForm from '@/components/authentication/LoginForm'
+import RegistrationForm from '@/components/authentication/RegistrationForm'
 
 Vue.use(Router)
 
@@ -29,6 +30,14 @@ const router = new Router({
             path: "/login",
             name: "login",
             component: LoginForm,
+            meta: {
+                access: UserLevels.GUEST
+            },
+        },
+        {
+            path: "/register",
+            name: "register",
+            component: RegistrationForm,
             meta: {
                 access: UserLevels.GUEST
             },
