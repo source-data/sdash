@@ -21,7 +21,14 @@ const AuthService = {
       return logoutTransaction.data;
 
   },
-
+  async register(userDetails) {
+    try {
+      let loginTransaction = await this.executeAuthMethod('/register', userDetails);
+      return loginTransaction.data;
+    } catch (error) {
+      throw(error.data);
+    }
+  },
   async executeAuthMethod(apiEndpoint, params = {}) {
     await Axios.get("/csrf-cookie");
     let response = await Axios.post(apiEndpoint, params);

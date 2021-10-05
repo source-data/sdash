@@ -251,6 +251,9 @@ export default {
                 || this.emailCheck !== true
                 || this.passwordCheck !== true
                 || this.passwordRepeatCheck !== true
+                || this.acceptConditions !== true
+                || this.acceptConsent !== true
+                || this.acceptPermissions !== true
             ) return true;
             return false;
         },
@@ -288,6 +291,25 @@ export default {
     },
     methods:{
         sendRegistration() {
+            this.formDisabled = true;
+            const newRegistration = {
+                firstName: this.firstName,
+                surname: this.surname,
+                email: this.email,
+                password1: this.password1,
+                password2: this.password2,
+                orcid: this.orcid,
+                institutionName: this.institutionName,
+                institutionAddress: this.institutionAddress,
+                department: this.department,
+                linkedIn: this.linkedIn,
+                twitter: this.twitter,
+                acceptConditions: this.acceptConditions,
+                acceptConsent: this.acceptConsent,
+                acceptPermissions: this.acceptPermissions,
+            };
+
+
 
         }
     },
