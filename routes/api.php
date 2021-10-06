@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 
 Route::post('/login', 'API\Authentication\LoginController@login');
 Route::post('/logout', 'API\Authentication\LoginController@logout');
+Route::post('/users', 'API\Authentication\RegistrationController@register');
 
 // authenticated routes
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {

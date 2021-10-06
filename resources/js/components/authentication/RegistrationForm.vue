@@ -2,7 +2,7 @@
   <section id="sd-registration-page">
     <b-container class="mt-5">
         <b-row align-h="center">
-            <b-col cols md="8">
+            <b-col cols sm="10" md="8">
                 <b-card header="Register a new account">
                     <b-form
                         @submit.prevent="sendRegistration"
@@ -212,6 +212,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import AuthService from '@/services/AuthService';
 
 export default {
 
@@ -235,9 +236,16 @@ export default {
             acceptConditions: false,
             acceptConsent: false,
             acceptPermissions: false,
+            firstNameFeedback: '',
+            surnameFeedback: '',
             emailFeedback: '',
             password1Feedback: '',
             password2Feedback: '',
+            orcidFeedback: '',
+            institutionNameFeedback: '',
+            institutionAddressFeedback: '',
+            departmentFeedback: '',
+
         }
 
     }, /* end of data */
@@ -270,8 +278,8 @@ export default {
         passwordCheck(){
             this.password1Feedback = '';
             if(!this.password1) return null;
-            if(this.password1.length < 6){
-                this.password1Feedback = 'Password must be at least 6 characters';
+            if(this.password1.length < 8){
+                this.password1Feedback = 'Password must be at least 8 characters';
                 return false;
             }
             return true;
@@ -293,21 +301,30 @@ export default {
         sendRegistration() {
             this.formDisabled = true;
             const newRegistration = {
-                firstName: this.firstName,
+                firstname: this.firstName,
                 surname: this.surname,
                 email: this.email,
-                password1: this.password1,
-                password2: this.password2,
+                password: this.password1,
+                password_confirmation: this.password2,
                 orcid: this.orcid,
-                institutionName: this.institutionName,
-                institutionAddress: this.institutionAddress,
-                department: this.department,
-                linkedIn: this.linkedIn,
+                institution_name: this.institutionName,
+                institution_address: this.institutionAddress,
+                department_name: this.department,
+                linkedin: this.linkedIn,
                 twitter: this.twitter,
-                acceptConditions: this.acceptConditions,
-                acceptConsent: this.acceptConsent,
-                acceptPermissions: this.acceptPermissions,
+                confirmation: [
+                    this.acceptConditions,
+                    this.acceptConsent,
+                    this.acceptPermissions,
+                ]
             };
+            AuthService.register(newRegistration).then(response => {
+                this.formDisabled = false;
+                console.log(response);
+            }).catch(error => {
+                this.formDisabled = false;
+                console.log(error);
+            });
 
 
 

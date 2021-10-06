@@ -23,7 +23,7 @@ const AuthService = {
   },
   async register(userDetails) {
     try {
-      let loginTransaction = await this.executeAuthMethod('/register', userDetails);
+      let loginTransaction = await this.executeAuthMethod('/users', userDetails);
       return loginTransaction.data;
     } catch (error) {
       throw(error.data);
