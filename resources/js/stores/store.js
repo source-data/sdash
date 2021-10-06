@@ -6,6 +6,7 @@ import Comments from './comments'
 import Files from './files'
 import Tags from './tags'
 import Groups from './groups'
+import Axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     searchMode: 'user',
     showAuthorSidebar: false,
     applicationLoaded: false,
+    showEmailConfirmationNotice: false,
   },
   getters: {
     isLightboxOpen(state) {
@@ -36,12 +38,20 @@ export default new Vuex.Store({
     },
     applicationIsLoaded(state){
       return state.applicationLoaded
-    }
+    },
+    showEmailConfirmationNotice(state){
+      return state.showEmailConfirmationNotice;
+    },
 
    },
   actions: {
     toggleLightbox({commit}){
       commit("toggleLightbox")
+    },
+    resendEmail({commit}){
+      return Axios.post('emails').then(response => {
+        commit("setEmailConfirmationNotice", false);
+      });
     },
 
   },
@@ -57,6 +67,9 @@ export default new Vuex.Store({
     },
     setApplicationLoaded(state, value) {
       state.applicationLoaded = value;
+    },
+    setEmailConfirmationNotice(state, value) {
+      state.showEmailConfirmationNotice = value;
     }
 
   }

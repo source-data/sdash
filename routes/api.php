@@ -30,6 +30,12 @@ Route::post('/login', 'API\Authentication\LoginController@login');
 Route::post('/logout', 'API\Authentication\LoginController@logout');
 Route::post('/users', 'API\Authentication\RegistrationController@register');
 
+// special route for resending auth email. User must be logged in
+// but not verified
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('emails', 'Auth\VerificationController@resend')->name('verification.resend');
+});
+
 // authenticated routes
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 

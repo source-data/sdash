@@ -13,14 +13,10 @@
 
 // Auth::routes(['verify' => true]);
 
-// Route::get('/', 'WelcomeController@index');
-// Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
-// Route::get('/', 'DashboardController@showPublicDashboard')->name('public.dashboard');
-// Route::get('/public/{vue?}', 'DashboardController@showPublicDashboard')->where('vue', '[\/\w\.-]*');
-// Route::get('/about', 'WelcomeController@about');
-// Route::get('/docs', 'WelcomeController@docs');
-// Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
-// Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*')->middleware('auth');
+// Necessary routes for the registration and email verification process
+Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
+
+
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
 // Special single panel route

@@ -4,6 +4,7 @@
         <top-bar home-url="/"></top-bar>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
+    <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- loading placeholder while checking for login -->
@@ -25,32 +26,25 @@
 <script>
 import TopBar from '@/components/TopBar'
 import NavigationBar from '@/components/NavigationBar'
+import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 
 export default {
 
     name: 'Application',
-    components: {TopBar, NavigationBar },
-    props: [''],
-
-    data(){
-
-        return {
-
-        }
-
-    }, /* end of data */
+    components: {TopBar, NavigationBar, EmailConfirmationNotice },
     computed: {
         ...mapGetters([
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
+            'showEmailConfirmationNotice',
         ]),
     },
     methods: {
         ...mapActions(['fetchCurrentUser']),
-        ...mapMutations(['setApplicationLoaded']),
+        ...mapMutations(['setApplicationLoaded', 'setEmailConfirmationNotice']),
     },
     created(){
         let query = queryStringDehasher(this.$route)
@@ -65,6 +59,8 @@ export default {
             .catch((error) => {
                 if(error.status === 401) {
                     console.log('No logged-in user found.');
+                } else if (error.status === 403 && error.data.message === 'Your email address is not verified.') {
+                    this.setEmailConfirmationNotice(true);
                 } else {
                     this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
                 }

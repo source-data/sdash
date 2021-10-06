@@ -41,7 +41,7 @@
                             label-for="sd-register__email"
                             label-cols-sm="4"
                             label-align-sm="right"
-                            :invalid-feedback="emailFeedback"
+                            :invalid-feedback="errors.email"
                             :state="emailCheck"
                         >
                             <b-form-input
@@ -58,7 +58,7 @@
                             label-for="sd-register__password"
                             label-cols-sm="4"
                             label-align-sm="right"
-                            :invalid-feedback="password1Feedback"
+                            :invalid-feedback="errors.password"
                             :state="passwordCheck"
                         >
                             <b-form-input
@@ -77,7 +77,7 @@
                             label-for="sd-register__confirm-password"
                             label-cols-sm="4"
                             label-align-sm="right"
-                            :invalid-feedback="password2Feedback"
+                            :invalid-feedback="errors.password_confirmation"
                             :state="passwordRepeatCheck"
                         >
                             <b-form-input
@@ -236,15 +236,7 @@ export default {
             acceptConditions: false,
             acceptConsent: false,
             acceptPermissions: false,
-            firstNameFeedback: '',
-            surnameFeedback: '',
-            emailFeedback: '',
-            password1Feedback: '',
-            password2Feedback: '',
-            orcidFeedback: '',
-            institutionNameFeedback: '',
-            institutionAddressFeedback: '',
-            departmentFeedback: '',
+            errors: {}
 
         }
 
@@ -266,30 +258,30 @@ export default {
             return false;
         },
         emailCheck(){
-            this.emailFeedback = '';
+            this.errors.email = '';
             if(!this.email) return null;
             if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email)){
-                this.emailFeedback = 'Invalid email address';
+                this.errors.email = 'Invalid email address';
                 return false;
             }
 
             return true;
         },
         passwordCheck(){
-            this.password1Feedback = '';
+            this.errors.password = '';
             if(!this.password1) return null;
             if(this.password1.length < 8){
-                this.password1Feedback = 'Password must be at least 8 characters';
+                this.errors.password = 'Password must be at least 8 characters';
                 return false;
             }
             return true;
 
         },
         passwordRepeatCheck(){
-            this.password2Feedback = '';
+            this.errors.password_confirmation = '';
             if(!this.password1 || !this.password2) return null;
             if(this.password1 !== this.password2){
-                this.password2Feedback = 'The passwords do not match';
+                this.errors.password_confirmation = 'The passwords do not match';
                 return false;
             }
             return true;
@@ -319,15 +311,25 @@ export default {
                 ]
             };
             AuthService.register(newRegistration).then(response => {
+                this.errors = {};
                 this.formDisabled = false;
                 console.log(response);
+                this.$store.commit('setEmailConfirmationNotice', true);
+                this.$snotify.success("Email confirmation sent.", "Account created.");
+                this.$router.push({path: '/'});
             }).catch(error => {
                 this.formDisabled = false;
+                this.extractErrors(error.errors);
                 console.log(error);
             });
 
-
-
+        },
+        extractErrors(errorObject){
+            for(const field in errorObject) {
+                if(errorObject.hasOwnProperty(field)){
+                    this.errors[field] = errorObject[field].join(' ');
+                }
+            }
         }
     },
     created() {
