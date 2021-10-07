@@ -1,4 +1,12 @@
-.navbar-dark.bg-dark {
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(20,20,105,1) 45%, rgba(12,147,175,1) 100%);
+$theme-colors: (
+    "dark": #020126,
+    "light": #F7F7F7,
+);
+
+:root {
+    /* Colors: */
+    --sdash-blue: #151B6E;
+    --sdash-dark: #020126;
+    --sdash-dark-hover: rgba(02, 01, 26, 0.6);
+    --sdash-light: #F7F7F7;
 }

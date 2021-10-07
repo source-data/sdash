@@ -1,7 +1,6 @@
 <template>
 <div id="sdash-wrapper">
     <header>
-        <top-bar></top-bar>
         <navigation-bar></navigation-bar>
     </header>
 
