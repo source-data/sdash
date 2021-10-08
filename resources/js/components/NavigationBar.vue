@@ -51,10 +51,12 @@
                     </div>
                 </div>
 
-                <a v-if="isGuest" class="nav-link" href="/login">
-                    Sign in
-                    <font-awesome-icon :icon="['fas', 'user']" />
-                </a>
+                <div v-if="isGuest" class="nav-item">
+                    <a class="nav-link" href="/login">
+                        Sign in
+                        <font-awesome-icon :icon="['fas', 'user']" />
+                    </a>
+                </div>
 
                 <div v-else class="nav-item dropdown">
                     <a
@@ -167,8 +169,8 @@ export default {
 .secondary-nav {
     font-size: 1.5rem;
 }
-/* The search icon is a bit too large compared to the text if they have the same font size. */
-.secondary-nav .fa-search {
+/* The search & login icons are a bit too large compared to the text if they have the same font size. */
+.secondary-nav .nav-link > svg {
     font-size: 1.25rem;
 }
 
