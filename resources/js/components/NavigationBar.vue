@@ -141,7 +141,7 @@ export default {
 $navbar-content-height: 3rem;
 $navbar-padding-bottom: 2rem;
 $navbar-padding-left: 4vw;
-$navbar-padding-right: 4vw;
+$navbar-padding-right: 2vw;
 $navbar-padding-top: 2rem;
 
 /* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
