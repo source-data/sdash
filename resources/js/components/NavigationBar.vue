@@ -167,6 +167,11 @@ export default {
 .secondary-nav {
     font-size: 1.5rem;
 }
+/* The search icon is a bit too large compared to the text if they have the same font size. */
+.secondary-nav .fa-search {
+    font-size: 1.25rem;
+}
+
 
 /* Making the active state of the primary nav links look right. */
 .navbar-nav .nav-item {
