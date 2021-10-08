@@ -4,20 +4,33 @@
             <img src="/images/SDash-Logo.svg" alt="SDash Logo" loading="lazy">
         </router-link>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+            class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"
+        >
             <font-awesome-icon :icon="['fas', 'bars']" />
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav primary-nav ml-auto">
+                <!-- Only the link text itself should be clickable, but the whole nav-item should display the active
+                state. Therefore we need to apply the vue-router's classes for the active state to the nav-item instead
+                of the link as usual. That's possible with the v-slot API:
+                https://router.vuejs.org/api/#example-applying-active-class-to-outer-element -->
                 <router-link :to="{ name: 'about'}" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                    <div class="nav-item" :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']">
+                    <div
+                        class="nav-item"
+                        :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+                    >
                         <a class="nav-link" :href="href" @click="navigate">About</a>
                     </div>
                 </router-link>
 
                 <router-link :to="{ name: 'groups'}" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                    <div class="nav-item" :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']">
+                    <div
+                        class="nav-item"
+                        :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+                    >
                         <a class="nav-link" :href="href" @click="navigate">Groups</a>
                     </div>
                 </router-link>
@@ -25,7 +38,10 @@
 
             <div class="navbar-nav secondary-nav ml-auto">
                 <div class="nav-item dropdown">
-                    <a class="nav-link" href="#" id="navbarSearchMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a
+                        class="nav-link" href="#" id="navbarSearchMenuLink" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"
+                    >
                         Search
                         <font-awesome-icon :icon="['fas', 'search']" />
                     </a>
@@ -41,8 +57,14 @@
                 </a>
 
                 <div v-else class="nav-item dropdown">
-                    <a class="dropdown-toggle nav-link" href="#" id="navbarUserProfileMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img class="profile-picture" src="/images/profile-picture-placeholder.jpeg" alt="User profile picture" loading="lazy">
+                    <a
+                        class="dropdown-toggle nav-link" href="#" id="navbarUserProfileMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    >
+                        <img
+                            class="profile-picture" src="/images/profile-picture-placeholder.jpeg"
+                            alt="User profile picture" loading="lazy"
+                        >
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
@@ -50,7 +72,10 @@
                             Profile
                         </router-link>
 
-                        <a class="dropdown-item" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                        <a
+                            class="dropdown-item" href="#"
+                            onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                        >
                             Logout
                         </a>
 
@@ -82,6 +107,7 @@ export default {
 
     data() {
         return {
+            // needed for the logout form
             csrf: document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content")
@@ -97,9 +123,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*
- * The free space from any navbar content to the top and bottom is set this way
- * to allow the nav-links' active state background to encompass the whole navbar.
+/* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
+ * background to encompass the whole navbar.
  */
 .navbar {
     padding: 0;
@@ -113,7 +138,7 @@ export default {
     margin-left: 4vw;
 }
 
-// height == line-height to vertically center the text inside the nav-links.
+/* height == line-height to vertically center the text inside the nav-links. */
 .navbar-brand > img,
 .navbar-toggler,
 .nav-item > .nav-link,
@@ -122,7 +147,7 @@ export default {
     line-height: 3rem;
 }
 
-// The selector has to be this specific to override the styling for .nav-link.
+/* The selector has to be this specific to override the styling for .nav-link. */
 .navbar-nav > .nav-item > .nav-link {
     color: var(--sdash-dark);
     // font-weight: bold;
@@ -133,7 +158,7 @@ export default {
     color: var(--sdash-dark-hover);
 }
 
-// The secondary nav links' text should be slightly smaller than the primary ones.
+/* The secondary nav links' text should be slightly smaller than the primary ones. */
 .navbar-toggler,
 .primary-nav {
     font-size: 2rem;
@@ -142,7 +167,7 @@ export default {
     font-size: 1.5rem;
 }
 
-// Making the active state of the primary nav links look right.
+/* Making the active state of the primary nav links look right. */
 .navbar-nav .nav-item {
     padding-left: 2vw;
     padding-right: 2vw;
@@ -154,13 +179,13 @@ export default {
     color: white;
 }
 
-// Rounded profile picture.
+/* Rounded profile picture. */
 img.profile-picture {
     border-radius: 50%;
 }
 
 @media (max-width: 767px) {
-    // Reduce the amount of empty space on smaller screens.
+    /* Reduce the amount of empty space on smaller screens. */
     .navbar-brand {
         margin-left: 2vw;
     }
@@ -170,11 +195,9 @@ img.profile-picture {
         padding-bottom: 1rem;
     }
 
-    /*
-     * That the secondary nav links are smaller doesn't catch the eye as much
-     * when they're far apart horizontally with a bigger screen. Once they're
-     * right above each other in the expanded menu that we're using on small
-     * screens they absolutely need to have the same font size.
+    /* That the secondary nav links are smaller doesn't catch the eye as much when they're far apart horizontally with
+     * a bigger screen. Once they're right above each other in the collapsible menu that we're using on small screens
+     * they absolutely need to have the same font size.
      */
     .primary-nav {
         font-size: 1.5rem;
