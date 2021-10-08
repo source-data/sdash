@@ -135,6 +135,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:math";
+@import 'resources/sass/_variables.scss';
+
 $navbar-content-height: 3rem;
 $navbar-padding-bottom: 2rem;
 $navbar-padding-left: 4vw;
@@ -168,13 +171,13 @@ $navbar-padding-top: 2rem;
 
 /* The selector has to be this specific to override the styling for .nav-link. */
 .navbar-nav > .nav-item > .nav-link {
-    color: var(--sdash-dark);
+    color: $sdash-dark;
     font-weight: bold;
     opacity: 1;
     padding: 0;
 }
 .navbar-nav > .nav-item > .nav-link:hover {
-    color: var(--sdash-dark-hover);
+    color: $sdash-dark-hover;
 }
 
 /* The secondary nav links' text should be slightly smaller than the primary ones. */
@@ -198,7 +201,7 @@ $navbar-padding-top: 2rem;
     padding-right: 2vw;
 }
 .primary-nav .nav-item.router-link-exact-active {
-    background-color: var(--sdash-blue);
+    background-color: $sdash-blue;
 }
 .primary-nav .nav-item.router-link-exact-active .nav-link {
     color: white;
@@ -212,12 +215,12 @@ img.profile-picture {
 @media (max-width: 767px) {
     /* Reduce the amount of empty space on smaller screens. */
     .navbar-brand {
-        margin-left: $navbar-padding-left / 2;
+        margin-left: math.div($navbar-padding-left, 2);
     }
     .nav-item,
     .navbar-brand {
-        padding-bottom: $navbar-padding-bottom / 2;
-        padding-top: $navbar-padding-top / 2;
+        padding-bottom: math.div($navbar-padding-bottom, 2);
+        padding-top: math.div($navbar-padding-top, 2);
     }
 
     /* That the secondary nav links are smaller doesn't catch the eye as much when they're far apart horizontally with
@@ -234,7 +237,7 @@ img.profile-picture {
  */
 @media (min-width: 768px) {
     .register-nav {
-        background-color: var(--sdash-orange);
+        background-color: $sdash-orange;
         border-bottom-left-radius: 0.75rem;
         border-bottom-right-radius: 0.75rem;
         margin-right: 1vw; /* This roughly aligns the registration link with the login link. */
