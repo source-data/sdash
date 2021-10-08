@@ -87,6 +87,16 @@
                     </div>
                 </div>
             </div>
+
+            <div v-if="isGuest" class="navbar-nav secondary-nav register-nav">
+                <div class="nav-item">
+                    <a class="nav-link" href="/register">
+                        Register
+                        <br>
+                        <span class="register-secondary-text invisible">to contribute</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 </template>
@@ -125,6 +135,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$navbar-content-height: 3rem;
+$navbar-padding-bottom: 2rem;
+$navbar-padding-left: 4vw;
+$navbar-padding-right: 4vw;
+$navbar-padding-top: 2rem;
+
 /* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
  * background to encompass the whole navbar.
  */
@@ -133,11 +149,11 @@ export default {
 }
 .nav-item,
 .navbar-brand {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: $navbar-padding-bottom;
+    padding-bottom: $navbar-padding-top;
 }
 .navbar-brand {
-    margin-left: 4vw;
+    margin-left: $navbar-padding-left;
     margin-right: 0;
 }
 
@@ -146,8 +162,8 @@ export default {
 .navbar-toggler,
 .nav-item > .nav-link,
 .profile-picture {
-    height: 3rem;
-    line-height: 3rem;
+    height: $navbar-content-height;
+    line-height: $navbar-content-height;
 }
 
 /* The selector has to be this specific to override the styling for .nav-link. */
@@ -168,6 +184,7 @@ export default {
 }
 .secondary-nav {
     font-size: 1.5rem;
+    margin-right: $navbar-padding-right;
 }
 /* The search & login icons are a bit too large compared to the text if they have the same font size. */
 .secondary-nav .nav-link > svg {
@@ -195,12 +212,12 @@ img.profile-picture {
 @media (max-width: 767px) {
     /* Reduce the amount of empty space on smaller screens. */
     .navbar-brand {
-        margin-left: 2vw;
+        margin-left: $navbar-padding-left / 2;
     }
     .nav-item,
     .navbar-brand {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding-bottom: $navbar-padding-bottom / 2;
+        padding-top: $navbar-padding-top / 2;
     }
 
     /* That the secondary nav links are smaller doesn't catch the eye as much when they're far apart horizontally with
@@ -209,6 +226,36 @@ img.profile-picture {
      */
     .primary-nav {
         font-size: 1.5rem;
+    }
+}
+
+/* If we're in the big-screen view, the link to the registration page is positioned just below the navbar on the right.
+ * If not, it's in the collapsible menu with the standard positioning.
+ */
+@media (min-width: 768px) {
+    .register-nav {
+        background-color: var(--sdash-orange);
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        margin-right: 1vw; /* This roughly aligns the registration link with the login link. */
+        padding: 0;
+        position: absolute;
+        /* The registration link is positioned right below the navbar. For that we have to use absolute positioning and
+         * calculate the correct positioning relative to the navbar itself.
+         */
+        top: $navbar-padding-top + $navbar-content-height + $navbar-padding-bottom;
+        right: 0;
+        z-index: 10; /* Lets the registration link appear in front of the panels. */
+    }
+    .register-nav .nav-item {
+        padding-top: 0.5rem;
+    }
+    .register-secondary-text {
+        display: block;
+        font-weight: normal;
+        font-size: 1.125rem;
+        line-height: 1rem;
+        visibility: visible !important;
     }
 }
 </style>
