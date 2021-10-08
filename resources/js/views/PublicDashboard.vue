@@ -1,7 +1,6 @@
 <template>
 <div id="sdash-wrapper">
     <header>
-        <top-bar></top-bar>
         <navigation-bar></navigation-bar>
     </header>
 
@@ -26,7 +25,6 @@ import { mapGetters, mapActions } from 'vuex'
 import PanelGrid from '@/public_app/components/PanelGrid'
 import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
-import TopBar from '@/components/TopBar'
 import NavigationBar from '@/components/NavigationBar'
 
 export default {
@@ -35,7 +33,6 @@ export default {
     components: {
         PanelGrid,
         Lightbox,
-        TopBar,
         NavigationBar,
         },
     computed: {

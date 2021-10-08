@@ -1,7 +1,6 @@
 <template>
 <div id="sdash-wrapper">
     <header>
-        <top-bar :user="currentUser"></top-bar>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
 
@@ -96,13 +95,12 @@ import Lightbox from 'vue-easy-lightbox'
 import queryStringDehasher from '@/services/queryStringDehasher'
 import FeedbackWidget from '@/components/FeedbackWidget'
 import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm"
-import TopBar from '@/components/TopBar'
 import NavigationBar from '@/components/NavigationBar'
 
 export default {
 
     name: 'Dashboard',
-    components: { PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget, PanelAuthorsEditForm, TopBar, NavigationBar },
+    components: { PanelGrid, InfoBar, VueFullScreenFileDrop, Lightbox, FeedbackWidget, PanelAuthorsEditForm, NavigationBar },
     props: [''],
 
     data() {
