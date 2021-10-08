@@ -136,6 +136,7 @@ export default {
 }
 .navbar-brand {
     margin-left: 4vw;
+    margin-right: 0;
 }
 
 /* height == line-height to vertically center the text inside the nav-links. */
@@ -150,7 +151,7 @@ export default {
 /* The selector has to be this specific to override the styling for .nav-link. */
 .navbar-nav > .nav-item > .nav-link {
     color: var(--sdash-dark);
-    // font-weight: bold;
+    font-weight: bold;
     opacity: 1;
     padding: 0;
 }
