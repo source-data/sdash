@@ -26,7 +26,7 @@
                     </div>
                 </router-link>
 
-                <router-link :to="{ name: 'groups'}" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                <router-link v-if="!isGuest" :to="{ name: 'groups'}" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                     <div
                         class="nav-item"
                         :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
