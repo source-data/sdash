@@ -206,7 +206,9 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_variables.scss';
+
 $sd-extra-height: 800; // info box height in pixels
 
 .sd-grid-item {
@@ -254,7 +256,7 @@ $sd-extra-height: 800; // info box height in pixels
     position: absolute;
     left: 0;
     width: 100%;
-    background-color: #222;
+    background-color: $very-dark-desaturated-blue;
     color: #ddd;
     font-size: 16px;
     margin-top: 6px;
@@ -307,7 +309,7 @@ $sd-extra-height: 800; // info box height in pixels
     width: 0px;
     height: 0px;
     border: solid 15px transparent;
-    border-bottom: solid 20px #222;
+    border-bottom: solid 20px $very-dark-desaturated-blue;
     border-top: none;
     position: absolute;
     bottom: -6px;
