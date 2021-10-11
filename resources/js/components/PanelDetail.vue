@@ -1,6 +1,6 @@
 <template>
     <b-container fluid class="panel-detail-container">
-        <b-row class="m-3 my-4 sd-panel-detail-title-wrapper">
+        <b-row class="sd-panel-detail-title-wrapper">
             <div class="sd-panel-detail-title">
                 <b-input-group
                     v-if="iCanEditThisPanel && isEditingTitle"
@@ -121,7 +121,7 @@
             </div>
 
         </b-row>
-        <b-row class="mx-3 my-0 sd-panel-author-list--edit-row" v-if="iCanEditThisPanel">
+        <b-row class="sd-panel-author-list--edit-row" v-if="iCanEditThisPanel">
             <span
                 class="sd-panel-author-list--edit-icon sd-edit-icon"
                 tabindex="0"
@@ -130,7 +130,7 @@
                 Edit author list
             </span>
         </b-row>
-        <b-row class="m-3 sd-panel-detail-content-wrapper">
+        <b-row class="sd-panel-detail-content-wrapper">
             <b-col class="sd-panel-detail-col sd-panel-detail-col--left">
                 <div class="panel-detail-image-outer-container">
                     <img
@@ -505,6 +505,13 @@ export default {
 <style lang="scss" scoped>
 @import 'resources/sass/_variables.scss';
 
+.panel-detail-container {
+    padding-left: 3vw;
+    padding-right: 2vw;
+
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+}
 .panel-detail-container,
 .panel-detail-container a {
     color: $mostly-white-gray;
