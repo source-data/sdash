@@ -171,13 +171,13 @@ $navbar-padding-top: 2rem;
 
 /* The selector has to be this specific to override the styling for .nav-link. */
 .navbar-nav > .nav-item > .nav-link {
-    color: $sdash-dark;
+    color: $mostly-black-blue;
     font-weight: bold;
     opacity: 1;
     padding: 0;
 }
 .navbar-nav > .nav-item > .nav-link:hover {
-    color: $sdash-dark-hover;
+    color: $mostly-black-blue-hover;
 }
 
 /* The secondary nav links' text should be slightly smaller than the primary ones. */
@@ -201,7 +201,7 @@ $navbar-padding-top: 2rem;
     padding-right: 2vw;
 }
 .primary-nav .nav-item.router-link-exact-active {
-    background-color: $sdash-blue;
+    background-color: $very-dark-blue;
 }
 .primary-nav .nav-item.router-link-exact-active .nav-link {
     color: white;
@@ -237,7 +237,7 @@ img.profile-picture {
  */
 @media (min-width: 768px) {
     .register-nav {
-        background-color: $sdash-orange;
+        background-color: $vivid-orange;
         border-bottom-left-radius: 0.75rem;
         border-bottom-right-radius: 0.75rem;
         margin-right: 1vw; /* This roughly aligns the registration link with the login link. */
