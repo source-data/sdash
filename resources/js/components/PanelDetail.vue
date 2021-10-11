@@ -27,14 +27,12 @@
                         </a>
                     </h3>
 
-                    <span
-                        class="ml-2 sd-panel-detail-title-edit-icon sd-edit-icon"
+                    <font-awesome-icon
                         v-if="iCanEditThisPanel && !isEditingTitle"
-                        tabindex="0"
                         @click="editPanelTitle"
-                    >
-                        <font-awesome-icon icon="pen" title="Edit panel title" />
-                    </span>
+                        class="sd-edit-icon"
+                        icon="pen"
+                        title="Edit panel title" />
                 </div>
             </b-col>
         </b-row>
@@ -139,9 +137,9 @@
             </b-col>
         </b-row>
 
-        <b-row class="sd-panel-detail-content-wrapper">
+        <b-row>
             <b-col cols="7">
-                <div class="panel-detail-content-component panel-detail-image-container">
+                <div class="panel-detail-content panel-detail-image-container">
                     <img
                         class="panel-detail-image"
                         :src="fullImageUrl"
@@ -163,7 +161,7 @@
                     <font-awesome-icon
                         v-if="iCanEditThisPanel"
                         @click="displayImageUploader"
-                        class="sd-panel-change-image-link sd-edit-icon"
+                        class="sd-edit-icon"
                         icon="pen"
                         title="Change image" />
 
@@ -176,33 +174,28 @@
                     ></b-form-file>
                 </div>
 
-                <div class="panel-detail-caption-wrapper">
-                    <div
-                        class="panel-detail-caption-container"
-                        v-if="!editingCaption"
-                    >
-                        {{ expandedPanel.caption }}
+                <div class="panel-detail-content panel-detail-caption-container">
+                    <div class="content-name">
+                        Description
                     </div>
-                    <div
-                        class="panel-detail-caption-edit-container"
-                        v-if="editingCaption"
-                    >
+
+                    <div v-if="editingCaption" class="panel-detail-caption-edit">
                         <caption-editor></caption-editor>
                     </div>
-                </div>
-                <div class="panel-detail-caption-edit-link-container">
-                    <span
-                        class="sd-panel-detail-caption-edit-icon sd-edit-icon"
-                        v-if="iCanEditThisPanel"
-                        tabindex="0"
-                        @click="editPanelCaption"
-                    >
+
+                    <div v-else class="panel-detail-caption">
+                        {{ expandedPanel.caption }}
+                    </div>
+
+                    <div v-if="!editingCaption" class="sd-edit-icon">
                         <font-awesome-icon
+                            v-if="iCanEditThisPanel"
+                            @click="editPanelCaption"
                             icon="pen"
                             title="Edit panel description"
                         />
-                        Edit description
-                    </span>
+                    </div>
+
                     <span class="sd-license-notice" v-if="isPublic">
                         <font-awesome-icon :icon="['fab', 'creative-commons']" />
                         2021 The Authors. Published under the terms of the
@@ -516,6 +509,9 @@ export default {
 @use "sass:math";
 @import 'resources/sass/_variables.scss';
 
+/*********************
+ * General settings
+ *********************/
 .panel-detail-container {
     padding-left: 3vw;
     padding-right: 2vw;
@@ -532,12 +528,62 @@ export default {
     margin-bottom: 1rem;
 }
 
-.panel-detail-content-component {
+.sd-edit-icon {
+    cursor: pointer;
+    position: relative;
+    font-size: 0.85rem;
+}
+/*********************
+ * Content containers
+ *********************/
+.panel-detail-content {
+    border: 1px solid $mostly-white-gray;
+    border-radius: 0.5rem;
     margin-bottom: 2rem;
+    min-height: 10rem;
+    padding: 0.5rem;
+    position: relative;
+}
+.panel-detail-content .content-name {
+    background-color: $very-dark-desaturated-blue;
+    font-size: 0.75rem;
+    padding: 0 0.4rem;
+
+    position: absolute;
+    top: -0.65rem;
+    left: 1rem;
 }
 
+/*********************
+ * Title row
+ *********************/
+.sd-panel-detail-title h3 {
+    display: inline-block;
+    margin: 0;
+    /* Leave enough space on the right for the edit icon */
+    max-width: calc(100% - 5rem);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sd-panel-detail-title .sd-edit-icon {
+    top: -0.5rem;
+}
+
+/*********************
+ * Image
+ *********************/
 .panel-detail-image-container {
+    border: none;
+    padding: 0;
+    /* Makes the absolutely positioned icons (see below) relative to this container. */
     position: relative;
+}
+
+.panel-detail-image {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 $zoom-icon-size: 1rem;
@@ -566,162 +612,27 @@ $zoom-icon-bottom: -1 * (
     cursor: pointer;
 }
 
-
-.sd-panel-change-image-link.sd-edit-icon {
+.panel-detail-image-container .sd-edit-icon {
     position: absolute;
     top: 1rem;
     right: 1rem;
 }
 
-.panel-detail-image {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.sd-panel-detail-title,
-.sd-panel-author-name {
-    width: 100%;
-}
-
-.sd-panel-detail-title {
-    height: 36px;
-}
-
-.sd-panel-author-name {
-    margin: 0;
-}
-
-
-.sd-panel-detail-title h3 {
-    display: inline-block;
-    margin-bottom: 4px;
-    max-width: calc(100% - 5em);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.sd-edit-icon {
-    cursor: pointer;
-    position: relative;
-    font-size: 0.85em;
-}
-
-.sd-panel-detail-title-edit-icon {
-    top: -1em;
-}
-.sd-edit-icon:hover,
-.sd-edit-icon:focus,
-.sd-edit-icon:active {
-    text-decoration: underline;
-}
-
-.panel-detail-caption-edit-container {
-    padding-top: 6px;
-}
-
-.panel-detail-caption-edit-link-container {
-    display: flex;
-    flex-wrap: wrap;
-    height: 32px;
-    padding: 6px 0;
-}
-
-.panel-detail-caption-wrapper {
-    // height:130px;
-    height: 200px;
-    max-width: 100%;
-    border: solid 1px #eee;
-    padding: 6px;
-    margin-top: 0.5rem;
-}
-
+/*********************
+ * Description
+ *********************/
 .panel-detail-caption-container {
-    height: 100%;
-    padding-right: 6px;
-    overflow-y: auto;
+    height: 15rem;
 }
-
-.sd-panel-detail-tab-card {
-    border: solid 1px #fff;
-    border-radius: 6px 6px 0 0;
-    max-height: 540px;
-    margin-top: -1px;
+.panel-detail-caption {
+    max-height: 97%;
+    overflow-y: scroll;
 }
-.sd-panel-detail-tab-card .tab-panel.card-body {
-    max-height: 540px;
-}
-.sd-panel-detail-tab-card .card-text {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 500px;
-}
-
-.sd-panel-details-tabs .card-header {
-    padding-top: 0;
-}
-
-.sd-panel-details-tabs .nav-tabs a.nav-link {
-    border: solid 1px #fff;
-}
-
-.sd-panel-detail-title--editor {
-    max-width: 800px;
-}
-
-.sd-panel-detail--panel-actions {
-    text-align: right;
-    padding: 0.5em 0;
-}
-
-.sd-delete-panel-icon {
-    margin-right: 3px;
-}
-
-
-.sd-sharing-toggle {
-    margin-right: 1em !important;
-}
-
-.sd-panel-author-list--item:not(:last-child):after {
-    content: ", ";
-}
-
-
-.sd-panel-author-list--corresponding-author-note {
-    font-size: 0.85em;
-}
-
-.sd-panel-author-list--remove-me {
-    border: none;
-    padding: 0;
-    line-height: 1px;
-    border-radius: 50%;
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    background-color: red;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.sd-remove-author-tooltip {
-    .tooltip-inner {
-        background-color:#eee;
-    }
-    .arrow:before {
-        border-left-color:#eee;
-    }
-
-}
-
-.sd-license-notice {
-    flex-basis: 0;
-    flex-grow: 1;
-    padding-top: 0.25rem;
-    font-size: 0.7rem;
-    line-height: 0.85rem;
-    text-align: right;
+.panel-detail-caption-container .sd-edit-icon {
+    background-color: $very-dark-desaturated-blue;
+    padding: 0 0.4rem;
+    position: absolute;
+    bottom: -0.65rem;
+    right: 1rem;
 }
 </style>
