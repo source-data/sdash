@@ -140,8 +140,8 @@
         </b-row>
 
         <b-row class="sd-panel-detail-content-wrapper">
-            <b-col class="sd-panel-detail-col sd-panel-detail-col--left">
-                <div class="panel-detail-image-outer-container">
+            <b-col cols="7">
+                <div class="panel-detail-content-component panel-detail-image-container">
                     <img
                         class="panel-detail-image"
                         :src="fullImageUrl"
@@ -151,31 +151,31 @@
                         style="cursor:pointer"
                         draggable="false"
                     />
+
                     <font-awesome-icon
                         @click="openLightBox"
                         class="sd-panel-zoom-icon"
-                        icon="search-plus"
+                        icon="search"
                         size="2x"
                         title="View image"
                     />
+
+                    <font-awesome-icon
+                        v-if="iCanEditThisPanel"
+                        @click="displayImageUploader"
+                        class="sd-panel-change-image-link sd-edit-icon"
+                        icon="pen"
+                        title="Change image" />
+
+                    <b-form-file
+                        ref="imageUploader"
+                        class="d-none"
+                        accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
+                        v-model="imageFile"
+                        @input="changeImage"
+                    ></b-form-file>
                 </div>
-                <span
-                    class="sd-panel-change-image-link sd-edit-icon"
-                    v-if="iCanEditThisPanel"
-                    tabindex="0"
-                    @click="displayImageUploader"
-                >
-                    <font-awesome-icon icon="pen" title="Change image" />
-                    Change image
-                </span>
-                <b-form-file
-                    ref="imageUploader"
-                    class="d-none"
-                    accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
-                    v-model="imageFile"
-                    @input="changeImage"
-                >
-                </b-form-file>
+
                 <div class="panel-detail-caption-wrapper">
                     <div
                         class="panel-detail-caption-container"
@@ -211,7 +211,8 @@
                     </span>
                 </div>
             </b-col>
-            <b-col class="sd-panel-detail-col sd-panel-detail-col--right">
+
+            <b-col cols="5">
                 <b-tabs
                     card
                     content-class="sd-panel-detail-tab-card"
@@ -512,6 +513,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:math";
 @import 'resources/sass/_variables.scss';
 
 .panel-detail-container {
@@ -526,19 +528,49 @@ export default {
     color: $mostly-white-gray;
 }
 
-.panel-detail-image-outer-container {
-    width: 100%;
-    height: 380px;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: 0;
+.panel-detail-container > .row {
+    margin-bottom: 1rem;
 }
 
-.sd-panel-detail-col {
-    min-width: 0;
+.panel-detail-content-component {
+    margin-bottom: 2rem;
+}
+
+.panel-detail-image-container {
+    position: relative;
+}
+
+$zoom-icon-size: 1rem;
+/* The icon itself should take up about a third of the background */
+$zoom-icon-background-size: 3 * $zoom-icon-size;
+$zoom-icon-background-padding: $zoom-icon-size;
+/* With bottom: 0, the bottom of the icon's background circle is exactly aligned with the bottom of the image. To make
+ * the icon appear half on & half off the image, the former needs to be moved down by its background circle's padding
+ * plus half the icon's size. */
+$zoom-icon-bottom: -1 * (
+    $zoom-icon-background-padding + math.div($zoom-icon-size, 2)
+);
+.sd-panel-zoom-icon {
+    /* Make the background a dark circle */
+    background-color: $mostly-black-blue;
+    border-radius: 50%;
+    height: $zoom-icon-background-size;
+    width: $zoom-icon-background-size;
+
+    padding: $zoom-icon-background-padding;
+
+    position: absolute;
+    bottom: $zoom-icon-bottom;
+    right: $zoom-icon-size;
+
+    cursor: pointer;
+}
+
+
+.sd-panel-change-image-link.sd-edit-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }
 
 .panel-detail-image {
@@ -595,11 +627,6 @@ export default {
     padding: 6px 0;
 }
 
-.sd-panel-change-image-link {
-    display: inline-block;
-    margin: 6px 0;
-}
-
 .panel-detail-caption-wrapper {
     // height:130px;
     height: 200px;
@@ -651,16 +678,6 @@ export default {
     margin-right: 3px;
 }
 
-.sd-panel-zoom-icon {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    opacity: 0.7;
-    background: #fff;
-    padding: 2px;
-    border-radius: 3px;
-    cursor: pointer;
-}
 
 .sd-sharing-toggle {
     margin-right: 1em !important;
