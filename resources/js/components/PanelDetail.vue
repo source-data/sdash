@@ -1,42 +1,47 @@
 <template>
     <b-container fluid class="panel-detail-container">
-        <b-row class="sd-panel-detail-title-wrapper">
-            <div class="sd-panel-detail-title">
-                <b-input-group
-                    v-if="iCanEditThisPanel && isEditingTitle"
-                    class="sd-panel-detail-title--editor"
-                >
-                    <b-form-input v-model="titleText"></b-form-input>
-                    <b-input-group-append>
-                        <b-button
-                            variant="danger"
-                            @click="stopEditingPanelTitle"
-                            >Cancel</b-button
-                        >
-                        <b-button variant="success" @click="saveEditedTitle"
-                            >Save</b-button
-                        >
-                    </b-input-group-append>
-                </b-input-group>
+        <b-row>
+            <b-col>
+                <div class="sd-panel-detail-title">
+                    <b-input-group
+                        v-if="iCanEditThisPanel && isEditingTitle"
+                        class="sd-panel-detail-title--editor"
+                    >
+                        <b-form-input v-model="titleText"></b-form-input>
 
-                <h3 v-if="!isEditingTitle">
-                    <a :href="panelUrl" target="_blank" title="Open panel in a new tab">
-                    {{ expandedPanel.title }}
-                    <font-awesome-icon icon="external-link-alt" size="sm" />
-                    </a>
-                </h3>
-                <span
-                    class="sd-panel-detail-title-edit-icon sd-edit-icon"
-                    v-if="iCanEditThisPanel && !isEditingTitle"
-                    tabindex="0"
-                    @click="editPanelTitle"
-                >
-                    <font-awesome-icon icon="edit" title="Edit panel title" />
-                    Edit title
-                </span>
-            </div>
-            <div v-if="expandedPanelAuthors.length > 0">
-                <ul class="sd-panel-author-list list-unstyled list-inline">
+                        <b-input-group-append>
+                            <b-button variant="danger" @click="stopEditingPanelTitle">
+                                Cancel
+                            </b-button>
+
+                            <b-button variant="success" @click="saveEditedTitle">
+                                Save
+                            </b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+
+                    <h3 v-if="!isEditingTitle">
+                        <a :href="panelUrl" target="_blank" title="Open panel in a new tab">
+                            {{ expandedPanel.title }}
+                            <font-awesome-icon icon="external-link-alt" size="sm" />
+                        </a>
+                    </h3>
+
+                    <span
+                        class="ml-2 sd-panel-detail-title-edit-icon sd-edit-icon"
+                        v-if="iCanEditThisPanel && !isEditingTitle"
+                        tabindex="0"
+                        @click="editPanelTitle"
+                    >
+                        <font-awesome-icon icon="pen" title="Edit panel title" />
+                    </span>
+                </div>
+            </b-col>
+        </b-row>
+
+        <b-row v-if="expandedPanelAuthors.length > 0">
+            <b-col>
+                <ul class="d-inline list-unstyled list-inline">
                     <li
                         class="sd-panel-author-list--item list-inline-item"
                         v-for="author in authors"
@@ -85,12 +90,22 @@
                         <span v-else>{{ author.firstname }} {{ author.surname }}</span>
                     </li>
                 </ul>
-                <div class="sd-panel-author-list--note">
-                    <span class="sd-panel-author-list--corresponding-author-note">
+
+                <span
+                    v-if="iCanEditThisPanel"
+                    class="ml-2 sd-edit-icon"
+                    tabindex="0"
+                    @click="editAuthorList">
+                    <font-awesome-icon icon="pen" title="Edit panel authors" />
+                </span>
+
+                <div>
+                    <span>
                         <font-awesome-icon icon="envelope" />
                         indicates corresponding author
                     </span>
                 </div>
+
                 <b-popover v-for="author in correspondingAuthors" :key="'author-' + author.order + '-' + author.id"
                     :target="'popover-' + author.origin + '-' + author.id" triggers="click blur" placement="bottom">
                     <ul class="list-unstyled mt-1 mb-1">
@@ -118,18 +133,12 @@
                         </router-link>
                     </p>
                 </b-popover>
-            </div>
+            </b-col>
 
+            <b-col>
+            </b-col>
         </b-row>
-        <b-row class="sd-panel-author-list--edit-row" v-if="iCanEditThisPanel">
-            <span
-                class="sd-panel-author-list--edit-icon sd-edit-icon"
-                tabindex="0"
-                @click="editAuthorList">
-                <font-awesome-icon icon="edit" title="Edit panel title" />
-                Edit author list
-            </span>
-        </b-row>
+
         <b-row class="sd-panel-detail-content-wrapper">
             <b-col class="sd-panel-detail-col sd-panel-detail-col--left">
                 <div class="panel-detail-image-outer-container">
@@ -156,7 +165,7 @@
                     tabindex="0"
                     @click="displayImageUploader"
                 >
-                    <font-awesome-icon icon="edit" title="Change image" />
+                    <font-awesome-icon icon="pen" title="Change image" />
                     Change image
                 </span>
                 <b-form-file
@@ -189,8 +198,8 @@
                         @click="editPanelCaption"
                     >
                         <font-awesome-icon
-                            icon="edit"
-                            title="Edit panel title"
+                            icon="pen"
+                            title="Edit panel description"
                         />
                         Edit description
                     </span>
@@ -528,16 +537,6 @@ export default {
     margin: 0;
 }
 
-.sd-panel-detail-title-wrapper {
-    padding-left: 15px;
-    margin-bottom: 0 !important;
-}
-
-.sd-panel-detail-content-wrapper {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0 !important;
-}
-
 .sd-panel-detail-col {
     min-width: 0;
 }
@@ -560,14 +559,9 @@ export default {
     margin: 0;
 }
 
-.sd-panel-author-list--edit-row {
-    padding-left:15px;
-}
-
 
 .sd-panel-detail-title h3 {
     display: inline-block;
-    margin-right: 6px;
     margin-bottom: 4px;
     max-width: calc(100% - 5em);
     overflow: hidden;
