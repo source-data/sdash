@@ -1,5 +1,5 @@
 <template>
-    <article>
+    <b-container fluid class="panel-detail-container">
         <b-row class="m-3 my-4 sd-panel-detail-title-wrapper">
             <div class="sd-panel-detail-title">
                 <b-input-group
@@ -283,7 +283,7 @@
                 </div>
             </b-col>
         </b-row>
-    </article>
+    </b-container>
 </template>
 
 <script>
@@ -502,8 +502,13 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_variables.scss';
 
+.panel-detail-container,
+.panel-detail-container a {
+    color: $mostly-white-gray;
+}
 
 .panel-detail-image-outer-container {
     width: 100%;
@@ -512,7 +517,6 @@ export default {
     text-align: center;
     align-items: center;
     justify-content: center;
-    background-color: #2f2f2f;
     position: relative;
     margin: 0;
 }
@@ -520,14 +524,6 @@ export default {
 .sd-panel-detail-title-wrapper {
     padding-left: 15px;
     margin-bottom: 0 !important;
-}
-
-.sd-panel-detail-title-wrapper a {
-    color: white;
-}
-
-.sd-panel-detail-title a {
-    color: #6e89aa;
 }
 
 .sd-panel-detail-content-wrapper {
@@ -575,7 +571,6 @@ export default {
 .sd-edit-icon {
     cursor: pointer;
     position: relative;
-    color: #65dd65;
     font-size: 0.85em;
 }
 
@@ -636,15 +631,10 @@ export default {
 
 .sd-panel-details-tabs .card-header {
     padding-top: 0;
-    color: #333;
 }
 
 .sd-panel-details-tabs .nav-tabs a.nav-link {
-    color: #ddd;
     border: solid 1px #fff;
-}
-.sd-panel-details-tabs .nav-tabs a.nav-link.active {
-    color: #333;
 }
 
 .sd-panel-detail-title--editor {
@@ -661,7 +651,6 @@ export default {
 }
 
 .sd-panel-zoom-icon {
-    color: #2a2a2a;
     position: absolute;
     bottom: 12px;
     right: 12px;
@@ -680,12 +669,8 @@ export default {
     content: ", ";
 }
 
-.sd-panel-author-list--item_corresponding a {
-    color: orange;
-}
 
 .sd-panel-author-list--corresponding-author-note {
-    color: orange;
     font-size: 0.85em;
 }
 
@@ -697,7 +682,6 @@ export default {
     font-size: 16px;
     width: 16px;
     height: 16px;
-    color: #fff;
     background-color: red;
     display: inline-flex;
     justify-content: center;
@@ -707,7 +691,6 @@ export default {
 .sd-remove-author-tooltip {
     .tooltip-inner {
         background-color:#eee;
-        color: #333;
     }
     .arrow:before {
         border-left-color:#eee;
@@ -722,14 +705,5 @@ export default {
     font-size: 0.7rem;
     line-height: 0.85rem;
     text-align: right;
-    color: #aaa;
-}
-
-.sd-license-notice a {
-    color: #b0cddb;
-}
-
-.sd-license-notice a:hover {
-    color: darken(#b0cddb, 15%);
 }
 </style>
