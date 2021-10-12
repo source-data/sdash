@@ -203,6 +203,15 @@
                             target="_blank">CC BY 4.0</a> license.
                     </span>
                 </div>
+
+
+                <div class="panel-detail-content-container panel-detail-comment-container">
+                    <div class="content-name">
+                        Comments
+                    </div>
+
+                    <comment-list class="panel-detail-content panel-detail-comment"></comment-list>
+                </div>
             </b-col>
 
             <b-col lg="5">
