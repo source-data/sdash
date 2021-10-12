@@ -39,55 +39,7 @@
 
         <b-row v-if="expandedPanelAuthors.length > 0">
             <b-col>
-                <ul class="d-inline list-unstyled list-inline">
-                    <li
-                        class="sd-panel-author-list--item list-inline-item"
-                        v-for="author in authors"
-                        :key="'author-' + author.order + '-' + author.id"
-                        :class="
-                            'sd-panel-author-list--item_' + author.author_role
-                        "
-                    >
-                        <button class="sd-panel-author-list--remove-me"
-                            v-if="author.origin==='users' && author.id===currentUser.id && !iOwnThisPanel"
-                            v-b-tooltip.hover.left="{ customClass: 'sd-remove-author-tooltip' }" title="Remove me"
-                            id="sd-panel-author-list--remove-me"
-                            ref="sd-panel-author-list--remove-me"
-                        >&times;</button>
-
-                        <!-- remove me popover-->
-                        <b-popover
-                            v-if="author.origin==='users' && author.id===currentUser.id"
-                            :ref="'remove-me-popover-' + currentUser.id"
-                            target="sd-panel-author-list--remove-me"
-                            triggers="click"
-                            placement="bottom"
-                        >
-                        <template v-slot:title>
-                                Remove yourself as author?
-                            <b-button @click="closeRemoveMePopover" class="close" aria-label="Close">
-                                <span class="d-inline-block" aria-hidden="true">&times;</span>
-                            </b-button>
-                        </template>
-                            <div class="confirm-refresh-link">
-                                <p>
-                                    Delete yourself from the author list of this panel?
-                                </p>
-                                <div class="refresh-buttons">
-                                    <b-button variant="danger" small @click="removeMeAsAuthor">Remove Me</b-button>
-                                    <b-button variant="outline-dark" small @click="closeRemoveMePopover">Cancel</b-button>
-                                </div>
-                            </div>
-                        </b-popover>
-                        <!-- end of remove me popover -->
-
-                        <b-link v-if="author.corresponding" :id="'popover-' + author.origin + '-' + author.id" href="#">
-                            {{ author.firstname }} {{ author.surname }}
-                            <font-awesome-icon icon="envelope" />
-                        </b-link>
-                        <span v-else>{{ author.firstname }} {{ author.surname }}</span>
-                    </li>
-                </ul>
+                <author-list></author-list>
 
                 <span
                     v-if="iCanEditThisPanel"
@@ -103,34 +55,6 @@
                         indicates corresponding author
                     </span>
                 </div>
-
-                <b-popover v-for="author in correspondingAuthors" :key="'author-' + author.order + '-' + author.id"
-                    :target="'popover-' + author.origin + '-' + author.id" triggers="click blur" placement="bottom">
-                    <ul class="list-unstyled mt-1 mb-1">
-                        <li v-if="author.email">
-                            <font-awesome-icon icon="envelope" fixed-width />
-                            <a :href="'mailto:' + author.email">{{ author.email }}</a>
-                        </li>
-                        <li v-if="author.orcid">
-                            <font-awesome-icon :icon="['fab', 'orcid']" fixed-width />
-                            <a :href="'https://orcid.org/' + author.orcid">{{ 'orcid.org/' + author.orcid }}</a>
-                        </li>
-                        <li v-if="author.institution_name">
-                            <font-awesome-icon icon="building" fixed-width />
-                            {{ author.institution_name }}
-                        </li>
-                        <li v-if="author.department_name">
-                            <font-awesome-icon icon="sitemap" fixed-width />
-                            {{ author.department_name }}
-                        </li>
-                    </ul>
-                    <p v-if="author.origin==='users'" class="mt-2 mb-1">
-                        <router-link :to="{ path: '/user/' + author.id }" target="_blank">
-                            View Full Profile
-                            <font-awesome-icon icon="external-link-alt" size="sm" />
-                        </router-link>
-                    </p>
-                </b-popover>
             </b-col>
 
             <b-col>
@@ -306,6 +230,7 @@ import CaptionEditor from "@/components/caption/CaptionEditor";
 import SmartTagsPanel from "@/components/tags/SmartTagsPanel";
 import PanelAccessLinks from "@/components/panelaccesslinks/PanelAccessLinks";
 import DownloadBar from "@/components/DownloadBar";
+import AuthorList from "@/components/authors/AuthorList";
 import AuthorTypes from "@/definitions/AuthorTypes";
 
 export default {
@@ -317,6 +242,7 @@ export default {
         SmartTagsPanel,
         DownloadBar,
         PanelAccessLinks,
+        AuthorList,
     },
     data() {
         return {
@@ -332,26 +258,11 @@ export default {
             "expandedPanel",
             "iOwnThisPanel",
             "iHaveAuthorPrivileges",
-            "iCanSeeThisPanelViaAGroup",
-            "comments",
             "commentCount",
             "fileCount",
             "editingCaption",
             "expandedPanelAuthors",
-            "showAuthorSidebar",
-            "currentUser",
         ]),
-        authors() {
-            // don't display the curator in the author list
-            return this.expandedPanelAuthors.filter(
-                author => author.author_role !== AuthorTypes.CURATOR
-            );
-        },
-        correspondingAuthors() {
-            return this.expandedPanelAuthors.filter(
-                author => author.author_role === AuthorTypes.CORRESPONDING
-            );
-        },
         panelUrl(){
             return this.link_base + '/' + this.expandedPanel.id
         },
@@ -468,47 +379,6 @@ export default {
         },
         editAuthorList(){
             this.$store.commit("setAuthorSidebar", true);
-        },
-        removeMeAsAuthor() {
-            let panelId = this.expandedPanel.id;
-            let authorId = this.currentUser.id;
-
-            this.closeRemoveMePopover();
-            this.$store.dispatch("removeUserFromExpandedPanelAuthors")
-            .then(response => {
-                this.$snotify.success(response.data.MESSAGE, "Author removed");
-                // remove author from expanded panel detail and loaded panel detail
-                this.$store.commit("removeAuthorFromPanel",{
-                    author_id: authorId,
-                    panel_id: panelId
-                });
-
-
-                /*
-                    How can an person have access to a panel?
-                    It's public
-                    They're an owner
-                    They're an author
-                    They're a group member
-                */
-
-                if (!this.expandedPanel.is_public
-                && !this.iCanSeeThisPanelViaAGroup
-                && !this.iOwnThisPanel) {
-                    // remove panel from loaded/expanded panels
-                    this.$store.commit("clearExpandedPanelDetail");
-                    this.$store.commit("removePanelFromStore", panelId);
-                }
-
-            }).catch(error => {
-                this.$snotify.error(error.data.MESSAGE, "Error");
-            });
-        },
-        closeRemoveMePopover() {
-            const popupRef = 'remove-me-popover-' + this.currentUser.id;
-            if (this.$refs[popupRef][0]) {
-                this.$refs[popupRef][0].$emit("close");
-            }
         },
     }
 };
