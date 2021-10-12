@@ -139,7 +139,7 @@
 
         <b-row>
             <b-col lg="7">
-                <div class="panel-detail-content panel-detail-image-container">
+                <div class="panel-detail-content-container panel-detail-image-container">
                     <img
                         class="panel-detail-image"
                         :src="fullImageUrl"
@@ -174,16 +174,16 @@
                     ></b-form-file>
                 </div>
 
-                <div class="panel-detail-content panel-detail-caption-container">
+                <div class="panel-detail-content-container panel-detail-caption-container">
                     <div class="content-name">
                         Description
                     </div>
 
-                    <div v-if="editingCaption" class="panel-detail-caption-edit">
+                    <div v-if="editingCaption" class="panel-detail-content panel-detail-caption-edit">
                         <caption-editor></caption-editor>
                     </div>
 
-                    <div v-else class="panel-detail-caption">
+                    <div v-else class="panel-detail-content panel-detail-caption">
                         {{ expandedPanel.caption }}
                     </div>
 
@@ -536,15 +536,17 @@ export default {
 /*********************
  * Content containers
  *********************/
-.panel-detail-content {
+.panel-detail-content-container {
     border: 1px solid $mostly-white-gray;
     border-radius: 0.5rem;
     margin-bottom: 2rem;
-    min-height: 10rem;
-    padding: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 1rem;
     position: relative;
 }
-.panel-detail-content .content-name {
+.panel-detail-content-container .content-name {
     background-color: $very-dark-desaturated-blue;
     font-size: 0.75rem;
     padding: 0 0.4rem;
@@ -552,6 +554,11 @@ export default {
     position: absolute;
     top: -0.65rem;
     left: 1rem;
+}
+.panel-detail-content-container .panel-detail-content {
+    min-height: 5rem;
+    max-height: 20rem;
+    overflow-y: auto;
 }
 
 /*********************
@@ -621,13 +628,6 @@ $zoom-icon-bottom: -1 * (
 /*********************
  * Description
  *********************/
-.panel-detail-caption-container {
-    height: 15rem;
-}
-.panel-detail-caption {
-    max-height: 97%;
-    overflow-y: scroll;
-}
 .panel-detail-caption-container .sd-edit-icon {
     background-color: $very-dark-desaturated-blue;
     padding: 0 0.4rem;
