@@ -138,7 +138,7 @@
         </b-row>
 
         <b-row>
-            <b-col cols="7">
+            <b-col lg="7">
                 <div class="panel-detail-content panel-detail-image-container">
                     <img
                         class="panel-detail-image"
@@ -205,7 +205,7 @@
                 </div>
             </b-col>
 
-            <b-col cols="5">
+            <b-col lg="5">
                 <b-tabs
                     card
                     content-class="sd-panel-detail-tab-card"
