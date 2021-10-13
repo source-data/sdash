@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <div>
         <div class="sd-caption-edit-smart-wrapper">
             <label for="smart-tag-toggle-switch">Suggest SmartTags?</label>    <toggle-button id="smart-tag-toggle-switch" :sync="true" v-model="smartTagToggle" :labels="{checked:'Yes', unchecked:'No'}" :width="55" :font-size="14"/>
         </div>
@@ -15,7 +15,7 @@
             <b-button variant="success" small @click="saveCaptionChanges" :disabled="disableSave">Save</b-button>
             <b-button variant="light" small @click="cancelCaptionChanges">Cancel</b-button>
         </div>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -87,7 +87,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .sd-caption-edit-actions-wrapper {
         text-align:right;
         padding: 6px 0;
@@ -95,7 +95,6 @@ export default {
 
     .sd-caption-edit-smart-wrapper {
         text-align:right;
-
+        overflow-x: hidden;
     }
-
 </style>
