@@ -1,8 +1,8 @@
 <template>
-    <article class="container-fluid text-light panel-detail">
+    <article class="container-fluid text-light text-md panel-detail">
         <header class="row">
             <!-- panel title -->
-            <h1 class="col col-12">
+            <h1 class="col col-12 text-xl">
                 <b-input-group
                     v-if="iCanEditThisPanel && isEditingTitle"
                     class="sd-panel-detail-title--editor"
@@ -97,7 +97,7 @@
                 </section>
 
                 <section class="description">
-                    <h2>
+                    <h2 class="text-xs">
                         Description
                     </h2>
 
@@ -127,7 +127,7 @@
                 </section>
 
                 <section class="comments">
-                    <h2>
+                    <h2 class="text-xs">
                         Comments
                     </h2>
 
@@ -426,7 +426,6 @@ section {
 section h2 {
     background-color: $very-dark-desaturated-blue;
     color: inherit;
-    font-size: 0.75rem;
     padding: 0 0.4rem;
 
     position: absolute;
@@ -443,9 +442,6 @@ section .content {
  * Title row
  *********************/
 h1 {
-    color: inherit;
-    font-size: 2rem;
-
     /* Leave enough space on the right for the edit icon */
     max-width: calc(100% - 5rem);
     overflow: hidden;
