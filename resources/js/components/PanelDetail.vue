@@ -1,51 +1,50 @@
 <template>
-    <b-container fluid class="panel-detail-container">
-        <b-row>
-            <b-col>
-                <div class="sd-panel-detail-title">
-                    <b-input-group
-                        v-if="iCanEditThisPanel && isEditingTitle"
-                        class="sd-panel-detail-title--editor"
-                    >
-                        <b-form-input v-model="titleText"></b-form-input>
+    <article class="container-fluid panel-detail">
+        <header class="row">
+            <!-- panel title -->
+            <h1 class="col col-12">
+                <b-input-group
+                    v-if="iCanEditThisPanel && isEditingTitle"
+                    class="sd-panel-detail-title--editor"
+                >
+                    <b-form-input v-model="titleText"></b-form-input>
 
-                        <b-input-group-append>
-                            <b-button variant="danger" @click="stopEditingPanelTitle">
-                                Cancel
-                            </b-button>
+                    <b-input-group-append>
+                        <b-button variant="danger" @click="stopEditingPanelTitle">
+                            Cancel
+                        </b-button>
 
-                            <b-button variant="success" @click="saveEditedTitle">
-                                Save
-                            </b-button>
-                        </b-input-group-append>
-                    </b-input-group>
+                        <b-button variant="success" @click="saveEditedTitle">
+                            Save
+                        </b-button>
+                    </b-input-group-append>
+                </b-input-group>
 
-                    <h3 v-if="!isEditingTitle">
-                        <a :href="panelUrl" target="_blank" title="Open panel in a new tab">
-                            {{ expandedPanel.title }}
-                            <font-awesome-icon icon="external-link-alt" size="sm" />
-                        </a>
-                    </h3>
+                <span v-if="!isEditingTitle">
+                    <a :href="panelUrl" target="_blank" title="Open panel in a new tab">
+                        {{ expandedPanel.title }}
+                        <font-awesome-icon icon="external-link-alt" size="sm" />
+                    </a>
+                </span>
 
-                    <font-awesome-icon
-                        v-if="iCanEditThisPanel && !isEditingTitle"
-                        @click="editPanelTitle"
-                        class="sd-edit-icon"
-                        icon="pen"
-                        title="Edit panel title" />
-                </div>
-            </b-col>
-        </b-row>
+                <font-awesome-icon
+                    v-if="iCanEditThisPanel && !isEditingTitle"
+                    @click="editPanelTitle"
+                    class="sd-edit-icon"
+                    icon="pen"
+                    title="Edit panel title" />
+            </h1>
 
-        <b-row v-if="expandedPanelAuthors.length > 0">
-            <b-col>
+            <!-- panel authors -->
+            <address class="col col-12" v-if="expandedPanelAuthors.length > 0">
                 <author-list></author-list>
 
                 <span
                     v-if="iCanEditThisPanel"
                     class="ml-2 sd-edit-icon"
                     tabindex="0"
-                    @click="editAuthorList">
+                    @click="editAuthorList"
+                >
                     <font-awesome-icon icon="pen" title="Edit panel authors" />
                 </span>
 
@@ -55,32 +54,28 @@
                         indicates corresponding author
                     </span>
                 </div>
-            </b-col>
+            </address>
+        </header>
 
-            <b-col>
-            </b-col>
-        </b-row>
-
+        <!-- further details about the panel -->
         <b-row>
             <b-col lg="7">
-                <div class="panel-detail-content-container panel-detail-image-container">
+                <section class="image">
                     <img
-                        class="panel-detail-image"
+                        class="content"
                         :src="fullImageUrl"
                         :alt="'image for' + expandedPanel.title"
                         tabindex="0"
                         @click="openLightBox"
                         style="cursor:pointer"
-                        draggable="false"
-                    />
+                        draggable="false" />
 
                     <font-awesome-icon
                         @click="openLightBox"
                         class="sd-panel-zoom-icon"
                         icon="search"
                         size="2x"
-                        title="View image"
-                    />
+                        title="View image" />
 
                     <font-awesome-icon
                         v-if="iCanEditThisPanel"
@@ -94,20 +89,19 @@
                         class="d-none"
                         accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
                         v-model="imageFile"
-                        @input="changeImage"
-                    ></b-form-file>
-                </div>
+                        @input="changeImage"></b-form-file>
+                </section>
 
-                <div class="panel-detail-content-container panel-detail-caption-container">
-                    <div class="content-name">
+                <section class="description">
+                    <h2>
                         Description
-                    </div>
+                    </h2>
 
-                    <div v-if="editingCaption" class="panel-detail-content panel-detail-caption-edit">
+                    <div v-if="editingCaption" class="content panel-detail-caption-edit">
                         <caption-editor></caption-editor>
                     </div>
 
-                    <div v-else class="panel-detail-content panel-detail-caption">
+                    <div v-else class="content panel-detail-caption">
                         {{ expandedPanel.caption }}
                     </div>
 
@@ -126,16 +120,17 @@
                         <a href="https://creativecommons.org/licenses/by/4.0/"
                             target="_blank">CC BY 4.0</a> license.
                     </span>
-                </div>
+                </section>
 
-
-                <div class="panel-detail-content-container panel-detail-comment-container">
-                    <div class="content-name">
+                <section class="comments">
+                    <h2>
                         Comments
-                    </div>
+                    </h2>
 
-                    <comment-list class="panel-detail-content panel-detail-comment"></comment-list>
-                </div>
+                    <div class="content">
+                        <comment-list></comment-list>
+                    </div>
+                </section>
             </b-col>
 
             <b-col lg="5">
@@ -154,17 +149,15 @@
                             <smart-tags-panel></smart-tags-panel>
                         </b-card-text>
                     </b-tab>
+                </b-tabs>
+
+                <div>
                     <b-tab title="Share">
                         <b-card-text>
                             <panel-access-links></panel-access-links>
                         </b-card-text>
                     </b-tab>
-                    <b-tab :title="commentCountTitle">
-                        <b-card-text>
-                            <comment-list></comment-list>
-                        </b-card-text>
-                    </b-tab>
-                </b-tabs>
+                </div>
 
                 <div class="sd-panel-detail--panel-actions">
                     <b-button
@@ -219,7 +212,7 @@
                 </div>
             </b-col>
         </b-row>
-    </b-container>
+    </article>
 </template>
 
 <script>
@@ -230,8 +223,7 @@ import CaptionEditor from "@/components/caption/CaptionEditor";
 import SmartTagsPanel from "@/components/tags/SmartTagsPanel";
 import PanelAccessLinks from "@/components/panelaccesslinks/PanelAccessLinks";
 import DownloadBar from "@/components/DownloadBar";
-import AuthorList from "@/components/authors/AuthorList";
-import AuthorTypes from "@/definitions/AuthorTypes";
+import AuthorList from "@/components/panel-detail/AuthorList";
 
 export default {
     name: "PanelDetail",
@@ -391,19 +383,21 @@ export default {
 /*********************
  * General settings
  *********************/
-.panel-detail-container {
+.panel-detail {
+    background-color: $very-dark-desaturated-blue;
+
     padding-left: 3vw;
     padding-right: 2vw;
 
     padding-top: 3rem;
     padding-bottom: 2rem;
 }
-.panel-detail-container,
-.panel-detail-container a {
+.panel-detail,
+a {
     color: $mostly-white-gray;
 }
 
-.panel-detail-container > .row {
+.row {
     margin-bottom: 1rem;
 }
 
@@ -415,7 +409,7 @@ export default {
 /*********************
  * Content containers
  *********************/
-.panel-detail-content-container {
+section {
     border: 1px solid $mostly-white-gray;
     border-radius: 0.5rem;
     margin-bottom: 2rem;
@@ -425,7 +419,7 @@ export default {
     padding-top: 1rem;
     position: relative;
 }
-.panel-detail-content-container .content-name {
+section h2 {
     background-color: $very-dark-desaturated-blue;
     font-size: 0.75rem;
     padding: 0 0.4rem;
@@ -434,7 +428,7 @@ export default {
     top: -0.65rem;
     left: 1rem;
 }
-.panel-detail-content-container .panel-detail-content {
+section .content {
     min-height: 5rem;
     max-height: 20rem;
     overflow-y: auto;
@@ -443,9 +437,9 @@ export default {
 /*********************
  * Title row
  *********************/
-.sd-panel-detail-title h3 {
-    display: inline-block;
-    margin: 0;
+h1 {
+    color: inherit;
+
     /* Leave enough space on the right for the edit icon */
     max-width: calc(100% - 5rem);
     overflow: hidden;
@@ -453,21 +447,21 @@ export default {
     text-overflow: ellipsis;
 }
 
-.sd-panel-detail-title .sd-edit-icon {
+h1 .sd-edit-icon {
     top: -0.5rem;
 }
 
 /*********************
  * Image
  *********************/
-.panel-detail-image-container {
+section.image {
     border: none;
     padding: 0;
     /* Makes the absolutely positioned icons (see below) relative to this container. */
     position: relative;
 }
 
-.panel-detail-image {
+section.image img {
     max-width: 100%;
     max-height: 100%;
 }
@@ -498,7 +492,7 @@ $zoom-icon-bottom: -1 * (
     cursor: pointer;
 }
 
-.panel-detail-image-container .sd-edit-icon {
+section.image .sd-edit-icon {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -507,7 +501,7 @@ $zoom-icon-bottom: -1 * (
 /*********************
  * Description
  *********************/
-.panel-detail-caption-container .sd-edit-icon {
+section.description .sd-edit-icon {
     background-color: $very-dark-desaturated-blue;
     padding: 0 0.4rem;
     position: absolute;
