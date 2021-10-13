@@ -155,13 +155,15 @@
                     </b-tab>
                 </b-tabs>
 
-                <div>
-                    <b-tab title="Share">
-                        <b-card-text>
-                            <panel-access-links></panel-access-links>
-                        </b-card-text>
-                    </b-tab>
-                </div>
+                <section class="sharing">
+                    <h2 class="text-xs">
+                        Share
+                    </h2>
+
+                    <div class="content text-xs">
+                        <panel-access-links></panel-access-links>
+                    </div>
+                </section>
 
                 <div class="sd-panel-detail--panel-actions">
                     <b-button
@@ -395,7 +397,7 @@ export default {
     padding-top: 3rem;
     padding-bottom: 2rem;
 }
-.panel-detail a {
+a, h1, h2, h3, h4, h5, h6 {
     color: inherit;
 }
 
@@ -413,14 +415,20 @@ button.edit {
 /*********************
  * Content containers
  *********************/
+$content-padding-left: 0.5rem;
+$content-padding-right: $content-padding-left;
+
+$content-padding-top: 1rem;
+$content-padding-bottom: 0.5rem;
+
 section {
     border: 1px solid $mostly-white-gray;
     border-radius: 0.5rem;
     margin-bottom: 2rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    padding-top: 1rem;
+    padding-bottom: $content-padding-bottom;
+    padding-left: $content-padding-left;
+    padding-right: $content-padding-right;
+    padding-top: $content-padding-top;
     position: relative;
 }
 section h2 {
@@ -509,5 +517,18 @@ section.description button.edit {
     position: absolute;
     bottom: -0.65rem;
     right: 1rem;
+}
+
+/*********************
+ * Sharing options
+ *********************/
+section.sharing {
+    padding: 0;
+
+}
+
+section.sharing section {
+    padding-left: $content-padding-left;
+    padding-right: $content-padding-right;
 }
 </style>
