@@ -28,12 +28,12 @@
                 </span>
 
                 <button
-                    class='edit'
+                    class='edit text-xs'
                     v-if="iCanEditThisPanel && !isEditingTitle"
                     @click="editPanelTitle"
                     title="Edit panel title"
                 >
-                    <font-awesome-icon icon="pen" :title="title" />
+                    <font-awesome-icon icon="pen" />
                 </button>
             </h1>
 
@@ -42,12 +42,12 @@
                 <author-list></author-list>
 
                 <button
-                    class='edit'
+                    class='edit text-xs'
                     v-if="iCanEditThisPanel"
                     @click="editAuthorList"
                     title="Edit panel authors"
                 >
-                    <font-awesome-icon icon="pen" :title="title" />
+                    <font-awesome-icon icon="pen" />
                 </button>
 
                 <div>
@@ -80,12 +80,12 @@
                         title="View image" />
 
                     <button
-                        class='edit'
+                        class='edit text-xs'
                         v-if="iCanEditThisPanel"
                         @click="displayImageUploader"
                         title="Change image"
                     >
-                        <font-awesome-icon icon="pen" :title="title" />
+                        <font-awesome-icon icon="pen" />
                     </button>
 
                     <b-form-file
@@ -110,12 +110,12 @@
                     </div>
 
                     <button
-                        class='edit'
+                        class='edit text-xs'
                         v-if="!editingCaption && iCanEditThisPanel"
                         @click="editPanelCaption"
                         title="Edit panel description"
                     >
-                        <font-awesome-icon icon="pen" :title="title" />
+                        <font-awesome-icon icon="pen" />
                     </button>
 
                     <span class="sd-license-notice" v-if="isPublic">
