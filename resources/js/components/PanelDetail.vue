@@ -27,26 +27,28 @@
                     </a>
                 </span>
 
-                <font-awesome-icon
+                <button
+                    class='edit'
                     v-if="iCanEditThisPanel && !isEditingTitle"
                     @click="editPanelTitle"
-                    class="sd-edit-icon"
-                    icon="pen"
-                    title="Edit panel title" />
+                    title="Edit panel title"
+                >
+                    <font-awesome-icon icon="pen" :title="title" />
+                </button>
             </h1>
 
             <!-- panel authors -->
             <address class="col col-12" v-if="expandedPanelAuthors.length > 0">
                 <author-list></author-list>
 
-                <span
+                <button
+                    class='edit'
                     v-if="iCanEditThisPanel"
-                    class="ml-2 sd-edit-icon"
-                    tabindex="0"
                     @click="editAuthorList"
+                    title="Edit panel authors"
                 >
-                    <font-awesome-icon icon="pen" title="Edit panel authors" />
-                </span>
+                    <font-awesome-icon icon="pen" :title="title" />
+                </button>
 
                 <div>
                     <span>
@@ -77,12 +79,14 @@
                         size="2x"
                         title="View image" />
 
-                    <font-awesome-icon
+                    <button
+                        class='edit'
                         v-if="iCanEditThisPanel"
                         @click="displayImageUploader"
-                        class="sd-edit-icon"
-                        icon="pen"
-                        title="Change image" />
+                        title="Change image"
+                    >
+                        <font-awesome-icon icon="pen" :title="title" />
+                    </button>
 
                     <b-form-file
                         ref="imageUploader"
@@ -105,14 +109,14 @@
                         {{ expandedPanel.caption }}
                     </div>
 
-                    <div v-if="!editingCaption" class="sd-edit-icon">
-                        <font-awesome-icon
-                            v-if="iCanEditThisPanel"
-                            @click="editPanelCaption"
-                            icon="pen"
-                            title="Edit panel description"
-                        />
-                    </div>
+                    <button
+                        class='edit'
+                        v-if="!editingCaption && iCanEditThisPanel"
+                        @click="editPanelCaption"
+                        title="Edit panel description"
+                    >
+                        <font-awesome-icon icon="pen" :title="title" />
+                    </button>
 
                     <span class="sd-license-notice" v-if="isPublic">
                         <font-awesome-icon :icon="['fab', 'creative-commons']" />
@@ -401,11 +405,13 @@ a {
     margin-bottom: 1rem;
 }
 
-.sd-edit-icon {
+button {
+    background-color: inherit;
+    border: none;
+    color: inherit;
     cursor: pointer;
-    position: relative;
-    font-size: 0.85rem;
 }
+
 /*********************
  * Content containers
  *********************/
@@ -439,16 +445,13 @@ section .content {
  *********************/
 h1 {
     color: inherit;
+    font-size: 2rem;
 
     /* Leave enough space on the right for the edit icon */
     max-width: calc(100% - 5rem);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-h1 .sd-edit-icon {
-    top: -0.5rem;
 }
 
 /*********************
@@ -492,7 +495,7 @@ $zoom-icon-bottom: -1 * (
     cursor: pointer;
 }
 
-section.image .sd-edit-icon {
+section.image button.edit {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -501,7 +504,7 @@ section.image .sd-edit-icon {
 /*********************
  * Description
  *********************/
-section.description .sd-edit-icon {
+section.description button.edit {
     background-color: $very-dark-desaturated-blue;
     padding: 0 0.4rem;
     position: absolute;
