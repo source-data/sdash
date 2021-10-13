@@ -9,3 +9,8 @@ $vivid-orange: #f6ae06;
 
 $mostly-white-gray: #f7f7f7;
 $mostly-white-gray-opaque: rgba(247, 247, 247, 0.6);
+
+$theme-colors: (
+    "light": $mostly-white-gray,
+    "dark": $mostly-black-blue,
+);

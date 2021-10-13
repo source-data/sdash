@@ -1,5 +1,5 @@
 <template>
-    <article class="container-fluid panel-detail">
+    <article class="container-fluid text-light panel-detail">
         <header class="row">
             <!-- panel title -->
             <h1 class="col col-12">
@@ -14,7 +14,7 @@
                             Cancel
                         </b-button>
 
-                        <b-button variant="success" @click="saveEditedTitle">
+                        <b-button variant="primary" @click="saveEditedTitle">
                             Save
                         </b-button>
                     </b-input-group-append>
@@ -392,20 +392,18 @@ export default {
 
     padding-left: 3vw;
     padding-right: 2vw;
-
     padding-top: 3rem;
     padding-bottom: 2rem;
 }
-.panel-detail,
-a {
-    color: $mostly-white-gray;
+.panel-detail a {
+    color: inherit;
 }
 
 .row {
     margin-bottom: 1rem;
 }
 
-button {
+button.edit {
     background-color: inherit;
     border: none;
     color: inherit;
@@ -427,6 +425,7 @@ section {
 }
 section h2 {
     background-color: $very-dark-desaturated-blue;
+    color: inherit;
     font-size: 0.75rem;
     padding: 0 0.4rem;
 
@@ -499,6 +498,10 @@ section.image button.edit {
     position: absolute;
     top: 1rem;
     right: 1rem;
+}
+section.image button.edit,
+section.image button.edit * {
+    background-color: transparent;
 }
 
 /*********************
