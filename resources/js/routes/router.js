@@ -11,6 +11,7 @@ import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
 import LoginForm from '@/components/authentication/LoginForm'
 import RegistrationForm from '@/components/authentication/RegistrationForm'
+import PasswordReset from '@/components/authentication/PasswordReset'
 
 Vue.use(Router)
 
@@ -30,6 +31,14 @@ const router = new Router({
             path: "/login",
             name: "login",
             component: LoginForm,
+            meta: {
+                access: UserLevels.GUEST
+            },
+        },
+        {
+            path: "/password-reset",
+            name: "passwordreset",
+            component: PasswordReset,
             meta: {
                 access: UserLevels.GUEST
             },

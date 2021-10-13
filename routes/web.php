@@ -15,7 +15,8 @@
 
 // Necessary routes for the registration and email verification process
 Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
-
+// Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+// Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
 
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 

@@ -213,6 +213,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import AuthService from '@/services/AuthService';
+import EmailFormatValidator from '@/services/EmailFormatValidator';
 
 export default {
 
@@ -260,7 +261,7 @@ export default {
         emailCheck(){
             this.errors.email = '';
             if(!this.email) return null;
-            if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email)){
+            if(!EmailFormatValidator.validate(this.email)){
                 this.errors.email = 'Invalid email address';
                 return false;
             }

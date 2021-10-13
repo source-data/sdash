@@ -48,6 +48,7 @@
                         >Remember me</b-form-checkbox>
 
                         </b-form-group>
+
                         <b-form-invalid-feedback force-show v-if="showInvalidFormFeedback">
                             {{loginFeedback}}
                         </b-form-invalid-feedback>
@@ -57,6 +58,8 @@
                         type="submit"
                         variant="primary"
                         >{{ loginButtonCaption }} <b-spinner small v-if="loading"></b-spinner></b-button>
+
+                        <router-link class="btn btn-link" :to="{ name: 'passwordreset'}">Forgot your password?</router-link>
                     </b-form>
                 </b-card>
             </b-col>
@@ -69,6 +72,7 @@
 <script>
 
 import AuthService from '@/services/AuthService';
+import EmailFormatValidator from '@/services/EmailFormatValidator';
 import store from '@/stores/store';
 import { mapGetters } from 'vuex';
 
@@ -98,7 +102,7 @@ export default {
             this.loginFeedback = '';
             if(!this.email) return null;
 
-            if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email)){
+            if(!EmailFormatValidator.validate(this.email)){
                 this.emailFeedback = 'Invalid email address';
                 return false;
             }

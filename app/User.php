@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -89,6 +90,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function consents()
     {
         return $this->hasMany('App\Models\UserConsent');
+    }
+
+    /**
+     * Send the password reset notification, taking into account that the URL will be a path that is rendered by Vue JS, not by Laravel
+     *
+     * @param string $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     /**

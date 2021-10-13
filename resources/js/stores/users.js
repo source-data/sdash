@@ -28,7 +28,6 @@ const actions = {
     fetchCurrentUser({ commit }){
         return Axios.get('/users/me')
         .then((response)=>{
-
             commit('setCurrentUser', response.data.DATA)
             commit('setUserGroups', response.data.DATA.groups)
 
@@ -42,7 +41,7 @@ const actions = {
         })
 
 
-    }
+    },
 
 
 }

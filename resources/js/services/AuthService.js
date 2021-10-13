@@ -15,7 +15,10 @@ const AuthService = {
       throw(error.data);
     }
   },
-
+/**
+ *
+ * @returns Promise
+ */
   async logout() {
       let logoutTransaction = await this.executeAuthMethod('/logout');
       return logoutTransaction.data;
