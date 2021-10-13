@@ -207,7 +207,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'resources/sass/_variables.scss';
+@import 'resources/sass/_colors.scss';
 
 $sd-extra-height: 800; // info box height in pixels
 

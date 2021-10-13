@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'resources/sass/_variables.scss';
+@import 'resources/sass/_colors.scss';
 
 .sd-post-comment-form {
     background-color: $mostly-white-gray;

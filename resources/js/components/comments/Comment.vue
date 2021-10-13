@@ -156,7 +156,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'resources/sass/_variables.scss';
+@import 'resources/sass/_colors.scss';
 
 .sd-user-comment {
     margin-bottom: 0.5rem;

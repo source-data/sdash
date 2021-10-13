@@ -136,7 +136,7 @@ export default {
 
 <style lang="scss" scoped>
 @use "sass:math";
-@import 'resources/sass/_variables.scss';
+@import 'resources/sass/_colors.scss';
 
 $navbar-content-height: 3rem;
 $navbar-padding-bottom: 2rem;

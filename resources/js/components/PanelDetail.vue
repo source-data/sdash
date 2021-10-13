@@ -382,7 +382,7 @@ export default {
 
 <style lang="scss" scoped>
 @use "sass:math";
-@import 'resources/sass/_variables.scss';
+@import 'resources/sass/_colors.scss';
 
 /*********************
  * General settings

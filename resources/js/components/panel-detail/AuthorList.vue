@@ -163,7 +163,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'resources/sass/_variables.scss';
+@import 'resources/sass/_colors.scss';
 
 .corresponding a {
     color: $mostly-white-gray;
