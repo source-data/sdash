@@ -77,10 +77,10 @@
             <button
                 type="button"
                 aria-label="Close"
-                class="close sd-grid-extra--close"
+                class="close sd-grid-extra--close text-light"
                 @click.prevent="toggleExpanded"
             >
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">&#10005;</span>
             </button>
             <b-row v-if="!hasPanelDetail">
                 <b-col class="text-center">
@@ -281,9 +281,10 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
 }
 .sd-grid-extra--close {
     position: absolute;
-    font-size: 2em;
-    top: 4px;
-    right: 8px;
+    font-size: 1.5em;
+    top: 1rem;
+    right: 2vw;
+    opacity: 1;
 }
 .sd-grid-extra--wrapper {
     height: 100%;
