@@ -63,37 +63,38 @@
         <b-row>
             <b-col lg="7">
                 <section class="image">
-                    <img
-                        class="content"
-                        :src="fullImageUrl"
-                        :alt="'image for' + expandedPanel.title"
-                        tabindex="0"
-                        @click="openLightBox"
-                        style="cursor:pointer"
-                        draggable="false" />
+                    <div class="content bg-dark">
+                        <img
+                            :src="fullImageUrl"
+                            :alt="'image for' + expandedPanel.title"
+                            tabindex="0"
+                            @click="openLightBox"
+                            style="cursor:pointer"
+                            draggable="false" />
 
-                    <font-awesome-icon
-                        @click="openLightBox"
-                        class="sd-panel-zoom-icon"
-                        icon="search"
-                        size="2x"
-                        title="View image" />
+                        <font-awesome-icon
+                            @click="openLightBox"
+                            class="sd-panel-zoom-icon"
+                            icon="search"
+                            size="2x"
+                            title="View image" />
 
-                    <button
-                        class='edit text-xs'
-                        v-if="iCanEditThisPanel"
-                        @click="displayImageUploader"
-                        title="Change image"
-                    >
-                        <font-awesome-icon icon="pen" />
-                    </button>
+                        <button
+                            class='edit text-xs'
+                            v-if="iCanEditThisPanel"
+                            @click="displayImageUploader"
+                            title="Change image"
+                        >
+                            <font-awesome-icon icon="pen" />
+                        </button>
 
-                    <b-form-file
-                        ref="imageUploader"
-                        class="d-none"
-                        accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
-                        v-model="imageFile"
-                        @input="changeImage"></b-form-file>
+                        <b-form-file
+                            ref="imageUploader"
+                            class="d-none"
+                            accept="image/jpeg, image/png, image/gif, image/tiff, application/pdf"
+                            v-model="imageFile"
+                            @input="changeImage"></b-form-file>
+                    </div>
                 </section>
 
                 <section class="description">
@@ -477,9 +478,14 @@ section.image {
     position: relative;
 }
 
+section.image .content {
+    max-height: 40rem;
+}
 section.image img {
+    display: block;
+    margin: auto;
     max-width: 100%;
-    max-height: 100%;
+    max-height: 40rem;
 }
 
 $zoom-icon-size: 1rem;
