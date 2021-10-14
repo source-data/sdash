@@ -20,8 +20,15 @@
                             label-for="sd-register__firstname"
                             label-cols-sm="4"
                             label-align-sm="right"
+                            :invalid-feedback="firstNameFeedback"
+                            :state="firstNameCheck"
                         >
-                            <b-form-input v-model="firstName" :disabled="formDisabled" id="sd-register__firstname"></b-form-input>
+                            <b-form-input v-model="firstName"
+                            :disabled="formDisabled"
+                            id="sd-register__firstname"
+                            debounce="300"
+                            @input="clearErrors('firstname')"
+                            ></b-form-input>
                         </b-form-group>
 
 
@@ -31,8 +38,14 @@
                             label-for="sd-register__surname"
                             label-cols-sm="4"
                             label-align-sm="right"
+                            :invalid-feedback="surnameFeedback"
+                            :state="surnameCheck"
                         >
-                            <b-form-input v-model="surname" :disabled="formDisabled" id="sd-register__surname"></b-form-input>
+                            <b-form-input v-model="surname" :disabled="formDisabled"
+                            id="sd-register__surname"
+                            debounce="300"
+                            @input="clearErrors('surname')"
+                            ></b-form-input>
                         </b-form-group>
 
                         <!-- email -->
@@ -41,11 +54,12 @@
                             label-for="sd-register__email"
                             label-cols-sm="4"
                             label-align-sm="right"
-                            :invalid-feedback="errors.email"
+                            :invalid-feedback="emailFeedback"
                             :state="emailCheck"
                         >
                             <b-form-input
-                            debounce="500"
+                            debounce="300"
+                            @input="clearErrors('email')"
                             v-model="email"
                             :disabled="formDisabled"
                             id="sd-register__email"
@@ -58,7 +72,7 @@
                             label-for="sd-register__password"
                             label-cols-sm="4"
                             label-align-sm="right"
-                            :invalid-feedback="errors.password"
+                            :invalid-feedback="passwordFeedback"
                             :state="passwordCheck"
                         >
                             <b-form-input
@@ -67,7 +81,8 @@
                             :disabled="formDisabled"
                             id="sd-register__password"
                             type="password"
-                            debounce="500"
+                            debounce="300"
+                            @input="clearErrors('password')"
                             ></b-form-input>
                         </b-form-group>
 
@@ -77,7 +92,7 @@
                             label-for="sd-register__confirm-password"
                             label-cols-sm="4"
                             label-align-sm="right"
-                            :invalid-feedback="errors.password_confirmation"
+                            :invalid-feedback="passwordRepeatFeedback"
                             :state="passwordRepeatCheck"
                         >
                             <b-form-input
@@ -85,7 +100,8 @@
                             :disabled="formDisabled"
                             autocomplete="new-password" id="sd-register__confirm-password"
                             type="password"
-                            debounce="500"
+                            debounce="300"
+                            @input="clearErrors('password_confirmation')"
                             ></b-form-input>
                         </b-form-group>
                         <b-row>
@@ -101,8 +117,15 @@
                             label-for="sd-register__orcid"
                             label-cols-sm="4"
                             label-align-sm="right"
+                            :invalid-feedback="orcidFeedback"
+                            :state="orcidCheck"
                         >
-                            <b-form-input v-model="orcid" :disabled="formDisabled" id="sd-register__orcid"></b-form-input>
+                            <b-form-input v-model="orcid"
+                            :disabled="formDisabled"
+                            id="sd-register__orcid"
+                            debounce="300"
+                            @input="clearErrors('orcid')"
+                            ></b-form-input>
                         </b-form-group>
 
                         <!-- institution -->
@@ -170,6 +193,8 @@
                         id="sd-conditions"
                         v-model="acceptConditions"
                         name="sd-conditions"
+                        :invalid-feedback="acceptConditionsFeedback"
+                        :state="acceptConditionsCheck"
                         >
                         I agree with the conditions above and confirm my personal information is correct.
                         </b-form-checkbox>
@@ -180,6 +205,8 @@
                         id="sd-consent"
                         v-model="acceptConsent"
                         name="sd-consent"
+                        :invalid-feedback="acceptConsentFeedback"
+                        :state="acceptConsentCheck"
                         >
                         I will obtain consent from all persons and entities that may have intellectual property rights pertaining to the content I will post and share on this platform.
                         </b-form-checkbox>
@@ -190,6 +217,8 @@
                         id="sd-permissions"
                         v-model="acceptPermissions"
                         name="sd-permissions"
+                        :invalid-feedback="acceptPermissionFeedback"
+                        :state="acceptPermissionCheck"
                         >
                         I will obtain permission from any relevant co-authors before publicly posting or sharing content.
                         </b-form-checkbox>
@@ -258,36 +287,82 @@ export default {
             ) return true;
             return false;
         },
-        emailCheck(){
-            this.errors.email = '';
-            if(!this.email) return null;
-            if(!EmailFormatValidator.validate(this.email)){
-                this.errors.email = 'Invalid email address';
-                return false;
+        firstNameFeedback(){
+            if(this.errors.firstname) return this.errors.firstname.join(' ');
+        },
+        surnameFeedback(){
+            if(this.errors.surname) return this.errors.surname.join(' ');
+        },
+        emailFeedback(){
+            if(this.errors.email) return this.errors.email.join(' ');
+            if(!EmailFormatValidator.validate(this.email)) {
+                return 'Invalid email address format';
+            };
+
+        },
+        passwordFeedback(){
+            if(this.errors.password) return this.errors.password.join(' ');
+            if(this.password1.length < 8) {
+                return 'Password must be at least 8 characters';
             }
 
+        },
+        passwordRepeatFeedback(){
+            if(this.password1 !== this.password2) {
+                return 'The passwords do not match';
+            }
+        },
+        orcidFeedback(){
+            if(this.errors.orcid) return this.errors.orcid.join(' ');
+        },
+        acceptConditionsFeedback(){
+            if(this.errors['confirmation.0']) return this.errors['confirmation.0'].join(' ');
+        },
+        acceptConsentFeedback(){
+            if(this.errors['confirmation.1']) return this.errors['confirmation.1'].join(' ');
+        },
+        acceptPermissionFeedback(){
+            if(this.errors['confirmation.2']) return this.errors['confirmation.2'].join(' ');
+        },
+        emailCheck(){
+            if(this.errors.email) return false;
+            if(!this.email) return null;
+            if(!EmailFormatValidator.validate(this.email)) return false;
             return true;
         },
         passwordCheck(){
-            this.errors.password = '';
+            if(this.errors.password) return false;
             if(!this.password1) return null;
-            if(this.password1.length < 8){
-                this.errors.password = 'Password must be at least 8 characters';
-                return false;
-            }
+            if(this.password1.length < 8) return false;
             return true;
 
         },
         passwordRepeatCheck(){
-            this.errors.password_confirmation = '';
             if(!this.password1 || !this.password2) return null;
-            if(this.password1 !== this.password2){
-                this.errors.password_confirmation = 'The passwords do not match';
-                return false;
-            }
+            if(this.password1 !== this.password2) return false;
             return true;
-
-        }
+        },
+        orcidCheck(){
+            if(this.errors.orcid) return false;
+            if(this.orcid.length===0) return null;
+        },
+        firstNameCheck(){
+            if(this.errors.firstname) return false;
+            if(this.firstName.length===0) return null;
+        },
+        surnameCheck(){
+            if(this.errors.surname) return false;
+            if(this.surname.length===0) return null;
+        },
+        acceptConditionsCheck(){
+            if(this.errors['confirmation.0']) return false;
+        },
+        acceptConsentCheck(){
+            if(this.errors['confirmation.1']) return false;
+        },
+        acceptPermissionCheck(){
+            if(this.errors['confirmation.2']) return false;
+        },
 
     },
     methods:{
@@ -319,17 +394,19 @@ export default {
                 this.$snotify.success("Email confirmation sent.", "Account created.");
                 this.$router.push({path: '/'});
             }).catch(error => {
+                window.scroll(0,0);
                 this.formDisabled = false;
-                this.extractErrors(error.errors);
+                this.errors = error.errors;
+                this.$snotify.error("See the form for details", "Failed");
                 console.log(error);
             });
 
         },
-        extractErrors(errorObject){
-            for(const field in errorObject) {
-                if(errorObject.hasOwnProperty(field)){
-                    this.errors[field] = errorObject[field].join(' ');
-                }
+        clearErrors(fieldName) {
+            if(this.errors.hasOwnProperty(fieldName)) {
+                const modifiedErrors = Object.assign({}, this.errors);
+                delete modifiedErrors[fieldName];
+                this.errors = modifiedErrors;
             }
         }
     },
