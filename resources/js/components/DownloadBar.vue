@@ -1,5 +1,5 @@
 <template>
-    <b-dropdown right variant="light" class="list-grid--download-controls" >
+    <b-dropdown right variant="info" class="list-grid--download-controls" >
         <template v-slot:button-content><font-awesome-icon class="sd-panel-download-icon" icon="download" title="Download panel" /> Download</template>
         <b-dropdown-item @click.stop="download('pdf')">.pdf file</b-dropdown-item>
         <b-dropdown-item @click.stop="download('powerpoint')">.pptx (PowerPoint) file</b-dropdown-item>

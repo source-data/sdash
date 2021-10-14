@@ -165,57 +165,67 @@
                     </div>
                 </section>
 
-                <div class="sd-panel-detail--panel-actions">
-                    <b-button
-                        id="sd-delete-panel"
-                        variant="danger"
-                        v-if="iCanEditThisPanel"
-                        class="sd-delete-panel-button"
-                        ><font-awesome-icon
-                            class="sd-delete-panel-icon"
-                            icon="trash-alt"
-                            title="Delete panel"
-                        />
-                        Delete Panel</b-button
-                    >
-                    <b-popover
-                        ref="delete-panel-popover"
-                        target="sd-delete-panel"
-                        triggers="click"
-                        placement="top"
-                    >
-                        <template v-slot:title>
-                            Are you sure?
-                            <b-button
-                                @click="closeDeletePanelPopover"
-                                class="close"
-                                aria-label="Close"
-                            >
-                                <span class="d-inline-block" aria-hidden="true"
-                                    >&times;</span
-                                >
-                            </b-button>
-                        </template>
-                        <div class="confirm-delete-content">
-                            <div class="delete-buttons">
-                                <b-button
-                                    variant="danger"
-                                    small
-                                    @click="deletePanel"
-                                    >Delete it!</b-button
-                                >
-                                <b-button
-                                    variant="outline-dark"
-                                    small
-                                    @click="closeDeletePanelPopover"
-                                    >Cancel</b-button
-                                >
-                            </div>
-                        </div>
-                    </b-popover>
+                <section class="panel-actions container-fluid">
+                    <h2 class="text-xs" hidden>
+                        Actions
+                    </h2>
 
-                    <download-bar></download-bar>
-                </div>
+                    <div class="content row">
+                        <b-col>
+                            <b-button
+                                id="sd-delete-panel"
+                                variant="danger"
+                                v-if="iCanEditThisPanel"
+                                class="float-left"
+                            >
+                                <font-awesome-icon
+                                    class="sd-delete-panel-icon"
+                                    icon="trash-alt"
+                                    title="Delete panel" />
+                                Delete SmartFigure
+                            </b-button>
+
+                            <b-popover
+                                ref="delete-panel-popover"
+                                target="sd-delete-panel"
+                                triggers="click"
+                                placement="top"
+                            >
+                                <template v-slot:title>
+                                    Are you sure?
+                                    <b-button
+                                        @click="closeDeletePanelPopover"
+                                        class="close"
+                                        aria-label="Close"
+                                    >
+                                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                    </b-button>
+                                </template>
+                                <div class="confirm-delete-content">
+                                    <div class="delete-buttons">
+                                        <b-button
+                                            variant="danger"
+                                            small
+                                            @click="deletePanel"
+                                            >Delete it!</b-button
+                                        >
+
+                                        <b-button
+                                            variant="outline-dark"
+                                            small
+                                            @click="closeDeletePanelPopover"
+                                            >Cancel</b-button
+                                        >
+                                    </div>
+                                </div>
+                            </b-popover>
+                        </b-col>
+
+                        <b-col>
+                            <download-bar class="float-right"></download-bar>
+                        </b-col>
+                    </div>
+                </section>
             </b-col>
         </b-row>
     </article>
@@ -415,7 +425,7 @@ button.edit {
 /*********************
  * Content containers
  *********************/
-$content-padding-left: 0.5rem;
+$content-padding-left: 0.75rem;
 $content-padding-right: $content-padding-left;
 
 $content-padding-top: 1rem;
@@ -533,5 +543,17 @@ section.sharing .content {
 section.sharing section {
     padding-left: $content-padding-left;
     padding-right: $content-padding-right;
+}
+
+/*********************
+ * Panel actions
+ *********************/
+section.panel-actions {
+    border: none;
+    padding-top: 0;
+}
+section.panel-actions .content {
+    min-height: 0;
+    overflow-y: initial;
 }
 </style>
