@@ -209,8 +209,24 @@ export default {
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
 
-$sd-extra-height: 800; // info box height in pixels
-
+$sd-extra-height: 100rem; // panel detail box height
+$sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller screens
+.sd-grid-item.sd-grid-item__expanded {
+    margin-bottom: $sd-extra-height-stacked-columns + 2;
+}
+.sd-grid-item__expanded .sd-grid-extra {
+    max-height: $sd-extra-height-stacked-columns;
+    height: $sd-extra-height-stacked-columns;
+}
+@media (min-width: 992px) {
+    .sd-grid-item.sd-grid-item__expanded {
+        margin-bottom: $sd-extra-height + 2;
+    }
+    .sd-grid-item__expanded .sd-grid-extra {
+        max-height: $sd-extra-height;
+        height: $sd-extra-height;
+    }
+}
 .sd-grid-item {
     cursor: pointer;
     flex-grow: 1;
@@ -221,10 +237,6 @@ $sd-extra-height: 800; // info box height in pixels
     margin: 8px;
     transition: all 0.3s ease-in;
     outline: 1px red;
-}
-
-.sd-grid-item.sd-grid-item__expanded {
-    margin-bottom: $sd-extra-height + 32 + px;
 }
 
 .sd-grid-image-container {
@@ -266,10 +278,6 @@ $sd-extra-height: 800; // info box height in pixels
     overflow: hidden;
     transition: all 0.3s ease-in;
     z-index: 5;
-}
-.sd-grid-item__expanded .sd-grid-extra {
-    max-height: $sd-extra-height + px;
-    height: $sd-extra-height + px;
 }
 .sd-grid-extra--close {
     position: absolute;
