@@ -399,9 +399,17 @@ export default {
 
 $section-padding-top: 0.75rem;
 $section-padding-bottom: $section-padding-top;
+$section-padding-left: 0.75rem;
+$section-padding-right: $section-padding-left;
+
 section {
     padding-top: $section-padding-top;
     padding-bottom: $section-padding-bottom;
+
+    padding-left: $section-padding-left;
+    padding-right: $section-padding-right;
+
+    overflow-x: hidden;
 }
 section:not(:last-child) {
     border-bottom: 1px solid;
