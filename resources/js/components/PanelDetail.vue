@@ -138,22 +138,60 @@
             </b-col>
 
             <b-col lg="5">
-                <b-tabs
-                    card
-                    content-class="sd-panel-detail-tab-card"
-                    class="sd-panel-details-tabs"
-                >
-                    <b-tab :title="'Sources (' + fileCount + ')'" active>
-                        <b-card-text>
+                <div class="sources-and-keywords">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a
+                                class="nav-link active"
+                                id="panel-sources-tab"
+                                data-toggle="tab"
+                                href="#panel-sources"
+                                role="tab"
+                                aria-controls="panel-sources"
+                                aria-selected="true"
+                            >
+                                <h2 class="section-heading text-xs">
+                                    Sources ({{ fileCount }})
+                                </h2>
+                            </a>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <a
+                                class="nav-link"
+                                id="panel-keywords-tab"
+                                data-toggle="tab"
+                                href="#panel-keywords"
+                                role="tab"
+                                aria-controls="panel-keywords"
+                            >
+                                <h2 class="section-heading text-xs">
+                                    Keywords
+                                </h2>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="content tab-content">
+                        <section
+                            class="tab-pane fade show active"
+                            id="panel-sources"
+                            role="tabpanel"
+                            aria-labelledby="panel-sources-tab"
+                        >
                             <file-uploads></file-uploads>
-                        </b-card-text>
-                    </b-tab>
-                    <b-tab title="Keywords">
-                        <b-card-text>
+                        </section>
+
+                        <section
+                            class="tab-pane fade"
+                            id="panel-keywords"
+                            role="tabpanel"
+                            aria-labelledby="panel-keywords-tab"
+                        >
                             <smart-tags-panel></smart-tags-panel>
-                        </b-card-text>
-                    </b-tab>
-                </b-tabs>
+                        </section>
+                    </div>
+                </div>
 
                 <section class="sharing">
                     <h2 class="text-xs">
@@ -441,7 +479,8 @@ section {
     padding-top: $content-padding-top;
     position: relative;
 }
-section h2 {
+section > h2,
+.section-heading {
     background-color: $very-dark-desaturated-blue;
     color: inherit;
     padding: 0 0.4rem;
@@ -450,7 +489,7 @@ section h2 {
     top: -0.65rem;
     left: 1rem;
 }
-section .content {
+section > .content {
     min-height: 5rem;
     max-height: 20rem;
     overflow-y: auto;
@@ -532,6 +571,38 @@ section.description button.edit {
     position: absolute;
     bottom: -0.65rem;
     right: 1rem;
+}
+
+/*********************
+ * Sources & Keywords
+ *********************/
+.sources-and-keywords section {
+    border-top-left-radius: 0;
+}
+
+.sources-and-keywords .nav-tabs {
+    border-bottom: none;
+}
+
+.sources-and-keywords .nav-item {
+    margin-right: 0.5rem;
+    width: 40%;
+}
+
+.sources-and-keywords .nav-link {
+    background-color: $very-dark-desaturated-blue;
+    border: 1px solid $mostly-white-gray;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    color: inherit;
+
+    /* Make the h2 positioning work by setting position to relative */
+    position: relative;
+}
+
+.sources-and-keywords .nav-link.active {
+    border-bottom-color: $very-dark-desaturated-blue;
+    z-index: 10;
 }
 
 /*********************
