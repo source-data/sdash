@@ -209,7 +209,7 @@ export default {
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
 
-$sd-extra-height: 100rem; // panel detail box height
+$sd-extra-height: 110rem; // panel detail box height
 $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller screens
 .sd-grid-item.sd-grid-item__expanded {
     margin-bottom: $sd-extra-height-stacked-columns + 2;
