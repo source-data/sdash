@@ -524,7 +524,10 @@ section.description button.edit {
  *********************/
 section.sharing {
     padding: 0;
+}
 
+section.sharing .content {
+    max-height: 30rem;
 }
 
 section.sharing section {

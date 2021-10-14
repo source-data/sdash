@@ -80,10 +80,10 @@
 
                             <b-button
                                 variant="link"
-                                class="badge badge-pill"
+                                class="badge text-dark"
                                 @click="removePanelFromGroup(group.id)"
                             >
-                                <font-awesome-icon icon="times" size="lg" />
+                                &#10005;
                             </b-button>
                         </li>
                     </ul>
@@ -159,10 +159,11 @@
                 <b-col cols="5">
                     <b-button 
                         variant="dark"
+                        class="text-primary"
                         id="sd-publish-button"
                         ref="sd-publish-button"
                     >
-                        <font-awesome-icon :icon="['fab', 'creative-commons']" /> Make Public
+                        <font-awesome-icon icon="globe" /> Make Public
                     </b-button>
 
                     <b-popover
@@ -393,6 +394,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~bootstrap/scss/functions";
+@import 'resources/sass/_colors.scss';
+
 $section-padding-top: 0.75rem;
 $section-padding-bottom: $section-padding-top;
 section {
@@ -407,8 +411,34 @@ h3 {
     font-size: inherit;
 }
 
+.share-with-group p {
+    margin-top: 0.1rem;
+    margin-bottom: 0.3rem;
+}
+.groups-shared-with {
+    max-height: 10rem;
+    overflow-y: auto;
+}
+
 .groups-shared-with .list-group-item {
     border-radius: 0.25rem;
+    margin-bottom: 0.1rem;
     padding: 0.2rem 0.75rem;
+}
+.groups-shared-with .list-group-item button:active,
+.groups-shared-with .list-group-item button:focus,
+.groups-shared-with .list-group-item button:hover {
+    text-decoration: none;
+    color: $mostly-black-blue-hover !important;
+}
+
+.col-5 > button {
+    width: 100%;
+}
+
+button.btn-dark.text-primary:active,
+button.btn-dark.text-primary:focus,
+button.btn-dark.text-primary:hover {
+    color: theme-color("light") !important;
 }
 </style>
