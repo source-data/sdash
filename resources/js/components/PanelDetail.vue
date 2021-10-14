@@ -23,7 +23,6 @@
                 <span v-if="!isEditingTitle">
                     <a :href="panelUrl" target="_blank" title="Open panel in a new tab">
                         {{ expandedPanel.title }}
-                        <font-awesome-icon icon="external-link-alt" size="sm" />
                     </a>
                 </span>
 
@@ -430,7 +429,7 @@ $content-padding-left: 0.75rem;
 $content-padding-right: $content-padding-left;
 
 $content-padding-top: 1rem;
-$content-padding-bottom: 0.5rem;
+$content-padding-bottom: 0.75rem;
 
 section {
     border: 1px solid $mostly-white-gray;
