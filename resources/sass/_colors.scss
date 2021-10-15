@@ -23,3 +23,20 @@ $theme-colors: (
 .bg-light-gray {
     background-color: $very-light-gray !important;
 }
+
+a {
+    color: $mostly-white-gray;
+}
+a:active,
+a:focus,
+a:hover {
+    color: $very-light-gray;
+}
+.bg-light a {
+    color: $mostly-black-blue;
+}
+.bg-light a:active,
+.bg-light a:focus,
+.bg-light a:hover {
+    color: $mostly-black-blue-hover;
+}

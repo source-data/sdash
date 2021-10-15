@@ -19,6 +19,7 @@
                     :target="'popover-' + author.origin + '-' + author.id"
                     triggers="click blur"
                     placement="bottom"
+                    custom-class="bg-light"
                 >
                     <ul class="list-unstyled mt-1 mb-1">
                         <li v-if="author.email">
