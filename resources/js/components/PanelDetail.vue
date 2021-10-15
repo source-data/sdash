@@ -625,7 +625,7 @@ section.sharing {
 }
 
 section.sharing .content {
-    max-height: 30rem;
+    max-height: 60rem;
 }
 
 section.sharing section {

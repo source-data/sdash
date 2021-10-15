@@ -124,21 +124,29 @@
                 </b-col>
             </b-row>
 
-            <b-row v-if="!loading && !iCanEditThisPanel && hasLinks">
-                <b-col>
-                    <b-button variant="light" class="py-2" @click="copyLink">
-                        <font-awesome-icon icon="copy" /> Copy Link
-                    </b-button>
-
-                    <b-form-input :value="tokenizedPanelUrl" id="sd-public-link" size="sm" readonly></b-form-input>
+            <b-row v-if="!loading && hasLinks" class="copy-link">
+                <b-col cols="12">
+                    <b-input-group>
+                        <b-form-input
+                            :value="tokenizedPanelUrl"
+                            id="sd-public-link"
+                            readonly></b-form-input>
+                        
+                        <b-input-group-append>
+                            <b-button variant="light" @click="copyLink">
+                                <font-awesome-icon icon="copy" />
+                            </b-button>
+                        </b-input-group-append>
+                    </b-input-group>
                 </b-col>
 
-                <b-col>
-                    <a :href="'/panels/' + expandedPanel.id + '/token/qr'" download="qr_code.jpg">
-                        <img
-                            class="sd-qr-code"
-                            :src="'/panels/' + expandedPanel.id + '/token/qr'"
-                            alt="QR code leading to the public panel link">
+                <b-col class="download-link">
+                    <a
+                        class="text-light"
+                        :href="'/panels/' + expandedPanel.id + '/token/qr'"
+                        download="qr_code.jpg"
+                    >
+                        <font-awesome-icon icon="qrcode" /> Download link as QR code
                     </a>
                 </b-col>
             </b-row>
@@ -448,5 +456,16 @@ button.btn-dark.text-primary:active,
 button.btn-dark.text-primary:focus,
 button.btn-dark.text-primary:hover {
     color: theme-color("light") !important;
+}
+
+.get-link .copy-link {
+    margin-top: 0.5rem;
+}
+.download-link {
+    margin-top: 0.5rem;
+    text-align: right;
+}
+.download-link a {
+    text-decoration: underline;
 }
 </style>
