@@ -25,9 +25,7 @@
                     :href="panelUrl"
                     target="_blank"
                     title="Open panel in a new tab"
-                >
-                    {{ expandedPanel.title }}
-                </a>
+                >{{ expandedPanel.title }}</a>
 
                 <button
                     class='edit text-xs'
@@ -461,6 +459,7 @@ button.edit {
     border: none;
     color: inherit;
     cursor: pointer;
+    font-style: normal;
 }
 
 /*********************
@@ -503,19 +502,11 @@ section > .content {
  *********************/
 h1 a {
     /* Leave enough space on the right for the edit icon */
-    display: inline-block;
     max-width: calc(100% - 5rem);
     overflow: hidden;
     white-space: nowrap;
+    text-decoration: underline;
     text-overflow: ellipsis;
-}
-h1 .edit {
-    position: relative;
-    top: -0.7rem;
-}
-address .edit {
-    position: relative;
-    top: -0.2rem;
 }
 
 /*********************
