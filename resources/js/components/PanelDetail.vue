@@ -508,11 +508,21 @@ section > .content {
  *********************/
 h1 a {
     /* Leave enough space on the right for the edit icon */
+    display: inline-block;
     max-width: calc(100% - 5rem);
     overflow: hidden;
     white-space: nowrap;
     text-decoration: underline;
     text-overflow: ellipsis;
+}
+h1 .edit {
+    position: relative;
+    top: -0.75rem;
+}
+
+address .edit {
+    position: relative;
+    top: -0.25rem;
 }
 
 /*********************
