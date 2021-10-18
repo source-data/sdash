@@ -1,21 +1,36 @@
 <template>
-    <section>
-        <div class="sd-caption-edit-smart-wrapper">
-            <label for="smart-tag-toggle-switch">Suggest SmartTags?</label>    <toggle-button id="smart-tag-toggle-switch" :sync="true" v-model="smartTagToggle" :labels="{checked:'Yes', unchecked:'No'}" :width="55" :font-size="14"/>
-        </div>
+    <div>
         <b-form-textarea
             id="sd-edit-caption-textarea"
             v-model="captionText"
             placeholder="Enter a description..."
             rows="3"
-            max-rows="3"
-        >
-        </b-form-textarea>
+            max-rows="9"></b-form-textarea>
+
         <div class="sd-caption-edit-actions-wrapper">
-            <b-button variant="success" small @click="saveCaptionChanges" :disabled="disableSave">Save</b-button>
-            <b-button variant="light" small @click="cancelCaptionChanges">Cancel</b-button>
+            <span class="sd-caption-edit-smart-wrapper mr-4">
+                <label for="smart-tag-toggle-switch">
+                    Suggest SmartTags?
+                </label>
+                
+                <toggle-button
+                    id="smart-tag-toggle-switch"
+                    :sync="true"
+                    v-model="smartTagToggle"
+                    :labels="{checked:'Yes', unchecked:'No'}"
+                    :width="55"
+                    :font-size="14" />
+            </span>
+
+            <b-button variant="success" small @click="saveCaptionChanges" :disabled="disableSave">
+                Save
+            </b-button>
+
+            <b-button variant="light" small @click="cancelCaptionChanges">
+                Cancel
+            </b-button>
         </div>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -87,15 +102,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .sd-caption-edit-actions-wrapper {
         text-align:right;
-        padding: 6px 0;
+        padding-top: 0.5rem;
     }
-
-    .sd-caption-edit-smart-wrapper {
-        text-align:right;
-
-    }
-
 </style>

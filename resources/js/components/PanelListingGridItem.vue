@@ -77,10 +77,10 @@
             <button
                 type="button"
                 aria-label="Close"
-                class="close sd-grid-extra--close"
+                class="close sd-grid-extra--close text-light"
                 @click.prevent="toggleExpanded"
             >
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">&#10005;</span>
             </button>
             <b-row v-if="!hasPanelDetail">
                 <b-col class="text-center">
@@ -206,9 +206,27 @@ export default {
 };
 </script>
 
-<style lang="scss">
-$sd-extra-height: 800; // info box height in pixels
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 
+$sd-extra-height: 110rem; // panel detail box height
+$sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller screens
+.sd-grid-item.sd-grid-item__expanded {
+    margin-bottom: $sd-extra-height-stacked-columns + 2;
+}
+.sd-grid-item__expanded .sd-grid-extra {
+    max-height: $sd-extra-height-stacked-columns;
+    height: $sd-extra-height-stacked-columns;
+}
+@media (min-width: 1200px) {
+    .sd-grid-item.sd-grid-item__expanded {
+        margin-bottom: $sd-extra-height + 2;
+    }
+    .sd-grid-item__expanded .sd-grid-extra {
+        max-height: $sd-extra-height;
+        height: $sd-extra-height;
+    }
+}
 .sd-grid-item {
     cursor: pointer;
     flex-grow: 1;
@@ -219,10 +237,6 @@ $sd-extra-height: 800; // info box height in pixels
     margin: 8px;
     transition: all 0.3s ease-in;
     outline: 1px red;
-}
-
-.sd-grid-item.sd-grid-item__expanded {
-    margin-bottom: $sd-extra-height + 32 + px;
 }
 
 .sd-grid-image-container {
@@ -250,11 +264,12 @@ $sd-extra-height: 800; // info box height in pixels
 }
 
 .sd-grid-extra {
+    border-radius: 0.75rem;
     cursor: default;
     position: absolute;
     left: 0;
     width: 100%;
-    background-color: #222;
+    background-color: $very-dark-desaturated-blue;
     color: #ddd;
     font-size: 16px;
     margin-top: 6px;
@@ -264,15 +279,12 @@ $sd-extra-height: 800; // info box height in pixels
     transition: all 0.3s ease-in;
     z-index: 5;
 }
-.sd-grid-item__expanded .sd-grid-extra {
-    max-height: $sd-extra-height + px;
-    height: $sd-extra-height + px;
-}
 .sd-grid-extra--close {
     position: absolute;
-    font-size: 2em;
-    top: 4px;
-    right: 8px;
+    font-size: 1.5em;
+    top: 1rem;
+    right: 2vw;
+    opacity: 1;
 }
 .sd-grid-extra--wrapper {
     height: 100%;
@@ -307,7 +319,7 @@ $sd-extra-height: 800; // info box height in pixels
     width: 0px;
     height: 0px;
     border: solid 15px transparent;
-    border-bottom: solid 20px #222;
+    border-bottom: solid 20px $very-dark-desaturated-blue;
     border-top: none;
     position: absolute;
     bottom: -6px;
