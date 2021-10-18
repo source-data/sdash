@@ -3,15 +3,16 @@ import Router from 'vue-router'
 import UserLevels from './UserLevels'
 import authGuards from './authGuards'
 import PanelGrid from '@/components/PanelGrid'
-import UserProfile from '@/components/users/UserProfile'
 import EditUser from '@/components/users/EditUser'
 import GroupGrid from '@/components/groups/GroupGrid'
-import GroupListing from '@/components/groups/GroupListing'
-import CreateGroup from '@/components/groups/CreateGroup'
 import EditGroup from '@/components/groups/EditGroup'
+import UserProfile from '@/components/users/UserProfile'
+import CreateGroup from '@/components/groups/CreateGroup'
+import GroupListing from '@/components/groups/GroupListing'
 import LoginForm from '@/components/authentication/LoginForm'
-import RegistrationForm from '@/components/authentication/RegistrationForm'
 import PasswordReset from '@/components/authentication/PasswordReset'
+import RegistrationForm from '@/components/authentication/RegistrationForm'
+import PasswordUpdateForm from '@/components/authentication/PasswordUpdateForm'
 
 Vue.use(Router)
 
@@ -39,6 +40,15 @@ const router = new Router({
             path: "/password-reset",
             name: "passwordreset",
             component: PasswordReset,
+            meta: {
+                access: UserLevels.GUEST
+            },
+        },
+        {
+            path: "/password-update/:token",
+            name: "passwordupdate",
+            component: PasswordUpdateForm,
+            props: true,
             meta: {
                 access: UserLevels.GUEST
             },

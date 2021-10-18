@@ -47,10 +47,10 @@ class ResetPassword extends Notification
         return (new MailMessage)
             ->subject('Reset Your Password')
             ->greeting('Password Reset Instructions')
-            ->line('Sombody sent a request to reset the your password.')
+            ->line('Sombody sent a request to reset your password.')
             ->line('If it wasn\'t you, please ignore this message.')
             ->line('If you do need to reset your password, please follow the link below.')
-            ->action('Reset Password', url($this->url . '/password/update/' . $this->token));
+            ->action('Reset Password', url($this->url . '/password-update/' . $this->token));
     }
 
     /**

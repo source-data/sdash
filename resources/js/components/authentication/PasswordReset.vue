@@ -21,7 +21,7 @@
                         id="login-email"
                         v-model="email"
                         autocomplete="username"
-                        @change="clearEmailErrors"
+                        @input="clearEmailErrors"
                         :state="emailCheck"
                         debounce="500"
                         trim

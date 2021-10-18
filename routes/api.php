@@ -29,7 +29,8 @@ use Illuminate\Http\Request;
 Route::post('/login', 'API\Authentication\LoginController@login');
 Route::post('/logout', 'API\Authentication\LoginController@logout');
 Route::post('/users', 'API\Authentication\RegistrationController@register');
-Route::post('/users/password', 'API\Authentication\PasswordController@sendResetLinkEmail');
+Route::post('/users/password/reset', 'API\Authentication\PasswordController@sendResetLinkEmail')->name('password.email');
+Route::post('/users/password', 'API\Authentication\PasswordController@resetPassword')->name('password.reset');
 
 // special route for resending auth email. User must be logged in
 // but not verified
