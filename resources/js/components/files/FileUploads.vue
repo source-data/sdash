@@ -1,174 +1,202 @@
 <template>
-    <div class="sd-file-uploads-container">
-        <div v-if="iCanEditThisPanel" class="sd-file-uploads-header">
-            <div class="sd-file-uploads--toggle-wrapper">
-                <toggle-button v-model="uploadToggle" @change="clearUploads" :disabled="pendingUpload"
-                    :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
-            </div>
-            <div class="sd-file-uploads--category-wrapper">
-                <b-form-select class="sd-file-uploads--category-selector" v-model="categoryId" :options="fileCategories">
-                    <template v-slot:first>
-                        <b-form-select-option value="null">Select category</b-form-select-option>
-                    </template>
-                </b-form-select>
-            </div>
-            <div class="sd-file-uploads--file-wrapper" v-if="!uploadToggle">
-                <b-form-file @change="updatedFile" no-drop single v-model="file" :disabled="pendingUpload" placeholder="Select a file to attach"></b-form-file>
-            </div>
-            <div class="sd-file-uploads--url-wrapper" v-if="uploadToggle">
-                <b-form-input @change="updatedUrl" v-model="url" type="url" placeholder="Enter a URL to link remote resource"></b-form-input>
-            </div>
-            <div class="sd-file-uploads--submit-wrapper">
-                <b-button variant="success" @click.prevent="submitFile" :disabled="disableSubmit">
-                    <span v-if="!uploadToggle">Attach</span>
-                    <span v-if="uploadToggle">Link</span>
-                </b-button>
-            </div>
-        </div>
-        <!-- file list -->
-        <div class="sd-file-uploads--list-container">
-            <b-table
-                small
-                dark
-                class="sd-file-uploads--list-table"
-                striped
-                :items="getFiles"
-                :fields="fields"
-                primary-key="id"
-                ref="fileUploadsTable"
-             ><!--end of table definition-->
-                <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
-                    <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id"><font-awesome-icon icon="trash-alt" size="lg"/></b-button>
-                    <b-popover
-                        :ref="'delete-popover-' + data.item.id"
-                        :target="'delete-button-' + data.item.id"
-                        triggers="click"
-                        placement="top"
-                        @show="confirmDeletion(data.item.id)"
-                        @hidden="clearDeletion"
-                    >
-                    <template v-slot:title>
-                            Are you sure?
-                        <b-button @click="closeDeletePopover(data.item.id)" class="close" aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                        </b-button>
-                    </template>
-                        <div class="confirm-delete-content">
-                            <div class="delete-buttons">
-                                <b-button variant="danger" small @click="deleteFile">Delete it!</b-button>
-                                <b-button variant="outline-dark" small @click="closeDeletePopover(data.item.id)">Cancel</b-button>
-                            </div>
-                        </div>
-                    </b-popover>
-                </template>
-                <template v-slot:cell(category)="data">
-                    <template v-if="iCanEditThisPanel">
-                        <a href="#" @click.prevent class="custom-styled-link" :id="'edit-category-' + data.item.id" title="Edit category">
-                            <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
-                            <span class="sd-edit-icon" v-if="!data.item.file_category_id">
-                                <font-awesome-icon icon="edit" title="Edit category" />
-                                Edit category
-                            </span>
-                        </a>
-                    </template>
-                    <template v-if="!iCanEditThisPanel">
-                        <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
-                        <span v-if="!data.item.file_category_id" class="text-info">&mdash;</span>
-                    </template>
-                    <b-popover
-                        :ref="'edit-category-popover-' + data.item.id"
-                        :target="'edit-category-' + data.item.id"
-                        triggers="click"
-                        placement="top"
-                        @show="updateFileCategory(data.item.id, data.item.file_category_id)"
-                        @hidden="clearUpdate"
-                    >
-                    <template v-slot:title>
-                        Category
-                        <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                        </b-button>
-                    </template>
-                        <div class="update-file-category">
-                            <b-form-group
-                            :id="'update-category-form-group-' + data.item.id"
-                            :label-for="'update-category-input-' + data.item.id"
-                            >
-                            <b-form-select v-model="selectedCategoryId" :options="fileCategories">
-                                <template v-slot:first>
-                                    <b-form-select-option value="">(none)</b-form-select-option>
-                                </template>
-                            </b-form-select>
-                            </b-form-group>
+    <div>
+        <form v-if="iCanEditThisPanel" class="add-source">
+            <div class="form-row">
+                <b-col cols="auto" class="source-type-toggle text-dark">
+                    <toggle-button
+                        v-model="uploadToggle"
+                        @change="clearUploads"
+                        :disabled="pendingUpload"
+                        :css-colors="true"
+                        :labels="{checked:'URL', unchecked:'File'}"
+                        :width="80"
+                        :height="38"
+                    />
+                </b-col>
 
-                            <div class="update-buttons">
-                                <b-button variant="success" small @click="saveFileCategory">Save</b-button>
-                                <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">Cancel</b-button>
-                            </div>
-                        </div>
-                    </b-popover>
-                </template>
-                <template v-slot:cell(description)="data">
-                    <template v-if="!iOwnThisPanel">
-                        <span v-if="data.item.description">{{ data.item.description }}</span>
-                    </template>
-                    <template v-if="iOwnThisPanel">
-                        <a href="#" @click.prevent class="custom-styled-link" :id="'edit-description-' + data.item.id" title="Edit description">
-                            <span v-if="data.item.description">{{ data.item.description }}</span>
-                            <span class="sd-edit-icon" v-if="!data.item.description">
-                                <font-awesome-icon icon="edit" title="Edit description" />
-                                Edit description
-                            </span>
-                        </a>
+                <b-col cols="auto">
+                    <b-form-select v-model="categoryId" :options="fileCategories">
+                        <template v-slot:first>
+                            <b-form-select-option value="null">Category</b-form-select-option>
+                        </template>
+                    </b-form-select>
+                </b-col>
+
+                <b-col cols="auto" v-if="!uploadToggle">
+                    <b-form-file
+                        @change="updatedFile"
+                        no-drop
+                        single
+                        v-model="file"
+                        :disabled="pendingUpload"
+                        placeholder="Select a file"
+                    ></b-form-file>
+                </b-col>
+
+                <b-col cols="auto" v-if="uploadToggle">
+                    <b-form-input
+                        @change="updatedUrl"
+                        v-model="url"
+                        type="url"
+                        placeholder="Enter a URL"
+                    ></b-form-input>
+                </b-col>
+
+                <b-col cols="auto">
+                    <b-button variant="success" @click.prevent="submitFile" :disabled="disableSubmit">
+                        <span v-if="!uploadToggle">Attach File</span>
+                        <span v-if="uploadToggle">Add Link</span>
+                    </b-button>
+                </b-col>
+            </div>
+        </form>
+
+        <!-- file list -->
+        <b-row>
+            <b-col>
+                <b-table
+                    small
+                    dark
+                    class="sd-file-uploads--list-table"
+                    striped
+                    :items="getFiles"
+                    :fields="fields"
+                    primary-key="id"
+                    ref="fileUploadsTable"
+                ><!--end of table definition-->
+                    <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
+                        <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id"><font-awesome-icon icon="trash-alt" size="lg"/></b-button>
                         <b-popover
-                            :ref="'edit-description-popover-' + data.item.id"
-                            :target="'edit-description-' + data.item.id"
+                            :ref="'delete-popover-' + data.item.id"
+                            :target="'delete-button-' + data.item.id"
                             triggers="click"
                             placement="top"
-                            @show="updateFileDescription(data.item.id, data.item.description)"
-                            @hidden="clearUpdate"
+                            @show="confirmDeletion(data.item.id)"
+                            @hidden="clearDeletion"
                         >
-                            <template v-slot:title>
-                                Description
-                                <b-button @click="closeDescriptionPopover(data.item.id)" class="close" aria-label="Close">
-                                    <span class="d-inline-block" aria-hidden="true">&times;</span>
-                                </b-button>
-                            </template>
-                            <div class="update-file-description">
-                                <b-form-group
-                                :id="'update-description-form-group-' + data.item.id"
-                                :label-for="'update-description-input-' + data.item.id"
-                                >
-                                <b-form-input id="input-1" v-model="fileDescriptionText" trim></b-form-input>
-                                </b-form-group>
-
-                                <div class="update-buttons">
-                                    <b-button variant="success" small @click="saveFileDescription">Save</b-button>
-                                    <b-button variant="outline-dark" small @click="closeDescriptionPopover(data.item.id)">Cancel</b-button>
+                        <template v-slot:title>
+                                Are you sure?
+                            <b-button @click="closeDeletePopover(data.item.id)" class="close" aria-label="Close">
+                                <span class="d-inline-block" aria-hidden="true">&times;</span>
+                            </b-button>
+                        </template>
+                            <div class="confirm-delete-content">
+                                <div class="delete-buttons">
+                                    <b-button variant="danger" small @click="deleteFile">Delete it!</b-button>
+                                    <b-button variant="outline-dark" small @click="closeDeletePopover(data.item.id)">Cancel</b-button>
                                 </div>
                             </div>
                         </b-popover>
                     </template>
-                </template>
-                <template v-slot:cell(link)="data">
-                    <a class="text-light" :href="data.item.url" v-b-tooltip.hover.left :title="data.item.url" target="_blank">{{data.item.url}}</a>
-                    <a class="text-light" v-b-tooltip.hover.left :title="data.item.original_filename" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
-                </template>
-                <template v-slot:cell(size)="data">
-                    <span v-if="data.item.file_size">{{formatBytes(data.item.file_size)}}</span>
-                </template>
-                <template v-slot:custom-foot>
-                    <b-tr v-if="pendingUpload">
-                        <b-td class="text-center">
-                            <b-button variant="link" class="text-light">
-                                <b-spinner small label="Uploading"></b-spinner>
+                    <template v-slot:cell(category)="data">
+                        <template v-if="iCanEditThisPanel">
+                            <a href="#" @click.prevent class="custom-styled-link" :id="'edit-category-' + data.item.id" title="Edit category">
+                                <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
+                                <span class="sd-edit-icon" v-if="!data.item.file_category_id">
+                                    <font-awesome-icon icon="edit" title="Edit category" />
+                                    Edit category
+                                </span>
+                            </a>
+                        </template>
+                        <template v-if="!iCanEditThisPanel">
+                            <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
+                            <span v-if="!data.item.file_category_id" class="text-info">&mdash;</span>
+                        </template>
+                        <b-popover
+                            :ref="'edit-category-popover-' + data.item.id"
+                            :target="'edit-category-' + data.item.id"
+                            triggers="click"
+                            placement="top"
+                            @show="updateFileCategory(data.item.id, data.item.file_category_id)"
+                            @hidden="clearUpdate"
+                        >
+                        <template v-slot:title>
+                            Category
+                            <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
+                                <span class="d-inline-block" aria-hidden="true">&times;</span>
                             </b-button>
-                        </b-td>
-                        <b-td colspan="4">Uploading <span class="font-italic">{{ file.name }}</span></b-td>
-                    </b-tr>
-                </template>
-            </b-table>
-        </div>
+                        </template>
+                            <div class="update-file-category">
+                                <b-form-group
+                                :id="'update-category-form-group-' + data.item.id"
+                                :label-for="'update-category-input-' + data.item.id"
+                                >
+                                <b-form-select v-model="selectedCategoryId" :options="fileCategories">
+                                    <template v-slot:first>
+                                        <b-form-select-option value="">(none)</b-form-select-option>
+                                    </template>
+                                </b-form-select>
+                                </b-form-group>
+
+                                <div class="update-buttons">
+                                    <b-button variant="success" small @click="saveFileCategory">Save</b-button>
+                                    <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">Cancel</b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                    </template>
+                    <template v-slot:cell(description)="data">
+                        <template v-if="!iOwnThisPanel">
+                            <span v-if="data.item.description">{{ data.item.description }}</span>
+                        </template>
+                        <template v-if="iOwnThisPanel">
+                            <a href="#" @click.prevent class="custom-styled-link" :id="'edit-description-' + data.item.id" title="Edit description">
+                                <span v-if="data.item.description">{{ data.item.description }}</span>
+                                <span class="sd-edit-icon" v-if="!data.item.description">
+                                    <font-awesome-icon icon="edit" title="Edit description" />
+                                    Edit description
+                                </span>
+                            </a>
+                            <b-popover
+                                :ref="'edit-description-popover-' + data.item.id"
+                                :target="'edit-description-' + data.item.id"
+                                triggers="click"
+                                placement="top"
+                                @show="updateFileDescription(data.item.id, data.item.description)"
+                                @hidden="clearUpdate"
+                            >
+                                <template v-slot:title>
+                                    Description
+                                    <b-button @click="closeDescriptionPopover(data.item.id)" class="close" aria-label="Close">
+                                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                    </b-button>
+                                </template>
+                                <div class="update-file-description">
+                                    <b-form-group
+                                    :id="'update-description-form-group-' + data.item.id"
+                                    :label-for="'update-description-input-' + data.item.id"
+                                    >
+                                    <b-form-input id="input-1" v-model="fileDescriptionText" trim></b-form-input>
+                                    </b-form-group>
+
+                                    <div class="update-buttons">
+                                        <b-button variant="success" small @click="saveFileDescription">Save</b-button>
+                                        <b-button variant="outline-dark" small @click="closeDescriptionPopover(data.item.id)">Cancel</b-button>
+                                    </div>
+                                </div>
+                            </b-popover>
+                        </template>
+                    </template>
+                    <template v-slot:cell(link)="data">
+                        <a class="text-light" :href="data.item.url" v-b-tooltip.hover.left :title="data.item.url" target="_blank">{{data.item.url}}</a>
+                        <a class="text-light" v-b-tooltip.hover.left :title="data.item.original_filename" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
+                    </template>
+                    <template v-slot:cell(size)="data">
+                        <span v-if="data.item.file_size">{{formatBytes(data.item.file_size)}}</span>
+                    </template>
+                    <template v-slot:custom-foot>
+                        <b-tr v-if="pendingUpload">
+                            <b-td class="text-center">
+                                <b-button variant="link" class="text-light">
+                                    <b-spinner small label="Uploading"></b-spinner>
+                                </b-button>
+                            </b-td>
+                            <b-td colspan="4">Uploading <span class="font-italic">{{ file.name }}</span></b-td>
+                        </b-tr>
+                    </template>
+                </b-table>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
@@ -374,92 +402,36 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 
-.sd-file-uploads--list-container {
-    overflow-x: auto;
+.add-source {
+    margin-bottom: 0.75rem;
+}
+.add-source > * {
+    padding: 0;
+}
+.add-source > *:not(:last-child) {
+    padding-right: 1rem;
+}
+.add-source > .form-row > .col-auto > * {
+    border-radius: 0.65rem;
 }
 
-.sd-file-uploads--list-table td {
-    vertical-align: middle;
+/* To influence the style of the URL/File toggle button in a scoped block, we need to use deep selectors that apply
+ * to child elements: https://vue-loader.vuejs.org/guide/scoped-css.html#child-component-root-elements
+ */
+.add-source::v-deep .v-switch-core {
+    background-color: $mostly-white-gray;
 }
-
-.sd-file-uploads--list-table td:first-child {
-    width: 1%;
+.add-source::v-deep .v-switch-button {
+    background-color: $very-dark-desaturated-blue !important;
 }
-
-.sd-file-uploads--list-table td:nth-child(4) {
-    max-width: 10rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.add-source::v-deep .v-switch-label {
+    color: $mostly-black-blue !important;
 }
-
-.sd-file-uploads--list-table th:nth-child(5),
-.sd-file-uploads--list-table td:nth-child(5) {
-    white-space: nowrap;
-    text-align: right;
+.add-source::v-deep .vue-js-switch {
+    font-size: inherit;
+    font-weight: inherit;
 }
-
-.sd-file-uploads--list-table td a .text-info {
-    color: #65dd65 !important;
-}
-
-.sd-file-uploads-header {
-    display: flex;
-    flex-wrap: nowrap;
-    padding-bottom: 1em;
-    margin-bottom: 1em;
-    border-bottom: solid 1px #eee;
-}
-
-.sd-file-uploads-header > div {
-    flex-grow: 1;
-    align-items: center;
-}
-
-.sd-file-uploads--file-wrapper .custom-file-label {
-    padding-right: 79px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sd-file-uploads--or {
-    padding: 0 1em;
-    max-width: 45px;
-    text-align: center;
-    line-height: 2em;
-}
-
-.sd-file-uploads--submit-wrapper {
-    text-align:center;
-    button {
-        margin:0 3px;
-    }
-}
-
-.sd-file-uploads--toggle-wrapper {
-    display:flex;
-    align-items: center;
-}
-
-.sd-file-uploads--category-wrapper {
-    padding: 0 1rem;
-}
-
-label.vue-js-switch {
-    margin: 0;
-}
-
-.custom-styled-link {
-    color: #b0cddb;
-    cursor: pointer;
-}
-
-.custom-styled-link:hover,
-.custom-styled-link:focus,
-.custom-styled-link:active {
-    color: darken(#b0cddb, 15%);
-}
-
 </style>

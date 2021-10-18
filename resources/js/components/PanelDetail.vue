@@ -173,7 +173,7 @@
                         </li>
                     </ul>
 
-                    <div class="content tab-content">
+                    <div class="content tab-content text-xs">
                         <section
                             class="tab-pane fade show active"
                             id="panel-sources"
