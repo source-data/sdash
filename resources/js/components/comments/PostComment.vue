@@ -1,28 +1,26 @@
 <template>
- <div class="sd-post-comment" id="sd-post-comment">
-    <header v-if="replyingTo" class="sd-post-comment-meta">
-        Replying to {{ replyingTo.user.firstname }} {{ replyingTo.user.surname }} on {{ formattedReplyDate }} <b-button class="sd-cancel-reply" pill size="sm" variant="danger" @click="cancelReply">Cancel</b-button>
-    </header>
-    <b-form @submit.prevent="postComment">
-        <b-form-textarea
-        id="sd-post-content-area"
-        v-model="postContent"
-        placeholder="Write a comment"
-        rows="3"
-        max-rows="6"
-        ></b-form-textarea>
+    <div class="sd-post-comment" id="sd-post-comment">
+        <header v-if="replyingTo" class="sd-post-comment-meta">
+            Replying to {{ replyingTo.user.firstname }} {{ replyingTo.user.surname }} on {{ formattedReplyDate }}
 
-        <div class="sd-post-commment-buttons">
-            <b-button
-                type="submit"
-                size="sm"
-                variant="light"
-            >Post
+            <b-button class="sd-cancel-reply" pill size="sm" variant="danger" @click="cancelReply">
+                Cancel
             </b-button>
-        </div>
+        </header>
 
-    </b-form>
- </div>
+        <b-form class="sd-post-comment-form" @submit.prevent="postComment">
+            <b-form-textarea
+                id="sd-post-content-area"
+                v-model="postContent"
+                placeholder="Write a comment"
+                rows="3"
+                max-rows="6"></b-form-textarea>
+
+            <b-button class="sd-post-commment-button" type="submit" size="sm" variant="light">
+                Post
+            </b-button>
+        </b-form>
+    </div>
 </template>
 
 <script>
@@ -75,26 +73,26 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 
-
-    .sd-post-commment-buttons{
-        text-align:right;
-        padding:6px 0;
-    }
-
-.sd-post-comment {
-    border: solid 1px #eee;
-    padding: 12px;
-    margin-top: 6px;
-    border-radius: 4px;
-    background-color:#2e3746;
+.sd-post-comment-form {
+    background-color: $mostly-white-gray;
+    border-radius: 0.5rem;
+    position: relative;
 }
 
-.sd-cancel-reply {
-    font-size: 0.86em;
-    padding: 2px 6px;
-    margin-bottom: 4px;
+.sd-post-comment-form textarea {
+    overflow-y: auto !important;
 }
 
+.sd-post-commment-button {
+    background-color: $vivid-orange;
+    border-radius: 0.5rem;
+    color: $mostly-black-blue;
+
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+}
 </style>

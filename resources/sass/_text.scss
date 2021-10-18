@@ -1,0 +1,25 @@
+$font-size-xs: 0.875rem;
+$font-size-sm: 1rem;
+$font-size-md: 1.375rem;
+$font-size-lg: 2rem;
+$font-size-xl: 2.5rem;
+$font-size-xxl: 3rem;
+
+.text-xs {
+    font-size: $font-size-xs;
+}
+.text-sm {
+    font-size: $font-size-sm;
+}
+.text-md {
+    font-size: $font-size-md;
+}
+.text-lg {
+    font-size: $font-size-lg;
+}
+.text-xl {
+    font-size: $font-size-xl;
+}
+.text-xxl {
+    font-size: $font-size-xxl;
+}
