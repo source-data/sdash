@@ -218,7 +218,7 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
     max-height: $sd-extra-height-stacked-columns;
     height: $sd-extra-height-stacked-columns;
 }
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .sd-grid-item.sd-grid-item__expanded {
         margin-bottom: $sd-extra-height + 2;
     }

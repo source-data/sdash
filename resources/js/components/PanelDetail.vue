@@ -61,7 +61,7 @@
 
         <!-- further details about the panel -->
         <b-row>
-            <b-col lg="7">
+            <b-col xl="7">
                 <section class="image">
                     <div class="content bg-dark">
                         <img
@@ -138,7 +138,7 @@
                 </section>
             </b-col>
 
-            <b-col lg="5">
+            <b-col xl="5">
                 <div class="sources-and-keywords">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
