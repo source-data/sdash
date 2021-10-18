@@ -4,8 +4,8 @@ const PasswordResetService = {
   async sendPasswordResetEmail(email) {
     return await Axios.post('/users/password/reset', {email});
   },
-  async resetPassword(password, password_confirmation) {
-    return await Axios.post('/users/password', {password, password_confirmation});
+  async resetPassword(email, password, password_confirmation,  token) {
+    return await Axios.post('/users/password', {email, password, password_confirmation, token});
   },
 };
 

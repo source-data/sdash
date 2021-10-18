@@ -48,7 +48,10 @@ const router = new Router({
             path: "/password-update/:token",
             name: "passwordupdate",
             component: PasswordUpdateForm,
-            props: true,
+            props: route => ({
+                token: route.params.token,
+                email: route.query.email
+            }),
             meta: {
                 access: UserLevels.GUEST
             },

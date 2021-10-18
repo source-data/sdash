@@ -7,6 +7,9 @@
                     <b-form
                         @submit.prevent="sendPasswordUpdate"
                     >
+                          <b-form-invalid-feedback :state="emailCheck">
+                          {{emailFeedback}}
+                          </b-form-invalid-feedback>
                         <b-form-group
                             id="sd-new-password-fieldset"
                             label="Enter your new password"
@@ -59,10 +62,15 @@
 
 <script>
 
+import PasswordResetService from '@/services/PasswordResetService';
+
 export default {
 
     name: 'PasswordUpdateForm',
-    props: { token: String },
+    props: {
+      token: String,
+      email: String,
+       },
     data(){
         return {
           loading: false,
@@ -77,7 +85,19 @@ export default {
 
         sendPasswordUpdate(){
           this.loading = true;
-
+          PasswordResetService.resetPassword(this.email, this.password, this.confirmPassword, this.token).then(response => {
+            this.$snotify.success(response.data.message, "Password Reset");
+            this.errors = {};
+            this.$router.push({name:'dashboard'});
+          }).catch(error => {
+            console.log(error);
+            this.errors = error.data.errors;
+            this.password = '';
+            this.confirmPassword = '';
+            this.$snotify.error(error.data.message, "Error");
+          }).finally(() => {
+            this.loading = false;
+          });
 
         }
 
@@ -91,6 +111,10 @@ export default {
         if(!this.password) return null;
         if(this.password.length < 8) return false;
         return true;
+      },
+      emailCheck() {
+        if(this.errors.email) return false;
+        return null;
       },
       passwordFeedback() {
         if(this.errors.password) return this.errors.password.join(' ');
@@ -107,6 +131,9 @@ export default {
         if(this.password1 !== this.confirmPassword) {
             return 'The passwords do not match';
         }
+      },
+      emailFeedback() {
+        if(this.errors.email) return this.errors.email.join(' ');
       },
       submitButtonCaption() {
           return (this.loading) ? 'Submitting' : 'Submit Password';

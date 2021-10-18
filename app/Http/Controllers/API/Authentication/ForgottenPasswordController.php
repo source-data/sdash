@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PasswordController extends Controller
+class ForgottenPasswordController extends Controller
 {
 
     use SendsPasswordResetEmails;

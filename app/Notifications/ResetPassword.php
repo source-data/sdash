@@ -44,13 +44,15 @@ class ResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
+        $actionUrl = $this->url . '/password-update/' . $this->token . '?' . http_build_query(['email' => $notifiable->getEmailForPasswordReset()]);
+
         return (new MailMessage)
             ->subject('Reset Your Password')
             ->greeting('Password Reset Instructions')
             ->line('Sombody sent a request to reset your password.')
             ->line('If it wasn\'t you, please ignore this message.')
             ->line('If you do need to reset your password, please follow the link below.')
-            ->action('Reset Password', url($this->url . '/password-update/' . $this->token));
+            ->action('Reset Password', $actionUrl);
     }
 
     /**
