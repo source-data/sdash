@@ -245,12 +245,6 @@
                 </b-col>
             </b-row>
         </section>
-
-
-        <template v-if="iCanEditThisPanel">
-            
-            
-        </template>
     </div>
 </template>
 

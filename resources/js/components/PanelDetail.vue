@@ -189,7 +189,11 @@
                             role="tabpanel"
                             aria-labelledby="panel-keywords-tab"
                         >
-                            <smart-tags-panel></smart-tags-panel>
+                            <smart-tags-category title="Measured Variables" type="assay"></smart-tags-category>
+                            <smart-tags-category title="Controlled Variables" type="intervention"></smart-tags-category>
+                            <smart-tags-category title="Instruments / Methods" type="method"></smart-tags-category>
+                            <smart-tags-category title="General Keywords" type="other"></smart-tags-category>
+                            <copy-tags></copy-tags>
                         </section>
                     </div>
                 </div>
@@ -275,7 +279,8 @@ import { mapGetters, mapActions } from "vuex";
 import CommentList from "@/components/comments/CommentList";
 import FileUploads from "@/components/files/FileUploads";
 import CaptionEditor from "@/components/caption/CaptionEditor";
-import SmartTagsPanel from "@/components/tags/SmartTagsPanel";
+import SmartTagsCategory from '@/components/tags/SmartTagsCategory'
+import CopyTags from '@/components/tags/CopyTags'
 import PanelAccessLinks from "@/components/panelaccesslinks/PanelAccessLinks";
 import DownloadBar from "@/components/DownloadBar";
 import AuthorList from "@/components/panel-detail/AuthorList";
@@ -286,7 +291,8 @@ export default {
         CommentList,
         FileUploads,
         CaptionEditor,
-        SmartTagsPanel,
+        SmartTagsCategory,
+        CopyTags,
         DownloadBar,
         PanelAccessLinks,
         AuthorList,
@@ -617,11 +623,6 @@ section.sharing {
 
 section.sharing .content {
     max-height: 60rem;
-}
-
-section.sharing section {
-    padding-left: $content-padding-left;
-    padding-right: $content-padding-right;
 }
 
 /*********************
