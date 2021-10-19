@@ -16,6 +16,7 @@ import Avatar from 'vue-avatar'
 import VueScrollTo from 'vue-scrollto'
 import ToggleButton from 'vue-js-toggle-button'
 import VueTagsInput from '@johmun/vue-tags-input'
+import CheckUserLoginService from '@/services/CheckUserLoginService';
 
 //set Axios base url
 window.axios.defaults.baseURL = process.env.MIX_API_URL;
@@ -54,16 +55,22 @@ Vue.use(VueLazyload, {error:"/images/broken-image.jpg"})
 //create Avatars dynamically
 Vue.component('avatar', Avatar)
 
-
 /**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
+ * IMPORTANT - check for existing login before mounting the Vue app
  */
-if(document.getElementById("dashboard")) {
-  const app = new Vue({
-      router,
-      store,
-      render: h => h(Application)
-  }).$mount('#dashboard');
-}
+CheckUserLoginService.verifyLogin().then(() => {
+
+  /**
+   * Next, we will create a fresh Vue application instance and attach it to
+   * the page. Then, you may begin adding components to this application
+   * or customize the JavaScript scaffolding to fit your unique needs.
+   */
+  if(document.getElementById("dashboard")) {
+    const app = new Vue({
+        router,
+        store,
+        render: h => h(Application)
+    }).$mount('#dashboard');
+  }
+
+});
