@@ -49,24 +49,6 @@ export default {
     created(){
         let query = queryStringDehasher(this.$route)
         if(query) this.$store.commit("setSearchString", query)
-
-        // this.fetchCurrentUser()
-        //     .then(() => {
-        //         if (!this.currentUser.has_consented) {
-        //             this.showConsentModal();
-        //         }
-        //         this.setApplicationLoaded(true);
-        //     })
-        //     .catch((error) => {
-        //         if(error.status === 401) {
-        //             console.log('No logged-in user found.');
-        //         } else if (error.status === 403 && error.data.message === 'Your email address is not verified.') {
-        //             this.setEmailConfirmationNotice(true);
-        //         } else {
-        //             this.$snotify.error("We can't find your data. Please try again later.", "Sorry!")
-        //         }
-        //         this.setApplicationLoaded(true);
-        //     });
     },
 
 
