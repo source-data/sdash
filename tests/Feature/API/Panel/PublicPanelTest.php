@@ -26,7 +26,7 @@ class PublicPanelTest extends TestCase
 
     public function testThePublicPanelListWillOnlyContainPublicPanels()
     {
-        $response = $this->get('public-api/panels');
+        $response = $this->getJson('public-api/panels');
 
         $response->assertStatus(200);
 
@@ -39,7 +39,7 @@ class PublicPanelTest extends TestCase
 
     public function testAnUnauthenticatedUserCanLoadPublicPanelDetail()
     {
-        $response = $this->get("public-api/panels/{$this->publicPanel->id}");
+        $response = $this->getJson("public-api/panels/{$this->publicPanel->id}");
 
         $response->assertStatus(200);
 
@@ -49,7 +49,7 @@ class PublicPanelTest extends TestCase
 
     public function testAnUnauthenticatedUserCannotLoadPrivatePanelDetails()
     {
-        $response = $this->get("public-api/panels/{$this->privatePanel->id}");
+        $response = $this->getJson("public-api/panels/{$this->privatePanel->id}");
 
         $response->assertStatus(401);
     }

@@ -15,7 +15,7 @@ class UserTest extends TestCase
 
     private function apiGet(String $path)
     {
-        return $this->actingAs($this->user, 'api')->get('/api' . $path);
+        return $this->actingAs($this->user, 'sanctum')->getJson('/api' . $path);
     }
 
     public function setUp(): void
