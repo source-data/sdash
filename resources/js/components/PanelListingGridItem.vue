@@ -6,9 +6,6 @@
     >
         <div class="sd-grid-image-container">
             <header class="sd-grid-item--image-header">
-                <span class="sd-grid-item--image-label">{{
-                    panelOwnerName
-                }}</span>
                 <button
                     class="panel-select-button"
                     @click="toggleSelected"
@@ -82,6 +79,7 @@
             >
                 <span aria-hidden="true">&#10005;</span>
             </button>
+
             <b-row v-if="!hasPanelDetail">
                 <b-col class="text-center">
                     <b-spinner
@@ -92,6 +90,7 @@
                     ></b-spinner>
                 </b-col>
             </b-row>
+
             <panel-detail v-if="hasPanelDetail"></panel-detail>
         </div>
     </li>
@@ -144,14 +143,6 @@ export default {
         },
         itemId() {
             return "grid-item-" + this.panelId;
-        },
-        panelOwnerName() {
-            const authorList = [...this.thisPanel.authors, ...this.thisPanel.external_authors].sort((a,b) => a.author_role.order - b.author_role.order);
-            const firstAuthor = authorList.find( author => author.author_role.role !== AuthorTypes.CURATOR);
-            if (firstAuthor === undefined) {
-                return this.thisPanel.user.firstname + ' ' + this.thisPanel.user.surname
-            }
-            return firstAuthor.firstname + ' ' + firstAuthor.surname;
         },
         panelAccessReason() {
             let thisPanel = this.thisPanel;
@@ -365,19 +356,9 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
     color:#634782;
 }
 
-.sd-grid-item--image-label,
 .panel-select-button {
     position: absolute;
     top: 6px;
-}
-
-.sd-grid-item--image-label {
-    left: 6px;
-    padding: 5px 10px;
-    font: 16px Helvetica, Arial, sans-serif;
-    line-height: 1;
-    color: rgb(176, 205, 219);
-    background-color: rgb(96, 125, 139);
 }
 
 .panel-select-button {
