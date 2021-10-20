@@ -13,25 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-/*
-|--------------------------------------------------------------------------
-| User Resource
-|--------------------------------------------------------------------------
-|
-| Access and modify users or the signed-in user
-|
-*/
-
-Route::post('/login', 'API\Authentication\LoginController@login');
-Route::post('/logout', 'API\Authentication\LoginController@logout');
-Route::post('/users', 'API\Authentication\RegistrationController@register');
-Route::post('/users/password/reset', 'API\Authentication\ForgottenPasswordController@sendResetLinkEmail');
-Route::post('/users/password', 'API\Authentication\ResetPasswordController@reset');
-
 // special route for resending auth email. User must be logged in
 // but not verified
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -84,8 +65,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/panels/{panel}/authors', 'API\PanelAuthorController@update');
     Route::get('/tags', 'API\TagController@index');
 });
-
-// Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
 
 Route::get('panels/public', 'API\PanelController@listPublicPanels');
 Route::get('files/categories', 'API\FileController@listFileCategories');
