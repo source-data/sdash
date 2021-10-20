@@ -57,22 +57,29 @@
                 </div>
             </div>
         </b-container>
+        <lightbox
+            :visible="isLightboxOpen"
+            :imgs="'/panels/' + expandedPanel.id + '/image'"
+            @hide="toggleLightbox"
+        ></lightbox>
     </div>
 </template>
 
 <script>
 import store from "@/stores/store";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
 import PanelListingGrid from "./PanelListingGrid";
+import Lightbox from 'vue-easy-lightbox';
 
 export default {
     name: "PanelGrid",
     components: {
         FilterBar,
         PanelActionBar,
-        PanelListingGrid
+        PanelListingGrid,
+        Lightbox,
     },
     props: [""],
 
@@ -83,13 +90,20 @@ export default {
     } /* end of data */,
 
     computed: {
-        ...mapGetters(["isLoadingPanels", "hasPanels", "hasLoadedAllResults"]),
+        ...mapGetters([
+            "isLoadingPanels",
+            "hasPanels",
+            "hasLoadedAllResults",
+            "isLightboxOpen",
+            "expandedPanel",
+            ]),
         sidebarToggleText: function() {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
         }
     },
 
     methods: {
+        ...mapActions(['toggleLightbox']),
         toggleSidebar() {
             this.isSidebarExpanded = !this.isSidebarExpanded;
         }
