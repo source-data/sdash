@@ -13,6 +13,7 @@ import LoginForm from '@/components/authentication/LoginForm'
 import PasswordReset from '@/components/authentication/PasswordReset'
 import RegistrationForm from '@/components/authentication/RegistrationForm'
 import PasswordUpdateForm from '@/components/authentication/PasswordUpdateForm'
+import FourOhFourPage from '@/views/404';
 
 Vue.use(Router)
 
@@ -115,7 +116,17 @@ const router = new Router({
             meta: {
                 access: UserLevels.GUEST
             },
-        }
+        },
+        {
+            path: "*",
+            name: "404",
+            component: FourOhFourPage,
+            props: false,
+            meta: {
+                access: UserLevels.GUEST
+            },
+        },
+
     ]
 });
 
