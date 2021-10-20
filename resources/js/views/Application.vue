@@ -7,6 +7,8 @@
     <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
+    <!-- widget for providing feedback to us -->
+    <feedback-widget></feedback-widget>
     <!-- loading placeholder while checking for login -->
     <div v-if="!applicationIsLoaded" class="text-center">
         <b-spinner
@@ -29,11 +31,12 @@ import NavigationBar from '@/components/NavigationBar'
 import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
+import FeedbackWidget from '@/components/FeedbackWidget';
 
 export default {
 
     name: 'Application',
-    components: {TopBar, NavigationBar, EmailConfirmationNotice },
+    components: {TopBar, NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
     computed: {
         ...mapGetters([
             'currentUser',
