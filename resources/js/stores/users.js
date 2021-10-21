@@ -14,6 +14,7 @@ const defaultUserState = {
     twitter: null,
     orcid: null,
     has_consented: null,
+    email_verified_at: null,
 }
 
 //initial state
@@ -62,6 +63,7 @@ const mutations = {
             twitter: user.twitter,
             orcid: user.orcid,
             has_consented: user.has_consented,
+            email_verified_at: user.email_verified_at,
         };
     },
     expireCurrentUser(state) {
@@ -75,7 +77,10 @@ const getters = {
     },
     isLoggedIn(state) {
         return !!state.user.id;
-    }
+    },
+    hasVerifiedEmail(state) {
+        return !! state.user.email_verified_at;
+    },
 };
 
 export default {

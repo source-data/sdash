@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 // but not verified
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('emails', 'Auth\VerificationController@resend')->name('verification.resend');
+    Route::get('/users/me', 'API\UserController@me');
 });
 
 // authenticated routes
@@ -24,7 +25,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
-    Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
     Route::patch('/users/{user}/password', 'API\UserController@changePassword');
     Route::get('/users/{user}', 'API\UserController@show');

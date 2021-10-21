@@ -42,12 +42,15 @@ export default {
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
-            'showEmailConfirmationNotice',
+            'hasVerifiedEmail',
         ]),
+        showEmailConfirmationNotice(){
+            return this.isLoggedIn && !this.hasVerifiedEmail;
+        },
     },
     methods: {
         ...mapActions(['fetchCurrentUser']),
-        ...mapMutations(['setApplicationLoaded', 'setEmailConfirmationNotice']),
+        ...mapMutations(['setApplicationLoaded']),
     },
     created(){
         let query = queryStringDehasher(this.$route)
