@@ -1,63 +1,66 @@
 <template>
-    <div>
-        <b-container fluid class="mt-3">
-            <div id="wrapper" class="wrapper">
-                <filter-bar
-                    class="sidebar"
-                    v-bind:class="{ collapsed: !isSidebarExpanded }"
-                ></filter-bar>
-                <div
-                    id="content"
-                    class="content"
-                    v-bind:class="{ expanded: !isSidebarExpanded }"
-                >
-                    <panel-action-bar></panel-action-bar>
-                    <ul
-                        class="toolbar"
-                        v-bind:class="{ expanded: !isSidebarExpanded }"
+    <b-container fluid class="wrapper mt-3">
+        <filter-bar
+            class="sidebar"
+            v-bind:class="{ collapsed: !isSidebarExpanded }"
+        ></filter-bar>
+
+        <div
+            id="content"
+            class="content"
+            v-bind:class="{ expanded: !isSidebarExpanded }"
+        >
+            <panel-action-bar></panel-action-bar>
+
+            <ul
+                class="toolbar"
+                v-bind:class="{ expanded: !isSidebarExpanded }"
+            >
+                <li class="sidebar-toggle">
+                    <b-link
+                        href="#"
+                        @click="toggleSidebar"
+                        v-bind:title="sidebarToggleText"
                     >
-                        <li class="sidebar-toggle">
-                            <b-link
-                                href="#"
-                                @click="toggleSidebar"
-                                v-bind:title="sidebarToggleText"
-                            >
-                                <font-awesome-icon
-                                    icon="chevron-left"
-                                    v-if="isSidebarExpanded"
-                                />
-                                <font-awesome-icon
-                                    icon="chevron-right"
-                                    v-if="!isSidebarExpanded"
-                                />
-                            </b-link>
-                        </li>
-                        <li><font-awesome-icon icon="search" /></li>
-                        <li><font-awesome-icon icon="filter" /></li>
-                        <li><font-awesome-icon icon="users" /></li>
-                    </ul>
-                    <div v-if="isLoadingPanels" class="text-center">
-                        <b-spinner
-                            variant="primary"
-                            label="Spinning"
-                            class="m-5"
-                            style="width: 4rem; height: 4rem;"
-                        ></b-spinner>
-                    </div>
-                    <div v-if="hasPanels">
-                        <panel-listing-grid
-                            list_root="user"
-                        ></panel-listing-grid>
-                    </div>
-                    <div v-if="!hasPanels && !isLoadingPanels">
-                        <b-alert show variant="danger" class="no-panel-alert"
-                            >No Panels Found</b-alert
-                        >
-                    </div>
-                </div>
+                        <font-awesome-icon
+                            icon="chevron-left"
+                            v-if="isSidebarExpanded"
+                        />
+                        <font-awesome-icon
+                            icon="chevron-right"
+                            v-if="!isSidebarExpanded"
+                        />
+                    </b-link>
+                </li>
+                <li><font-awesome-icon icon="search" /></li>
+                <li><font-awesome-icon icon="filter" /></li>
+                <li><font-awesome-icon icon="users" /></li>
+            </ul>
+            
+            <div v-if="isLoadingPanels" class="text-center">
+                <b-spinner
+                    variant="primary"
+                    label="Spinning"
+                    class="m-5 text-center"
+                    style="width: 4rem; height: 4rem;"
+                ></b-spinner>
             </div>
-        </b-container>
-    </div>
+
+            <panel-listing-grid
+                v-if="hasPanels"
+                list_root="user"
+            ></panel-listing-grid>
+
+            <b-alert
+                v-if="!hasPanels && !isLoadingPanels"
+                show
+                variant="danger"
+                class="no-panel-alert"
+            >
+                No Panels Found
+            </b-alert>
+        </div>
+    </b-container>
 </template>
 
 <script>
@@ -156,6 +159,7 @@ export default {
     flex: auto;
     position: relative;
     transition: all 0.25s ease-in;
+    width: 100%;
 }
 
 .content.expanded {
