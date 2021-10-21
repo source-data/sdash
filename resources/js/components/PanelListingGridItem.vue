@@ -271,9 +271,8 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
     padding-top: 0.5rem;
 }
 .sd-grid-item-text * {
+    height: 50%;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .sd-grid-extra {
