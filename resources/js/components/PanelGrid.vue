@@ -1,5 +1,5 @@
 <template>
-    <b-container fluid class="wrapper mt-3">
+    <b-container fluid class="wrapper mt-3 bg-dark text-light">
         <filter-bar
             class="sidebar"
             v-bind:class="{ collapsed: !isSidebarExpanded }"

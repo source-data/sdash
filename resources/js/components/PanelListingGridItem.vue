@@ -249,8 +249,6 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
 .sd-grid-image-container {
     height: 100%;
     position: relative;
-    background: rgb(166, 178, 198);
-    background: linear-gradient(145deg, #a6b2c6 31%, #8caeb5 98%);
     padding: 12px;
 }
 
@@ -391,7 +389,7 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
     padding: 0;
     margin: 0;
     background: none;
-    border: solid 1px grey;
+    border: solid 2px $mostly-white-gray;
     width: 40px;
     height: 40px;
     border-radius: 50%;

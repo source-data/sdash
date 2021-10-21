@@ -83,7 +83,6 @@ export default {
     .sd-panel-grid-container {
         width:100%;
         padding: 10px 40px;
-        background-color: #d6dfee;
     }
 
     .sd-panel-grid-container--inner {
