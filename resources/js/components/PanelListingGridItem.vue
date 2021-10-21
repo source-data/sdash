@@ -236,10 +236,14 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
     box-sizing: border-box;
     height: 280px;
     min-width: 240px;
-    max-width: 50%;
-    margin: 8px;
+    padding: 8px;
     transition: all 0.3s ease-in;
     outline: 1px red;
+}
+@media (min-width: 768px) {
+    .sd-grid-item {
+        max-width: 50%;
+    }
 }
 
 .sd-grid-image-container {
