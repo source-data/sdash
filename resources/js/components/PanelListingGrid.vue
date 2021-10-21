@@ -81,8 +81,7 @@ export default {
 
 <style scoped lang="scss">
     .sd-panel-grid-container {
-        width:100%;
-        padding: 10px 40px;
+        width: 100%;
     }
 
     .sd-panel-grid-container--inner {

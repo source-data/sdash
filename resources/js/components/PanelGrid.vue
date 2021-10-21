@@ -1,5 +1,5 @@
 <template>
-    <b-container fluid class="wrapper mt-3 bg-dark text-light">
+    <b-container fluid class="wrapper bg-dark text-light">
         <filter-bar
             class="sidebar"
             v-bind:class="{ collapsed: !isSidebarExpanded }"
@@ -138,6 +138,7 @@ export default {
 .wrapper {
     display: flex;
     height: 100%;
+    padding-top: 2rem;
 }
 
 .sidebar,
