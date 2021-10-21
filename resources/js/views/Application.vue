@@ -1,7 +1,6 @@
 <template>
 <div id="sdash-wrapper">
     <header>
-        <top-bar home-url="/"></top-bar>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
     <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
@@ -26,7 +25,6 @@
 </template>
 
 <script>
-import TopBar from '@/components/TopBar'
 import NavigationBar from '@/components/NavigationBar'
 import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -36,7 +34,7 @@ import FeedbackWidget from '@/components/FeedbackWidget';
 export default {
 
     name: 'Application',
-    components: {TopBar, NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
+    components: {NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
     computed: {
         ...mapGetters([
             'currentUser',
