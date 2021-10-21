@@ -1,5 +1,11 @@
 <template>
     <div>
+        <vue-full-screen-file-drop
+        @drop='uploadPanel'
+        formFieldName="file"
+        text="Please drop a JPG, PNG, GIF, TIF or PDF file"
+        v-if="panelDropEnabled">
+        </vue-full-screen-file-drop>
         <b-container fluid class="mt-3">
             <div id="wrapper" class="wrapper">
                 <filter-bar
@@ -57,25 +63,32 @@
                 </div>
             </div>
         </b-container>
+        <lightbox
+            :visible="isLightboxOpen"
+            :imgs="'/panels/' + expandedPanel.id + '/image'"
+            @hide="toggleLightbox"
+        ></lightbox>
     </div>
 </template>
 
 <script>
 import store from "@/stores/store";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
 import PanelListingGrid from "./PanelListingGrid";
+import Lightbox from 'vue-easy-lightbox';
+import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 
 export default {
     name: "PanelGrid",
     components: {
         FilterBar,
         PanelActionBar,
-        PanelListingGrid
+        PanelListingGrid,
+        Lightbox,
+        VueFullScreenFileDrop,
     },
-    props: [""],
-
     data() {
         return {
             isSidebarExpanded: true
@@ -83,16 +96,72 @@ export default {
     } /* end of data */,
 
     computed: {
-        ...mapGetters(["isLoadingPanels", "hasPanels", "hasLoadedAllResults"]),
+        ...mapGetters([
+            "isLoadingPanels",
+            "hasPanels",
+            "hasLoadedAllResults",
+            "isLightboxOpen",
+            "expandedPanel",
+            "showAuthorSidebar",
+            "currentGroup",
+            "mayAddPanelToGroup",
+            ]),
         sidebarToggleText: function() {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
-        }
+        },
+        panelDropEnabled() {
+            // Disallow file dropping if the sidebar to edit a panel's authors is open.
+            if (this.showAuthorSidebarModal) {
+                return false;
+            }
+            // Disallow file dropping if we're on a group's page and not allowed to add panels to it.
+            if (this.currentGroup && ! this.mayAddPanelToGroup) {
+                return false;
+            }
+            return true;
+
+        },
+        showAuthorSidebarModal: {
+            set(value){
+                this.$store.commit('setAuthorSidebar',value)
+            },
+            get(){
+                return this.showAuthorSidebar
+            }
+        },
     },
 
     methods: {
+        ...mapActions([
+            'uploadNewPanel',
+            'toggleLightbox',
+            'addSelectedPanelsToGroup',
+        ]),
         toggleSidebar() {
             this.isSidebarExpanded = !this.isSidebarExpanded;
-        }
+        },
+        uploadPanel(formData, files){
+            this.uploadNewPanel(formData)
+            .then(response => {
+                this.$snotify.success("New panel created", "Uploaded")
+                if(this.currentGroup) {
+                    this.$store.commit("clearSelectedPanels")
+                    this.$store.commit("addPanelToSelections", response.data.DATA.id)
+                    this.addSelectedPanelsToGroup(this.currentGroup.id)
+                      .then(response => {
+                          this.$snotify.success("Panel added to this group", "Group updated")
+                      })
+                      .catch(error => {
+                          console.log(error)
+                          this.$snotify.error("Cannot add panel to this group", "Update failed")
+                      })
+
+                }
+                })
+                .catch(error => {
+                    this.$snotify.error(error.data.errors.file[0], "Upload failed")
+                })
+        },
     },
 
     mounted() {

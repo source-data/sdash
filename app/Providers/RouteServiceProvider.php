@@ -37,9 +37,12 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
+        $this->mapPublicApiRoutes();
+
+        $this->mapApiAuthRoutes();
+
         $this->mapWebRoutes();
 
-        $this->mapPublicApiRoutes();
 
         //
     }
@@ -86,5 +89,20 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/public_api.php'));
+    }
+
+    /**
+     * Define the "api-auth" routes for the application.
+     *
+     * These routes are used for Sanctum logins and other auth actions.
+     *
+     * @return void
+     */
+    protected function mapApiAuthRoutes()
+    {
+        Route::prefix('api')
+            ->middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api_auth.php'));
     }
 }

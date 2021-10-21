@@ -52,10 +52,10 @@
                 </div>
 
                 <div v-if="isGuest" class="nav-item">
-                    <a class="nav-link" href="/login">
+                    <router-link class="dropdown-item" :to="{name: 'login'}">
                         Sign in
                         <font-awesome-icon :icon="['fas', 'user']" />
-                    </a>
+                    </router-link>
                 </div>
 
                 <div v-else class="nav-item dropdown">
@@ -76,14 +76,10 @@
 
                         <a
                             class="dropdown-item" href="#"
-                            onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+                            @click.prevent="logOut"
                         >
                             Logout
                         </a>
-
-                        <form id="logout-form" action="/logout" method="POST" style="display: none;">
-                            <input type="hidden" name="_token" :value="csrf" />
-                        </form>
                     </div>
                 </div>
             </div>
@@ -103,6 +99,8 @@
 
 <script>
 import SearchBar from "@/components/SearchBar";
+import AuthService from '@/services/AuthService';
+import {mapMutations} from 'vuex';
 
 export default {
     name: "NavigationBar",
@@ -119,16 +117,32 @@ export default {
 
     data() {
         return {
-            // needed for the logout form
-            csrf: document
-                .querySelector('meta[name="csrf-token"]')
-                .getAttribute("content")
+            // csrf: document
+            //     .querySelector('meta[name="csrf-token"]')
+            //     .getAttribute("content")
         };
     },
 
     computed: {
         isGuest() {
-            return this.user === undefined;
+            return this.user.id === null;
+        },
+        fullName() {
+            return this.isGuest ? '' : (this.user.firstname + ' ' + this.user.surname);
+        }
+    },
+    methods: {
+        ...mapMutations(['expireCurrentUser', 'clearPanels', 'clearGroups']),
+        logOut() {
+            AuthService.logout().then(response => {
+                this.expireCurrentUser();
+                this.clearPanels();
+                this.clearGroups();
+                if(this.$route.path !== '/') this.$router.push('/');
+            }).catch(error=>{
+                console.log(error);
+                this.$snotify.error("Could not log you out due to an error.","Error!");
+            });
         }
     }
 };
