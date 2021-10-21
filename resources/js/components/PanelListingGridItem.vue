@@ -32,36 +32,48 @@
                 tabindex="0"
             >
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
+
+                <footer
+                    class="sd-grid-item--image-footer"
+                    :id="'scroll-anchor-' + panelId"
+                >
+                    <font-awesome-icon
+                        class="sd-grid-item--author-icon"
+                        icon="book"
+                        v-if="IAmAnAuthor"
+                        title="Author"
+                    />
+                    <font-awesome-icon
+                        :class="panelAccessReason"
+                        icon="lock"
+                        v-if="panelAccessReason == 'private'"
+                        title="Private panel"
+                    />
+                    <font-awesome-icon
+                        :class="panelAccessReason"
+                        icon="lock-open"
+                        v-if="panelAccessReason == 'public'"
+                        title="Public panel"
+                    />
+                    <font-awesome-icon
+                        :class="panelAccessReason"
+                        icon="exchange-alt"
+                        v-if="panelAccessReason == 'group'"
+                        title="Shared with group"
+                    />
+                </footer>
             </div>
-            <footer
-                class="sd-grid-item--image-footer"
-                :id="'scroll-anchor-' + panelId"
-            >
-                <font-awesome-icon
-                    class="sd-grid-item--author-icon"
-                    icon="book"
-                    v-if="IAmAnAuthor"
-                    title="Author"
-                />
-                <font-awesome-icon
-                    :class="panelAccessReason"
-                    icon="lock"
-                    v-if="panelAccessReason == 'private'"
-                    title="Private panel"
-                />
-                <font-awesome-icon
-                    :class="panelAccessReason"
-                    icon="lock-open"
-                    v-if="panelAccessReason == 'public'"
-                    title="Public panel"
-                />
-                <font-awesome-icon
-                    :class="panelAccessReason"
-                    icon="exchange-alt"
-                    v-if="panelAccessReason == 'group'"
-                    title="Shared with group"
-                />
-            </footer>
+
+            <div class="sd-grid-item-text">
+                <h6 class="panel-title text-md">
+                    {{ thisPanel.title }}
+                </h6>
+
+                <address class="panel-authors text-sm text-lighter">
+                    {{ thisPanel.authors[0]['email'] }}
+                </address>
+            </div>
+
             <div class="css_arrow" v-if="isExpanded"></div>
         </div>
 
@@ -239,7 +251,7 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
 }
 
 .sd-grid-image-container-inner {
-    height: 100%;
+    height: 75%;
     width: 100%;
     display: flex;
     align-items: center;
@@ -252,6 +264,16 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
     max-height: 100%;
     max-width: 100%;
     width: auto;
+}
+
+.sd-grid-item-text {
+    height: 25%;
+    padding-top: 0.5rem;
+}
+.sd-grid-item-text * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .sd-grid-extra {
