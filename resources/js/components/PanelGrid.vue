@@ -6,6 +6,21 @@
         text="Please drop a JPG, PNG, GIF, TIF or PDF file"
         v-if="panelDropEnabled">
         </vue-full-screen-file-drop>
+
+        <b-sidebar
+            id="author-edit-sidebar"
+            right
+            shadow
+            lazy
+            title="Edit the list of authors"
+            width="420px"
+            bg-variant="dark"
+            text-variant="light"
+            v-model="showAuthorSidebarModel"
+        >
+            <panel-authors-edit-form></panel-authors-edit-form>
+        </b-sidebar>
+
         <b-container fluid class="mt-3">
             <div id="wrapper" class="wrapper">
                 <filter-bar
@@ -63,6 +78,7 @@
                 </div>
             </div>
         </b-container>
+
         <lightbox
             :visible="isLightboxOpen"
             :imgs="'/panels/' + expandedPanel.id + '/image'"
@@ -76,6 +92,7 @@ import store from "@/stores/store";
 import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
+import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm"
 import PanelListingGrid from "./PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
@@ -85,6 +102,7 @@ export default {
     components: {
         FilterBar,
         PanelActionBar,
+        PanelAuthorsEditForm,
         PanelListingGrid,
         Lightbox,
         VueFullScreenFileDrop,
@@ -106,6 +124,14 @@ export default {
             "currentGroup",
             "mayAddPanelToGroup",
             ]),
+        showAuthorSidebarModel: {
+            set(value) {
+                this.$store.commit('setAuthorSidebar', value)
+            },
+            get() {
+                return this.showAuthorSidebar
+            }
+        },
         sidebarToggleText: function() {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
         },
@@ -120,14 +146,6 @@ export default {
             }
             return true;
 
-        },
-        showAuthorSidebarModal: {
-            set(value){
-                this.$store.commit('setAuthorSidebar',value)
-            },
-            get(){
-                return this.showAuthorSidebar
-            }
         },
     },
 
@@ -254,5 +272,9 @@ export default {
         opacity: 1;
         font-size: 24px;
     }
+}
+
+.b-sidebar > .b-sidebar-header {
+    font-size:1rem;
 }
 </style>
