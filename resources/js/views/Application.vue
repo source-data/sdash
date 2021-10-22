@@ -116,19 +116,15 @@ export default {
             this.$refs['sd-consent-modal'].hide()
         },
     },
-    created(){
+    created() {
         let query = queryStringDehasher(this.$route)
         if(query) this.$store.commit("setSearchString", query)
-
-        this.$store.dispatch('fetchCurrentUser')
-            .then(() => {
-                if (!this.currentUser.has_consented) {
-                    this.showConsentModal();
-                }
-            })
     },
-
-
+    mounted() {
+        if (this.isLoggedIn && !this.currentUser.has_consented) {
+            this.showConsentModal();
+        }
+    },
 }
 </script>
 
