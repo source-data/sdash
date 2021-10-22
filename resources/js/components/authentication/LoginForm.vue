@@ -141,10 +141,6 @@ export default {
                 store.dispatch('fetchCurrentUser')
                     .then(() => {
                         this.$router.push({path:destination}).catch(error => {});
-
-                        if (!this.currentUser.has_consented) {
-                            this.showConsentModal();
-                        }
                     })
                     .catch((error) => {
                         console.log(error)
