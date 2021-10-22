@@ -452,17 +452,19 @@ const getters = {
     expandedPanel(state) {
         return state.expandedPanelDetail;
     },
-    expandedPanelAuthors(state) {
-
+    expandedPanelAuthors(state, getters) {
+        return getters.panelAuthors(state.expandedPanelDetail);
+    },
+    panelAuthors: (state) => (panel) => {
         if (
-            !state.expandedPanelDetail.authors
+            !panel.authors
             &&
-            !state.expandedPanelDetail.external_authors
+            !panel.external_authors
             ) {
                 return []
             };
 
-        const userAuthors = state.expandedPanelDetail.authors.reduce(
+        const userAuthors = panel.authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,
@@ -483,7 +485,7 @@ const getters = {
                   },
                   []
               );
-        const externalAuthors = state.expandedPanelDetail.external_authors.reduce(
+        const externalAuthors = panel.external_authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,

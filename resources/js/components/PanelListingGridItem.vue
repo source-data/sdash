@@ -65,12 +65,12 @@
             </div>
 
             <div class="sd-grid-item-text">
-                <h6 class="panel-title text-md">
+                <h6 class="panel-title">
                     {{ thisPanel.title }}
                 </h6>
 
-                <address class="panel-authors text-sm text-lighter">
-                    {{ thisPanel.authors[0]['email'] }}
+                <address class="panel-authors">
+                    {{ panelAuthorsAbbreviated }}
                 </address>
             </div>
 
@@ -127,12 +127,29 @@ export default {
 
     computed: {
         ...mapGetters([
+            "currentUser",
             "expandedPanelId",
             "hasPanelDetail",
             "loadedPanels",
-            "currentUser",
-            "selectedPanels"
+            "panelAuthors",
+            "selectedPanels",
         ]),
+        panelAuthorsAbbreviated() {
+            let authors = this.panelAuthors(this.thisPanel);
+            if (!authors) {
+                return '';
+            }
+
+            let getAuthorDisplayName = author => `${author.firstname} ${author.surname}`,
+                nameFirstAuthor = getAuthorDisplayName(authors[0]);
+
+            if (authors.length == 1) {
+                return nameFirstAuthor;
+            }
+            let lastAuthor = authors[authors.length - 1],
+                nameLastAuthor = getAuthorDisplayName(lastAuthor);
+            return `${nameFirstAuthor} [...] ${nameLastAuthor}`;
+        },
         thumbnailUrl() {
             return (
                 "/panels/" +
@@ -211,6 +228,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
+@import 'resources/sass/_text.scss';
 
 $sd-extra-height: 110rem; // panel detail box height
 $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller screens
@@ -230,30 +248,31 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
         height: $sd-extra-height;
     }
 }
+
+$panel-thumbnail-height: 20rem;
+$panel-title-font-size: $font-size-md;
+$panel-authors-font-size: $font-size-sm;
+$panel-title-max-height: 2.5 * $panel-title-font-size;
+$panel-authors-max-height: 2.5 * $panel-authors-font-size;
+$panel-text-margins: 1.5rem;
+
 .sd-grid-item {
     cursor: pointer;
-    flex-grow: 1;
     box-sizing: border-box;
-    height: 280px;
-    min-width: 240px;
-    padding: 8px;
+    height: $panel-thumbnail-height + $panel-title-max-height + $panel-authors-max-height + $panel-text-margins;
+    margin: 10px 30px;
     transition: all 0.3s ease-in;
     outline: 1px red;
-}
-@media (min-width: 768px) {
-    .sd-grid-item {
-        max-width: 50%;
-    }
 }
 
 .sd-grid-image-container {
     height: 100%;
     position: relative;
-    padding: 12px;
 }
 
+
 .sd-grid-image-container-inner {
-    height: 75%;
+    height: $panel-thumbnail-height;
     width: 100%;
     display: flex;
     align-items: center;
@@ -263,18 +282,31 @@ $sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller
 
 .sd-grid-image {
     display: block;
-    max-height: 100%;
+    height: 100%;
     max-width: 100%;
     width: auto;
 }
 
 .sd-grid-item-text {
-    height: 25%;
+    height: $panel-title-max-height + $panel-authors-max-height;
     padding-top: 0.5rem;
+    /* Take the element out of the flow to limit its width. */
+    position: absolute;
+    width: 100%;
 }
 .sd-grid-item-text * {
-    height: 50%;
     overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sd-grid-item-text .panel-title {
+    font-size: $panel-title-font-size;
+    max-height: $panel-title-max-height;
+}
+.sd-grid-item-text .panel-authors {
+    font-size: $panel-authors-font-size;
+    font-weight: lighter;
+    line-height: 1.2;
+    max-height: $panel-authors-max-height;
 }
 
 .sd-grid-extra {
