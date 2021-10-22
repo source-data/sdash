@@ -52,7 +52,7 @@
                 </div>
 
                 <div v-if="isGuest" class="nav-item">
-                    <router-link class="dropdown-item" :to="{name: 'login'}">
+                    <router-link class="nav-link" :to="{name: 'login'}">
                         Sign in
                         <font-awesome-icon :icon="['fas', 'user']" />
                     </router-link>
