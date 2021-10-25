@@ -65,6 +65,3 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/panels/{panel}/authors', 'API\PanelAuthorController@update');
     Route::get('/tags', 'API\TagController@index');
 });
-
-Route::get('panels/public', 'API\PanelController@listPublicPanels');
-Route::get('files/categories', 'API\FileController@listFileCategories');
