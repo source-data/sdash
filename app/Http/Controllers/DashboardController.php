@@ -18,10 +18,4 @@ class DashboardController extends Controller
         // return (Auth::user()->hasVerifiedEmail()) ? view('dashboard') : view('auth.verify');
         return view('dashboard');
     }
-
-
-    public function showPublicDashboard()
-    {
-        return view('public_dashboard');
-    }
 }
