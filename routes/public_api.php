@@ -11,8 +11,6 @@
  * would hit Route::get('/panels/1', ...)
  */
 
-use Illuminate\Http\Request;
-
 /**
  * These routes are publicly accessible
  *
