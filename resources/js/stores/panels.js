@@ -49,26 +49,11 @@ defaultState.expandedPanelDetail = Object.assign({}, defaultExpandedPanelState);
 //initial state
 const state = Object.assign({}, defaultState);
 
-let fetchPanelUrl = (rootState, rootGetters) => {
-    if (rootState.searchMode === "group" && rootGetters.isLoggedIn) {
-        return "/groups/" + rootState.Groups.currentGroup.id + "/panels";
-    }
-    if (rootState.searchMode === "group" && ! rootGetters.isLoggedIn) {
-        return "/public/groups/" + rootState.Groups.currentGroup.id + "/panels";
-    }
-    if (rootState.searchMode === "user" && rootGetters.isLoggedIn) {
-        return "/users/me/panels";
-    }
-    if (rootState.searchMode === "user" && ! rootGetters.isLoggedIn) {
-        return "/public/panels";
-    }
-};
-
 const actions = {
-    fetchPanelList({ commit, state, rootState, rootGetters }) {
+    fetchPanelList({ commit, state, rootGetters }) {
         let params = { params: {} };
 
-        let searchUrl = fetchPanelUrl(rootState, rootGetters);
+        let searchUrl = rootGetters.apiUrls.panels;
 
         //pagination
         params.params.paginate = state.paginate;
@@ -96,8 +81,9 @@ const actions = {
     setLoadingState({ commit }, payload) {
         commit("setPanelLoadingState", payload);
     },
-    loadPanelDetail({ commit, state }, panelId) {
-        return Axios.get("/panels/" + panelId).then(response => {
+    loadPanelDetail({ commit, rootGetters }, panelId) {
+        let urlPanelDetails = rootGetters.apiUrls.panelDetail(panelId);
+        return Axios.get(urlPanelDetails).then(response => {
             commit("storeExpandedPanelDetail", response.data.DATA[0]);
             commit("storeComments", response.data.DATA[0].comments);
             commit("storeFiles", response.data.DATA[0].files);

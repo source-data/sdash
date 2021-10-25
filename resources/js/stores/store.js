@@ -42,7 +42,20 @@ export default new Vuex.Store({
     showEmailConfirmationNotice(state){
       return state.showEmailConfirmationNotice;
     },
-
+    apiUrls(state, getters) {
+      var panels, panelDetail;
+      if (getters.isLoggedIn) {
+        panelDetail = id => `/panels/${id}`;
+        panels = getters.searchMode == 'group' ? `/groups/${state.Groups.currentGroup.id}/panels` : "/users/me/panels";
+      } else {
+        panelDetail = id => `/public/panels/${id}`;
+        panels = "/public/panels";
+      }
+      return {
+        panels: panels,
+        panelDetail: panelDetail,
+      }
+    },
    },
   actions: {
     toggleLightbox({commit}){
