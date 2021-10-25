@@ -17,12 +17,12 @@
                 <p>
                     All API endpoints are relative to the base URL. For example,
                     the <code>/panels</code> endpoint refers to
-                    <code>https://sdash.sourcedata.io/public-api/panels</code>.
+                    <code>https://sdash.sourcedata.io/api/public/panels</code>.
                 </p>
                 <div class="card">
                     <h5 class="card-header">Base URL</h5>
                     <div class="card-body">
-                        <code>https://sdash.sourcedata.io/public-api</code>
+                        <code>https://sdash.sourcedata.io/api/public</code>
                     </div>
                 </div>
 
@@ -254,12 +254,12 @@
                 ]
             }
         ],
-        "first_page_url": "http://sdash.laravel/public-api/panels?page=1",
+        "first_page_url": "http://sdash.laravel/api/public/panels?page=1",
         "from": 1,
         "last_page": 1,
-        "last_page_url": "http://sdash.laravel/public-api/panels?page=1",
+        "last_page_url": "http://sdash.laravel/api/public/panels?page=1",
         "next_page_url": null,
-        "path": "http://sdash.laravel/public-api/panels",
+        "path": "http://sdash.laravel/api/public/panels",
         "per_page": 20,
         "prev_page_url": null,
         "to": 2,
