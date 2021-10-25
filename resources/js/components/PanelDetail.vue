@@ -216,9 +216,9 @@
                     <div class="content row">
                         <b-col>
                             <b-button
+                                v-if="iCanEditThisPanel"
                                 id="sd-delete-panel"
                                 variant="danger"
-                                v-if="iCanEditThisPanel"
                                 class="float-left"
                             >
                                 <font-awesome-icon
@@ -229,6 +229,7 @@
                             </b-button>
 
                             <b-popover
+                                v-if="iCanEditThisPanel"
                                 ref="delete-panel-popover"
                                 target="sd-delete-panel"
                                 triggers="click"

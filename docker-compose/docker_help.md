@@ -15,7 +15,6 @@ Update `.env.exemple` into `.env` and make sure the following variables are set:
     APP_URL=http://localhost
     MIX_DASHBOARD_URL=/dashboard/
     MIX_API_URL=http://localhost/api
-    MIX_PUBLIC_API_URL=http://localhost/public-api
     MIX_API_PANEL_URL=http://localhost/panel
 
     # mysql database
