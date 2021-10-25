@@ -22,35 +22,33 @@ class PanelTest extends TestCase
         parent::setUp();
         $this->user = factory(User::class)->create(); //randomly generated user will have id = 0
         $this->panel = factory(Panel::class)->create(['user_id' => $this->user->id]);
-
-
     }
 
-    public function testALoggedInUserCanLoadTheirOwnPanelDetails(){
-        $response = $this->actingAs($this->user, 'api')->get('api/panels/' . $this->panel->id);
+    public function testALoggedInUserCanLoadTheirOwnPanelDetails()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->getJson('api/panels/' . $this->panel->id);
         $response->assertStatus(200);
-        $response->assertJson(['DATA'=>[0 => ["user_id" => $this->user->id]]]);
-
+        $response->assertJson(['DATA' => [0 => ["user_id" => $this->user->id]]]);
     }
 
-    public function testPanelDetailsIncludeOwnerDetails(){
-        $response = $this->actingAs($this->user, 'api')->get('api/panels/' . $this->panel->id);
+    public function testPanelDetailsIncludeOwnerDetails()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->getJson('api/panels/' . $this->panel->id);
         $response->assertStatus(200);
-        $response->assertJson(['DATA'=>[0 => ["user" => ["email" => $this->user->email]]]]);
-
+        $response->assertJson(['DATA' => [0 => ["user" => ["email" => $this->user->email]]]]);
     }
 
     public function testWhenAUserCreatesAPanelTheyAutomaticallyBecomeOwner()
     {
-        $response = $this->actingAs($this->user, 'api')->post('api/panels',['file' => UploadedFile::fake()->image('testfile.jpg')]);
+        $response = $this->actingAs($this->user, 'sanctum')->post('api/panels', ['file' => UploadedFile::fake()->image('testfile.jpg')]);
         $response->assertStatus(200);
-        $response->assertJson(['DATA'=>["user_id" => $this->user->id]]);        
+        $response->assertJson(['DATA' => ["user_id" => $this->user->id]]);
     }
 
     public function testWhenAUserCreatesAPanelTheyAutomaticallyBecomeCorrespondingAuthor()
     {
-        $response = $this->actingAs($this->user, 'api')->post('api/panels',['file' => UploadedFile::fake()->image('testfile.jpg')]);
+        $response = $this->actingAs($this->user, 'sanctum')->post('api/panels', ['file' => UploadedFile::fake()->image('testfile.jpg')]);
         $response->assertStatus(200);
-        $response->assertJson(['DATA'=>["authors" => [0 => ['id' => $this->user->id]]]]);        
+        $response->assertJson(['DATA' => ["authors" => [0 => ['id' => $this->user->id]]]]);
     }
- }
+}

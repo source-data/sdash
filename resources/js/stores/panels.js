@@ -49,14 +49,26 @@ defaultState.expandedPanelDetail = Object.assign({}, defaultExpandedPanelState);
 //initial state
 const state = Object.assign({}, defaultState);
 
+let fetchPanelUrl = (rootState, rootGetters) => {
+    if (rootState.searchMode === "group" && rootGetters.isLoggedIn) {
+        return "/groups/" + rootState.Groups.currentGroup.id + "/panels";
+    }
+    if (rootState.searchMode === "group" && ! rootGetters.isLoggedIn) {
+        return "/public/groups/" + rootState.Groups.currentGroup.id + "/panels";
+    }
+    if (rootState.searchMode === "user" && rootGetters.isLoggedIn) {
+        return "/users/me/panels";
+    }
+    if (rootState.searchMode === "user" && ! rootGetters.isLoggedIn) {
+        return "/public/panels";
+    }
+};
+
 const actions = {
-    fetchPanelList({ commit, state, rootState }) {
+    fetchPanelList({ commit, state, rootState, rootGetters }) {
         let params = { params: {} };
 
-        let searchUrl =
-            rootState.searchMode === "group"
-                ? "/groups/" + rootState.Groups.currentGroup.id + "/panels"
-                : "/users/me/panels";
+        let searchUrl = fetchPanelUrl(rootState, rootGetters);
 
         //pagination
         params.params.paginate = state.paginate;
@@ -244,6 +256,9 @@ const actions = {
 };
 
 const mutations = {
+    clearPanels(state) {
+        state = Object.assign(state, defaultState);
+    },
     setPanelLoadingState(state, value) {
         state.loading = value;
     },

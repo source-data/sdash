@@ -13,24 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-/*
-|--------------------------------------------------------------------------
-| User Resource
-|--------------------------------------------------------------------------
-|
-| Access and modify users or the signed-in user
-|
-*/
+// special route for resending auth email. User must be logged in
+// but not verified
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('emails', 'Auth\VerificationController@resend')->name('verification.resend');
+    Route::get('/users/me', 'API\UserController@me');
+});
 
 // authenticated routes
-Route::middleware(['auth:api', 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
     Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
-    Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
     Route::patch('/users/{user}/password', 'API\UserController@changePassword');
     Route::get('/users/{user}', 'API\UserController@show');
@@ -71,8 +65,3 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::put('/panels/{panel}/authors', 'API\PanelAuthorController@update');
     Route::get('/tags', 'API\TagController@index');
 });
-
-// Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
-
-Route::get('panels/public', 'API\PanelController@listPublicPanels');
-Route::get('files/categories', 'API\FileController@listFileCategories');

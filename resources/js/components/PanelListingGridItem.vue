@@ -136,7 +136,7 @@ export default {
         ]),
         panelAuthorsAbbreviated() {
             let authors = this.panelAuthors(this.thisPanel);
-            if (!authors) {
+            if (authors.length <= 0) {
                 return '';
             }
 

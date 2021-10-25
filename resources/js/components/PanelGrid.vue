@@ -1,84 +1,117 @@
 <template>
-    <b-container fluid class="wrapper bg-dark text-light">
-        <filter-bar
-            class="sidebar"
-            v-bind:class="{ collapsed: !isSidebarExpanded }"
-        ></filter-bar>
+    <div>
+        <vue-full-screen-file-drop
+        @drop='uploadPanel'
+        formFieldName="file"
+        text="Please drop a JPG, PNG, GIF, TIF or PDF file"
+        v-if="panelDropEnabled">
+        </vue-full-screen-file-drop>
 
-        <div
-            id="content"
-            class="content"
-            v-bind:class="{ expanded: !isSidebarExpanded }"
+        <b-sidebar
+            id="author-edit-sidebar"
+            right
+            shadow
+            lazy
+            title="Edit the list of authors"
+            width="420px"
+            bg-variant="dark"
+            text-variant="light"
+            v-model="showAuthorSidebarModel"
         >
-            <panel-action-bar></panel-action-bar>
+            <panel-authors-edit-form></panel-authors-edit-form>
+        </b-sidebar>
 
-            <ul
-                class="toolbar"
+        <b-container fluid class="wrapper bg-dark text-light">
+            <filter-bar
+                class="sidebar"
+                v-bind:class="{ collapsed: !isSidebarExpanded }"
+            ></filter-bar>
+            
+            <div
+                id="content"
+                class="content"
                 v-bind:class="{ expanded: !isSidebarExpanded }"
             >
-                <li class="sidebar-toggle">
-                    <b-link
-                        href="#"
-                        @click="toggleSidebar"
-                        v-bind:title="sidebarToggleText"
-                    >
-                        <font-awesome-icon
-                            icon="chevron-left"
-                            v-if="isSidebarExpanded"
-                        />
-                        <font-awesome-icon
-                            icon="chevron-right"
-                            v-if="!isSidebarExpanded"
-                        />
-                    </b-link>
-                </li>
-                <li><font-awesome-icon icon="search" /></li>
-                <li><font-awesome-icon icon="filter" /></li>
-                <li><font-awesome-icon icon="users" /></li>
-            </ul>
-            
-            <div v-if="isLoadingPanels" class="text-center">
-                <b-spinner
-                    variant="primary"
-                    label="Spinning"
-                    class="m-5 text-center"
-                    style="width: 4rem; height: 4rem;"
-                ></b-spinner>
+                <panel-action-bar></panel-action-bar>
+
+                <ul
+                    class="toolbar"
+                    v-bind:class="{ expanded: !isSidebarExpanded }"
+                >
+                    <li class="sidebar-toggle">
+                        <b-link
+                            href="#"
+                            @click="toggleSidebar"
+                            v-bind:title="sidebarToggleText"
+                        >
+                            <font-awesome-icon
+                                icon="chevron-left"
+                                v-if="isSidebarExpanded"
+                            />
+                            <font-awesome-icon
+                                icon="chevron-right"
+                                v-if="!isSidebarExpanded"
+                            />
+                        </b-link>
+                    </li>
+                    <li><font-awesome-icon icon="search" /></li>
+                    <li><font-awesome-icon icon="filter" /></li>
+                    <li><font-awesome-icon icon="users" /></li>
+                </ul>
+        
+                <div v-if="isLoadingPanels" class="text-center">
+                    <b-spinner
+                        variant="primary"
+                        label="Spinning"
+                        class="m-5 text-center"
+                        style="width: 4rem; height: 4rem;"
+                    ></b-spinner>
+                </div>
+
+                <panel-listing-grid
+                    v-if="hasPanels"
+                    list_root="user"
+                ></panel-listing-grid>
+
+                <b-alert
+                    v-if="!hasPanels && !isLoadingPanels"
+                    show
+                    variant="danger"
+                    class="no-panel-alert"
+                >
+                    No Panels Found
+                </b-alert>
             </div>
+        </b-container>
 
-            <panel-listing-grid
-                v-if="hasPanels"
-                list_root="user"
-            ></panel-listing-grid>
-
-            <b-alert
-                v-if="!hasPanels && !isLoadingPanels"
-                show
-                variant="danger"
-                class="no-panel-alert"
-            >
-                No Panels Found
-            </b-alert>
-        </div>
-    </b-container>
+        <lightbox
+            :visible="isLightboxOpen"
+            :imgs="'/panels/' + expandedPanel.id + '/image'"
+            @hide="toggleLightbox"
+        ></lightbox>
+    </div>
 </template>
 
 <script>
 import store from "@/stores/store";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
+import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm"
 import PanelListingGrid from "./PanelListingGrid";
+import Lightbox from 'vue-easy-lightbox';
+import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
 
 export default {
     name: "PanelGrid",
     components: {
         FilterBar,
         PanelActionBar,
-        PanelListingGrid
+        PanelAuthorsEditForm,
+        PanelListingGrid,
+        Lightbox,
+        VueFullScreenFileDrop,
     },
-    props: [""],
-
     data() {
         return {
             isSidebarExpanded: true
@@ -86,16 +119,72 @@ export default {
     } /* end of data */,
 
     computed: {
-        ...mapGetters(["isLoadingPanels", "hasPanels", "hasLoadedAllResults"]),
+        ...mapGetters([
+            "isLoadingPanels",
+            "hasPanels",
+            "hasLoadedAllResults",
+            "isLightboxOpen",
+            "expandedPanel",
+            "showAuthorSidebar",
+            "currentGroup",
+            "mayAddPanelToGroup",
+            ]),
+        showAuthorSidebarModel: {
+            set(value) {
+                this.$store.commit('setAuthorSidebar', value)
+            },
+            get() {
+                return this.showAuthorSidebar
+            }
+        },
         sidebarToggleText: function() {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
-        }
+        },
+        panelDropEnabled() {
+            // Disallow file dropping if the sidebar to edit a panel's authors is open.
+            if (this.showAuthorSidebarModal) {
+                return false;
+            }
+            // Disallow file dropping if we're on a group's page and not allowed to add panels to it.
+            if (this.currentGroup && ! this.mayAddPanelToGroup) {
+                return false;
+            }
+            return true;
+
+        },
     },
 
     methods: {
+        ...mapActions([
+            'uploadNewPanel',
+            'toggleLightbox',
+            'addSelectedPanelsToGroup',
+        ]),
         toggleSidebar() {
             this.isSidebarExpanded = !this.isSidebarExpanded;
-        }
+        },
+        uploadPanel(formData, files){
+            this.uploadNewPanel(formData)
+            .then(response => {
+                this.$snotify.success("New panel created", "Uploaded")
+                if(this.currentGroup) {
+                    this.$store.commit("clearSelectedPanels")
+                    this.$store.commit("addPanelToSelections", response.data.DATA.id)
+                    this.addSelectedPanelsToGroup(this.currentGroup.id)
+                      .then(response => {
+                          this.$snotify.success("Panel added to this group", "Group updated")
+                      })
+                      .catch(error => {
+                          console.log(error)
+                          this.$snotify.error("Cannot add panel to this group", "Update failed")
+                      })
+
+                }
+                })
+                .catch(error => {
+                    this.$snotify.error(error.data.errors.file[0], "Upload failed")
+                })
+        },
     },
 
     mounted() {
@@ -190,5 +279,9 @@ export default {
         opacity: 1;
         font-size: 24px;
     }
+}
+
+.b-sidebar > .b-sidebar-header {
+    font-size:1rem;
 }
 </style>

@@ -15,11 +15,10 @@ See REST naming conventions at [https://restfulapi.net/resource-naming/](https:/
 * In the root directory, run the following commands:
 ```
 $ php artisan migrate
-$ php artisan passport:install
 $ npm install
 $ npm run dev
 ```
-This will install the database structure and contents, the routes needed for user authentication using Laravel Passport and the front-end resources for the auth pages.
+This will install the database structure and contents, the routes needed for user authentication using [Laravel Sanctum](https://laravel.com/docs/7.x/sanctum) and the front-end resources for the auth pages.
 
 The .env file found in the project route (or created by you from the .env.example file) needs to have these properties filled in, referring to the URL where the VUE application is mounted and the URL for API calls.
 

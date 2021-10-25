@@ -15,7 +15,7 @@
         "fzaninotto/faker": "^1.4",
         "intervention/image": "^2.5",
         "laravel/framework": "^7.0",
-        "laravel/passport": "^9.3",
+        "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "obiefy/api-response": "^0.2.5",
