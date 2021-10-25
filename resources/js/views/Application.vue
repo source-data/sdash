@@ -1,5 +1,10 @@
 <template>
-<div id="sdash-wrapper">
+<!--
+  Having :key=user.id triggers a full reload of this component and all its children - i.e. the whole application -
+  every time the user changes. This resets, for example, all the panels that are being shown. See this question
+  for details on using :key like this: https://stackoverflow.com/a/54367510/3385618
+ -->
+<div id="sdash-wrapper" :key="currentUser.id">
     <header>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>

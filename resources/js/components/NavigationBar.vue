@@ -136,8 +136,6 @@ export default {
         logOut() {
             AuthService.logout().then(response => {
                 this.expireCurrentUser();
-                this.clearPanels();
-                this.clearGroups();
                 if(this.$route.path !== '/') this.$router.push('/');
             }).catch(error=>{
                 console.log(error);
