@@ -49,10 +49,10 @@ Vue.use(LoadScript);
 
 // Add Fontawesome to the global Vue App
 library.add([
-    faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy, faDownload, faEdit,
-    faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages, faInfoCircle, faLayerGroup,
-    faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave, faSearch, faSearchPlus, faSignOutAlt,
-    faSitemap, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserPlus, faUsers,
+    faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy, faCreativeCommons,
+    faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages,
+    faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave, faSearch,
+    faSearchPlus, faSignOutAlt, faSitemap, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserPlus, faUsers,
 ])
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('font-awesome-layers', FontAwesomeLayers)
