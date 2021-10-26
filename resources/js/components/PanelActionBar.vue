@@ -278,11 +278,12 @@ nav .btn-link:hover {
 }
 
 .panel-upload-button {
-    width: $action-bar-height;
-    height: $action-bar-height;
-    outline: none;
     border: none;
     border-radius: 100%;
+    width: $action-bar-height;
+    height: $action-bar-height;
+    margin-right: 2vw;
+    outline: none;
     z-index: 100;
 }
 </style>

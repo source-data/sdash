@@ -170,6 +170,7 @@ $navbar-padding-top: 2rem;
 .navbar-brand {
     margin-left: $navbar-padding-left;
     margin-right: 0;
+    font-size: 1rem;
 }
 
 /* height == line-height to vertically center the text inside the nav-links. */
