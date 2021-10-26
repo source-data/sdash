@@ -3,6 +3,7 @@
         :id="itemId"
         class="sd-grid-item"
         :class="{ 'sd-grid-item__expanded': isExpanded }"
+        :style="sdGridItemStyle"
     >
         <div class="sd-grid-image-container">
             <header class="sd-grid-item--image-header">
@@ -80,8 +81,8 @@
         <div
             class="sd-grid-extra"
             id="panel-detail"
-            ref="listGridExtra"
             v-if="isExpanded"
+            :style="sdGridExtraStyle"
         >
             <button
                 type="button"
@@ -103,7 +104,7 @@
                 </b-col>
             </b-row>
 
-            <panel-detail v-if="hasPanelDetail"></panel-detail>
+            <panel-detail v-if="hasPanelDetail" @resized="updatePanelDetailHeight"></panel-detail>
         </div>
     </li>
 </template>
@@ -122,7 +123,9 @@ export default {
     },
 
     data() {
-        return {};
+        return {
+            panelDetailHeight: false,
+        };
     } /* end of data */,
 
     computed: {
@@ -198,7 +201,18 @@ export default {
         panelSelected() {
             if (this.selectedPanels.length === 0) return false;
             return _.includes(this.selectedPanels, this.panelId);
-        }
+        },
+        sdGridItemStyle() {
+            return this.panelDetailHeight ? {
+                'margin-bottom': (this.panelDetailHeight + 32) + 'px',
+            } : {};
+        },
+        sdGridExtraStyle() {
+            return this.panelDetailHeight ? {
+                'max-height': this.panelDetailHeight + 'px',
+                'height': this.panelDetailHeight + 'px',
+            } : {};
+        },
     },
 
     methods: {
@@ -221,8 +235,11 @@ export default {
             } else {
                 this.$store.dispatch("selectPanel", this.panelId);
             }
-        }
-    }
+        },
+        updatePanelDetailHeight(newHeight) {
+            this.panelDetailHeight = newHeight ? newHeight : false;
+        },
+    },
 };
 </script>
 
@@ -230,23 +247,11 @@ export default {
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
 
-$sd-extra-height: 110rem; // panel detail box height
-$sd-extra-height-stacked-columns: 150rem; // panel detail box height for smaller screens
-.sd-grid-item.sd-grid-item__expanded {
-    margin-bottom: $sd-extra-height-stacked-columns + 2;
-}
 .sd-grid-item__expanded .sd-grid-extra {
-    max-height: $sd-extra-height-stacked-columns;
-    height: $sd-extra-height-stacked-columns;
+    min-height: 25rem;
 }
-@media (min-width: 1200px) {
-    .sd-grid-item.sd-grid-item__expanded {
-        margin-bottom: $sd-extra-height + 2;
-    }
-    .sd-grid-item__expanded .sd-grid-extra {
-        max-height: $sd-extra-height;
-        height: $sd-extra-height;
-    }
+.sd-grid-item.sd-grid-item__expanded {
+    margin-bottom: 27rem;
 }
 
 $panel-thumbnail-height: 20rem;
