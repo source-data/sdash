@@ -501,7 +501,7 @@ export default {
 }
 
 .panel-sources-list {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 .panel-sources-list::v-deep table {
     background-color: inherit;
