@@ -15,7 +15,7 @@
                         <font-awesome-icon icon="times" size="lg" />
                     </b-button>
 
-                    <span> {{ countSelectedPanels }} selected </span>
+                    <span>{{ countSelectedPanels }} selected</span>
                 </b-nav-form>
             </b-navbar-nav>
 
@@ -25,7 +25,7 @@
                         id="sd-mass-delete-panels"
                         variant="link"
                         v-b-tooltip.hover.top
-                        title="Delete selected panels"
+                        title="Delete selected SmartFigures"
                     >
                         <font-awesome-icon icon="trash-alt" size="lg" />
                     </b-button>
@@ -34,7 +34,7 @@
                         id="sd-add-panels-to-sharing-group"
                         variant="link"
                         v-b-tooltip.hover.top
-                        title="Add panels to sharing group"
+                        title="Add SmartFigures to sharing group"
                     >
                         <font-awesome-icon icon="users" size="lg" />
                     </b-button>
@@ -70,7 +70,7 @@
                         variant="danger"
                     >
                         <font-awesome-icon icon="trash-alt" size="1x" />
-                        Delete {{ countSelectedPanels }} panel(s)
+                        Delete {{ countSelectedPanels }} SmartFigure(s)
                     </b-button>
                 </p>
             </b-popover>
@@ -150,7 +150,7 @@
             class="panel-upload-button text-md float-right"
             @click="displayPanelUploader"
             v-b-tooltip.hover.top
-            title="Upload new panel"
+            title="Upload new SmartFigure"
         >
             <font-awesome-icon icon="plus" />
         </b-button>
@@ -202,7 +202,7 @@ export default {
             this.$store
                 .dispatch("uploadNewPanel", submission)
                 .then(response => {
-                    this.$snotify.success("New panel created", "Uploaded");
+                    this.$snotify.success("New SmartFigure created", "Uploaded");
                     this.file = null;
                 })
                 .catch(error => {
@@ -226,7 +226,7 @@ export default {
                 })
                 .catch(error => {
                     this.$snotify.error(
-                        "Panels could not be added to group",
+                        "SmartFigures could not be added to group",
                         "Failure"
                     );
                 });
