@@ -1,10 +1,10 @@
 <template>
     <div>
         <vue-full-screen-file-drop
-        @drop='uploadPanel'
-        formFieldName="file"
-        text="Please drop a JPG, PNG, GIF, TIF or PDF file"
-        v-if="panelDropEnabled">
+            @drop='uploadPanel'
+            formFieldName="file"
+            text="Please drop a JPG, PNG, GIF, TIF or PDF file"
+            v-if="panelDropEnabled">
         </vue-full-screen-file-drop>
 
         <b-sidebar
@@ -21,7 +21,7 @@
             <panel-authors-edit-form></panel-authors-edit-form>
         </b-sidebar>
 
-        <b-container fluid class="wrapper bg-dark text-light">
+        <b-container fluid class="wrapper bg-dark text-light" :class="{ 'anonymous-user': !isLoggedIn }">
             <filter-bar
                 class="sidebar"
                 v-bind:class="{ collapsed: !isSidebarExpanded }"
@@ -58,10 +58,23 @@
                 </ul>
         
                 <header id="sd-panel-grid-header">
-                    <panel-action-bar></panel-action-bar>
+                    <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
+
+                    <section v-else id="sd-featured-jumbotron">
+                        <h1 class="text-xxl text-primary">
+                            Share scientific results with your collaborators.
+                        </h1>
+
+                        <div class="text-lg">
+                            Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
+                            Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
+                            Comment and discuss initiating an early scientific dissemination of results. 
+                        </div>
+                    </section>
 
                     <h2 class="text-primary">
-                        My Dashboard
+                        <span v-if="isLoggedIn">My Dashboard</span>
+                        <span v-else>SmartFigures</span>
                     </h2>
                 
                     <aside class="align-text-bottom text-right">
@@ -130,6 +143,7 @@ export default {
 
     computed: {
         ...mapGetters([
+            "isLoggedIn",
             "isLoadingPanels",
             "hasPanels",
             "loadedPanels",
@@ -243,6 +257,11 @@ export default {
     height: 100%;
     padding-top: 2rem;
 }
+.wrapper.anonymous-user {
+    background-image: url("/images/landing-page-bg.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
 
 .sidebar,
 .content {
@@ -301,5 +320,14 @@ export default {
 
 #sd-panel-grid-header {
     margin: 0 30px;
+}
+
+#sd-featured-jumbotron {
+    margin: 100px 20vw;
+}
+@media (max-width: 1200px) {
+    #sd-featured-jumbotron {
+        margin: 50px 10vw;
+    }
 }
 </style>
