@@ -257,7 +257,6 @@ $panel-authors-max-height: 2.5 * $panel-authors-font-size;
 $panel-text-margins: 1.5rem;
 
 .sd-grid-item {
-    cursor: pointer;
     box-sizing: border-box;
     height: $panel-thumbnail-height + $panel-title-max-height + $panel-authors-max-height + $panel-text-margins;
     margin: 10px 30px;
@@ -272,6 +271,7 @@ $panel-text-margins: 1.5rem;
 
 
 .sd-grid-image-container-inner {
+    cursor: pointer;
     height: $panel-thumbnail-height;
     width: 100%;
     display: flex;

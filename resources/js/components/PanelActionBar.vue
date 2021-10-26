@@ -264,8 +264,9 @@ export default {
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
 
+$action-bar-height: 55px;
 #panel-action-bar {
-    padding: 10px 40px;
+    height: $action-bar-height;
 }
 nav .btn-link {
     color: $mostly-white-gray;
@@ -277,8 +278,8 @@ nav .btn-link:hover {
 }
 
 .panel-upload-button {
-    width: 56px;
-    height: 56px;
+    width: $action-bar-height;
+    height: $action-bar-height;
     outline: none;
     border: none;
     border-radius: 100%;

@@ -32,8 +32,6 @@
                 class="content"
                 v-bind:class="{ expanded: !isSidebarExpanded }"
             >
-                <panel-action-bar></panel-action-bar>
-
                 <ul
                     class="toolbar"
                     v-bind:class="{ expanded: !isSidebarExpanded }"
@@ -59,6 +57,18 @@
                     <li><font-awesome-icon icon="users" /></li>
                 </ul>
         
+                <header id="sd-panel-grid-header">
+                    <panel-action-bar></panel-action-bar>
+
+                    <h2 class="text-primary">
+                        My Dashboard
+                    </h2>
+                
+                    <aside class="align-text-bottom text-right">
+                        {{ numLoadedPanels }} SmartFigures
+                    </aside>
+                </header>
+
                 <div v-if="isLoadingPanels" class="text-center">
                     <b-spinner
                         variant="primary"
@@ -122,6 +132,7 @@ export default {
         ...mapGetters([
             "isLoadingPanels",
             "hasPanels",
+            "loadedPanels",
             "hasLoadedAllResults",
             "isLightboxOpen",
             "expandedPanel",
@@ -151,6 +162,9 @@ export default {
             }
             return true;
 
+        },
+        numLoadedPanels() {
+            return this.loadedPanels.length;
         },
     },
 
@@ -283,5 +297,9 @@ export default {
 
 .b-sidebar > .b-sidebar-header {
     font-size:1rem;
+}
+
+#sd-panel-grid-header {
+    margin: 0 30px;
 }
 </style>
