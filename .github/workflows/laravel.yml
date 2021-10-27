@@ -74,7 +74,7 @@ jobs:
       run: cp .env.dev.example .env.dev
 
     - name: Build frontend
-      uses: .github/actions/build-frontend@
+      uses: './.github/actions/build-frontend'
       with:
         env_file: .env.dev
 
