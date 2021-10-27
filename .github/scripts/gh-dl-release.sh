@@ -36,7 +36,7 @@ if [ "${VERSION}" != "latest" ]; then
     VERSION="tags/${VERSION}"
 fi
 
-TOKEN=`cat ~/.secrets`
+TOKEN=`cat ~/.secrets/GITHUB_ACCESS_TOKEN`
 function gh_curl() {
   curl -H "Authorization: token $TOKEN" $@
 }
