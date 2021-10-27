@@ -1,6 +1,9 @@
 name: Release
 
-on: push
+on:
+  push:
+    branches:
+    - main
 
 jobs:
   frontend-build-for-dev-deploy:
@@ -21,6 +24,6 @@ jobs:
     - uses: meeDamian/github-release@2.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: LATEST
+        tag: dev
         allow_override: true
         files: public/
