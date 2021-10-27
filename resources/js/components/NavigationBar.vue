@@ -135,6 +135,8 @@ export default {
         ...mapMutations(['expireCurrentUser', 'clearPanels', 'clearGroups']),
         logOut() {
             AuthService.logout().then(response => {
+                this.clearGroups();
+                this.clearPanels();
                 this.expireCurrentUser();
                 if(this.$route.path !== '/') this.$router.push('/');
             }).catch(error=>{
