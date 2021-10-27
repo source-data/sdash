@@ -3,7 +3,8 @@ name: Release
 on:
   push:
     branches:
-    - main
+    - master
+    - build-frontend-in-ci
 
 jobs:
   frontend-build-for-dev-deploy:
