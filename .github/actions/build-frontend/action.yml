@@ -17,6 +17,8 @@ runs:
 
     - name: Install Frontend dependencies
       run: npm install
+      shell: bash
 
     - name: Build frontend
       run: ENV_FILE=${{ inputs.env_file }} npm run production
+      shell: bash
