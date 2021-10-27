@@ -12,7 +12,7 @@
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- widget for providing feedback to us -->
-    <feedback-widget></feedback-widget>
+    <feedback-widget v-if="isLoggedIn"></feedback-widget>
     <!-- loading placeholder while checking for login -->
     <div v-if="!applicationIsLoaded" class="text-center">
         <b-spinner

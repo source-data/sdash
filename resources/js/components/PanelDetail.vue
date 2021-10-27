@@ -434,7 +434,16 @@ export default {
         editAuthorList(){
             this.$store.commit("setAuthorSidebar", true);
         },
-    }
+        emitResizeEvent() {
+            this.$emit('resized', this.$el.clientHeight);
+        },
+    },
+    mounted: function() {
+        new ResizeObserver(_.debounce(this.emitResizeEvent, 150)).observe(this.$el);
+    },
+    destroyed: function() {
+        this.$emit('resized', undefined);
+    },
 };
 </script>
 
