@@ -9,7 +9,7 @@ env:
   DB_ROOT_USER: root
   DB_ROOT_PASSWORD: root
 
-jobs:  
+jobs:
   laravel-tests:
     strategy:
         matrix:
@@ -56,7 +56,7 @@ jobs:
         php artisan key:generate
 
     - name: Build frontend
-      uses: './.github/actions/build-frontend.yml'
+      uses: './.github/actions/build-frontend'
       with:
         env_file: .env.ci
 
