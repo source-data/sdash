@@ -62,26 +62,3 @@ jobs:
 
     - name: Run tests
       run: php artisan test
-
-  frontend-build-for-dev-deploy:
-    runs-on: ubuntu-18.04
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Copy .env
-      run: cp .env.dev.example .env.dev
-
-    - name: Build frontend
-      uses: './.github/actions/build-frontend'
-      with:
-        env_file: .env.dev
-
-    - name: Archive frontend build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: frontend-dist
-        path: |
-          public
-        retention-days: 7
