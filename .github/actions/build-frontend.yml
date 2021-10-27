@@ -1,0 +1,22 @@
+name: Build frontend
+description: Builds the SDash frontend
+
+inputs:
+  env_file:
+    description: Path to the environment file used during the build.
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up npm
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+        cache: 'npm'
+
+    - name: Install Frontend dependencies
+      run: npm install
+
+    - name: Build frontend
+      run: ENV_FILE=${{ inputs.env_file }} npm run production
