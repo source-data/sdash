@@ -1,86 +1,44 @@
 version: '3'
 # from: https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose
 services:
-
-  # PHP Service
   app:
     build:
       context: .
       dockerfile: ./docker-compose/dev/app/Dockerfile
     image: digitalocean.com/php
-    container_name: app
-    restart: unless-stopped
-    tty: true
-    environment:
-      SERVICE_NAME: app
-      SERVICE_TAGS: dev
-    working_dir: /var/www
-    networks:
-      - app-network
     volumes:
        - ./:/var/www
        - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
 
-  # Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: webserver
-    restart: unless-stopped
-    tty: true
     ports:
       - "8080:80"
-      - "443:443"
-    networks:
-      - app-network
     volumes:
       - ./:/var/www
       - ./docker-compose/dev/nginx/conf.d/:/etc/nginx/conf.d/
 
-  # MySQL Service
   db:
     image: mariadb
-    container_name: db
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3306:3306"
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_pwd
-      # MYSQL_ROOT_PASSWORD: your_mysql_root_password
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    secrets:
-      - db_pwd
-    networks:
-      - app-network
+      MARIADB_ROOT_PASSWORD: sdash
+      MARIADB_DATABASE: laravel
+      MARIADB_USER: laraveluser
+      MARIADB_PASSWORD: dbpass
     volumes:
       - dbdata:/var/lib/mysql
       - ./docker-compose/dev/mysql/my.cnf:/etc/mysql/my.cnf
 
-  # frontend
   frontend:
     build:
       context: .
       dockerfile: ./docker-compose/dev/frontend/Dockerfile
-    image: sdash_frontend
     volumes:
       - ./:/app
       # anonymous volume here; bind mapping to ./node_modules does not work! Permission issue bc app is user www?
       - /app/node_modules
     command: ['npm', 'run', 'watch']
 
-# secret passwords
-secrets:
-  db_pwd:
-    file: ./docker-compose/dev/mysql/root_password.txt
-
-# Docker Networks
-networks:
-  app-network:
-    driver: bridge
-
-#Volumes
 volumes:
   dbdata:
     driver: local

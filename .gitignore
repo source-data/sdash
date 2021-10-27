@@ -18,3 +18,4 @@ capistrano.log
 /log
 deploy.php
 .env.dev
+*.noupload.*

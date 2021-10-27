@@ -46,7 +46,7 @@ class UserPanelTest extends TestCase
     {
         $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 0]);
 
-        $response = $this->actingAs($this->author, 'api')->get('api/panels/' . $this->panel->id);
+        $response = $this->actingAs($this->author, 'sanctum')->getJson('api/panels/' . $this->panel->id);
 
         $response->assertStatus(200);
 
@@ -55,7 +55,7 @@ class UserPanelTest extends TestCase
 
     public function testAUserCannotAccessPanelDetailsOfAnotherUsersPanelIfTheyAreNotAnAuthor()
     {
-        $response = $this->actingAs($this->author, 'api')->get('api/panels/' . $this->panel->id);
+        $response = $this->actingAs($this->author, 'sanctum')->getJson('api/panels/' . $this->panel->id);
         $response->assertStatus(401); //access denied
     }
 }

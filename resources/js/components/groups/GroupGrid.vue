@@ -117,7 +117,7 @@ export default {
             if (panels.length) {
                 const panel = panels[0];
                 return (
-                    "/public-api/panels/" +
+                    "/api/public/panels/" +
                     panel.id +
                     "/image/thumbnail?v=" +
                     panel.version

@@ -222,7 +222,7 @@
 <script>
 
 import Axios from "axios"
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
     name: 'EditUser',
@@ -285,6 +285,8 @@ export default {
         this.getUserData()
     },
     methods: {
+        // set the global user record
+        ...mapMutations(['setCurrentUser']),
         getUserData() {
             Axios.get("/users/" + this.user_id)
                 .then(response => {
@@ -297,6 +299,9 @@ export default {
                 .then(response => {
                     this.errors = {}
                     this.submiting = false
+                    if(parseInt(this.user_id) === parseInt(this.currentUser.id)) {
+                        this.setCurrentUser(response.data.DATA);
+                    }
                     this.$router.push({path: `/user/${this.user_id}`})
                 })
                 .catch(error => {

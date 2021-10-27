@@ -216,9 +216,9 @@
                     <div class="content row">
                         <b-col>
                             <b-button
+                                v-if="iCanEditThisPanel"
                                 id="sd-delete-panel"
                                 variant="danger"
-                                v-if="iCanEditThisPanel"
                                 class="float-left"
                             >
                                 <font-awesome-icon
@@ -229,6 +229,7 @@
                             </b-button>
 
                             <b-popover
+                                v-if="iCanEditThisPanel"
                                 ref="delete-panel-popover"
                                 target="sd-delete-panel"
                                 triggers="click"
@@ -433,7 +434,16 @@ export default {
         editAuthorList(){
             this.$store.commit("setAuthorSidebar", true);
         },
-    }
+        emitResizeEvent() {
+            this.$emit('resized', this.$el.clientHeight);
+        },
+    },
+    mounted: function() {
+        new ResizeObserver(_.debounce(this.emitResizeEvent, 150)).observe(this.$el);
+    },
+    destroyed: function() {
+        this.$emit('resized', undefined);
+    },
 };
 </script>
 

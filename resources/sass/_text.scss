@@ -6,20 +6,20 @@ $font-size-xl: 2.5rem;
 $font-size-xxl: 3rem;
 
 .text-xs {
-    font-size: $font-size-xs;
+    font-size: $font-size-xs !important;
 }
 .text-sm {
-    font-size: $font-size-sm;
+    font-size: $font-size-sm !important;
 }
 .text-md {
-    font-size: $font-size-md;
+    font-size: $font-size-md !important;
 }
 .text-lg {
-    font-size: $font-size-lg;
+    font-size: $font-size-lg !important;
 }
 .text-xl {
-    font-size: $font-size-xl;
+    font-size: $font-size-xl !important;
 }
 .text-xxl {
-    font-size: $font-size-xxl;
+    font-size: $font-size-xxl !important;
 }

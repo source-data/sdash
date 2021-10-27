@@ -1,35 +1,40 @@
 <template>
-    <div>
-        <b-navbar class="sd-action-bar" v-if="countSelectedPanels > 0">
+    <div id="panel-action-bar">
+        <b-navbar v-if="countSelectedPanels > 0">
             <!-- action bar controls -->
             <b-navbar-nav>
                 <b-nav-form>
                     <b-button
-                        class="sd-action-bar--clear-button"
+                        id="sd-clear-selected-panels"
+                        class="text-light"
+                        variant="link"
                         @click="clearSelectedPanels"
                         v-b-tooltip.hover.top
                         title="Clear selection"
                     >
                         <font-awesome-icon icon="times" size="lg" />
                     </b-button>
-                    <span> {{ countSelectedPanels }} selected </span>
+
+                    <span>{{ countSelectedPanels }} selected</span>
                 </b-nav-form>
             </b-navbar-nav>
+
             <b-navbar-nav class="ml-auto">
                 <b-nav-form>
                     <b-button
-                        class="sd-action-bar--delete-button"
                         id="sd-mass-delete-panels"
+                        variant="link"
                         v-b-tooltip.hover.top
-                        title="Delete selected panels"
+                        title="Delete selected SmartFigures"
                     >
                         <font-awesome-icon icon="trash-alt" size="lg" />
                     </b-button>
+
                     <b-button
-                        class="sd-action-bar--group-button"
                         id="sd-add-panels-to-sharing-group"
+                        variant="link"
                         v-b-tooltip.hover.top
-                        title="Add panels to sharing group"
+                        title="Add SmartFigures to sharing group"
                     >
                         <font-awesome-icon icon="users" size="lg" />
                     </b-button>
@@ -65,7 +70,7 @@
                         variant="danger"
                     >
                         <font-awesome-icon icon="trash-alt" size="1x" />
-                        Delete {{ countSelectedPanels }} panel(s)
+                        Delete {{ countSelectedPanels }} SmartFigure(s)
                     </b-button>
                 </p>
             </b-popover>
@@ -85,9 +90,9 @@
                         class="close"
                         aria-label="Close"
                     >
-                        <span class="d-inline-block" aria-hidden="true"
-                            >&times;</span
-                        >
+                        <span class="d-inline-block" aria-hidden="true">
+                            &times;
+                        </span>
                     </b-button>
                 </template>
 
@@ -104,12 +109,13 @@
                         trim
                     >
                         <template #first>
-                            <b-form-select-option :value="null"
-                                >Select group</b-form-select-option
-                            >
+                            <b-form-select-option :value="null">
+                                Select group
+                            </b-form-select-option>
                         </template>
                     </b-form-select>
                 </b-form-group>
+
                 <p>
                     <b-button
                         @click="addPanelsToGroup"
@@ -121,11 +127,13 @@
                         Add to Group
                     </b-button>
                 </p>
+
                 <p>
                     <label class="d-block">or create new sharing group</label>
-                    <b-button @click="closeGroupsPopover" size="sm"
-                        >Cancel</b-button
-                    >
+                    <b-button @click="closeGroupsPopover" size="sm">
+                        Cancel
+                    </b-button>
+
                     <b-button @click="createGroup" size="sm" variant="success">
                         <font-awesome-icon icon="users" size="1x" />
                         Create New Group
@@ -135,15 +143,18 @@
         </b-navbar>
 
         <!-- upload controls -->
-        <button
-            class="panel-upload-button"
+        <b-button
+            v-if="countSelectedPanels === 0"
+            id="sd-upload-new-panel"
+            variant="primary"
+            class="panel-upload-button text-md float-right"
             @click="displayPanelUploader"
             v-b-tooltip.hover.top
-            title="Upload new panel"
-            v-if="countSelectedPanels === 0"
+            title="Upload new SmartFigure"
         >
             <font-awesome-icon icon="plus" />
-        </button>
+        </b-button>
+
         <b-form-file
             ref="panelUploader"
             class="d-none"
@@ -191,7 +202,7 @@ export default {
             this.$store
                 .dispatch("uploadNewPanel", submission)
                 .then(response => {
-                    this.$snotify.success("New panel created", "Uploaded");
+                    this.$snotify.success("New SmartFigure created", "Uploaded");
                     this.file = null;
                 })
                 .catch(error => {
@@ -215,7 +226,7 @@ export default {
                 })
                 .catch(error => {
                     this.$snotify.error(
-                        "Panels could not be added to group",
+                        "SmartFigures could not be added to group",
                         "Failure"
                     );
                 });
@@ -251,50 +262,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sd-action-bar {
-    padding: 10px 40px;
-    background-color: #e9eef5;
-}
+@import 'resources/sass/_colors.scss';
 
-.sd-action-bar--clear-button,
-.sd-action-bar--delete-button,
-.sd-action-bar--group-button {
-    color: #383838;
-    background: none;
-    border: none;
+$action-bar-height: 55px;
+#panel-action-bar {
+    height: $action-bar-height;
 }
-
-.sd-action-bar--clear-button:hover,
-.sd-action-bar--clear-button:focus,
-.sd-action-bar--clear-button:active {
-    color: #6e89aa;
+nav .btn-link {
+    color: $mostly-white-gray;
 }
-
-.sd-action-bar--group-button:hover,
-.sd-action-bar--group-button:focus,
-.sd-action-bar--group-button:active {
-    color: #28a745;
-}
-
-.sd-action-bar--delete-button:hover,
-.sd-action-bar--delete-button:focus,
-.sd-action-bar--delete-button:active {
-    color: #dc3545;
+nav .btn-link:active,
+nav .btn-link:focus,
+nav .btn-link:hover {
+    color: $mostly-white-gray-opaque;
 }
 
 .panel-upload-button {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    line-height: 1;
-    color: #fff;
-    background: #dc3545;
-    outline: none;
     border: none;
     border-radius: 100%;
+    width: $action-bar-height;
+    height: $action-bar-height;
+    margin-right: 2vw;
+    outline: none;
     z-index: 100;
 }
 </style>
