@@ -56,7 +56,7 @@ jobs:
         php artisan key:generate
 
     - name: Build frontend
-      uses: .github/actions/build-frontend.yml
+      uses: './.github/actions/build-frontend.yml'
       with:
         env_file: .env.ci
 
