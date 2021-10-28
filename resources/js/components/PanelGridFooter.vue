@@ -15,7 +15,7 @@
                 </b-col>
 
                 <b-col md="6" class="call-to-action-image d-none d-md-block">
-                    <img src="/images/group.svg" alt="">
+                    <img src="/images/group.svg" alt="A stylized image of a group, consisting of 3 people">
                 </b-col>
             </b-row>
         </section>
@@ -34,7 +34,7 @@
                 </b-col>
 
                 <b-col md="7" class="call-to-action-image d-none d-md-block">
-                    <img src="/images/lupe.svg" alt="">
+                    <img src="/images/loupe.svg" alt="A stylized image of a loupe and documents">
                 </b-col>
             </b-row>
         </section>
