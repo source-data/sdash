@@ -107,6 +107,8 @@
             </div>
         </b-container>
 
+        <panel-grid-footer></panel-grid-footer>
+
         <lightbox
             :visible="isLightboxOpen"
             :imgs="'/panels/' + expandedPanel.id + '/image'"
@@ -120,7 +122,8 @@ import store from "@/stores/store";
 import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
-import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm"
+import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
+import PanelGridFooter from "@/components/PanelGridFooter";
 import PanelListingGrid from "./PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
@@ -131,6 +134,7 @@ export default {
         FilterBar,
         PanelActionBar,
         PanelAuthorsEditForm,
+        PanelGridFooter,
         PanelListingGrid,
         Lightbox,
         VueFullScreenFileDrop,
@@ -143,8 +147,8 @@ export default {
 
     computed: {
         ...mapGetters([
-            "isLoggedIn",
             "isLoadingPanels",
+            "isLoggedIn",
             "hasPanels",
             "loadedPanels",
             "hasLoadedAllResults",

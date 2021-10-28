@@ -44,7 +44,7 @@
 
         <aside class="col-md-4">
             <div class="p-3">
-                <p class="font-italic">SDash is developed by <a href="https://sourcedata.embo.org/" class="sd-sidebar-logo--link"><img src="/images/sourcedata_logo.png" alt="The SourceData logo." class="sd-sidebar-logo--image"></a></p>
+                <p class="font-italic">SDash is developed by <a href="https://sourcedata.embo.org/" class="sd-sidebar-logo--link"><img src="/images/logos/sourcedata.png" alt="SourceData - Making data discoverable" class="sd-sidebar-logo--image"></a></p>
             </div>
             <div class="card" style="margin-bottom: 1rem;">
                 <div class="card-body">
@@ -62,13 +62,13 @@
                     <h5 class="card-title" style="margin: 0;">Our partners</h5>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="https://www.biologie.hu-berlin.de/en/gruppenseiten-en/sfb1315" class="sd-sidebar--sfb-link"><img src="/images/sfb_logo.svg" alt="The SFB logo." class="sd-sidebar--sfb-logo">
+                    <li class="list-group-item"><a href="https://www.biologie.hu-berlin.de/en/gruppenseiten-en/sfb1315" class="sd-sidebar--sfb-link"><img src="/images/logos/sfb.svg" alt="The SFB logo." class="sd-sidebar--sfb-logo">
                             <div class="sd-sidebar--sfb-text">
                                 <h5>SFB 1315</h5>Mechanisms and disturbances in memory consolidation
                             </div>
                         </a></li>
-                    <li class="list-group-item"><a href="https://www.sib.swiss/"><img src="/images/logo_sib.png" alt="Swiss Institute of Bioinformatics" class="sd-sidebar--sib-logo"></a></li>
-                    <li class="list-group-item"><a href="https://substance.io/"><img src="/images/substance_logo.svg" alt="Substance - self-publish your research" class="sd-sidebar--substance-logo"></a></li>
+                    <li class="list-group-item"><a href="https://www.sib.swiss/"><img src="/images/logos/sib.png" alt="Swiss Institute of Bioinformatics" class="sd-sidebar--sib-logo"></a></li>
+                    <li class="list-group-item"><a href="https://substance.io/"><img src="/images/logos/substance.svg" alt="Substance - self-publish your research" class="sd-sidebar--substance-logo"></a></li>
                 </ul>
             </div>
         </aside>
