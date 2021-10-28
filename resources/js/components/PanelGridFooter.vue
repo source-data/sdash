@@ -216,23 +216,6 @@ export default {
         margin-top: 1rem;
     }
 }
-.sfb-description {
-    font-weight: bolder;
-    margin-bottom: auto;
-    margin-left: 0.5rem;
-    margin-top: auto;
-    overflow: hidden;
-    white-space: nowrap;
-}
-.sfb-subtitle {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-@media (max-width: 1199.98px) {
-    .sfb-subtitle {
-        display: none;
-    }
-}
 
 #sd-fine-print {
     padding-bottom: 1rem;
