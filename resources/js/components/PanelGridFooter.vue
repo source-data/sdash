@@ -62,7 +62,7 @@
                 </b-col>
 
                 <b-col cols="8" lg="3">
-                    <img src="/images/sourcedata_logo.png" alt="SourceData - Making data discoverable">
+                    <img src="/images/logos/sourcedata.png" alt="SourceData - Making data discoverable">
                 </b-col>
             </b-row>
         </section>
