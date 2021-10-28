@@ -61,8 +61,49 @@
                     Developed by
                 </b-col>
 
-                <b-col cols="8" lg="3">
-                    <img src="/images/logos/sourcedata.png" alt="SourceData - Making data discoverable">
+                <b-col class="mr-lg-auto" cols="8" lg="3">
+                    <a href="https://sourcedata.embo.org/">
+                        <img src="/images/logos/sourcedata.png" alt="SourceData - Making data discoverable">
+                    </a>
+                </b-col>
+            </b-row>
+        </section>
+
+        <section id="sd-partners-information" class="container-fluid">
+            <b-row>
+                <b-col class="sd-partners-label pb-sm-2" lg="2">
+                    Partners
+                </b-col>
+
+                <b-col class="sd-partners-list" lg="10">
+                    <div>
+                        <a href="https://www.embo.org/">
+                            <img src="/images/logos/embo.svg" alt="EMBO - European Molecular Biology Organization">
+                        </a>
+                    </div>
+
+                    <div>
+                        <a class="d-flex" href="https://www.biologie.hu-berlin.de/en/gruppenseiten-en/sfb1315">
+                            <img class="sfb-image" src="/images/logos/sfb.svg" alt="SFB logo">
+
+                            <div class="sfb-description">
+                                <h5 class="text-lg">
+                                    SFB 1315
+                                </h5>
+
+                                <div class="sfb-subtitle">
+                                    Mechanisms and disturbances in Memory <br>
+                                    Consolidation: From synapses to systems
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="https://www.sib.swiss/">
+                            <img src="/images/logos/sib.png" alt="SIB - Swiss Institute of Bioinformatics">
+                        </a>
+                    </div>
                 </b-col>
             </b-row>
         </section>
@@ -119,10 +160,59 @@ export default {
 }
 
 .sd-contact-label,
-.sd-contact-name {
+.sd-contact-name,
+.sd-partners-label {
     font-weight: bolder;
 }
 #sd-contact-information img {
-    max-width: 20vw;
+    max-height: 7rem;
+    max-width: 80%;
+}
+
+#sd-partners-information a,
+#sd-partners-information h5 {
+    color: $mostly-black-blue;
+}
+#sd-partners-information img {
+    height: 7rem;
+}
+
+.sd-partners-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+.sd-partners-list > * {
+    margin-right: auto;
+    padding-bottom: 1rem;
+}
+.sd-partners-list > *:not(:first-child) {
+    margin-left: 1rem;
+}
+@media (max-width: 575.98px) {
+    .sd-partners-list {
+        flex-direction: column;
+    }
+    .sd-partners-list > * {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 1rem;
+    }
+}
+.sfb-description {
+    font-weight: bolder;
+    margin-bottom: auto;
+    margin-left: 0.5rem;
+    margin-top: auto;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.sfb-subtitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (max-width: 1199.98px) {
+    .sfb-subtitle {
+        display: none;
+    }
 }
 </style>
