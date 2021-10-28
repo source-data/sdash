@@ -107,6 +107,18 @@
                 </b-col>
             </b-row>
         </section>
+
+        <div id="sd-fine-print">
+            &copy; 2021 SDASH.sourcedata.io
+            <span class="fine-print-delimiter">|</span>
+            <a href="">Imprint</a>
+            <span class="fine-print-delimiter">|</span>
+            <a href="">Privacy Policy</a>
+        </div>
+
+        <b-button @click="scrollToTop()" variant="primary" class="back-to-top">
+            <font-awesome-icon icon="angle-double-up" />
+        </b-button>
     </footer>
 </template>
 
@@ -128,13 +140,18 @@ export default {
             "isLoggedIn",
         ]),
     },
+    methods: {
+        scrollToTop() {
+            window.scrollTo(0, 0);
+        },
+    }
 }
 </script>
 
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
 
-#sd-panel-grid-footer > * {
+#sd-panel-grid-footer > section {
     padding: 5vw 7.5vw;
 }
 
@@ -170,7 +187,8 @@ export default {
 }
 
 #sd-partners-information a,
-#sd-partners-information h5 {
+#sd-partners-information h5,
+#sd-fine-print a {
     color: $mostly-black-blue;
 }
 #sd-partners-information img {
@@ -214,5 +232,29 @@ export default {
     .sfb-subtitle {
         display: none;
     }
+}
+
+#sd-fine-print {
+    padding-bottom: 1rem;
+    text-align: center;
+}
+.fine-print-delimiter {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    user-select: none;
+}
+
+// To position the back-to-top button in the bottom right of the footer, its closest ancestor has to be positioned as
+// well.
+#sd-panel-grid-footer {
+    position: relative;
+}
+.back-to-top {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 0;
 }
 </style>
