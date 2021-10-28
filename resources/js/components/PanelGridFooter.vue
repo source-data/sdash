@@ -76,34 +76,17 @@
                 </b-col>
 
                 <b-col class="sd-partners-list" lg="10">
-                    <div>
-                        <a href="https://www.embo.org/">
-                            <img src="/images/logos/embo.svg" alt="EMBO - European Molecular Biology Organization">
-                        </a>
-                    </div>
+                    <a href="https://www.embo.org/">
+                        <img src="/images/logos/embo.svg" alt="EMBO - European Molecular Biology Organization">
+                    </a>
 
-                    <div>
-                        <a class="d-flex" href="https://www.biologie.hu-berlin.de/en/gruppenseiten-en/sfb1315">
-                            <img class="sfb-image" src="/images/logos/sfb.svg" alt="SFB logo">
+                    <a class="d-flex" href="https://www.biologie.hu-berlin.de/en/gruppenseiten-en/sfb1315">
+                        <img class="sfb-image" src="/images/logos/sfb.svg" alt="SFB logo">
+                    </a>
 
-                            <div class="sfb-description">
-                                <h5 class="text-lg">
-                                    SFB 1315
-                                </h5>
-
-                                <div class="sfb-subtitle">
-                                    Mechanisms and disturbances in Memory <br>
-                                    Consolidation: From synapses to systems
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div>
-                        <a href="https://www.sib.swiss/">
-                            <img src="/images/logos/sib.png" alt="SIB - Swiss Institute of Bioinformatics">
-                        </a>
-                    </div>
+                    <a href="https://www.sib.swiss/">
+                        <img src="/images/logos/sib.png" alt="SIB - Swiss Institute of Bioinformatics">
+                    </a>
                 </b-col>
             </b-row>
         </section>
