@@ -26,7 +26,7 @@ add('writable_dirs', []);
 host('dev')
     ->hostname('')
     ->user('deployer')
-    ->set('branch', 'master')
+    ->set('branch', 'build-frontend-in-ci')
     ->identityFile('~/.ssh/id_rsa.pub')
     ->set('deploy_path', '/var/www/html/sdash.sourcedata.io');
 
@@ -34,17 +34,13 @@ host('dev')
 
 // fetch frontend resources from github
 task('frontend:fetch', function () {
-    run('cd {{release_path}}');
-    run('.github/scripts/gh-dl-release.sh source-data/sdash dev public.tgz');
-    run('rm -rf public/');
-    run('tar -xvf public.tgz');
-    run('rm public.tgz');
+    run('cd {{release_path}} && .github/scripts/gh-dl-release.sh source-data/sdash dev public.tgz && rm -rf public/ && tar -xvf public.tgz && rm public.tgz');
 });
 
 // stack together preparatory tasks
 task('sdash:installations', [
-    'artisan:migrate',
     'frontend:fetch',
+    'artisan:migrate',
 ]);
 
 // [Optional] if deploy fails automatically unlock.
