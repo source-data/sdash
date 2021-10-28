@@ -39,8 +39,32 @@
             </b-row>
         </section>
 
-        <section class="container-fluid">
+        <section id="sd-contact-information" class="container-fluid bg-dark text-light">
+            <b-row>
+                <b-col class="sd-contact-label" cols="4" lg="2">
+                    Contact
+                </b-col>
 
+                <b-col cols="8" lg="3">
+                    SDash and SourceData Coordinator
+
+                    <address class="mt-2">
+                        <div class="sd-contact-name">{{ sdashCoordinator.name }}</div>
+
+                        <a :href="'mailto:' + sdashCoordinator.email">
+                            {{ sdashCoordinator.email }}
+                        </a>
+                    </address>
+                </b-col>
+
+                <b-col class="sd-contact-label ml-lg-auto" cols="4" lg="2">
+                    Developed by
+                </b-col>
+
+                <b-col cols="8" lg="3">
+                    <img src="/images/sourcedata_logo.png" alt="SourceData - Making data discoverable">
+                </b-col>
+            </b-row>
         </section>
     </footer>
 </template>
@@ -51,7 +75,12 @@ import { mapGetters } from "vuex";
 export default {
     name: "PanelGridFooter",
     data() {
-        return {};
+        return {
+            sdashCoordinator: {
+                name: "Hannah Sonntag",
+                email: "hannah.sonntag@embo.org",
+            },
+        };
     },
     computed: {
         ...mapGetters([
@@ -87,5 +116,13 @@ export default {
 }
 #sd-entice-logged-in-user .call-to-action-image img {
     max-width: 25vw;
+}
+
+.sd-contact-label,
+.sd-contact-name {
+    font-weight: bolder;
+}
+#sd-contact-information img {
+    max-width: 20vw;
 }
 </style>
