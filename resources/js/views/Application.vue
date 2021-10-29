@@ -25,9 +25,16 @@
     <!-- vue router mounts components here -->
     <router-view v-if="applicationIsLoaded"></router-view>
 
-    <b-modal id="sd-consent-modal" ref="sd-consent-modal" size="lg">
+    <b-modal
+        id="sd-consent-modal"
+        ref="sd-consent-modal"
+        size="lg"
+        content-class="bg-dark text-light"
+        footer-border-variant="dark"
+        header-border-variant="dark"
+    >
         <template #modal-header>
-            <h5 class="modal-title">Privacy Notification</h5>
+            <h5 class="modal-title text-light">Privacy Notification</h5>
         </template>
         <p>This site is designed to facilitate the submission and sharing of scientific figures.
             It collects Personally Identifiable Information such as the names, e-mail addresses,
