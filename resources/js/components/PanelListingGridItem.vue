@@ -130,6 +130,7 @@ export default {
 
     computed: {
         ...mapGetters([
+            "apiUrls",
             "currentUser",
             "expandedPanelId",
             "hasPanelDetail",
@@ -154,12 +155,7 @@ export default {
             return `${nameFirstAuthor} [...] ${nameLastAuthor}`;
         },
         thumbnailUrl() {
-            return (
-                "/panels/" +
-                this.thisPanel.id +
-                "/image/thumbnail?v=" +
-                this.thisPanel.version
-            );
+            return this.apiUrls.panelThumbnail(this.thisPanel);
         },
         thisPanel() {
             let thisPanel = this.loadedPanels.filter(

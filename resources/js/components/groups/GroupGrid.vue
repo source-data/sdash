@@ -108,7 +108,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["publicGroups"])
+        ...mapGetters(["apiUrls", "publicGroups"])
     },
 
     methods: {
@@ -116,12 +116,7 @@ export default {
         thumbnailUrl(panels) {
             if (panels.length) {
                 const panel = panels[0];
-                return (
-                    "/api/public/panels/" +
-                    panel.id +
-                    "/image/thumbnail?v=" +
-                    panel.version
-                );
+                return this.apiUrls.panelThumbnail(panel);
             } else {
                 return this.defaultThumbnailUrl;
             }

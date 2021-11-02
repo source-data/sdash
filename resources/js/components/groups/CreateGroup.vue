@@ -83,7 +83,7 @@
                 <section v-if="selectedPanels" class="sd-group-panel-list">
                     <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper" :key="panel.id">
                         <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
-                        <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
+                        <img class="sd-group-panel-list-grid-image" v-lazy="thumbnailUrl(panel)">
                     </div>
 
                 </section>
@@ -120,6 +120,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'apiUrls',
             'selectedPanels',
             'loadedPanels',
         ]),
@@ -215,10 +216,10 @@ export default {
             }).catch(err => {
                 this.$snotify.error("Could not save new sharing group", "Sorry!")
             })
-
-        }
-
-
+        },
+        thumbnailUrl(panel) {
+            return this.apiUrls.panelThumbnail(panel);
+        },
     }
 
 }
