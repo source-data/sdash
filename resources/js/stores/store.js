@@ -63,8 +63,8 @@ export default new Vuex.Store({
     toggleLightbox({commit}){
       commit("toggleLightbox")
     },
-    resendEmail({commit}){
-      return Axios.post('emails');
+    resendEmail({commit}, email){
+      return Axios.post('emails', {email});
     },
 
   },

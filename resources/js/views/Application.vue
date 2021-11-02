@@ -8,7 +8,6 @@
     <header>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
-    <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- widget for providing feedback to us -->
@@ -72,7 +71,6 @@
 <script>
 import Axios from "axios"
 import NavigationBar from '@/components/NavigationBar'
-import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 import FeedbackWidget from '@/components/FeedbackWidget';
@@ -80,7 +78,7 @@ import FeedbackWidget from '@/components/FeedbackWidget';
 export default {
 
     name: 'Application',
-    components: {NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
+    components: {NavigationBar, FeedbackWidget, },
     data() {
         return {
             confCheckbox1: false,
@@ -93,11 +91,7 @@ export default {
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
-            'hasVerifiedEmail',
         ]),
-        showEmailConfirmationNotice(){
-            return this.isLoggedIn && !this.hasVerifiedEmail;
-        },
         hasAcceptedTerms() {
             return this.confCheckbox1 && this.confCheckbox2 && this.confCheckbox3;
         },

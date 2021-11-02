@@ -392,7 +392,7 @@ export default {
                 console.log(response);
                 this.$store.commit('setEmailConfirmationNotice', true);
                 this.$snotify.success("Email confirmation sent.", "Account created.");
-                this.$router.push({path: '/'});
+                this.$router.push({name: 'login'});
             }).catch(error => {
                 window.scroll(0,0);
                 this.formDisabled = false;
