@@ -1,6 +1,7 @@
 <template>
   <section id="sd-login-page">
-    <b-container class="mt-5">
+    <EmailConfirmationNotice v-if="showEmailConfirmationNotice" class="mt-5"></EmailConfirmationNotice>
+    <b-container class="mt-5" v-if="!showEmailConfirmationNotice">
         <b-row align-h="center">
             <b-col cols md="6">
                 <b-card header="Log in">
@@ -35,7 +36,7 @@
                             <b-form-input id="login-password" v-model="password"
                             autocomplete="current-password"
                             :state="passwordCheck"                             type="password"
-                            debounce="500" trim>
+                            debounce="300" trim>
                             </b-form-input>
                         </b-form-group>
                         <b-form-group
@@ -73,15 +74,14 @@
 
 import AuthService from '@/services/AuthService';
 import EmailFormatValidator from '@/services/EmailFormatValidator';
+import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice';
 import store from '@/stores/store';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
 
     name: 'LoginForm',
-    components: { },
-    props: [''],
-
+    components: { EmailConfirmationNotice },
     data(){
 
         return {
@@ -96,7 +96,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser']),
+        ...mapGetters(['currentUser', 'showEmailConfirmationNotice']),
         emailCheck(){
             this.emailFeedback = '';
             this.loginFeedback = '';
@@ -113,8 +113,8 @@ export default {
             this.passwordFeedback = '';
             this.loginFeedback = '';
             if(!this.password) return null;
-            if(this.password.length < 6) {
-                this.passwordFeedback = 'Passwords need at least 6 characters';
+            if(this.password.length < 8) {
+                this.passwordFeedback = 'Passwords need at least 8 characters';
                 return false;
             }
             return true;
@@ -131,7 +131,7 @@ export default {
     },
 
     methods:{ //run as event handlers, for example
-
+        ...mapMutations(['setEmailConfirmationNotice']),
         sendLogin() {
             this.loading = true;
             let destination = this.$route.query.next || '/';
@@ -140,6 +140,7 @@ export default {
                 this.$snotify.success(loginData.MESSAGE, "OK!");
                 store.dispatch('fetchCurrentUser')
                     .then(() => {
+                        this.setEmailConfirmationNotice(false);
                         this.$router.push({path:destination}).catch(error => {});
 
                         if (!this.currentUser.has_consented) {
@@ -152,6 +153,9 @@ export default {
                     });
             }).catch((errorData) => { console.log(errorData);
                 this.loading = false;
+                if(errorData.STATUS && errorData.STATUS === '403') {
+                    this.setEmailConfirmationNotice(true);
+                }
 
                 if(errorData.message) {
                     this.$snotify.error(errorData.message, "Login Failed");

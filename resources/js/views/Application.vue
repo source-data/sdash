@@ -3,7 +3,6 @@
     <header>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
-    <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- widget for providing feedback to us -->
@@ -34,17 +33,13 @@ import FeedbackWidget from '@/components/FeedbackWidget';
 export default {
 
     name: 'Application',
-    components: {NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
+    components: {NavigationBar, FeedbackWidget, },
     computed: {
         ...mapGetters([
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
-            'hasVerifiedEmail',
         ]),
-        showEmailConfirmationNotice(){
-            return this.isLoggedIn && !this.hasVerifiedEmail;
-        },
     },
     methods: {
         ...mapActions(['fetchCurrentUser']),
