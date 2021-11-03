@@ -21,7 +21,7 @@
             <panel-authors-edit-form></panel-authors-edit-form>
         </b-sidebar>
 
-        <b-container fluid class="wrapper bg-dark text-light" :class="{ 'anonymous-user': !isLoggedIn }">
+        <b-container fluid class="wrapper" :class="{ 'anonymous-user': !isLoggedIn }">
             <filter-bar
                 class="sidebar"
                 v-bind:class="{ collapsed: !isSidebarExpanded }"
@@ -107,7 +107,7 @@
             </div>
         </b-container>
 
-        <panel-grid-footer></panel-grid-footer>
+        <info-footer></info-footer>
 
         <lightbox
             :visible="isLightboxOpen"
@@ -123,7 +123,7 @@ import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
 import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
-import PanelGridFooter from "@/components/PanelGridFooter";
+import InfoFooter from "@/components/InfoFooter";
 import PanelListingGrid from "./PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
@@ -132,9 +132,9 @@ export default {
     name: "PanelGrid",
     components: {
         FilterBar,
+        InfoFooter,
         PanelActionBar,
         PanelAuthorsEditForm,
-        PanelGridFooter,
         PanelListingGrid,
         Lightbox,
         VueFullScreenFileDrop,

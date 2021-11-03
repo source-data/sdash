@@ -778,7 +778,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 @import '/vendor/toc.css';
 @import '/vendor/prism.css';

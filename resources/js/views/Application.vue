@@ -21,8 +21,11 @@
             style="width: 4rem; height: 4rem;"
         ></b-spinner>
     </div>
+
     <!-- vue router mounts components here -->
-    <router-view v-if="applicationIsLoaded"></router-view>
+    <main class="bg-dark text-light">
+        <router-view v-if="applicationIsLoaded"></router-view>
+    </main>
 
     <b-modal
         id="sd-consent-modal"
