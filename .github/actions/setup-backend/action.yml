@@ -1,5 +1,5 @@
 name: Setup backend
-description: Sets up the SDash backend: database, cache server, dependencies.
+description: Sets up the SDash backend (database, cache server, dependencies).
 
 inputs:
   redis_version:
