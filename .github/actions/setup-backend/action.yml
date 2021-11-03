@@ -2,10 +2,10 @@ name: Setup backend
 description: Sets up the SDash backend (database, cache server, dependencies).
 
 inputs:
-  redis_version:
+  redis-version:
     description: The version of redis that is used.
     required: true
-  php_version:
+  php-version:
     description: The version of PHP the backend runs on.
     required: true
   db_name:
@@ -37,12 +37,12 @@ runs:
     - name: Start Redis
       uses: supercharge/redis-github-action@1.2.0
       with:
-        redis-version: ${{ inputs.redis_version }}
+        redis-version: ${{ inputs.redis-version }}
 
     - name: Set up PHP
       uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
-        php-version: ${{ inputs.php_version }}
+        php-version: ${{ inputs.php-version }}
 
     - name: Install Backend Dependencies
       # This action has caching built in

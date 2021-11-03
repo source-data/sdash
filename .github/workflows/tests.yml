@@ -8,8 +8,6 @@ env:
   DB_PASSWORD: laravel_db_password
   DB_ROOT_USER: root
   DB_ROOT_PASSWORD: root
-  redis-version: 6
-  php-version: 7.4
 
 jobs:
   build-frontend:
@@ -19,13 +17,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
+    - uses: './.github/actions/setup-frontend'
       with:
         node-version: 14
-        cache: 'npm'
-
-    - name: Install Frontend dependencies
-      run: npm install
 
     - name: Build frontend
       run: ENV_FILE=.env.ci npm run production
@@ -47,7 +41,6 @@ jobs:
     runs-on: ubuntu-${{ matrix.ubuntu-version }}
     needs: build-frontend
 
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -55,11 +48,10 @@ jobs:
     - name: Copy .env
       run: cp .env.ci .env
   
-    - name: Set up backend
-      uses: './.github/actions/setup-backend'
+    - uses: './.github/actions/setup-backend'
       with:
-        redis_version: ${{ matrix.redis-version }}
-        php_version: ${{ matrix.php-version }}
+        redis-version: ${{ matrix.redis-version }}
+        php-version: ${{ matrix.php-version }}
         db_name: ${{ env.DB_NAME }}
         db_user: ${{ env.DB_USER }}
         db_password: ${{ env.DB_PASSWORD }}
@@ -80,27 +72,30 @@ jobs:
         ubuntu-version: [18.04]
         redis-version: [6]
         php-version: [7.4]
+        node-version: [14]
 
     runs-on: ubuntu-${{ matrix.ubuntu-version }}
     needs: build-frontend
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - name: Copy .env
       run: cp .env.ci .env
   
-    - name: Set up backend
-      uses: './.github/actions/setup-backend'
+    - uses: './.github/actions/setup-backend'
       with:
-        redis_version: ${{ matrix.redis-version }}
-        php_version: ${{ matrix.php-version }}
+        redis-version: ${{ matrix.redis-version }}
+        php-version: ${{ matrix.php-version }}
         db_name: ${{ env.DB_NAME }}
         db_user: ${{ env.DB_USER }}
         db_password: ${{ env.DB_PASSWORD }}
         db_root_user: ${{ env.DB_ROOT_USER }}
         db_root_password: ${{ env.DB_ROOT_PASSWORD }}
+
+    - uses: './.github/actions/setup-frontend'
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Fetch frontend build artifact
       uses: actions/download-artifact@v2
