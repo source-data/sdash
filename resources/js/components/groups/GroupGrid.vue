@@ -66,11 +66,6 @@
                                 </li>
                             </ul>
                         </b-popover>
-                        <template #footer>
-                            <router-link :to="{ path: '/group/' + group.id }">
-                                <b-button size="sm" variant="outline-secondary">View SmartFigures</b-button>
-                            </router-link>
-                        </template>
                     </b-card>
                 </b-col>
             </b-row>
