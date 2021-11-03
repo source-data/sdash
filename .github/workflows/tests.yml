@@ -10,7 +10,6 @@ env:
   DB_ROOT_PASSWORD: root
   redis-version: 6
   php-version: 7.4
-  node-version: 14
 
 jobs:
   build-frontend:
@@ -22,7 +21,7 @@ jobs:
 
     - uses: actions/setup-node@v2
       with:
-        node-version: ${{ env.node_version }}
+        node-version: 14
         cache: 'npm'
 
     - name: Install Frontend dependencies
@@ -39,8 +38,15 @@ jobs:
         retention-days: 1
 
   test-backend:
-    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ubuntu-version: [18.04]
+        redis-version: [6]
+        php-version: [7.4]
+
+    runs-on: ubuntu-${{ matrix.ubuntu-version }}
     needs: build-frontend
+
 
     steps:
     - name: Checkout
@@ -52,8 +58,8 @@ jobs:
     - name: Set up backend
       uses: './.github/actions/setup-backend'
       with:
-        redis_version: ${{ env.redis-version }}
-        php_version: ${{ env.php-version }}
+        redis_version: ${{ matrix.redis-version }}
+        php_version: ${{ matrix.php-version }}
         db_name: ${{ env.DB_NAME }}
         db_user: ${{ env.DB_USER }}
         db_password: ${{ env.DB_PASSWORD }}
@@ -69,7 +75,13 @@ jobs:
       run: php artisan test
 
   test-frontend:
-    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ubuntu-version: [18.04]
+        redis-version: [6]
+        php-version: [7.4]
+
+    runs-on: ubuntu-${{ matrix.ubuntu-version }}
     needs: build-frontend
 
     steps:
@@ -82,8 +94,8 @@ jobs:
     - name: Set up backend
       uses: './.github/actions/setup-backend'
       with:
-        redis_version: ${{ env.redis-version }}
-        php_version: ${{ env.php-version }}
+        redis_version: ${{ matrix.redis-version }}
+        php_version: ${{ matrix.php-version }}
         db_name: ${{ env.DB_NAME }}
         db_user: ${{ env.DB_USER }}
         db_password: ${{ env.DB_PASSWORD }}
