@@ -8,14 +8,13 @@ env:
   DB_PASSWORD: laravel_db_password
   DB_ROOT_USER: root
   DB_ROOT_PASSWORD: root
-  ubuntu-version: 18.04
   redis-version: 6
   php-version: 7.4
   node-version: 14
 
 jobs:
   build-frontend:
-    runs-on: ubuntu-${{ env.ubuntu-version }}
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Checkout
@@ -40,7 +39,7 @@ jobs:
         retention-days: 1
 
   test-backend:
-    runs-on: ubuntu-${{ env.ubuntu-version }}
+    runs-on: ubuntu-18.04
     needs: build-frontend
 
     steps:
@@ -70,7 +69,7 @@ jobs:
       run: php artisan test
 
   test-frontend:
-    runs-on: ubuntu-${{ env.ubuntu-version }}
+    runs-on: ubuntu-18.04
     needs: build-frontend
 
     steps:
