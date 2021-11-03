@@ -13,31 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-/*
-|--------------------------------------------------------------------------
-| User Resource
-|--------------------------------------------------------------------------
-|
-| Access and modify users or the signed-in user
-|
-*/
-
 // authenticated routes
-Route::middleware(['auth:api', 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
+    Route::get('/users/me', 'API\UserController@me');
     Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
-    Route::get('/users/me', 'API\UserController@me');
     Route::get('/users', 'API\UserController@index');
     Route::patch('/users/{user}/password', 'API\UserController@changePassword');
     Route::get('/users/{user}', 'API\UserController@show');
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::patch('/users/{user}/consent', 'API\UserController@updateConsent');
     Route::delete('/users/{user}', 'API\UserController@destroy');
-    Route::post('/users/me/groups/{group}/applications', 'API\GroupController@apply');
+    Route::patch('/users/me/groups/{group}/apply', 'API\GroupController@apply');
     Route::patch('/users/me/groups/{group}/join/{token}', 'API\GroupController@joinViaApi');
     Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
     Route::patch('/panels/{panel}', 'API\PanelController@update');
@@ -71,8 +59,3 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::put('/panels/{panel}/authors', 'API\PanelAuthorController@update');
     Route::get('/tags', 'API\TagController@index');
 });
-
-// Route::get('/users', 'API\UserController@index'); // TODO - superadmin only!
-
-Route::get('panels/public', 'API\PanelController@listPublicPanels');
-Route::get('files/categories', 'API\FileController@listFileCategories');

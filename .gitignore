@@ -22,3 +22,4 @@ capistrano.log
 /log
 deploy.php
 tests/js/integration/output/*
+*.noupload.*

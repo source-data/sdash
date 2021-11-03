@@ -10,9 +10,9 @@ const state = {
 const actions = {
     /**
      * Fetches all groups known to the user, i.e. all groups they are part of plus all public groups.
-     * 
+     *
      * If one of these group categories has already been fetched it is not fetched again.
-     * 
+     *
      * @param {*} vuex internals
      * @returns a Promise that resolves when all necessary groups have been fetched.
      */
@@ -34,7 +34,7 @@ const actions = {
     },
     /**
      * Fetch and set the current group with the given group ID.
-     * 
+     *
      * @param {*} vuex internals
      * @param {*} group_id The ID of the current group.
      * @returns a Promise that resolves when the current group has been set.
@@ -97,7 +97,7 @@ const actions = {
                 created_at: response.data.DATA.group.created_at,
                 confirmed_users: response.data.DATA.group.confirmed_users,
                 confirmed_users_count: response.data.DATA.group.confirmed_users_count,
-                requested_users_count:  response.data.DATA.group.requested_users_count,
+                requested_users_count: response.data.DATA.group.requested_users_count,
                 pivot: {
                     group_id: response.data.DATA.group.id,
                     role: "admin",
@@ -164,6 +164,15 @@ const actions = {
             }
         );
     },
+    applyToJoin({ commit, state }, payload) {
+        return Axios.patch(
+            "/users/me/groups/" + payload.groupId + "/apply"
+        ).then(response => {
+            commit("addGroupToUserGroups", response.data.DATA.group);
+            commit("setCurrentGroupFromApi", response.data.DATA.group);
+            return response;
+        });
+    },
     acceptGroupMembership({ commit, state }, payload) {
         return Axios.patch(
             "/users/me/groups/" + payload.groupId + "/join/" + payload.token
@@ -186,6 +195,11 @@ const actions = {
 };
 
 const mutations = {
+    clearGroups(state) {
+        state.publicGroups = [];
+       state.userGroups = [];
+        state.currentGroup = null;
+    },
     setPublicGroups(state, groups) {
         state.publicGroups = groups;
     },
@@ -232,8 +246,18 @@ const getters = {
     publicGroups(state) {
         return state.publicGroups;
     },
-    confirmedUserGroups( state ) {
-        return state.userGroups ? state.userGroups.filter( group => group.pivot.status === 'confirmed' ).sort((firstItem, secondItem) => (secondItem.requested_users_count - firstItem.requested_users_count)) : null
+    confirmedUserGroups(state) {
+        if (!state.userGroups) {
+            return null;
+        }
+        return state.userGroups
+            .filter(group => group.pivot.status === "confirmed")
+            .sort((firstItem, secondItem) => {
+                return (
+                    secondItem.requested_users_count -
+                    firstItem.requested_users_count
+                );
+            });
     },
     userGroups(state) {
         return state.userGroups;
@@ -295,6 +319,12 @@ const getters = {
         // We're only allowed to add panels to a group if we're an owner or a member.
         return getters.isGroupOwner || getters.isGroupMember;
     },
+    hasRequestedMembership(state) {
+        if (!state.currentGroup || !state.currentGroup.pivot) {
+            return false;
+        }
+        return state.currentGroup.pivot.status === "requested";
+    }
 };
 
 export default {

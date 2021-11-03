@@ -5,13 +5,11 @@
  * PUBLIC API ROUTES
  * ------------------
  * Routes defined in this file have the base URL
- * of /public-api
+ * of /api/public
  *
- * e.g. sdash.sourcedata.io/public-api/panels/1
+ * e.g. sdash.sourcedata.io/api/public/panels/1
  * would hit Route::get('/panels/1', ...)
  */
-
-use Illuminate\Http\Request;
 
 /**
  * These routes are publicly accessible

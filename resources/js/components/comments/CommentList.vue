@@ -1,10 +1,10 @@
 <template>
-    <section class="sd-comment-list">
+    <div>
         <ul class="sd-comments list-unstyled">
-                <comment v-for="thisComment in comments" :key="thisComment.id" :comment_id="thisComment.id"></comment>
+            <comment v-for="thisComment in comments" :key="thisComment.id" :comment_id="thisComment.id"></comment>
         </ul>
         <post-comment></post-comment>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -40,6 +40,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 </style>

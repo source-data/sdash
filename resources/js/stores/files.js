@@ -11,7 +11,7 @@ const state = {
 
 const actions = {
     fetchFileCategories({commit}, payload) {
-        return Axios.get("files/categories", payload).then(response => {
+        return Axios.get("/public/files/categories", payload).then(response => {
             commit("loadFileCategories", response.data.DATA)
             return response
         })

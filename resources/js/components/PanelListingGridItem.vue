@@ -3,12 +3,10 @@
         :id="itemId"
         class="sd-grid-item"
         :class="{ 'sd-grid-item__expanded': isExpanded }"
+        :style="sdGridItemStyle"
     >
         <div class="sd-grid-image-container">
             <header class="sd-grid-item--image-header">
-                <span class="sd-grid-item--image-label">{{
-                    panelOwnerName
-                }}</span>
                 <button
                     class="panel-select-button"
                     @click="toggleSelected"
@@ -35,53 +33,66 @@
                 tabindex="0"
             >
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
+
+                <footer
+                    class="sd-grid-item--image-footer"
+                    :id="'scroll-anchor-' + panelId"
+                >
+                    <font-awesome-icon
+                        class="sd-grid-item--author-icon"
+                        icon="book"
+                        v-if="IAmAnAuthor"
+                        title="Author"
+                    />
+                    <font-awesome-icon
+                        :class="panelAccessReason"
+                        icon="lock"
+                        v-if="panelAccessReason == 'private'"
+                        title="Private panel"
+                    />
+                    <font-awesome-icon
+                        :class="panelAccessReason"
+                        icon="lock-open"
+                        v-if="panelAccessReason == 'public'"
+                        title="Public panel"
+                    />
+                    <font-awesome-icon
+                        :class="panelAccessReason"
+                        icon="exchange-alt"
+                        v-if="panelAccessReason == 'group'"
+                        title="Shared with group"
+                    />
+                </footer>
             </div>
-            <footer
-                class="sd-grid-item--image-footer"
-                :id="'scroll-anchor-' + panelId"
-            >
-                <font-awesome-icon
-                    class="sd-grid-item--author-icon"
-                    icon="book"
-                    v-if="IAmAnAuthor"
-                    title="Author"
-                />
-                <font-awesome-icon
-                    :class="panelAccessReason"
-                    icon="lock"
-                    v-if="panelAccessReason == 'private'"
-                    title="Private panel"
-                />
-                <font-awesome-icon
-                    :class="panelAccessReason"
-                    icon="lock-open"
-                    v-if="panelAccessReason == 'public'"
-                    title="Public panel"
-                />
-                <font-awesome-icon
-                    :class="panelAccessReason"
-                    icon="exchange-alt"
-                    v-if="panelAccessReason == 'group'"
-                    title="Shared with group"
-                />
-            </footer>
+
+            <div class="sd-grid-item-text">
+                <h6 class="panel-title">
+                    {{ thisPanel.title }}
+                </h6>
+
+                <address class="panel-authors">
+                    {{ panelAuthorsAbbreviated }}
+                </address>
+            </div>
+
             <div class="css_arrow" v-if="isExpanded"></div>
         </div>
 
         <div
             class="sd-grid-extra"
             id="panel-detail"
-            ref="listGridExtra"
             v-if="isExpanded"
+            :style="sdGridExtraStyle"
         >
             <button
                 type="button"
                 aria-label="Close"
-                class="close sd-grid-extra--close"
+                class="close sd-grid-extra--close text-light"
                 @click.prevent="toggleExpanded"
             >
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">&#10005;</span>
             </button>
+
             <b-row v-if="!hasPanelDetail">
                 <b-col class="text-center">
                     <b-spinner
@@ -92,7 +103,8 @@
                     ></b-spinner>
                 </b-col>
             </b-row>
-            <panel-detail v-if="hasPanelDetail"></panel-detail>
+
+            <panel-detail v-if="hasPanelDetail" @resized="updatePanelDetailHeight"></panel-detail>
         </div>
     </li>
 </template>
@@ -111,24 +123,39 @@ export default {
     },
 
     data() {
-        return {};
+        return {
+            panelDetailHeight: false,
+        };
     } /* end of data */,
 
     computed: {
         ...mapGetters([
+            "apiUrls",
+            "currentUser",
             "expandedPanelId",
             "hasPanelDetail",
             "loadedPanels",
-            "currentUser",
-            "selectedPanels"
+            "panelAuthors",
+            "selectedPanels",
         ]),
+        panelAuthorsAbbreviated() {
+            let authors = this.panelAuthors(this.thisPanel);
+            if (authors.length <= 0) {
+                return '';
+            }
+
+            let getAuthorDisplayName = author => `${author.firstname} ${author.surname}`,
+                nameFirstAuthor = getAuthorDisplayName(authors[0]);
+
+            if (authors.length == 1) {
+                return nameFirstAuthor;
+            }
+            let lastAuthor = authors[authors.length - 1],
+                nameLastAuthor = getAuthorDisplayName(lastAuthor);
+            return `${nameFirstAuthor} [...] ${nameLastAuthor}`;
+        },
         thumbnailUrl() {
-            return (
-                "/panels/" +
-                this.thisPanel.id +
-                "/image/thumbnail?v=" +
-                this.thisPanel.version
-            );
+            return this.apiUrls.panelThumbnail(this.thisPanel);
         },
         thisPanel() {
             let thisPanel = this.loadedPanels.filter(
@@ -144,14 +171,6 @@ export default {
         },
         itemId() {
             return "grid-item-" + this.panelId;
-        },
-        panelOwnerName() {
-            const authorList = [...this.thisPanel.authors, ...this.thisPanel.external_authors].sort((a,b) => a.author_role.order - b.author_role.order);
-            const firstAuthor = authorList.find( author => author.author_role.role !== AuthorTypes.CURATOR);
-            if (firstAuthor === undefined) {
-                return this.thisPanel.user.firstname + ' ' + this.thisPanel.user.surname
-            }
-            return firstAuthor.firstname + ' ' + firstAuthor.surname;
         },
         panelAccessReason() {
             let thisPanel = this.thisPanel;
@@ -178,7 +197,18 @@ export default {
         panelSelected() {
             if (this.selectedPanels.length === 0) return false;
             return _.includes(this.selectedPanels, this.panelId);
-        }
+        },
+        sdGridItemStyle() {
+            return this.panelDetailHeight ? {
+                'margin-bottom': (this.panelDetailHeight + 32) + 'px',
+            } : {};
+        },
+        sdGridExtraStyle() {
+            return this.panelDetailHeight ? {
+                'max-height': this.panelDetailHeight + 'px',
+                'height': this.panelDetailHeight + 'px',
+            } : {};
+        },
     },
 
     methods: {
@@ -201,40 +231,49 @@ export default {
             } else {
                 this.$store.dispatch("selectPanel", this.panelId);
             }
-        }
-    }
+        },
+        updatePanelDetailHeight(newHeight) {
+            this.panelDetailHeight = newHeight ? newHeight : false;
+        },
+    },
 };
 </script>
 
-<style lang="scss">
-$sd-extra-height: 800; // info box height in pixels
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
+@import 'resources/sass/_text.scss';
 
-.sd-grid-item {
-    cursor: pointer;
-    flex-grow: 1;
-    box-sizing: border-box;
-    height: 280px;
-    min-width: 240px;
-    max-width: 50%;
-    margin: 8px;
-    transition: all 0.3s ease-in;
-    outline: 1px red;
+.sd-grid-item__expanded .sd-grid-extra {
+    min-height: 25rem;
+}
+.sd-grid-item.sd-grid-item__expanded {
+    margin-bottom: 27rem;
 }
 
-.sd-grid-item.sd-grid-item__expanded {
-    margin-bottom: $sd-extra-height + 32 + px;
+$panel-thumbnail-height: 20rem;
+$panel-title-font-size: $font-size-md;
+$panel-authors-font-size: $font-size-sm;
+$panel-title-max-height: 2.5 * $panel-title-font-size;
+$panel-authors-max-height: 2.5 * $panel-authors-font-size;
+$panel-text-margins: 1.5rem;
+
+.sd-grid-item {
+    box-sizing: border-box;
+    height: $panel-thumbnail-height + $panel-title-max-height + $panel-authors-max-height + $panel-text-margins;
+    margin: 10px 30px;
+    transition: all 0.3s ease-in;
+    outline: 1px red;
 }
 
 .sd-grid-image-container {
     height: 100%;
     position: relative;
-    background: rgb(166, 178, 198);
-    background: linear-gradient(145deg, #a6b2c6 31%, #8caeb5 98%);
-    padding: 12px;
 }
 
+
 .sd-grid-image-container-inner {
-    height: 100%;
+    cursor: pointer;
+    height: $panel-thumbnail-height;
     width: 100%;
     display: flex;
     align-items: center;
@@ -244,17 +283,40 @@ $sd-extra-height: 800; // info box height in pixels
 
 .sd-grid-image {
     display: block;
-    max-height: 100%;
+    height: 100%;
     max-width: 100%;
     width: auto;
 }
 
+.sd-grid-item-text {
+    height: $panel-title-max-height + $panel-authors-max-height;
+    padding-top: 0.5rem;
+    /* Take the element out of the flow to limit its width. */
+    position: absolute;
+    width: 100%;
+}
+.sd-grid-item-text * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sd-grid-item-text .panel-title {
+    font-size: $panel-title-font-size;
+    max-height: $panel-title-max-height;
+}
+.sd-grid-item-text .panel-authors {
+    font-size: $panel-authors-font-size;
+    font-weight: lighter;
+    line-height: 1.2;
+    max-height: $panel-authors-max-height;
+}
+
 .sd-grid-extra {
+    border-radius: 0.75rem;
     cursor: default;
     position: absolute;
     left: 0;
     width: 100%;
-    background-color: #222;
+    background-color: $very-dark-desaturated-blue;
     color: #ddd;
     font-size: 16px;
     margin-top: 6px;
@@ -264,15 +326,12 @@ $sd-extra-height: 800; // info box height in pixels
     transition: all 0.3s ease-in;
     z-index: 5;
 }
-.sd-grid-item__expanded .sd-grid-extra {
-    max-height: $sd-extra-height + px;
-    height: $sd-extra-height + px;
-}
 .sd-grid-extra--close {
     position: absolute;
-    font-size: 2em;
-    top: 4px;
-    right: 8px;
+    font-size: 1.5em;
+    top: 1rem;
+    right: 2vw;
+    opacity: 1;
 }
 .sd-grid-extra--wrapper {
     height: 100%;
@@ -307,7 +366,7 @@ $sd-extra-height: 800; // info box height in pixels
     width: 0px;
     height: 0px;
     border: solid 15px transparent;
-    border-bottom: solid 20px #222;
+    border-bottom: solid 20px $very-dark-desaturated-blue;
     border-top: none;
     position: absolute;
     bottom: -6px;
@@ -353,19 +412,9 @@ $sd-extra-height: 800; // info box height in pixels
     color:#634782;
 }
 
-.sd-grid-item--image-label,
 .panel-select-button {
     position: absolute;
     top: 6px;
-}
-
-.sd-grid-item--image-label {
-    left: 6px;
-    padding: 5px 10px;
-    font: 16px Helvetica, Arial, sans-serif;
-    line-height: 1;
-    color: rgb(176, 205, 219);
-    background-color: rgb(96, 125, 139);
 }
 
 .panel-select-button {
@@ -373,7 +422,7 @@ $sd-extra-height: 800; // info box height in pixels
     padding: 0;
     margin: 0;
     background: none;
-    border: solid 1px grey;
+    border: solid 2px $mostly-white-gray;
     width: 40px;
     height: 40px;
     border-radius: 50%;

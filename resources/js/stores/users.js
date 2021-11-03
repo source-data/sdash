@@ -1,21 +1,25 @@
 import Axios from "axios"
 
+//default user state
+const defaultUserState = {
+    id: null,
+    email: null,
+    firstname: null,
+    surname: null,
+    role: null,
+    insitution_name: null,
+    institution_address: null,
+    department_name: null,
+    linkedin: null,
+    twitter: null,
+    orcid: null,
+    has_consented: null,
+    email_verified_at: null,
+}
+
 //initial state
 const state = {
-    user: {
-        id: null,
-        email: null,
-        firstname: null,
-        surname: null,
-        role: null,
-        insitution_name: null,
-        institution_address: null,
-        department_name: null,
-        linkedin: null,
-        twitter: null,
-        orcid: null,
-        has_consented: null,
-    },
+    user: Object.assign({}, defaultUserState),
 
 }
 
@@ -25,7 +29,6 @@ const actions = {
     fetchCurrentUser({ commit }){
         return Axios.get('/users/me')
         .then((response)=>{
-
             commit('setCurrentUser', response.data.DATA)
             commit('setUserGroups', response.data.DATA.groups)
 
@@ -39,7 +42,7 @@ const actions = {
         })
 
 
-    }
+    },
 
 
 }
@@ -60,8 +63,12 @@ const mutations = {
             twitter: user.twitter,
             orcid: user.orcid,
             has_consented: user.has_consented,
+            email_verified_at: user.email_verified_at,
         };
-    }
+    },
+    expireCurrentUser(state) {
+        state.user = Object.assign({}, defaultUserState);
+    },
 }
 
 const getters = {
@@ -70,7 +77,10 @@ const getters = {
     },
     isLoggedIn(state) {
         return !!state.user.id;
-    }
+    },
+    hasVerifiedEmail(state) {
+        return !! state.user.email_verified_at;
+    },
 };
 
 export default {

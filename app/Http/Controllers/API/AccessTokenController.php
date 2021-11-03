@@ -13,7 +13,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 use App\Services\PanelAccessTokenService as TokenMaker;
-use Laravel\Passport\Bridge\AccessToken;
 
 class AccessTokenController extends Controller
 {

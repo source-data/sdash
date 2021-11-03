@@ -40,7 +40,7 @@ class ExternalAuthorTest extends TestCase
 
     public function testPanelDataContainsExternalAuthorDetails()
     {
-        $response = $this->actingAs($this->user, 'api')->get('api/panels/' . $this->panel->id);
+        $response = $this->actingAs($this->user, 'sanctum')->getJson('api/panels/' . $this->panel->id);
 
         $response->assertStatus(200);
 
@@ -70,7 +70,7 @@ class ExternalAuthorTest extends TestCase
             'order'             => 1
         ];
 
-        $response = $this->actingAs($this->user, 'api')->put('api/panels/' . $this->panel->id . '/authors', ['authors' => [$currentUser, $extraExternalAuthor]]);
+        $response = $this->actingAs($this->user, 'sanctum')->putJson('api/panels/' . $this->panel->id . '/authors', ['authors' => [$currentUser, $extraExternalAuthor]]);
 
         $response->assertStatus(200);
 

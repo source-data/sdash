@@ -10,16 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Auth::routes(['verify' => true]);
 
-// Route::get('/', 'WelcomeController@index');
-// Route::get('/public', 'DashboardController@showPublicDashboard')->name('public.dashboard');
-Route::get('/', 'DashboardController@showPublicDashboard')->name('public.dashboard');
-Route::get('/public/{vue?}', 'DashboardController@showPublicDashboard')->where('vue', '[\/\w\.-]*');
-Route::get('/about', 'WelcomeController@about');
-Route::get('/docs', 'WelcomeController@docs');
-Route::get('/dashboard', 'DashboardController@index')->name('home')->middleware('auth');
-Route::get('/dashboard/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*')->middleware('auth');
+// Auth::routes(['verify' => true]);
+
+// Necessary routes for the registration and email verification process
+Route::get('email/verify/{id}/{hash}', 'API\Authentication\EmailVerificationController@verify')->name('verification.verify');
+
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
 // Special single panel route
@@ -39,3 +35,9 @@ Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
     Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');
 });
+
+/**
+ * Mount Vue JS app on base route
+ */
+Route::get('/', 'DashboardController@index')->name('home');
+Route::get('/{vue?}', 'DashboardController@index')->where('vue', '[\/\w\.-]*');

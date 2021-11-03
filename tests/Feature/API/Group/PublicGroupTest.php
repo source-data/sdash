@@ -39,7 +39,7 @@ class PublicGroupTest extends TestCase
 
   public function testAnUnauthenticatedUserCanOnlySeePublicGroups()
   {
-    $response = $this->get('/public-api/groups');
+    $response = $this->getJson('/api/public/groups');
 
     // response will be successful
     $response->assertStatus(200);
@@ -53,7 +53,7 @@ class PublicGroupTest extends TestCase
 
   public function testAnUnauthenticatedUserCanOnlySeePublicPanelInPublicGroups()
   {
-    $response = $this->get('/public-api/groups');
+    $response = $this->getJson('/api/public/groups');
 
     // there will only be one panel in the returned data
     $response->assertJsonCount(1, 'DATA.0.public_panels');
@@ -66,7 +66,7 @@ class PublicGroupTest extends TestCase
     $this->publicPanel->save();
 
     // make the request again
-    $response = $this->get('/public-api/groups');
+    $response = $this->getJson('/api/public/groups');
 
     // there will show no panels in the returned data
     $response->assertJsonCount(0, 'DATA.0.public_panels');
@@ -74,7 +74,7 @@ class PublicGroupTest extends TestCase
 
   public function testAnUnauthenticatedUserCanRequestTheDetailsOfPublicGroupsPanelsByGroupId()
   {
-    $response = $this->get("/public-api/groups/{$this->publicGroup->id}/panels");
+    $response = $this->getJson("/api/public/groups/{$this->publicGroup->id}/panels");
 
     // response succeeds
     $response->assertStatus(200);

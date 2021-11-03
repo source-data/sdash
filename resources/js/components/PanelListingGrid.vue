@@ -67,13 +67,7 @@ export default {
         ...mapGetters([
             'loadedPanels',
             'hasLoadedAllResults',
-            'isLoadingPanels',
-            'isInfiniteScrollPaused',
         ]),
-        imageThumbnailUrl(id){
-            return "/panels/" + id + "/image/thumbnail"
-        }
-
     }
 
 }
@@ -81,9 +75,7 @@ export default {
 
 <style scoped lang="scss">
     .sd-panel-grid-container {
-        width:100%;
-        padding: 10px 40px;
-        background-color: #d6dfee;
+        width: 100%;
     }
 
     .sd-panel-grid-container--inner {

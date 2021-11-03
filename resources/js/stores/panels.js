@@ -50,13 +50,10 @@ defaultState.expandedPanelDetail = Object.assign({}, defaultExpandedPanelState);
 const state = Object.assign({}, defaultState);
 
 const actions = {
-    fetchPanelList({ commit, state, rootState }) {
+    fetchPanelList({ commit, state, rootGetters }) {
         let params = { params: {} };
 
-        let searchUrl =
-            rootState.searchMode === "group"
-                ? "/groups/" + rootState.Groups.currentGroup.id + "/panels"
-                : "/users/me/panels";
+        let searchUrl = rootGetters.apiUrls.panels;
 
         //pagination
         params.params.paginate = state.paginate;
@@ -84,8 +81,9 @@ const actions = {
     setLoadingState({ commit }, payload) {
         commit("setPanelLoadingState", payload);
     },
-    loadPanelDetail({ commit, state }, panelId) {
-        return Axios.get("/panels/" + panelId).then(response => {
+    loadPanelDetail({ commit, rootGetters }, panelId) {
+        let urlPanelDetails = rootGetters.apiUrls.panelDetail(panelId);
+        return Axios.get(urlPanelDetails).then(response => {
             commit("storeExpandedPanelDetail", response.data.DATA[0]);
             commit("storeComments", response.data.DATA[0].comments);
             commit("storeFiles", response.data.DATA[0].files);
@@ -244,6 +242,9 @@ const actions = {
 };
 
 const mutations = {
+    clearPanels(state) {
+        state = Object.assign(state, defaultState);
+    },
     setPanelLoadingState(state, value) {
         state.loading = value;
     },
@@ -452,17 +453,19 @@ const getters = {
     expandedPanel(state) {
         return state.expandedPanelDetail;
     },
-    expandedPanelAuthors(state) {
-
+    expandedPanelAuthors(state, getters) {
+        return getters.panelAuthors(state.expandedPanelDetail);
+    },
+    panelAuthors: (state) => (panel) => {
         if (
-            !state.expandedPanelDetail.authors
+            !panel.authors
             &&
-            !state.expandedPanelDetail.external_authors
+            !panel.external_authors
             ) {
                 return []
             };
 
-        const userAuthors = state.expandedPanelDetail.authors.reduce(
+        const userAuthors = panel.authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,
@@ -483,7 +486,7 @@ const getters = {
                   },
                   []
               );
-        const externalAuthors = state.expandedPanelDetail.external_authors.reduce(
+        const externalAuthors = panel.external_authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,
