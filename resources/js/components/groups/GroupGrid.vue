@@ -1,5 +1,9 @@
 <template>
     <div>
+        <header>
+            <h2 class="text-primary">Groups</h2>
+        </header>
+
         <b-container class="sd-group-grid-container" fluid>
             <b-row class="sd-group-grid" cols="1" cols-sm="2" cols-md="3" cols-lg="4">
                 <b-col class="sd-group-grid-item" v-for="group in publicGroups" :key="group.id">
@@ -142,16 +146,21 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+header {
+    padding-bottom: 2rem;
+    padding-left: 4rem;
+    padding-right: 2rem;
+    padding-top: 6rem;
+}
 
 .sd-group-grid-container {
-    padding: 0;
-    overflow: hidden;
+    padding-left: 4rem;
+    padding-right: 2rem;
 }
 
 .sd-group-grid {
     width: 100%;
-    margin: 0;
 
     .card-title,
     .card-details {
@@ -219,10 +228,4 @@ export default {
         opacity: 0.8;
     }
 }
-
-.sd-group-grid,
-.sd-group-grid-item {
-    padding: 10px;
-}
-
 </style>
