@@ -47,7 +47,7 @@ export default new Vuex.Store({
       let panelThumbnail = panel => `/api/public/panels/${panel.id}/image/thumbnail?v=${panel.version}`;
       if (getters.isLoggedIn) {
         panelDetail = id => `/panels/${id}`;
-        panels = getters.searchMode == 'group' ? `/groups/${state.Groups.currentGroup.id}/panels` : "/users/me/panels";
+        panels = () => getters.searchMode == 'group' ? `/groups/${state.Groups.currentGroup.id}/panels` : "/users/me/panels";
       } else {
         panelDetail = id => `/public/panels/${id}`;
         panels = "/public/panels";
