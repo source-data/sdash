@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-md bg-light">
         <router-link class="navbar-brand" :to="{ name: 'dashboard'}">
-            <img src="/images/SDash-Logo.svg" alt="SDash Logo" loading="lazy">
+            <img src="/images/logos/sdash.svg" alt="SDash" loading="lazy">
         </router-link>
 
         <button
@@ -135,6 +135,8 @@ export default {
         ...mapMutations(['expireCurrentUser', 'clearPanels', 'clearGroups']),
         logOut() {
             AuthService.logout().then(response => {
+                this.clearGroups();
+                this.clearPanels();
                 this.expireCurrentUser();
                 if(this.$route.path !== '/') this.$router.push('/');
             }).catch(error=>{

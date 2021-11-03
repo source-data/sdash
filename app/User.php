@@ -64,7 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function authoredPanels()
     {
-        return $this->belongsToMany('App\Models\Panel')->withPivot('role')->as('role');;
+        return $this->belongsToMany('App\Models\Panel')->withPivot('role')->as('role');
     }
 
     public function groups()

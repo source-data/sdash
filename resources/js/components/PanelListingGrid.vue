@@ -67,13 +67,7 @@ export default {
         ...mapGetters([
             'loadedPanels',
             'hasLoadedAllResults',
-            'isLoadingPanels',
-            'isInfiniteScrollPaused',
         ]),
-        imageThumbnailUrl(id){
-            return "/panels/" + id + "/image/thumbnail"
-        }
-
     }
 
 }

@@ -8,7 +8,6 @@
     <header>
         <navigation-bar :user="currentUser"></navigation-bar>
     </header>
-    <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
     <!-- widget for providing feedback to us -->
@@ -22,12 +21,22 @@
             style="width: 4rem; height: 4rem;"
         ></b-spinner>
     </div>
-    <!-- vue router mounts components here -->
-    <router-view v-if="applicationIsLoaded"></router-view>
 
-    <b-modal id="sd-consent-modal" ref="sd-consent-modal" size="lg">
+    <!-- vue router mounts components here -->
+    <main class="bg-dark text-light">
+        <router-view v-if="applicationIsLoaded"></router-view>
+    </main>
+
+    <b-modal
+        id="sd-consent-modal"
+        ref="sd-consent-modal"
+        size="lg"
+        content-class="bg-dark text-light"
+        footer-border-variant="dark"
+        header-border-variant="dark"
+    >
         <template #modal-header>
-            <h5 class="modal-title">Privacy Notification</h5>
+            <h5 class="modal-title text-light">Privacy Notification</h5>
         </template>
         <p>This site is designed to facilitate the submission and sharing of scientific figures.
             It collects Personally Identifiable Information such as the names, e-mail addresses,
@@ -65,7 +74,6 @@
 <script>
 import Axios from "axios"
 import NavigationBar from '@/components/NavigationBar'
-import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 import FeedbackWidget from '@/components/FeedbackWidget';
@@ -73,7 +81,7 @@ import FeedbackWidget from '@/components/FeedbackWidget';
 export default {
 
     name: 'Application',
-    components: {NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
+    components: {NavigationBar, FeedbackWidget, },
     data() {
         return {
             confCheckbox1: false,
@@ -86,11 +94,7 @@ export default {
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
-            'hasVerifiedEmail',
         ]),
-        showEmailConfirmationNotice(){
-            return this.isLoggedIn && !this.hasVerifiedEmail;
-        },
         hasAcceptedTerms() {
             return this.confCheckbox1 && this.confCheckbox2 && this.confCheckbox3;
         },

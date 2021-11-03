@@ -44,6 +44,7 @@ export default new Vuex.Store({
     },
     apiUrls(state, getters) {
       var panels, panelDetail;
+      let panelThumbnail = panel => `/api/public/panels/${panel.id}/image/thumbnail?v=${panel.version}`;
       if (getters.isLoggedIn) {
         panelDetail = id => `/panels/${id}`;
         panels = getters.searchMode == 'group' ? `/groups/${state.Groups.currentGroup.id}/panels` : "/users/me/panels";
@@ -54,6 +55,7 @@ export default new Vuex.Store({
       return {
         panels: panels,
         panelDetail: panelDetail,
+        panelThumbnail: panelThumbnail,
       }
     },
    },
@@ -61,8 +63,8 @@ export default new Vuex.Store({
     toggleLightbox({commit}){
       commit("toggleLightbox")
     },
-    resendEmail({commit}){
-      return Axios.post('emails');
+    resendEmail({commit}, email){
+      return Axios.post('emails', {email});
     },
 
   },

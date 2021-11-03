@@ -58,12 +58,11 @@ class UserEmailVerificationTest extends TestCase
      * @test
      * @return void
      */
-    public function fetching_an_unverified_user_tells_us_they_have_an_unverified_email_address()
+    public function a_user_with_an_unverified_email_address_cannot_fetch_their_profile_data()
     {
         $response = $this->actingAs($this->unverifiedUser, 'sanctum')->getJson('/api/users/me');
 
-        $response->assertStatus(200);
-        $this->assertEquals($response['DATA']['email_verified_at'], $this->unverifiedUser->email_verified_at);
+        $response->assertStatus(403);
     }
 
     /**
@@ -77,8 +76,6 @@ class UserEmailVerificationTest extends TestCase
 
         $tempUser = User::where('email', $this->tempUserData['email'])->first();
         $response = $this->actingAs($tempUser, 'sanctum')->getJson('/api/users/me');
-        $response->assertStatus(200);
-        $this->assertEquals($this->tempUserData['email'], $response['DATA']['email']);
-        $this->assertEquals('', $response['DATA']['email_verified_at']);
+        $response->assertStatus(403);
     }
 }

@@ -26,11 +26,11 @@ class UserPanelTest extends TestCase
     }
 
     /**
-     * A user can be set as the author of a panel
+     * @test
      *
      * @return void
      */
-    public function testAUserCanBeSetAsAPanelCorrespondingAuthor()
+    public function a_user_can_be_set_as_a_panel_corresponding_author()
     {
         $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 0]);
 
@@ -41,8 +41,12 @@ class UserPanelTest extends TestCase
         $this->assertEquals($authoredPanel->role->role, User::PANEL_ROLE_CORRESPONDING_AUTHOR);
     }
 
-
-    public function testAUserWhoIsCorrespondingAuthorOfAPanelCanAccessThePanelDetails()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_user_who_is_a_corresponding_author_can_view_the_panel_details()
     {
         $this->panel->authors()->attach($this->author->id, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 0]);
 
@@ -53,7 +57,12 @@ class UserPanelTest extends TestCase
         $response->assertJson(["DATA" => [0 => ["id" => $this->panel->id]]]);
     }
 
-    public function testAUserCannotAccessPanelDetailsOfAnotherUsersPanelIfTheyAreNotAnAuthor()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_user_cannot_view_the_details_of_a_panel_where_they_are_not_an_author()
     {
         $response = $this->actingAs($this->author, 'sanctum')->getJson('api/panels/' . $this->panel->id);
         $response->assertStatus(401); //access denied
