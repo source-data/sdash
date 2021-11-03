@@ -88,6 +88,40 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
+.sd-sidebar-logo--image {
+    max-width: 260px;
+    background-color: #193f80;
+    padding: 5px 10px;
+}
+
+.sd-sidebar--sfb-logo {
+    height: 100px;
+    width: auto;
+    padding-right: 0.5rem;
+}
+
+.sd-sidebar--sfb-text {
+    padding-left: 0.5rem;
+}
+
+.sd-sidebar--sfb-link {
+    display:flex;
+}
+
+.sd-sidebar--sib-logo {
+    max-width: 240px;
+}
+
+.sd-sidebar--substance-logo {
+    max-width: 240px;
+}
+
+.sdash-about--infographic {
+    display:block;
+    box-sizing: border-box;
+    max-width:75%;
+    margin: 3rem auto;
+}
 </style>
