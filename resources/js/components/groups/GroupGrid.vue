@@ -71,16 +71,20 @@
                 </b-col>
             </b-row>
         </b-container>
+
+        <info-footer></info-footer>
     </div>
 </template>
 
 <script>
-import store from "@/stores/store";
 import { mapGetters, mapActions } from "vuex";
+import InfoFooter from "@/components/InfoFooter";
 
 export default {
     name: "GroupGrid",
-    components: {},
+    components: {
+        InfoFooter,
+    },
     props: [],
 
     data() {
