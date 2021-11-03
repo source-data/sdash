@@ -31,11 +31,7 @@
 </head>
 
 <body>
-    <div id="app">
-        <main>
-            @yield('content')
-        </main>
-    </div>
+    @yield('content')
 </body>
 
 </html>

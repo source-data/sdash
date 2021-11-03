@@ -21,7 +21,7 @@
             <panel-authors-edit-form></panel-authors-edit-form>
         </b-sidebar>
 
-        <b-container fluid class="wrapper bg-dark text-light" :class="{ 'anonymous-user': !isLoggedIn }">
+        <b-container fluid class="wrapper" :class="{ 'anonymous-user': !isLoggedIn }">
             <filter-bar
                 class="sidebar"
                 v-bind:class="{ collapsed: !isSidebarExpanded }"
