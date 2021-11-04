@@ -86,11 +86,11 @@
 
             <div v-if="isGuest" class="navbar-nav secondary-nav register-nav">
                 <div class="nav-item">
-                    <a class="nav-link" href="/register">
+                    <router-link class="nav-link" :to="{name: 'register'}">
                         Register
                         <br>
                         <span class="register-secondary-text invisible">to contribute</span>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
