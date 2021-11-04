@@ -50,7 +50,7 @@ export default new Vuex.Store({
         panels = () => getters.searchMode == 'group' ? `/groups/${state.Groups.currentGroup.id}/panels` : "/users/me/panels";
       } else {
         panelDetail = id => `/public/panels/${id}`;
-        panels = "/public/panels";
+        panels = () => "/public/panels";
       }
       return {
         panels: panels,
