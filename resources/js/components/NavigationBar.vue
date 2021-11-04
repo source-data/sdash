@@ -70,7 +70,7 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
-                        <router-link class="dropdown-item" :to="{path: 'user/' + user.id}">
+                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_id: user.id }}">
                             Profile
                         </router-link>
 
