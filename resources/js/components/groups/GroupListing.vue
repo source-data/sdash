@@ -238,6 +238,12 @@
         </div>
 
         <info-footer></info-footer>
+
+        <lightbox
+            :visible="isLightboxOpen"
+            :imgs="'/panels/' + expandedPanel.id + '/image'"
+            @hide="toggleLightbox"
+        ></lightbox>
     </div>
 </template>
 
@@ -250,6 +256,7 @@ import InfoFooter from '@/components/InfoFooter'
 import GroupTitleIcon from '../helpers/GroupTitleIcon'
 import GroupMemberRequestIcon from '../helpers/GroupMemberRequestIcon'
 import GroupUserIcon from '../helpers/GroupUserIcon'
+import Lightbox from 'vue-easy-lightbox';
 
 export default {
     name: "GroupListing",
@@ -260,6 +267,7 @@ export default {
         GroupTitleIcon,
         GroupUserIcon,
         GroupMemberRequestIcon,
+        Lightbox,
     },
     props: ["group_id"],
 
@@ -280,6 +288,8 @@ export default {
             "isGroupOwner",
             "isGroupMember",
             "hasRequestedMembership",
+            "isLightboxOpen",
+            "expandedPanel",
             ]),
         shouldShowMembershipRequest(){
             return (this.currentGroup && this.isGroupAdmin && this.currentGroup.requested_users_count)
@@ -307,7 +317,8 @@ export default {
         ...mapActions([
             "removeUserFromGroup",
             "deleteUserGroup",
-            "fetchCurrentGroup",    
+            "fetchCurrentGroup",
+            'toggleLightbox',
         ]),
         fetchPanels() {
             store
