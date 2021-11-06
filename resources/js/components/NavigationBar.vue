@@ -70,7 +70,7 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
-                        <router-link class="dropdown-item" :to="{path: 'user/' + user.id}">
+                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_id: user.id }}">
                             Profile
                         </router-link>
 
@@ -86,11 +86,11 @@
 
             <div v-if="isGuest" class="navbar-nav secondary-nav register-nav">
                 <div class="nav-item">
-                    <a class="nav-link" href="/register">
+                    <router-link class="nav-link" :to="{name: 'register'}">
                         Register
                         <br>
                         <span class="register-secondary-text invisible">to contribute</span>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -151,19 +151,19 @@ export default {
 <style lang="scss" scoped>
 @use "sass:math";
 @import 'resources/sass/_colors.scss';
-
-$navbar-content-height: 3rem;
-$navbar-padding-bottom: 2rem;
-$navbar-padding-left: 4vw;
-$navbar-padding-right: 2vw;
-$navbar-padding-top: 2rem;
+@import 'resources/sass/_layout.scss';
 
 /* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
  * background to encompass the whole navbar.
  */
 .navbar {
+    margin: 0;
     padding: 0;
+    position: fixed;
+    width: 100vw;
+    z-index: $navbar-z-index;
 }
+
 .nav-item,
 .navbar-brand {
     padding-top: $navbar-padding-bottom;

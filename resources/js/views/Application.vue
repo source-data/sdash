@@ -4,14 +4,15 @@
   every time the user changes. This resets, for example, all the panels that are being shown. See this question
   for details on using :key like this: https://stackoverflow.com/a/54367510/3385618
  -->
-<div id="sdash-wrapper" :key="currentUser.id">
-    <header>
-        <navigation-bar :user="currentUser"></navigation-bar>
-    </header>
+<div :key="currentUser.id">
+    <navigation-bar :user="currentUser"></navigation-bar>
+
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
+
     <!-- widget for providing feedback to us -->
     <feedback-widget v-if="isLoggedIn"></feedback-widget>
+
     <!-- loading placeholder while checking for login -->
     <div v-if="!applicationIsLoaded" class="text-center">
         <b-spinner
@@ -23,7 +24,7 @@
     </div>
 
     <!-- vue router mounts components here -->
-    <main class="bg-dark text-light">
+    <main id="sd-content" class="bg-dark text-light">
         <router-view v-if="applicationIsLoaded"></router-view>
     </main>
 
@@ -133,6 +134,11 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'resources/sass/_layout.scss';
+#sd-content {
+    padding-top: $navbar-height;
+}
+
 .sd-view-title {
     margin: 0;
     padding-bottom: 2rem;

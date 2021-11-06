@@ -1,0 +1,11 @@
+// Navbar settings
+$navbar-content-height: 3rem;
+$navbar-padding-bottom: 2rem;
+$navbar-padding-left: 4vw;
+$navbar-padding-right: 2vw;
+$navbar-padding-top: 2rem;
+
+$navbar-height: $navbar-padding-top + $navbar-content-height + $navbar-padding-bottom;
+$navbar-z-index: 2000;
+
+$left-sidebar-toggle-width: 1.75rem;
