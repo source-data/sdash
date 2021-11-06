@@ -151,12 +151,7 @@ export default {
 <style lang="scss" scoped>
 @use "sass:math";
 @import 'resources/sass/_colors.scss';
-
-$navbar-content-height: 3rem;
-$navbar-padding-bottom: 2rem;
-$navbar-padding-left: 4vw;
-$navbar-padding-right: 2vw;
-$navbar-padding-top: 2rem;
+@import 'resources/sass/_layout.scss';
 
 /* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
  * background to encompass the whole navbar.
@@ -166,7 +161,9 @@ $navbar-padding-top: 2rem;
     padding: 0;
     position: fixed;
     width: 100vw;
+    z-index: $navbar-z-index;
 }
+
 .nav-item,
 .navbar-brand {
     padding-top: $navbar-padding-bottom;
