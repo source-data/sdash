@@ -1,5 +1,7 @@
 <template>
     <div v-if="currentGroup">
+        <filter-bar></filter-bar>
+
         <header class="sd-view-title">
             <h2 class="text-primary">
                 {{ currentGroup.name }}
