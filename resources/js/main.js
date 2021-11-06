@@ -10,7 +10,7 @@ import {
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy, faDownload,
     faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages, faInfoCircle,
     faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave, faSearch, faSearchPlus,
-    faSignOutAlt, faSitemap, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserPlus, faUsers,
+    faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserPlus, faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import { faCreativeCommons, faOrcid } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
@@ -52,8 +52,8 @@ library.add([
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy,
     faCreativeCommons, faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome,
     faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave,
-    faSearch, faSearchPlus, faSignOutAlt, faSitemap, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserPlus,
-    faUsers,
+    faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser,
+    faUserPlus, faUsers,
 ])
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('font-awesome-layers', FontAwesomeLayers)
