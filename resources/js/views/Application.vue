@@ -143,13 +143,13 @@ export default {
     margin: 0;
     padding-bottom: 2rem;
     padding-left: 4rem;
-    padding-right: 2rem;
+    padding-right: 3rem;
     padding-top: 2rem;
 }
 .sd-view-content {
     margin: 0;
     padding-left: 4rem;
-    padding-right: 2rem;
+    padding-right: 3rem;
     padding-bottom: 2rem;
 }
 </style>

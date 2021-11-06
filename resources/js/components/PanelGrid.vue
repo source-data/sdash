@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{ 'anonymous-user': !isLoggedIn }">
         <vue-full-screen-file-drop
             @drop='uploadPanel'
             formFieldName="file"
@@ -23,57 +23,55 @@
 
         <filter-bar></filter-bar>
 
-        <b-container fluid class="wrapper" :class="{ 'anonymous-user': !isLoggedIn }">
-            <div id="content" class="content">
-                <header id="sd-panel-grid-header">
-                    <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
+        <header class="sd-view-title">
+            <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
 
-                    <section v-else id="sd-featured-jumbotron">
-                        <h1 class="text-xxl text-primary">
-                            Share scientific results with your collaborators.
-                        </h1>
+            <section v-else id="sd-featured-jumbotron">
+                <h1 class="text-xxl text-primary">
+                    Share scientific results with your collaborators.
+                </h1>
 
-                        <div class="text-lg">
-                            Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
-                            Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
-                            Comment and discuss initiating an early scientific dissemination of results. 
-                        </div>
-                    </section>
-
-                    <h2 class="text-primary">
-                        <span v-if="isLoggedIn">My Dashboard</span>
-                        <span v-else>SmartFigures</span>
-                    </h2>
-                
-                    <aside class="align-text-bottom text-right">
-                        {{ numLoadedPanels }} SmartFigures
-                    </aside>
-                </header>
-
-                <div v-if="isLoadingPanels" class="text-center">
-                    <b-spinner
-                        variant="primary"
-                        label="Spinning"
-                        class="m-5 text-center"
-                        style="width: 4rem; height: 4rem;"
-                    ></b-spinner>
+                <div class="text-lg">
+                    Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
+                    Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
+                    Comment and discuss initiating an early scientific dissemination of results. 
                 </div>
+            </section>
 
-                <panel-listing-grid
-                    v-if="hasPanels"
-                    list_root="user"
-                ></panel-listing-grid>
+            <h2 class="text-primary">
+                <span v-if="isLoggedIn">My Dashboard</span>
+                <span v-else>SmartFigures</span>
+            </h2>
+        
+            <aside class="align-text-bottom text-right">
+                {{ numLoadedPanels }} SmartFigures
+            </aside>
+        </header>
 
-                <b-alert
-                    v-if="!hasPanels && !isLoadingPanels"
-                    show
-                    variant="danger"
-                    class="no-panel-alert"
-                >
-                    No Panels Found
-                </b-alert>
+        <div class="sd-view-content">
+            <div v-if="isLoadingPanels" class="text-center">
+                <b-spinner
+                    variant="primary"
+                    label="Spinning"
+                    class="m-5 text-center"
+                    style="width: 4rem; height: 4rem;"
+                ></b-spinner>
             </div>
-        </b-container>
+
+            <panel-listing-grid
+                v-if="hasPanels"
+                list_root="user"
+            ></panel-listing-grid>
+
+            <b-alert
+                v-if="!hasPanels && !isLoadingPanels"
+                show
+                variant="danger"
+                class="no-panel-alert"
+            >
+                No Panels Found
+            </b-alert>
+        </div>
 
         <info-footer></info-footer>
 
@@ -200,27 +198,10 @@ export default {
     margin: 0 auto;
 }
 
-.wrapper {
-    display: flex;
-    height: 100%;
-    padding: 2rem;
-}
 .wrapper.anonymous-user {
     background-image: url("/images/landing-page-bg.jpg");
     background-repeat: no-repeat;
     background-size: contain;
-}
-
-.content {
-    min-height: 100%;
-    flex: auto;
-    position: relative;
-    transition: all 0.25s ease-in;
-    width: 100%;
-}
-
-#sd-panel-grid-header {
-    margin: 0 30px;
 }
 
 #sd-featured-jumbotron {
