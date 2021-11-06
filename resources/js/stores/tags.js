@@ -42,8 +42,9 @@ const actions = {
             return response
         })
     },
-    findTagsByName({ commit }, searchString){
-        return Axios.get('/tags', { params: { name: searchString } }).then(response => {
+    findTagsByName({ rootGetters }, searchString){
+        let tagSearchUrl = rootGetters.apiUrls.tagSearch();
+        return Axios.get(tagSearchUrl, { params: { name: searchString } }).then(response => {
             return response
         })
     },
