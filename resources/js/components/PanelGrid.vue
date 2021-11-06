@@ -200,15 +200,10 @@ export default {
     margin: 0 auto;
 }
 
-.sd-filter-wrapper {
-    flex: 0 0 300px;
-    max-width: 300px;
-}
-
 .wrapper {
     display: flex;
     height: 100%;
-    padding-top: 2rem;
+    padding: 2rem;
 }
 .wrapper.anonymous-user {
     background-image: url("/images/landing-page-bg.jpg");

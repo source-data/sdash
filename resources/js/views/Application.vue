@@ -133,6 +133,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_layout.scss';
 
+main {
+    padding-top: $navbar-height;
+}
 </style>

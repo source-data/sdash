@@ -367,7 +367,7 @@ $sidebar-z-index: $navbar-z-index - 2;
 #sd-panel-filters::v-deep .b-sidebar-outer,
 #sd-panel-filters::v-deep .b-sidebar {
     // Add the top padding to make sure any sidebar content is not hidden by the navbar.
-    padding-top: $navbar-total-height;
+    padding-top: $navbar-height;
     // Position the sidebar above all content except for the navbar.
     z-index: $sidebar-z-index;
 }
@@ -379,12 +379,12 @@ $sidebar-z-index: $navbar-z-index - 2;
     cursor: pointer;
     height: 100vh;
     position: fixed;
-    width: 2rem;
+    width: $left-sidebar-toggle-width;
     z-index: $sidebar-z-index + 1;
 
     .toggle-icon {
         border-radius: 50%;
-        padding: 1.25rem;
+        padding: 1rem;
         position: absolute;
         top: 35vh;
     }
