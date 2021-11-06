@@ -354,6 +354,9 @@ export default {
         isSidebarExpanded(newStatus) {
             localStorage.setItem("isSidebarExpanded", newStatus);
         }
+    },
+    destroyed() {
+        this.resetFilters();
     }
 };
 </script>
