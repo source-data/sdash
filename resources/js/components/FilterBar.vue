@@ -20,28 +20,33 @@
             text-variant="dark"
             v-model="isSidebarExpanded"
         >
-            <b-button size="sm" variant="outline-secondary" class='pull-right' @click="resetFilters()" v-if="hasActiveFilters">Reset</b-button>
+            <section v-if="isLoggedIn" id="sd-panel-owner">
+                <div class="filter-group">
+                    <b-form-radio-group
+                        stacked
+                        name="toggle-panel-list-privacy"
+                        v-model="privacyLevel"
+                    >
+                        <b-form-radio value="all">Show all panels</b-form-radio>
+                        <b-form-radio value="private">Show my own panels</b-form-radio>
+                    </b-form-radio-group>
+                </div>
+            </section>
 
-            <section class="pb-2">
-                <div class="sd-filters-wrapper">
-                    <div class="pb-2">
-                        <b-form-radio-group
-                            stacked
-                            name="toggle-panel-list-privacy"
-                            v-model="privacyLevel"
-                        >
-                            <b-form-radio value="all">Show all panels</b-form-radio>
-                            <b-form-radio value="private">Show my own panels</b-form-radio>
-                        </b-form-radio-group>
-                    </div>
+            <section id="sd-panel-filters">
+                <h4>Search by</h4>
 
-                    <h5 class="pb-0">
+
+                <div class="filter-group">
+                    <h5>
                         Authors
                         <span v-b-tooltip.hover.top title="Lists only registered users">
                             <font-awesome-icon icon="info-circle" size="sm" />
                         </span>
                     </h5>
+
                     <author-multiselect class="filter-author-selector" @select="addAuthor"></author-multiselect>
+
                     <b-list-group class="filter-author-list" v-if="filterAuthorList.length > 0">
                         <b-list-group-item v-for="a in filterAuthorList" :key="a.id" class="filter-author-list-item">
                             {{a.firstname}} {{a.surname}}
@@ -50,9 +55,15 @@
                             </button>
                         </b-list-group-item>
                     </b-list-group>
+                </div>
 
-                    <h5 class="pt-2 pb-0">Keywords</h5>
+                <div class="filter-group">
+                    <h5>
+                        Keywords
+                    </h5>
+
                     <keyword-multiselect class="filter-keyword-selector" @select="addKeyword"></keyword-multiselect>
+
                     <b-list-group class="filter-keyword-list" v-if="filterKeywordList.length > 0">
                         <b-list-group-item v-for="k in filterKeywordList" :key="k.id" class="filter-keyword-list-item">
                             {{k.name}}
@@ -61,8 +72,17 @@
                             </button>
                         </b-list-group-item>
                     </b-list-group>
+                </div>
 
-                    <h5 class="pt-2 pb-0">Sort by</h5>
+                <b-button variant="outline-secondary" class='pull-right' @click="resetFilters()" v-if="hasActiveFilters">
+                    Reset
+                </b-button>
+            </section>
+
+            <section id="sd-panel-sorting">
+                <h4>Sort by</h4>
+
+                <div class="filter-group">
                     <b-form-select
                         v-model="sortOrder"
                         :options="sortOrderOptions"
@@ -73,112 +93,116 @@
                 </div>
             </section>
 
-            <h4 class="pt-2 pb-1">My Groups</h4>
-            <div role="tablist" class="sd-group-list-wrapper">
-                <b-card class="mb-1" no-body>
-                    <b-card-header
-                        header-tag="header"
-                        class="p-1"
-                        role="tab"
-                        >
-                        <router-link
-                            :to="{ name: 'creategroup' }"
-                            class="sd-filter-accordion-header create-group-link btn-block"
-                            variant="light"
-                            >
-                            Create New Group
-                            <font-awesome-icon icon="external-link-alt" />
-                        </router-link>
-                    </b-card-header>
-                </b-card>
+            <section v-if="isLoggedIn" id="sd-my-groups">
+                <h4>My Groups</h4>
 
-                <b-card
-                    v-for="group in pendingUserGroups"
-                    :key="group.id"
-                    no-body
-                    class="mb-1 user-group--pending"
-                >
-                    <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button
-                            block
-                            v-b-toggle="'group-' + group.id"
-                            class="sd-filter-accordion-header"
-                            variant="light"
+                <div role="tablist" class="sd-group-list-wrapper">
+                    <b-card class="mb-1" no-body>
+                        <b-card-header
+                            header-tag="header"
+                            class="p-1"
+                            role="tab"
                             >
-                            <b-badge pill variant="info"><font-awesome-icon icon="star" class="sd-group-new-icon"/>New group invitation!</b-badge>
-                            <br />
-                            {{ group.name }} <br />|
-                            <font-awesome-icon icon="users" />
-                            {{ group.confirmed_users_count }} |
-                            <font-awesome-icon icon="layer-group" />
-                            {{ group.panels_count }}
-                        </b-button>
-                    </b-card-header>
-                    <b-collapse
-                        :id="'group-' + group.id"
-                        accordion="sd-filter-accordion"
-                        role="tabpanel"
-                    >
-                        <b-card-body>
-                            <b-card-text>
-                                {{ group.description }}
-                            </b-card-text>
-                            <b-card-text>
-                                <b-button size="sm" variant="success" @click="acceptGroupInvitation(group.id, group.pivot.token)">Accept</b-button>
-                                <b-button size="sm" variant="danger" @click="declineGroupInvitation(group.id, group.pivot.token)">Reject</b-button>
-                            </b-card-text>
-
-                        </b-card-body>
-                    </b-collapse>
-                </b-card>
-
-                <b-card
-                    v-for="group in confirmedUserGroups"
-                    :key="group.id"
-                    no-body
-                    class="mb-1"
-                >
-                    <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button
-                            block
-                            v-b-toggle="'group-' + group.id"
-                            class="sd-filter-accordion-header"
-                            variant="light"
-                            >
-                            <b-badge pill variant="info" v-if="group.requested_users_count > 0 && group.pivot.role==='admin' && group.pivot.status==='confirmed'"><font-awesome-icon icon="user-plus" class="sd-group-new-icon"/>New member request!</b-badge>
-                            <br v-if="group.requested_users_count > 0 && group.pivot.role==='admin' && group.pivot.status==='confirmed'"/>
-                            {{ group.name }} <br />
-                            <font-awesome-icon icon="users" />
-                            {{ group.confirmed_users_count }} |
-                            <font-awesome-icon icon="layer-group" />
-                            {{ group.panels_count }} |
-                            <span v-if="group.is_public">
-                                <font-awesome-icon icon="lock-open" title="Public group" /> |
-                            </span>
-                            <router-link :to="{ path: '/group/' + group.id }"
-                                ><font-awesome-icon icon="external-link-alt" />
-                                Go</router-link
-                            ></b-button
-                        >
-                    </b-card-header>
-                    <b-collapse
-                        :id="'group-' + group.id"
-                        accordion="sd-filter-accordion"
-                        role="tabpanel"
-                    >
-                        <b-card-body>
-                            <b-card-text>
-                                <router-link :to="{ path: '/group/' + group.id }"
-                                    >Go to group</router-link
+                            <router-link
+                                :to="{ name: 'creategroup' }"
+                                class="sd-filter-accordion-header create-group-link btn-block"
+                                variant="light"
                                 >
-                            </b-card-text>
-                            <b-card-text>
-                                {{ group.description }}
-                            </b-card-text>
-                        </b-card-body>
-                    </b-collapse>
-                </b-card>
-            </div>
+                                Create New Group
+                                <font-awesome-icon icon="external-link-alt" />
+                            </router-link>
+                        </b-card-header>
+                    </b-card>
+
+                    <b-card
+                        v-for="group in pendingUserGroups"
+                        :key="group.id"
+                        no-body
+                        class="mb-1 user-group--pending"
+                    >
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button
+                                block
+                                v-b-toggle="'group-' + group.id"
+                                class="sd-filter-accordion-header"
+                                variant="light"
+                                >
+                                <b-badge pill variant="info"><font-awesome-icon icon="star" class="sd-group-new-icon"/>New group invitation!</b-badge>
+                                <br />
+                                {{ group.name }} <br />|
+                                <font-awesome-icon icon="users" />
+                                {{ group.confirmed_users_count }} |
+                                <font-awesome-icon icon="layer-group" />
+                                {{ group.panels_count }}
+                            </b-button>
+                        </b-card-header>
+                        <b-collapse
+                            :id="'group-' + group.id"
+                            accordion="sd-filter-accordion"
+                            role="tabpanel"
+                        >
+                            <b-card-body>
+                                <b-card-text>
+                                    {{ group.description }}
+                                </b-card-text>
+                                <b-card-text>
+                                    <b-button size="sm" variant="success" @click="acceptGroupInvitation(group.id, group.pivot.token)">Accept</b-button>
+                                    <b-button size="sm" variant="danger" @click="declineGroupInvitation(group.id, group.pivot.token)">Reject</b-button>
+                                </b-card-text>
+
+                            </b-card-body>
+                        </b-collapse>
+                    </b-card>
+
+                    <b-card
+                        v-for="group in confirmedUserGroups"
+                        :key="group.id"
+                        no-body
+                        class="mb-1"
+                    >
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button
+                                block
+                                v-b-toggle="'group-' + group.id"
+                                class="sd-filter-accordion-header"
+                                variant="light"
+                                >
+                                <b-badge pill variant="info" v-if="group.requested_users_count > 0 && group.pivot.role==='admin' && group.pivot.status==='confirmed'"><font-awesome-icon icon="user-plus" class="sd-group-new-icon"/>New member request!</b-badge>
+                                <br v-if="group.requested_users_count > 0 && group.pivot.role==='admin' && group.pivot.status==='confirmed'"/>
+                                {{ group.name }} <br />
+                                <font-awesome-icon icon="users" />
+                                {{ group.confirmed_users_count }} |
+                                <font-awesome-icon icon="layer-group" />
+                                {{ group.panels_count }} |
+                                <span v-if="group.is_public">
+                                    <font-awesome-icon icon="lock-open" title="Public group" /> |
+                                </span>
+                                <router-link :to="{ path: '/group/' + group.id }"
+                                    ><font-awesome-icon icon="external-link-alt" />
+                                    Go</router-link
+                                ></b-button
+                            >
+                        </b-card-header>
+                        <b-collapse
+                            :id="'group-' + group.id"
+                            accordion="sd-filter-accordion"
+                            role="tabpanel"
+                        >
+                            <b-card-body>
+                                <b-card-text>
+                                    <router-link :to="{ path: '/group/' + group.id }"
+                                        >Go to group</router-link
+                                    >
+                                </b-card-text>
+                                <b-card-text>
+                                    {{ group.description }}
+                                </b-card-text>
+                            </b-card-body>
+                        </b-collapse>
+                    </b-card>
+                </div>
+            </section>
+
         </b-sidebar>
     </div>
 </template>
@@ -210,6 +234,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            "isLoggedIn",
             "userGroups",
             "confirmedUserGroups",
             "pendingUserGroups",
@@ -368,15 +393,17 @@ $sidebar-z-index: $navbar-z-index - 2;
     left: $panel-filters-sidebar-width;
 }
 
+section {
+    padding: 1rem 1.5rem;
+
+    .filter-group {
+        padding: 0.5rem 0;
+    }
+}
+
 .sd-filter-accordion-header {
     text-align: left;
     background-color: none;
-}
-
-.sd-filters-wrapper,
-.sd-group-list-wrapper {
-    border: solid 1px #e0e0e0;
-    padding: 0.75rem;
 }
 
 .sd-group-new-icon {
