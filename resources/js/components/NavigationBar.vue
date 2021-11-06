@@ -162,7 +162,10 @@ $navbar-padding-top: 2rem;
  * background to encompass the whole navbar.
  */
 .navbar {
+    margin: 0;
     padding: 0;
+    position: fixed;
+    width: 100vw;
 }
 .nav-item,
 .navbar-brand {
