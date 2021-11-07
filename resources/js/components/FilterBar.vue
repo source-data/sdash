@@ -329,13 +329,16 @@ export default {
             this.$store.commit("setSortOrder", this.sortOrder)
             this.applyFilters()
         },
-        resetFilters() {
+        clearFilters() {
             this.filterAuthorList = []
             this.filterKeywordList = []
             this.sortOrder = 'creation-date-desc'
             this.$store.commit("resetAuthorFilter")
             this.$store.commit("resetKeywordFilter")
             this.$store.commit("resetSortOrder")
+        },
+        resetFilters() {
+            this.clearFilters()
             this.applyFilters()
         },
         applyFilters() {
@@ -356,7 +359,7 @@ export default {
         }
     },
     destroyed() {
-        this.resetFilters();
+        this.clearFilters();
     }
 };
 </script>
