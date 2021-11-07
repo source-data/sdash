@@ -303,7 +303,15 @@ export default {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
         },
         groupAdministrators() {
-            return this.currentGroup.administrators
+            if (this.currentGroup.administrators) {
+            return this.currentGroup.administrators;
+            }
+            if (this.currentGroup.confirmed_users) {
+                return this.currentGroup.confirmed_users.filter(
+                    user => user.pivot.role == "admin"
+                );
+            }
+            return []
         },
         groupMembers() {
             if (!this.currentGroup.confirmed_users) {
