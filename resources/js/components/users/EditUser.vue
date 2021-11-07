@@ -2,7 +2,7 @@
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card bg-dark text-light">
                     <div class="card-header">Edit Profile</div>
 
                     <div class="card-body">
@@ -138,7 +138,7 @@
         </div>
         <b-row class="justify-content-center">
             <b-col md="8">
-                <b-card no-body class="mt-2">
+                <b-card bg-variant="dark" text-variant="light" no-body class="mt-2">
                     <b-card-header>
                         Change Your Password
                     </b-card-header>

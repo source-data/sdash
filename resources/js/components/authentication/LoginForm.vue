@@ -3,7 +3,7 @@
     <b-container class="mt-5">
         <b-row align-h="center">
             <b-col cols md="6">
-                <b-card header="Log in">
+                <b-card bg-variant="dark" text-variant="light" header="Log in">
                     <b-form
                         @submit.prevent="sendLogin"
                     >

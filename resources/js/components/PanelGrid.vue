@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{ 'anonymous-user': !isLoggedIn }">
         <vue-full-screen-file-drop
             @drop='uploadPanel'
             formFieldName="file"
@@ -21,91 +21,57 @@
             <panel-authors-edit-form></panel-authors-edit-form>
         </b-sidebar>
 
-        <b-container fluid class="wrapper" :class="{ 'anonymous-user': !isLoggedIn }">
-            <filter-bar
-                class="sidebar"
-                v-bind:class="{ collapsed: !isSidebarExpanded }"
-            ></filter-bar>
-            
-            <div
-                id="content"
-                class="content"
-                v-bind:class="{ expanded: !isSidebarExpanded }"
-            >
-                <ul
-                    class="toolbar"
-                    v-bind:class="{ expanded: !isSidebarExpanded }"
-                >
-                    <li class="sidebar-toggle">
-                        <b-link
-                            href="#"
-                            @click="toggleSidebar"
-                            v-bind:title="sidebarToggleText"
-                        >
-                            <font-awesome-icon
-                                icon="chevron-left"
-                                v-if="isSidebarExpanded"
-                            />
-                            <font-awesome-icon
-                                icon="chevron-right"
-                                v-if="!isSidebarExpanded"
-                            />
-                        </b-link>
-                    </li>
-                    <li><font-awesome-icon icon="search" /></li>
-                    <li><font-awesome-icon icon="filter" /></li>
-                    <li><font-awesome-icon icon="users" /></li>
-                </ul>
-        
-                <header id="sd-panel-grid-header">
-                    <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
+        <filter-bar></filter-bar>
 
-                    <section v-else id="sd-featured-jumbotron">
-                        <h1 class="text-xxl text-primary">
-                            Share scientific results with your collaborators.
-                        </h1>
+        <header class="sd-view-title">
+            <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
 
-                        <div class="text-lg">
-                            Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
-                            Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
-                            Comment and discuss initiating an early scientific dissemination of results. 
-                        </div>
-                    </section>
+            <section v-else id="sd-featured-jumbotron">
+                <h1 class="text-xxl text-primary">
+                    Share scientific results with your collaborators.
+                </h1>
 
-                    <h2 class="text-primary">
-                        <span v-if="isLoggedIn">My Dashboard</span>
-                        <span v-else>SmartFigures</span>
-                    </h2>
-                
-                    <aside class="align-text-bottom text-right">
-                        {{ numLoadedPanels }} SmartFigures
-                    </aside>
-                </header>
-
-                <div v-if="isLoadingPanels" class="text-center">
-                    <b-spinner
-                        variant="primary"
-                        label="Spinning"
-                        class="m-5 text-center"
-                        style="width: 4rem; height: 4rem;"
-                    ></b-spinner>
+                <div class="text-lg">
+                    Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
+                    Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
+                    Comment and discuss initiating an early scientific dissemination of results. 
                 </div>
+            </section>
 
-                <panel-listing-grid
-                    v-if="hasPanels"
-                    list_root="user"
-                ></panel-listing-grid>
+            <h2 class="text-primary">
+                <span v-if="isLoggedIn">My Dashboard</span>
+                <span v-else>SmartFigures</span>
+            </h2>
+        
+            <aside class="align-text-bottom text-right">
+                {{ numLoadedPanels }} SmartFigures
+            </aside>
+        </header>
 
-                <b-alert
-                    v-if="!hasPanels && !isLoadingPanels"
-                    show
-                    variant="danger"
-                    class="no-panel-alert"
-                >
-                    No Panels Found
-                </b-alert>
+        <div class="sd-view-content">
+            <div v-if="isLoadingPanels" class="text-center">
+                <b-spinner
+                    variant="primary"
+                    label="Spinning"
+                    class="m-5 text-center"
+                    style="width: 4rem; height: 4rem;"
+                ></b-spinner>
             </div>
-        </b-container>
+
+            <panel-listing-grid
+                v-if="hasPanels"
+                list_root="user"
+            ></panel-listing-grid>
+
+            <b-alert
+                v-if="!hasPanels && !isLoadingPanels"
+                show
+                variant="danger"
+                class="no-panel-alert"
+            >
+                No Panels Found
+            </b-alert>
+        </div>
 
         <info-footer></info-footer>
 
@@ -140,11 +106,8 @@ export default {
         VueFullScreenFileDrop,
     },
     data() {
-        return {
-            isSidebarExpanded: true
-        };
-    } /* end of data */,
-
+        return {};
+    },
     computed: {
         ...mapGetters([
             "isLoadingPanels",
@@ -166,10 +129,11 @@ export default {
                 return this.showAuthorSidebar
             }
         },
-        sidebarToggleText: function() {
-            return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
-        },
         panelDropEnabled() {
+            // no file upload if not logged in.
+            if (!this.isLoggedIn) {
+                return false;
+            }
             // Disallow file dropping if the sidebar to edit a panel's authors is open.
             if (this.showAuthorSidebarModal) {
                 return false;
@@ -192,9 +156,6 @@ export default {
             'toggleLightbox',
             'addSelectedPanelsToGroup',
         ]),
-        toggleSidebar() {
-            this.isSidebarExpanded = !this.isSidebarExpanded;
-        },
         uploadPanel(formData, files){
             this.uploadNewPanel(formData)
             .then(response => {
@@ -231,17 +192,7 @@ export default {
                 "Sorry!"
             );
         });
-        if (localStorage.getItem("isSidebarExpanded") !== null) {
-            this.isSidebarExpanded =
-                localStorage.getItem("isSidebarExpanded") === "true";
-        }
     },
-
-    watch: {
-        isSidebarExpanded(newStatus) {
-            localStorage.setItem("isSidebarExpanded", newStatus);
-        }
-    }
 };
 </script>
 
@@ -251,79 +202,10 @@ export default {
     margin: 0 auto;
 }
 
-.sd-filter-wrapper {
-    flex: 0 0 300px;
-    max-width: 300px;
-}
-
-.wrapper {
-    display: flex;
-    height: 100%;
-    padding-top: 2rem;
-}
 .wrapper.anonymous-user {
     background-image: url("/images/landing-page-bg.jpg");
     background-repeat: no-repeat;
     background-size: contain;
-}
-
-.sidebar,
-.content {
-    min-height: 100%;
-}
-
-.sidebar {
-    flex: 0 0 300px;
-    padding-right: 15px;
-    transition: all 0.25s ease-in;
-}
-
-.sidebar.collapsed {
-    transform: translateX(-100%);
-}
-
-.content {
-    flex: auto;
-    position: relative;
-    transition: all 0.25s ease-in;
-    width: 100%;
-}
-
-.content.expanded {
-    margin-left: -300px;
-}
-
-.toolbar {
-    position: absolute;
-    top: 40px;
-    left: -17px;
-    width: 40px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background: #a6b2c6;
-    li,
-    li a {
-        color: white;
-    }
-    li {
-        padding: 2px;
-        text-align: center;
-        font-size: 20px;
-        opacity: 0.2;
-    }
-    li.sidebar-toggle {
-        opacity: 1;
-        font-size: 24px;
-    }
-}
-
-.b-sidebar > .b-sidebar-header {
-    font-size:1rem;
-}
-
-#sd-panel-grid-header {
-    margin: 0 30px;
 }
 
 #sd-featured-jumbotron {

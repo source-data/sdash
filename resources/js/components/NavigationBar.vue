@@ -70,7 +70,7 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
-                        <router-link class="dropdown-item" :to="{path: 'user/' + user.id}">
+                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_id: user.id }}">
                             Profile
                         </router-link>
 
@@ -86,11 +86,11 @@
 
             <div v-if="isGuest" class="navbar-nav secondary-nav register-nav">
                 <div class="nav-item">
-                    <a class="nav-link" href="/register">
+                    <router-link class="nav-link" :to="{name: 'register'}">
                         Register
                         <br>
                         <span class="register-secondary-text invisible">to contribute</span>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -151,26 +151,47 @@ export default {
 <style lang="scss" scoped>
 @use "sass:math";
 @import 'resources/sass/_colors.scss';
-
-$navbar-content-height: 3rem;
-$navbar-padding-bottom: 2rem;
-$navbar-padding-left: 4vw;
-$navbar-padding-right: 2vw;
-$navbar-padding-top: 2rem;
+@import 'resources/sass/_layout.scss';
 
 /* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
  * background to encompass the whole navbar.
  */
 .navbar {
-    padding: 0;
+    margin: 0;
+    padding-bottom: $navbar-padding-bottom;
+    padding-left: $navbar-padding-left;
+    padding-right: $navbar-padding-right;
+    padding-top: $navbar-padding-top;
+    width: 100vw;
+    z-index: $navbar-z-index;
 }
-.nav-item,
-.navbar-brand {
-    padding-top: $navbar-padding-bottom;
-    padding-bottom: $navbar-padding-top;
+@media (min-height: 500px) {
+    /* Make the navbar stay fixed while scrolling on screens with enough height */
+    .navbar {
+        position: fixed;
+    }
 }
+@media (min-width: 768px) {
+    /* Increase the amount of empty space on larger screens. */
+    .navbar {
+        margin: 0;
+        padding-bottom: $navbar-padding-bottom-md;
+        padding-left: $navbar-padding-left-md;
+        padding-right: $navbar-padding-right-md;
+        padding-top: $navbar-padding-top-md;
+    }
+}
+
+.nav-item {
+    margin-top: 2rem;
+}
+@media (min-width: 768px) {
+    .nav-item {
+        margin-top: 0;
+    }
+}
+
 .navbar-brand {
-    margin-left: $navbar-padding-left;
     margin-right: 0;
     font-size: 1rem;
 }
@@ -195,20 +216,23 @@ $navbar-padding-top: 2rem;
     color: $mostly-black-blue-hover;
 }
 
-/* The secondary nav links' text should be slightly smaller than the primary ones. */
-.navbar-toggler,
-.primary-nav {
+.navbar-toggler {
     font-size: 2rem;
 }
-.secondary-nav {
+.navbar-nav {
     font-size: 1.5rem;
-    margin-right: $navbar-padding-right;
 }
+@media (min-width: 768px) {
+    /* The primary nav links should be a bit larger on larger screens */
+    .primary-nav {
+        font-size: 2rem;
+    }
+}
+
 /* The search & login icons are a bit too large compared to the text if they have the same font size. */
 .secondary-nav .nav-link > svg {
     font-size: 1.25rem;
 }
-
 
 /* Making the active state of the primary nav links look right. */
 .navbar-nav .nav-item {
@@ -227,26 +251,6 @@ img.profile-picture {
     border-radius: 50%;
 }
 
-@media (max-width: 767px) {
-    /* Reduce the amount of empty space on smaller screens. */
-    .navbar-brand {
-        margin-left: math.div($navbar-padding-left, 2);
-    }
-    .nav-item,
-    .navbar-brand {
-        padding-bottom: math.div($navbar-padding-bottom, 2);
-        padding-top: math.div($navbar-padding-top, 2);
-    }
-
-    /* That the secondary nav links are smaller doesn't catch the eye as much when they're far apart horizontally with
-     * a bigger screen. Once they're right above each other in the collapsible menu that we're using on small screens
-     * they absolutely need to have the same font size.
-     */
-    .primary-nav {
-        font-size: 1.5rem;
-    }
-}
-
 /* If we're in the big-screen view, the link to the registration page is positioned just below the navbar on the right.
  * If not, it's in the collapsible menu with the standard positioning.
  */
@@ -255,17 +259,18 @@ img.profile-picture {
         background-color: $vivid-orange;
         border-bottom-left-radius: 0.75rem;
         border-bottom-right-radius: 0.75rem;
-        margin-right: 1vw; /* This roughly aligns the registration link with the login link. */
+        margin-right: $navbar-padding-right-md - 1; /* This roughly aligns the registration link with the login link. */
         padding: 0;
         position: absolute;
         /* The registration link is positioned right below the navbar. For that we have to use absolute positioning and
          * calculate the correct positioning relative to the navbar itself.
          */
-        top: $navbar-padding-top + $navbar-content-height + $navbar-padding-bottom;
+        top: $navbar-height-md;
         right: 0;
         z-index: 10; /* Lets the registration link appear in front of the panels. */
     }
     .register-nav .nav-item {
+        padding-bottom: $navbar-padding-bottom-md;
         padding-top: 0.5rem;
     }
     .register-secondary-text {

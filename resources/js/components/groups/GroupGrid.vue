@@ -1,10 +1,10 @@
 <template>
     <div>
-        <header>
+        <header class="sd-view-title">
             <h2 class="text-primary">Groups</h2>
         </header>
 
-        <b-container class="sd-group-grid-container" fluid>
+        <b-container class="sd-view-content" fluid>
             <b-row class="sd-group-grid" cols="1" cols-md="2" cols-lg="3" cols-xl="4">
                 <b-col class="sd-group-grid-item" v-for="group in publicGroups" :key="group.id">
                     <div
@@ -153,16 +153,7 @@ export default {
 
 <style lang="scss" scoped>
 header {
-    padding-bottom: 2rem;
-    padding-left: 4rem;
-    padding-right: 2rem;
     padding-top: 6rem;
-}
-
-.sd-group-grid-container {
-    padding-left: 4rem;
-    padding-right: 2rem;
-    padding-bottom: 2rem;
 }
 
 .sd-group-grid {
