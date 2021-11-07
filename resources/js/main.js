@@ -51,8 +51,8 @@ Vue.use(LoadScript);
 library.add([
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy,
     faCreativeCommons, faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome,
-    faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave,
-    faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser,
+    faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faOrcid, faPaste, faPen, faPlus, faQrcode,
+    faSave, faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser,
     faUserCog, faUserPlus, faUsers,
 ])
 Vue.component('font-awesome-icon', FontAwesomeIcon)
