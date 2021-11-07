@@ -48,7 +48,6 @@ export default {
 .sd-info-bar {
     padding: 10px 48px;
     overflow: hidden;
-    background: #e9eef5;
 }
 
 .sd-info-bar-text {

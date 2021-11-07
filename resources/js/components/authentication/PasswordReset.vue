@@ -3,7 +3,7 @@
     <b-container class="mt-5">
         <b-row align-h="center">
             <b-col cols sm="10" md="8">
-                <b-card header="Reset your password">
+                <b-card bg-variant="dark" text-variant="light" header="Reset your password">
                     <b-form
                         @submit.prevent="sendPasswordReset"
                     >
