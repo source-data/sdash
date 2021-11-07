@@ -141,7 +141,16 @@ export default {
 }
 #sd-content {
     min-height: inherit;
-    padding-top: $navbar-height;
+}
+@media (min-height: 500px) {
+    #sd-content {
+        padding-top: $navbar-height;
+    }
+}
+@media (min-width: 768px) {
+    #sd-content {
+        padding-top: $navbar-height-md;
+    }
 }
 
 .sd-view-title {

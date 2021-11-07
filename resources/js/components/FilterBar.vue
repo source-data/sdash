@@ -364,7 +364,8 @@ export default {
 <style lang="scss" scoped>
 @import 'resources/sass/_layout.scss';
 
-$panel-filters-sidebar-width: 420px;
+$panel-filters-sidebar-width: 80vw;
+$panel-filters-sidebar-width-sm: 576px * 0.8;
 $sidebar-z-index: $navbar-z-index - 2;
 
 #sd-panel-filters::v-deep .b-sidebar-outer,
@@ -374,14 +375,27 @@ $sidebar-z-index: $navbar-z-index - 2;
     // Position the sidebar above all content except for the navbar.
     z-index: $sidebar-z-index;
 }
+@media (min-width: 768px) {
+    #sd-panel-filters::v-deep .b-sidebar-outer,
+    #sd-panel-filters::v-deep .b-sidebar {
+        padding-top: $navbar-height-md;
+    }
+}
+
 #sd-panel-filters::v-deep .b-sidebar {
     width: $panel-filters-sidebar-width;
+}
+@media (min-width: 576px) {
+    #sd-panel-filters::v-deep .b-sidebar {
+        width: $panel-filters-sidebar-width-sm;
+    }
 }
 
 #sd-panel-filters-toggle {
     cursor: pointer;
     height: 100vh;
     position: fixed;
+    top: 0;
     width: $left-sidebar-toggle-width;
     z-index: $sidebar-z-index + 1;
 
@@ -394,6 +408,11 @@ $sidebar-z-index: $navbar-z-index - 2;
 }
 #sd-panel-filters-toggle.expanded {
     left: $panel-filters-sidebar-width;
+}
+@media (min-width: 576px) {
+    #sd-panel-filters-toggle.expanded {
+        left: $panel-filters-sidebar-width-sm;
+    }
 }
 
 section {
