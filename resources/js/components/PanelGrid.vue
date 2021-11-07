@@ -130,6 +130,10 @@ export default {
             }
         },
         panelDropEnabled() {
+            // no file upload if not logged in.
+            if (!this.isLoggedIn) {
+                return false;
+            }
             // Disallow file dropping if the sidebar to edit a panel's authors is open.
             if (this.showAuthorSidebarModal) {
                 return false;
