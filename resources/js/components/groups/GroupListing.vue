@@ -62,7 +62,7 @@
                 </b-row>
             </b-container>
 
-            <b-container fluid>
+            <b-container v-if="groupMembers.length" fluid>
                 <b-row>
                     <b-col cols="1">
                         <font-awesome-icon icon="users" size="lg" />
@@ -303,11 +303,12 @@ export default {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
         },
         groupAdministrators() {
-            return this.currentGroup.confirmed_users.filter(
-                user => user.pivot.role == "admin"
-            )
+            return this.currentGroup.administrators
         },
         groupMembers() {
+            if (!this.currentGroup.confirmed_users) {
+                return []
+            }
             return this.currentGroup.confirmed_users.filter(
                 user => user.pivot.role != "admin"
             )
