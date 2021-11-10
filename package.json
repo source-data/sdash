@@ -14,7 +14,7 @@
     "devDependencies": {
         "axios": "^0.21.4",
         "bootstrap": "^4.5.0",
-        "chromedriver": "^93.0.1",
+        "chromedriver": "^95.0.0",
         "cross-env": "^5.1",
         "geckodriver": "^2.0.4",
         "jquery": "^3.5.1",
