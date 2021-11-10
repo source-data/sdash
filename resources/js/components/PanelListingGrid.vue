@@ -81,8 +81,8 @@ export default {
 .panel-grid {
     display:flex;
     flex-wrap: wrap;
-    justify-content: stretch;
-    margin: -10px -30px;
+    justify-content: space-between;
+    gap: 15px;
     position: relative;
     width: 100%;
 }
