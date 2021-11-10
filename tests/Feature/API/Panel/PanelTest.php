@@ -24,28 +24,48 @@ class PanelTest extends TestCase
         $this->panel = factory(Panel::class)->create(['user_id' => $this->user->id]);
     }
 
-    public function testALoggedInUserCanLoadTheirOwnPanelDetails()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_logged_in_user_can_load_their_own_panel_details()
     {
         $response = $this->actingAs($this->user, 'sanctum')->getJson('api/panels/' . $this->panel->id);
         $response->assertStatus(200);
         $response->assertJson(['DATA' => [0 => ["user_id" => $this->user->id]]]);
     }
 
-    public function testPanelDetailsIncludeOwnerDetails()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function panel_details_include_owner_details()
     {
         $response = $this->actingAs($this->user, 'sanctum')->getJson('api/panels/' . $this->panel->id);
         $response->assertStatus(200);
         $response->assertJson(['DATA' => [0 => ["user" => ["email" => $this->user->email]]]]);
     }
 
-    public function testWhenAUserCreatesAPanelTheyAutomaticallyBecomeOwner()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function when_a_user_uploads_a_panel_they_automatically_become_the_owner()
     {
         $response = $this->actingAs($this->user, 'sanctum')->post('api/panels', ['file' => UploadedFile::fake()->image('testfile.jpg')]);
         $response->assertStatus(200);
         $response->assertJson(['DATA' => ["user_id" => $this->user->id]]);
     }
 
-    public function testWhenAUserCreatesAPanelTheyAutomaticallyBecomeCorrespondingAuthor()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function when_a_user_uploads_a_panel_they_automatically_become_the_corresponding_author()
     {
         $response = $this->actingAs($this->user, 'sanctum')->post('api/panels', ['file' => UploadedFile::fake()->image('testfile.jpg')]);
         $response->assertStatus(200);

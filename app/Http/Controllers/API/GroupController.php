@@ -362,15 +362,13 @@ class GroupController extends Controller
         }
     }
 
-
-
     public function join(Group $group, String $token)
     {
         $user = $group->users()->wherePivot("token", "=", $token)->first();
 
-        if (!$user) return redirect('/dashboard');
+        if (empty($user)) return redirect('/');
 
-        $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
+        $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]);
         return view('addtogroup', ['user' => $user, 'group' => $group]);
     }
 
@@ -451,10 +449,10 @@ class GroupController extends Controller
         if (Gate::allows('modify-group', $group)) {
             $userRecord = $group->users()->wherePivot("token", "=", $token)->first();
             // if user is already accepted, return to group page
-            if (!isset($userRecord)) return redirect('/dashboard/group/' . $group->id);
+            if (!isset($userRecord)) return redirect('/group/' . $group->id);
 
             $group->users()->updateExistingPivot($userRecord->id, ["status" => "confirmed", "token" => null]);
-            return redirect('/dashboard/group/' . $group->id);
+            return redirect('/group/' . $group->id);
         } else {
             throw new \Exception("You are not permitted to perform this action.");
         }

@@ -1,10 +1,9 @@
 <template>
   <section id="sd-login-page">
-    <EmailConfirmationNotice v-if="showEmailConfirmationNotice" class="mt-5"></EmailConfirmationNotice>
-    <b-container class="mt-5" v-if="!showEmailConfirmationNotice">
+    <b-container class="mt-5">
         <b-row align-h="center">
             <b-col cols md="6">
-                <b-card header="Log in">
+                <b-card bg-variant="dark" text-variant="light" header="Log in">
                     <b-form
                         @submit.prevent="sendLogin"
                     >
@@ -67,6 +66,14 @@
 
         </b-row>
     </b-container>
+    <b-modal
+    centered
+    v-model="showEmailResend"
+    hide-footer
+    title="Please confirm your email address"
+    >
+    <EmailConfirmationNotice></EmailConfirmationNotice>
+    </b-modal>
   </section>
 </template>
 
@@ -96,7 +103,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser', 'showEmailConfirmationNotice']),
+        ...mapGetters(['currentUser', 'showEmailConfirmationNotice', 'isLoggedIn']),
         emailCheck(){
             this.emailFeedback = '';
             this.loginFeedback = '';
@@ -127,6 +134,14 @@ export default {
         },
         showInvalidFormFeedback() {
             return this.loginFeedback.length > 0;
+        },
+        showEmailResend: {
+            get() {
+                return this.showEmailConfirmationNotice;
+            },
+            set(value) {
+                this.setEmailConfirmationNotice(value);
+            },
         }
     },
 

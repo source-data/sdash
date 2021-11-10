@@ -53,7 +53,7 @@ const actions = {
     fetchPanelList({ commit, state, rootGetters }) {
         let params = { params: {} };
 
-        let searchUrl = rootGetters.apiUrls.panels;
+        let searchUrl = rootGetters.apiUrls.panels();
 
         //pagination
         params.params.paginate = state.paginate;

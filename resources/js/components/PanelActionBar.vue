@@ -158,7 +158,7 @@
         <b-form-file
             ref="panelUploader"
             class="d-none"
-            accept="image/jpeg, image/png, image/gif, image/tiff, application/png"
+            accept="application/pdf, image/jpeg, image/png, image/gif, image/tiff, application/png"
             v-model="file"
             @input="attemptPanelUpload"
         ></b-form-file>

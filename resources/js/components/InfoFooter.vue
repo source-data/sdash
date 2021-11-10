@@ -69,7 +69,7 @@
             </b-row>
         </section>
 
-        <section id="sd-partners-information" class="container-fluid">
+        <section id="sd-partners-information" class="container-fluid bg-light text-dark">
             <b-row>
                 <b-col class="sd-partners-label pb-sm-2" lg="2">
                     Partners
@@ -91,7 +91,7 @@
             </b-row>
         </section>
 
-        <div id="sd-fine-print">
+        <div id="sd-fine-print" class="bg-light text-dark">
             &copy; 2021 SDASH.sourcedata.io
             <span class="fine-print-delimiter">|</span>
             <a href="">Imprint</a>

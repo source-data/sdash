@@ -24,7 +24,12 @@ class PublicPanelTest extends TestCase
         $this->publicPanel = factory(Panel::class)->create(['user_id' => $this->user->id, 'is_public' => true]);
     }
 
-    public function testThePublicPanelListWillOnlyContainPublicPanels()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function the_public_panel_list_only_contains_public_panels()
     {
         $response = $this->getJson('api/public/panels');
 
@@ -37,7 +42,12 @@ class PublicPanelTest extends TestCase
         $response->assertJsonPath('DATA.data.0.id', $this->publicPanel->id);
     }
 
-    public function testAnUnauthenticatedUserCanLoadPublicPanelDetail()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function an_unauthenticated_user_can_view_public_panel_details()
     {
         $response = $this->getJson("api/public/panels/{$this->publicPanel->id}");
 
@@ -47,7 +57,12 @@ class PublicPanelTest extends TestCase
         $response->assertJsonPath('DATA.0.id', $this->publicPanel->id);
     }
 
-    public function testAnUnauthenticatedUserCannotLoadPrivatePanelDetails()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function an_unauthenticated_user_cannot_view_private_panel_details()
     {
         $response = $this->getJson("api/public/panels/{$this->privatePanel->id}");
 

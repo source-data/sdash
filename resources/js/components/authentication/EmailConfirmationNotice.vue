@@ -1,50 +1,40 @@
 <template>
 <div class="sd-email-confirmation-warning">
-    <b-container class="mt-5">
-        <b-row align-h="center">
-            <b-col cols md="6">
-                <b-card
-                header="Please verify your email address!"
-                >
-                <b-card-text>
-                  You cannot log in until you have verified your email address. Please check the email inbox for the registered email address.
-                </b-card-text>
-                <b-card-text>
-                  If you cannot find the verification email, please check your spam folder. You can also re-send the email if needed.
-                </b-card-text>
-                <b-card-text>
-                  <b-form-group
-                    id="sd-email-confirmation-notice-fields"
-                    valid-feedback="Allowed"
-                    :invalid-feedback="invalidFeedback"
-                    :state="state"
-                  >
-                  <b-input-group>
-                    <b-form-input
-                      :state="state"
-                      placeholder="Email address"
-                      debounce="300"
-                      v-model="email"
-                      type="email"
-                    ></b-form-input>
-                    <b-input-group-append>
-                      <b-button variant="primary" @click.prevent="resendConfirmationEmail" :disabled="disableButton">Resend</b-button>
-                    </b-input-group-append>
-                  </b-input-group>
-                  </b-form-group>
-                </b-card-text>
-                </b-card>
-            </b-col>
+  <p>
+    You cannot log in until you have verified your email address. Please check the email inbox for the registered email address.
+  </p>
+  <p>
+    If you cannot find the verification email, please check your spam folder. You can also re-send the email if needed.
+  </p>
 
-        </b-row>
-    </b-container>
+
+  <b-form-group
+    id="sd-email-confirmation-notice-fields"
+    valid-feedback="Allowed"
+    :invalid-feedback="invalidFeedback"
+    :state="state"
+  >
+  <b-input-group>
+    <b-form-input
+      :state="state"
+      placeholder="Email address"
+      debounce="300"
+      v-model="email"
+      type="email"
+    ></b-form-input>
+    <b-input-group-append>
+      <b-button variant="primary" @click.prevent="resendConfirmationEmail" :disabled="disableButton">Resend</b-button>
+    </b-input-group-append>
+  </b-input-group>
+  </b-form-group>
+
   </div>
 </template>
 
 <script>
 
 import EmailFormatValidator from '@/services/EmailFormatValidator';
-
+import { mapMutations } from 'vuex';
 export default {
 
     name: 'EmailConfirmationNotice',
@@ -68,6 +58,7 @@ export default {
       }
     },
     methods:{
+        ...mapMutations(['setEmailConfirmationNotice']),
         resendConfirmationEmail(){
           this.sending = true;
           this.$store.dispatch('resendEmail', this.email).then(response => {
@@ -76,6 +67,7 @@ export default {
             this.$snotify.error('Could not resend email.', 'Sorry!');
           }).finally(() => {
             this.sending = false;
+            this.setEmailConfirmationNotice(false);
           });
         }
     }

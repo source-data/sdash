@@ -38,7 +38,12 @@ class ExternalAuthorTest extends TestCase
         $this->panel->externalAuthors()->attach($this->externalAuthor, ['order' => 1, 'role' => User::PANEL_ROLE_AUTHOR]);
     }
 
-    public function testPanelDataContainsExternalAuthorDetails()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function panel_data_contains_external_author_details()
     {
         $response = $this->actingAs($this->user, 'sanctum')->getJson('api/panels/' . $this->panel->id);
 
@@ -48,7 +53,12 @@ class ExternalAuthorTest extends TestCase
         $response->assertJson(["DATA" => [0 => ["external_authors" => [0 => ["orcid" => $this->externalAuthor->orcid]]]]]);
     }
 
-    public function testPanelOwnerCanModifyExternalAuthors()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function panel_owner_can_modify_external_author_details()
     {
         $currentUser = [
             'id'            => $this->user->id,

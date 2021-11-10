@@ -34,10 +34,9 @@ const actions = {
 
         })
     },
-    findUsersByName({ commit }, searchString){
-
-
-        return Axios.get('/users', { params: { name: searchString } }).then(response =>{
+    findUsersByName({ rootGetters }, searchString){
+        let userSearchUrl = rootGetters.apiUrls.userSearch();
+        return Axios.get(userSearchUrl, { params: { name: searchString } }).then(response =>{
             return response
         })
 
