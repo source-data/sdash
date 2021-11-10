@@ -277,9 +277,6 @@ $panel-text-margins: 1.5rem;
     cursor: pointer;
     height: $panel-thumbnail-height;
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
 }
 
