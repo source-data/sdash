@@ -1,5 +1,7 @@
 <template>
     <div v-if="currentGroup">
+        <panel-drop-zone></panel-drop-zone>
+
         <filter-bar></filter-bar>
 
         <header class="sd-view-title">
@@ -257,6 +259,7 @@ import GroupTitleIcon from '../helpers/GroupTitleIcon'
 import GroupMemberRequestIcon from '../helpers/GroupMemberRequestIcon'
 import GroupUserIcon from '../helpers/GroupUserIcon'
 import Lightbox from 'vue-easy-lightbox';
+import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
 export default {
     name: "GroupListing",
@@ -268,6 +271,7 @@ export default {
         GroupUserIcon,
         GroupMemberRequestIcon,
         Lightbox,
+        PanelDropZone,
     },
     props: ["group_id"],
 
