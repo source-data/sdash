@@ -4,6 +4,7 @@ describe('SDash Homepage', function() {
 
   test('check that the basic navigation links & the search bar are present', function(browser) {
     homepage(browser)
+      .waitForElementVisible('nav')
       .assert.visible('a[href="/"]', 'the link to the homepage is visible')
       .assert.visible('a[href="/about"]', 'the link to the "About" page is visible')
       .assert.visible('a[href="/login"]', 'the link to the login page is visible')
@@ -15,4 +16,3 @@ describe('SDash Homepage', function() {
       .end()
   })
 })
-  
