@@ -73,6 +73,6 @@ class UserAddedToGroup extends Notification
 
     protected function confirmationUrl()
     {
-        return URL::signedRoute('group.accept', ['group' => $this->group->id, 'token' => $this->token]);
+        return URL::signedRoute('group.join', ['group' => $this->group->id, 'token' => $this->token]);
     }
 }
