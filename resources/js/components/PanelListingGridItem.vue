@@ -245,8 +245,6 @@ export default {
 
 .sd-grid-item__expanded .sd-grid-extra {
     min-height: 25rem;
-    margin-left: 30px;
-    margin-right: 30px;
 }
 .sd-grid-item.sd-grid-item__expanded {
     margin-bottom: 27rem;
