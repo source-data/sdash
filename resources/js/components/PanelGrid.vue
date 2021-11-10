@@ -1,11 +1,6 @@
 <template>
     <div :class="{ 'anonymous-user': !isLoggedIn }">
-        <vue-full-screen-file-drop
-            @drop='uploadPanel'
-            formFieldName="file"
-            text="Please drop a JPG, PNG, GIF, TIF or PDF file"
-            v-if="panelDropEnabled">
-        </vue-full-screen-file-drop>
+        <panel-drop-zone></panel-drop-zone>
 
         <b-sidebar
             id="author-edit-sidebar"
@@ -92,7 +87,7 @@ import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
 import InfoFooter from "@/components/InfoFooter";
 import PanelListingGrid from "./PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
-import VueFullScreenFileDrop from 'vue-full-screen-file-drop'
+import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
 export default {
     name: "PanelGrid",
@@ -103,7 +98,7 @@ export default {
         PanelAuthorsEditForm,
         PanelListingGrid,
         Lightbox,
-        VueFullScreenFileDrop,
+        PanelDropZone,
     },
     data() {
         return {};
@@ -129,22 +124,6 @@ export default {
                 return this.showAuthorSidebar
             }
         },
-        panelDropEnabled() {
-            // no file upload if not logged in.
-            if (!this.isLoggedIn) {
-                return false;
-            }
-            // Disallow file dropping if the sidebar to edit a panel's authors is open.
-            if (this.showAuthorSidebarModal) {
-                return false;
-            }
-            // Disallow file dropping if we're on a group's page and not allowed to add panels to it.
-            if (this.currentGroup && ! this.mayAddPanelToGroup) {
-                return false;
-            }
-            return true;
-
-        },
         numLoadedPanels() {
             return this.loadedPanels.length;
         },
@@ -152,32 +131,8 @@ export default {
 
     methods: {
         ...mapActions([
-            'uploadNewPanel',
             'toggleLightbox',
-            'addSelectedPanelsToGroup',
         ]),
-        uploadPanel(formData, files){
-            this.uploadNewPanel(formData)
-            .then(response => {
-                this.$snotify.success("New panel created", "Uploaded")
-                if(this.currentGroup) {
-                    this.$store.commit("clearSelectedPanels")
-                    this.$store.commit("addPanelToSelections", response.data.DATA.id)
-                    this.addSelectedPanelsToGroup(this.currentGroup.id)
-                      .then(response => {
-                          this.$snotify.success("Panel added to this group", "Group updated")
-                      })
-                      .catch(error => {
-                          console.log(error)
-                          this.$snotify.error("Cannot add panel to this group", "Update failed")
-                      })
-
-                }
-                })
-                .catch(error => {
-                    this.$snotify.error(error.data.errors.file[0], "Upload failed")
-                })
-        },
     },
 
     mounted() {
