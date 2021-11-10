@@ -194,6 +194,7 @@ export default {
 .navbar-brand {
     margin-right: 0;
     font-size: 1rem;
+    cursor: pointer;
 }
 
 /* height == line-height to vertically center the text inside the nav-links. */
