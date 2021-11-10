@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <div v-if="isGuest" class="navbar-nav secondary-nav register-nav">
+            <div v-if="isGuest" class="navbar-nav register-nav">
                 <div class="nav-item">
                     <router-link class="nav-link" :to="{name: 'register'}">
                         Register
@@ -203,14 +203,23 @@ export default {
     padding-left: $navbar-padding-left * 2;
     padding-top: $navbar-padding-top * 0.5;
 }
+.nav-item.router-link-exact-active {
+    background-color: $very-dark-blue;
+}
 @media (min-width: 768px) {
     .nav-item {
-        margin-top: 0;
-    }
-    /* Making the active state of the primary nav links look right. */
-    .navbar-nav .nav-item {
+        padding-bottom: $navbar-padding-bottom-md;
+        padding-top: $navbar-padding-top-md;
         padding-left: 2vw;
         padding-right: 2vw;
+    }
+    /* The primary nav links should be a bit larger on larger screens */
+    .primary-nav {
+        font-size: 2rem;
+    }
+
+    .secondary-nav > *:last-child {
+        padding-right: $navbar-padding-right-md;
     }
 }
 
@@ -223,33 +232,30 @@ export default {
     line-height: $navbar-content-height;
 }
 
-/* The selector has to be this specific to override the styling for .nav-link. */
-.navbar-nav > .nav-item > .nav-link {
-    color: $mostly-black-blue;
-    font-weight: bold;
-    opacity: 1;
-    padding: 0;
-}
-.navbar-nav > .nav-item > .nav-link:hover {
-    color: $mostly-black-blue-hover;
+/* Styling for the links in the navbar. */
+.navbar-nav {
+    /* The selectors have to be this specific to override the styling for .nav-link. */
+    > .nav-item > .nav-link {
+        color: $mostly-black-blue;
+        font-weight: bold;
+        opacity: 1;
+        padding: 0;
+    }
+    > .nav-item > .nav-link:hover {
+        color: $mostly-black-blue-hover;
+    }
+
+    > .nav-item.router-link-exact-active > .nav-link {
+        color: $mostly-white-gray;
+    }
+    > .nav-item.router-link-exact-active > .nav-link:hover {
+        color: $very-light-gray;
+    }
 }
 
 /* The search & login icons are a bit too large compared to the text if they have the same font size. */
 .secondary-nav .nav-link > svg {
     font-size: 1.25rem;
-}
-
-.primary-nav .nav-item.router-link-exact-active {
-    background-color: $very-dark-blue;
-}
-.primary-nav .nav-item.router-link-exact-active .nav-link {
-    color: $mostly-white-gray;
-}
-@media (min-width: 768px) {
-    /* The primary nav links should be a bit larger on larger screens */
-    .primary-nav {
-        font-size: 2rem;
-    }
 }
 
 /* Rounded profile picture. */
