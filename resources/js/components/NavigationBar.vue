@@ -153,15 +153,13 @@ export default {
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_layout.scss';
 
-/* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
- * background to encompass the whole navbar.
- */
 .navbar {
+    font-size: 1.5rem;
+    /* The free space from any navbar content to the top and bottom is set via the content's padding or margin to allow
+     * the primary nav-items' active state background to encompass the whole navbar.
+     */
     margin: 0;
-    padding-bottom: $navbar-padding-bottom;
-    padding-left: $navbar-padding-left;
-    padding-right: $navbar-padding-right;
-    padding-top: $navbar-padding-top;
+    padding: 0;
     width: 100vw;
     z-index: $navbar-z-index;
 }
@@ -171,30 +169,49 @@ export default {
         position: fixed;
     }
 }
+
+/* This defines the free space around the always-visible items in the nav bar, the SDash logo and the burger button. */
+.navbar-brand,
+.navbar-toggler {
+    margin-bottom: $navbar-padding-bottom;
+    margin-top: $navbar-padding-top;
+    padding: 0;
+}
+.navbar-brand {
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: $navbar-padding-left;
+    margin-right: 0;
+}
+.navbar-toggler {
+    font-size: 2rem;
+    margin-left: 0;
+    margin-right: $navbar-padding-right;
+}
 @media (min-width: 768px) {
-    /* Increase the amount of empty space on larger screens. */
-    .navbar {
-        margin: 0;
-        padding-bottom: $navbar-padding-bottom-md;
-        padding-left: $navbar-padding-left-md;
-        padding-right: $navbar-padding-right-md;
-        padding-top: $navbar-padding-top-md;
+    .navbar-brand {
+        margin-bottom: $navbar-padding-bottom-md;
+        margin-left: $navbar-padding-left-md;
+        margin-top: $navbar-padding-top-md;
     }
 }
 
+/* The nav-items start out in the collapsible section and should be slightly indented compared to the SDash logo. */
 .nav-item {
-    margin-top: 2rem;
+    margin: 0;
+    padding-bottom: $navbar-padding-bottom * 0.5;
+    padding-left: $navbar-padding-left * 2;
+    padding-top: $navbar-padding-top * 0.5;
 }
 @media (min-width: 768px) {
     .nav-item {
         margin-top: 0;
     }
-}
-
-.navbar-brand {
-    margin-right: 0;
-    font-size: 1rem;
-    cursor: pointer;
+    /* Making the active state of the primary nav links look right. */
+    .navbar-nav .nav-item {
+        padding-left: 2vw;
+        padding-right: 2vw;
+    }
 }
 
 /* height == line-height to vertically center the text inside the nav-links. */
@@ -217,34 +234,22 @@ export default {
     color: $mostly-black-blue-hover;
 }
 
-.navbar-toggler {
-    font-size: 2rem;
+/* The search & login icons are a bit too large compared to the text if they have the same font size. */
+.secondary-nav .nav-link > svg {
+    font-size: 1.25rem;
 }
-.navbar-nav {
-    font-size: 1.5rem;
+
+.primary-nav .nav-item.router-link-exact-active {
+    background-color: $very-dark-blue;
+}
+.primary-nav .nav-item.router-link-exact-active .nav-link {
+    color: $mostly-white-gray;
 }
 @media (min-width: 768px) {
     /* The primary nav links should be a bit larger on larger screens */
     .primary-nav {
         font-size: 2rem;
     }
-}
-
-/* The search & login icons are a bit too large compared to the text if they have the same font size. */
-.secondary-nav .nav-link > svg {
-    font-size: 1.25rem;
-}
-
-/* Making the active state of the primary nav links look right. */
-.navbar-nav .nav-item {
-    padding-left: 2vw;
-    padding-right: 2vw;
-}
-.primary-nav .nav-item.router-link-exact-active {
-    background-color: $very-dark-blue;
-}
-.primary-nav .nav-item.router-link-exact-active .nav-link {
-    color: white;
 }
 
 /* Rounded profile picture. */
