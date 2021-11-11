@@ -1,6 +1,5 @@
 describe('SDash Homepage', function() {
-  const url_homepage = 'http://localhost:8080/'
-  const homepage = (browser) => browser.url(url_homepage)
+  const homepage = (browser) => browser.url(browser.launchUrl)
 
   test('check that the basic navigation links & the search bar are present', function(browser) {
     homepage(browser)
