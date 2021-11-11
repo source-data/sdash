@@ -399,14 +399,10 @@ export default {
         }
     },
     created() {
-        this.$store.commit("clearLoadedPanels");
-        this.$store.commit("updateExpandedPanelId");
-        this.$store.commit("clearExpandedPanelDetail");
         this.$store.commit("clearSearchCriteria");
         this.$store.commit("setSearchMode", "group");
         if (this.$route.query.search)
             this.$store.commit("setSearchString", this.$route.query.search);
-        this.$store.commit("setPanelLoadingState", true);
         this.fetchCurrentGroup(this.group_id);
     },
 
@@ -428,7 +424,14 @@ export default {
         isSidebarExpanded(newStatus) {
             localStorage.setItem("isSidebarExpanded", newStatus);
         },
+        group_id() {
+            this.fetchCurrentGroup(this.group_id);
+        },
         currentGroup() {
+            this.$store.commit("clearLoadedPanels");
+            this.$store.commit("updateExpandedPanelId");
+            this.$store.commit("clearExpandedPanelDetail");
+            this.$store.commit("setPanelLoadingState", true);
             this.fetchPanels();
         }
     }
