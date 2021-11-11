@@ -5,19 +5,22 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    # Setup steps
     - uses: actions/checkout@v2
     - run: cp .env.ci .env
-    - uses: ./.github/actions/build-backend
+    - uses: ./.github/actions/setup-backend
     - uses: ./.github/actions/build-frontend
       with:
         env_file: .env.ci
 
+    # Backend tests
     - name: Run backend tests
       run: php artisan test
 
-    - name: Start the server for the frontend tests
+    # End-to-end tests
+    - name: Start the server for the end-to-end tests
       run: php artisan serve --port 8080 &
-    - name: Run frontend tests
+    - name: Run end-to-end tests
       run: npx nightwatch --headless --env firefox,chrome
 
   release:
