@@ -6,10 +6,14 @@ jobs:
 
     steps:
     # Setup steps
-    - uses: actions/checkout@v2
-    - run: cp .env.ci .env
-    - uses: ./.github/actions/setup-backend
-    - uses: ./.github/actions/build-frontend
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .env file
+      run: cp .env.ci .env
+    - name: Setup backend
+      uses: ./.github/actions/setup-backend
+    - name: Setup & build frontend
+      uses: ./.github/actions/build-frontend
       with:
         env_file: .env.ci
 
@@ -28,9 +32,11 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-    - uses: ./.github/actions/release-frontend
+    - name: Release frontend build
+      uses: ./.github/actions/release-frontend
       with:
         env_file: .env.dev
         tag: dev
