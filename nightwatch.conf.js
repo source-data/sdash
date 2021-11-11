@@ -1,10 +1,10 @@
 const dotenv = require("dotenv")
 dotenv.config()
 
-const output_folder = "tests/js/integration/output"
+const output_folder = "tests/e2e/output"
 
 module.exports = {
-    src_folders: ["tests/js/integration"],
+    src_folders: ["tests/e2e"],
     output_folder: output_folder,
 
     // Common configuration options for the webdriver
