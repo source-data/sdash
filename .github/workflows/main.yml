@@ -39,5 +39,6 @@ jobs:
       uses: ./.github/actions/release-frontend
       with:
         env_file: .env.dev
+        release_token: ${{ secrets.GITHUB_TOKEN }}
         tag: dev
         allow_override: true

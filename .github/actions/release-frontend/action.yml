@@ -5,6 +5,9 @@ inputs:
   env_file:
     description: Path to the environment file used during the build.
     required: true
+  release_token:
+    description: The token that allows releasing on Github.
+    required: true
   tag:
     description: The tag under which the frontend build is released.
     required: true
@@ -20,7 +23,7 @@ runs:
         env_file: ${{ inputs.env_file }}
     - uses: meeDamian/github-release@2.0
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ inputs.release_token }}
         tag: ${{ inputs.tag }}
         allow_override: ${{ inputs.allow_override }}
         files: public/
