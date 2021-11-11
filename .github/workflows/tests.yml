@@ -1,6 +1,6 @@
 name: Tests
 
-on: push
+on: [push, pull_request]
 
 env:
   DB_NAME: laravel_db
@@ -10,97 +10,60 @@ env:
   DB_ROOT_PASSWORD: root
 
 jobs:
-  build-frontend:
+  tests:
     runs-on: ubuntu-18.04
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    # MySQL is included in the virtual environment:
+    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
+    - name: Start MySQL
+      run: sudo systemctl start mysql.service
 
-    - uses: './.github/actions/setup-frontend'
+    - name: Start Redis
+      uses: supercharge/redis-github-action@1.2.0
       with:
-        node-version: 14
+        redis-version: 6
 
-    - name: Build frontend
-      run: ENV_FILE=.env.ci npm run production
-
-    - name: Store frontend build output
-      uses: actions/upload-artifact@v2
+    - name: Set up PHP
+      uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
-        name: frontend
-        path: public
-        retention-days: 1
+        php-version: 7.4
 
-  test-backend:
-    strategy:
-      matrix:
-        ubuntu-version: [18.04]
-        redis-version: [6]
-        php-version: [7.4]
-
-    runs-on: ubuntu-${{ matrix.ubuntu-version }}
-    needs: build-frontend
-
-    steps:
     - name: Checkout
       uses: actions/checkout@v2
 
     - name: Copy .env
       run: cp .env.ci .env
-  
-    - uses: './.github/actions/setup-backend'
-      with:
-        redis-version: ${{ matrix.redis-version }}
-        php-version: ${{ matrix.php-version }}
-        db_name: ${{ env.DB_NAME }}
-        db_user: ${{ env.DB_USER }}
-        db_password: ${{ env.DB_PASSWORD }}
-        db_root_user: ${{ env.DB_ROOT_USER }}
-        db_root_password: ${{ env.DB_ROOT_PASSWORD }}
 
-    - name: Fetch frontend build artifact
-      uses: actions/download-artifact@v2
+    - name: Install Backend Dependencies
+      # This action has caching built in
+      uses: ramsey/composer-install@v1
+
+    - name: Create Database and User
+      run: mysql -e "CREATE DATABASE ${{ env.DB_NAME }}; CREATE USER '${{ env.DB_USER }}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASSWORD }}'; GRANT ALL ON ${{ env.DB_NAME }}.* TO '${{ env.DB_USER }}'@'localhost';" -u${{ env.DB_ROOT_USER }} -p${{ env.DB_ROOT_PASSWORD }}
+
+    - name: Migrate Database
+      run: php artisan migrate
+
+    - name: Generate key and passport encryption keys
+      run: |
+        php artisan key:generate
+        php artisan passport:install
+
+    - name: Set up npm
+      uses: actions/setup-node@v2
       with:
-        name: frontend
+        node-version: 14
+        cache: 'npm'
+
+    - name: Install Frontend Dependencies
+      run: npm install --save-dev
+
+    - name: Build frontend
+      run: npm run production
 
     - name: Run backend tests
       run: php artisan test
-
-  test-frontend:
-    strategy:
-      matrix:
-        ubuntu-version: [18.04]
-        redis-version: [6]
-        php-version: [7.4]
-        node-version: [14]
-
-    runs-on: ubuntu-${{ matrix.ubuntu-version }}
-    needs: build-frontend
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Copy .env
-      run: cp .env.ci .env
-  
-    - uses: './.github/actions/setup-backend'
-      with:
-        redis-version: ${{ matrix.redis-version }}
-        php-version: ${{ matrix.php-version }}
-        db_name: ${{ env.DB_NAME }}
-        db_user: ${{ env.DB_USER }}
-        db_password: ${{ env.DB_PASSWORD }}
-        db_root_user: ${{ env.DB_ROOT_USER }}
-        db_root_password: ${{ env.DB_ROOT_PASSWORD }}
-
-    - uses: './.github/actions/setup-frontend'
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Fetch frontend build artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: frontend
 
     - name: Start the server for the frontend tests
       run: php artisan serve --port 8080 &
