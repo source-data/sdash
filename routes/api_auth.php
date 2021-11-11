@@ -19,4 +19,5 @@ Route::post('/login', 'API\Authentication\LoginController@login')->name('login')
 Route::post('/logout', 'API\Authentication\LoginController@logout');
 Route::post('/users', 'API\Authentication\RegistrationController@register');
 Route::post('/users/password/reset', 'API\Authentication\ForgottenPasswordController@sendResetLinkEmail');
+Route::post('emails', 'API\Authentication\EmailVerificationController@resend')->name('verification.resend');
 Route::post('/users/password', 'API\Authentication\ResetPasswordController@reset');

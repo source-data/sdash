@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-md bg-light">
         <router-link class="navbar-brand" :to="{ name: 'dashboard'}">
-            <img src="/images/SDash-Logo.svg" alt="SDash Logo" loading="lazy">
+            <img src="/images/logos/sdash.svg" alt="SDash" loading="lazy">
         </router-link>
 
         <button
@@ -70,7 +70,7 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
-                        <router-link class="dropdown-item" :to="{path: 'user/' + user.id}">
+                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_id: user.id }}">
                             Profile
                         </router-link>
 
@@ -84,13 +84,13 @@
                 </div>
             </div>
 
-            <div v-if="isGuest" class="navbar-nav secondary-nav register-nav">
+            <div v-if="isGuest" class="navbar-nav register-nav">
                 <div class="nav-item">
-                    <a class="nav-link" href="/register">
+                    <router-link class="nav-link" :to="{name: 'register'}">
                         Register
                         <br>
                         <span class="register-secondary-text invisible">to contribute</span>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -151,28 +151,76 @@ export default {
 <style lang="scss" scoped>
 @use "sass:math";
 @import 'resources/sass/_colors.scss';
+@import 'resources/sass/_layout.scss';
 
-$navbar-content-height: 3rem;
-$navbar-padding-bottom: 2rem;
-$navbar-padding-left: 4vw;
-$navbar-padding-right: 2vw;
-$navbar-padding-top: 2rem;
-
-/* The free space from any navbar content to the top and bottom is set this way to allow the nav-items' active state
- * background to encompass the whole navbar.
- */
 .navbar {
+    font-size: 1.5rem;
+    /* The free space from any navbar content to the top and bottom is set via the content's padding or margin to allow
+     * the primary nav-items' active state background to encompass the whole navbar.
+     */
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    z-index: $navbar-z-index;
+}
+@media (min-height: 500px) {
+    /* Make the navbar stay fixed while scrolling on screens with enough height */
+    .navbar {
+        position: fixed;
+    }
+}
+
+/* This defines the free space around the always-visible items in the nav bar, the SDash logo and the burger button. */
+.navbar-brand,
+.navbar-toggler {
+    margin-bottom: $navbar-padding-bottom;
+    margin-top: $navbar-padding-top;
     padding: 0;
 }
-.nav-item,
 .navbar-brand {
-    padding-top: $navbar-padding-bottom;
-    padding-bottom: $navbar-padding-top;
-}
-.navbar-brand {
+    cursor: pointer;
+    font-size: 1rem;
     margin-left: $navbar-padding-left;
     margin-right: 0;
-    font-size: 1rem;
+}
+.navbar-toggler {
+    font-size: 2rem;
+    margin-left: 0;
+    margin-right: $navbar-padding-right;
+}
+@media (min-width: 768px) {
+    .navbar-brand {
+        margin-bottom: $navbar-padding-bottom-md;
+        margin-left: $navbar-padding-left-md;
+        margin-top: $navbar-padding-top-md;
+    }
+}
+
+/* The nav-items start out in the collapsible section and should be slightly indented compared to the SDash logo. */
+.nav-item {
+    margin: 0;
+    padding-bottom: $navbar-padding-bottom * 0.5;
+    padding-left: $navbar-padding-left * 2;
+    padding-top: $navbar-padding-top * 0.5;
+}
+.nav-item.router-link-exact-active {
+    background-color: $very-dark-blue;
+}
+@media (min-width: 768px) {
+    .nav-item {
+        padding-bottom: $navbar-padding-bottom-md;
+        padding-top: $navbar-padding-top-md;
+        padding-left: 2vw;
+        padding-right: 2vw;
+    }
+    /* The primary nav links should be a bit larger on larger screens */
+    .primary-nav {
+        font-size: 2rem;
+    }
+
+    .secondary-nav > *:last-child {
+        padding-right: $navbar-padding-right-md;
+    }
 }
 
 /* height == line-height to vertically center the text inside the nav-links. */
@@ -184,67 +232,35 @@ $navbar-padding-top: 2rem;
     line-height: $navbar-content-height;
 }
 
-/* The selector has to be this specific to override the styling for .nav-link. */
-.navbar-nav > .nav-item > .nav-link {
-    color: $mostly-black-blue;
-    font-weight: bold;
-    opacity: 1;
-    padding: 0;
-}
-.navbar-nav > .nav-item > .nav-link:hover {
-    color: $mostly-black-blue-hover;
+/* Styling for the links in the navbar. */
+.navbar-nav {
+    /* The selectors have to be this specific to override the styling for .nav-link. */
+    > .nav-item > .nav-link {
+        color: $mostly-black-blue;
+        font-weight: bold;
+        opacity: 1;
+        padding: 0;
+    }
+    > .nav-item > .nav-link:hover {
+        color: $mostly-black-blue-hover;
+    }
+
+    > .nav-item.router-link-exact-active > .nav-link {
+        color: $mostly-white-gray;
+    }
+    > .nav-item.router-link-exact-active > .nav-link:hover {
+        color: $very-light-gray;
+    }
 }
 
-/* The secondary nav links' text should be slightly smaller than the primary ones. */
-.navbar-toggler,
-.primary-nav {
-    font-size: 2rem;
-}
-.secondary-nav {
-    font-size: 1.5rem;
-    margin-right: $navbar-padding-right;
-}
 /* The search & login icons are a bit too large compared to the text if they have the same font size. */
 .secondary-nav .nav-link > svg {
     font-size: 1.25rem;
 }
 
-
-/* Making the active state of the primary nav links look right. */
-.navbar-nav .nav-item {
-    padding-left: 2vw;
-    padding-right: 2vw;
-}
-.primary-nav .nav-item.router-link-exact-active {
-    background-color: $very-dark-blue;
-}
-.primary-nav .nav-item.router-link-exact-active .nav-link {
-    color: white;
-}
-
 /* Rounded profile picture. */
 img.profile-picture {
     border-radius: 50%;
-}
-
-@media (max-width: 767px) {
-    /* Reduce the amount of empty space on smaller screens. */
-    .navbar-brand {
-        margin-left: math.div($navbar-padding-left, 2);
-    }
-    .nav-item,
-    .navbar-brand {
-        padding-bottom: math.div($navbar-padding-bottom, 2);
-        padding-top: math.div($navbar-padding-top, 2);
-    }
-
-    /* That the secondary nav links are smaller doesn't catch the eye as much when they're far apart horizontally with
-     * a bigger screen. Once they're right above each other in the collapsible menu that we're using on small screens
-     * they absolutely need to have the same font size.
-     */
-    .primary-nav {
-        font-size: 1.5rem;
-    }
 }
 
 /* If we're in the big-screen view, the link to the registration page is positioned just below the navbar on the right.
@@ -255,17 +271,18 @@ img.profile-picture {
         background-color: $vivid-orange;
         border-bottom-left-radius: 0.75rem;
         border-bottom-right-radius: 0.75rem;
-        margin-right: 1vw; /* This roughly aligns the registration link with the login link. */
+        margin-right: $navbar-padding-right-md - 1; /* This roughly aligns the registration link with the login link. */
         padding: 0;
         position: absolute;
         /* The registration link is positioned right below the navbar. For that we have to use absolute positioning and
          * calculate the correct positioning relative to the navbar itself.
          */
-        top: $navbar-padding-top + $navbar-content-height + $navbar-padding-bottom;
+        top: $navbar-height-md;
         right: 0;
         z-index: 10; /* Lets the registration link appear in front of the panels. */
     }
     .register-nav .nav-item {
+        padding-bottom: $navbar-padding-bottom-md;
         padding-top: 0.5rem;
     }
     .register-secondary-text {

@@ -3,7 +3,7 @@
         <b-badge pill variant="info" class="sd-group-user--admin-badge" v-if="role=='admin'">Admin</b-badge>
         <avatar :username="user.firstname + ' ' + user.surname" :size="32" class="sd-group-user-avatar"></avatar>
         <div class="sd-group-user--info-wrapper">
-            <router-link :to="{path: '/user/' + user.id}">
+            <router-link :to="{name: 'user', params: {user_id: user.id}}">
                 <h4 class="sd-group-user--name">{{ user.firstname }} {{ user.surname }}</h4>
             </router-link>
             <p class="sd-group-user--affiliation">

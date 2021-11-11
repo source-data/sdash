@@ -130,6 +130,7 @@ export default {
 
     computed: {
         ...mapGetters([
+            "apiUrls",
             "currentUser",
             "expandedPanelId",
             "hasPanelDetail",
@@ -154,12 +155,7 @@ export default {
             return `${nameFirstAuthor} [...] ${nameLastAuthor}`;
         },
         thumbnailUrl() {
-            return (
-                "/panels/" +
-                this.thisPanel.id +
-                "/image/thumbnail?v=" +
-                this.thisPanel.version
-            );
+            return this.apiUrls.panelThumbnail(this.thisPanel);
         },
         thisPanel() {
             let thisPanel = this.loadedPanels.filter(
@@ -264,7 +260,6 @@ $panel-text-margins: 1.5rem;
 .sd-grid-item {
     box-sizing: border-box;
     height: $panel-thumbnail-height + $panel-title-max-height + $panel-authors-max-height + $panel-text-margins;
-    margin: 10px 30px;
     transition: all 0.3s ease-in;
     outline: 1px red;
 }
@@ -279,9 +274,6 @@ $panel-text-margins: 1.5rem;
     cursor: pointer;
     height: $panel-thumbnail-height;
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
 }
 

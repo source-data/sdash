@@ -1,23 +1,27 @@
 <template>
-    <article class="sd-panel-grid-container">
-        <ul class="sd-panel-grid-container--inner list-unstyled py-4">
-            <panel-listing-grid-item v-for="panel in loadedPanels" :key="panel.id" :panel-id="panel.id"></panel-listing-grid-item>
+    <div>
+        <ul class="panel-grid list-unstyled">
+            <panel-listing-grid-item
+                v-for="panel in loadedPanels"
+                :key="panel.id"
+                :panel-id="panel.id"
+            ></panel-listing-grid-item>
         </ul>
 
-    <infinite-loading @infinite="addPanels">
-        <div slot="spinner">
-            <b-container>
-                <b-row>
-                    <b-col class="text-center">
-                        <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
-                    </b-col>
-                </b-row>
-            </b-container>
-        </div>
-        <div slot="no-more" class="font-weight-bold text-muted text-center">All results loaded</div>
-        <div slot="no-results" class="font-weight-bold text-muted text-center">No more results</div>
-    </infinite-loading>
-    </article>
+        <infinite-loading @infinite="addPanels">
+            <div slot="spinner">
+                <b-container>
+                    <b-row>
+                        <b-col class="text-center">
+                            <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </div>
+            <div slot="no-more" class="font-weight-bold text-muted text-center">All results loaded</div>
+            <div slot="no-results" class="font-weight-bold text-muted text-center">No more results</div>
+        </infinite-loading>
+    </div>
 </template>
 
 <script>
@@ -67,33 +71,19 @@ export default {
         ...mapGetters([
             'loadedPanels',
             'hasLoadedAllResults',
-            'isLoadingPanels',
-            'isInfiniteScrollPaused',
         ]),
-        imageThumbnailUrl(id){
-            return "/panels/" + id + "/image/thumbnail"
-        }
-
     }
 
 }
 </script>
 
-<style scoped lang="scss">
-    .sd-panel-grid-container {
-        width: 100%;
-    }
-
-    .sd-panel-grid-container--inner {
-        display:flex;
-        position: relative;
-        flex-wrap:wrap;
-		justify-content: stretch;
-        width:100%;
-        margin:0 auto;
-    }
-
-    .sd-panel-grid--info-bar {
-        border: solid 1px red;
-    }
+<style lang="scss" scoped>
+.panel-grid {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    position: relative;
+    width: 100%;
+}
 </style>

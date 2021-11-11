@@ -3,7 +3,7 @@
     <b-container class="mt-5">
         <b-row align-h="center">
             <b-col cols md="6">
-                <b-card header="Log in">
+                <b-card bg-variant="dark" text-variant="light" header="Log in">
                     <b-form
                         @submit.prevent="sendLogin"
                     >
@@ -35,7 +35,7 @@
                             <b-form-input id="login-password" v-model="password"
                             autocomplete="current-password"
                             :state="passwordCheck"                             type="password"
-                            debounce="500" trim>
+                            debounce="300" trim>
                             </b-form-input>
                         </b-form-group>
                         <b-form-group
@@ -66,6 +66,14 @@
 
         </b-row>
     </b-container>
+    <b-modal
+    centered
+    v-model="showEmailResend"
+    hide-footer
+    title="Please confirm your email address"
+    >
+    <EmailConfirmationNotice></EmailConfirmationNotice>
+    </b-modal>
   </section>
 </template>
 
@@ -73,15 +81,14 @@
 
 import AuthService from '@/services/AuthService';
 import EmailFormatValidator from '@/services/EmailFormatValidator';
+import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice';
 import store from '@/stores/store';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
 
     name: 'LoginForm',
-    components: { },
-    props: [''],
-
+    components: { EmailConfirmationNotice },
     data(){
 
         return {
@@ -96,7 +103,7 @@ export default {
 
     }, /* end of data */
     computed: {
-        ...mapGetters(['currentUser']),
+        ...mapGetters(['currentUser', 'showEmailConfirmationNotice', 'isLoggedIn']),
         emailCheck(){
             this.emailFeedback = '';
             this.loginFeedback = '';
@@ -113,8 +120,8 @@ export default {
             this.passwordFeedback = '';
             this.loginFeedback = '';
             if(!this.password) return null;
-            if(this.password.length < 6) {
-                this.passwordFeedback = 'Passwords need at least 6 characters';
+            if(this.password.length < 8) {
+                this.passwordFeedback = 'Passwords need at least 8 characters';
                 return false;
             }
             return true;
@@ -127,11 +134,19 @@ export default {
         },
         showInvalidFormFeedback() {
             return this.loginFeedback.length > 0;
+        },
+        showEmailResend: {
+            get() {
+                return this.showEmailConfirmationNotice;
+            },
+            set(value) {
+                this.setEmailConfirmationNotice(value);
+            },
         }
     },
 
     methods:{ //run as event handlers, for example
-
+        ...mapMutations(['setEmailConfirmationNotice']),
         sendLogin() {
             this.loading = true;
             let destination = this.$route.query.next || '/';
@@ -140,6 +155,7 @@ export default {
                 this.$snotify.success(loginData.MESSAGE, "OK!");
                 store.dispatch('fetchCurrentUser')
                     .then(() => {
+                        this.setEmailConfirmationNotice(false);
                         this.$router.push({path:destination}).catch(error => {});
                     })
                     .catch((error) => {
@@ -148,6 +164,9 @@ export default {
                     });
             }).catch((errorData) => { console.log(errorData);
                 this.loading = false;
+                if(errorData.STATUS && errorData.STATUS === '403') {
+                    this.setEmailConfirmationNotice(true);
+                }
 
                 if(errorData.message) {
                     this.$snotify.error(errorData.message, "Login Failed");

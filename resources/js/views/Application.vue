@@ -4,15 +4,15 @@
   every time the user changes. This resets, for example, all the panels that are being shown. See this question
   for details on using :key like this: https://stackoverflow.com/a/54367510/3385618
  -->
-<div id="sdash-wrapper" :key="currentUser.id">
-    <header>
-        <navigation-bar :user="currentUser"></navigation-bar>
-    </header>
-    <EmailConfirmationNotice v-if="showEmailConfirmationNotice"></EmailConfirmationNotice>
+<div id="sd-wrapper" :key="currentUser.id">
+    <navigation-bar :user="currentUser"></navigation-bar>
+
     <!-- utility component for notifications-->
     <vue-snotify></vue-snotify>
+
     <!-- widget for providing feedback to us -->
     <feedback-widget v-if="isLoggedIn"></feedback-widget>
+
     <!-- loading placeholder while checking for login -->
     <div v-if="!applicationIsLoaded" class="text-center">
         <b-spinner
@@ -22,12 +22,22 @@
             style="width: 4rem; height: 4rem;"
         ></b-spinner>
     </div>
-    <!-- vue router mounts components here -->
-    <router-view v-if="applicationIsLoaded"></router-view>
 
-    <b-modal id="sd-consent-modal" ref="sd-consent-modal" size="lg">
+    <!-- vue router mounts components here -->
+    <main id="sd-content" class="bg-dark text-light">
+        <router-view v-if="applicationIsLoaded"></router-view>
+    </main>
+
+    <b-modal
+        id="sd-consent-modal"
+        ref="sd-consent-modal"
+        size="lg"
+        content-class="bg-dark text-light"
+        footer-border-variant="dark"
+        header-border-variant="dark"
+    >
         <template #modal-header>
-            <h5 class="modal-title">Privacy Notification</h5>
+            <h5 class="modal-title text-light">Privacy Notification</h5>
         </template>
         <p>This site is designed to facilitate the submission and sharing of scientific figures.
             It collects Personally Identifiable Information such as the names, e-mail addresses,
@@ -65,7 +75,6 @@
 <script>
 import Axios from "axios"
 import NavigationBar from '@/components/NavigationBar'
-import EmailConfirmationNotice from '@/components/authentication/EmailConfirmationNotice'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 import FeedbackWidget from '@/components/FeedbackWidget';
@@ -73,7 +82,7 @@ import FeedbackWidget from '@/components/FeedbackWidget';
 export default {
 
     name: 'Application',
-    components: {NavigationBar, EmailConfirmationNotice, FeedbackWidget, },
+    components: {NavigationBar, FeedbackWidget, },
     data() {
         return {
             confCheckbox1: false,
@@ -86,11 +95,7 @@ export default {
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
-            'hasVerifiedEmail',
         ]),
-        showEmailConfirmationNotice(){
-            return this.isLoggedIn && !this.hasVerifiedEmail;
-        },
         hasAcceptedTerms() {
             return this.confCheckbox1 && this.confCheckbox2 && this.confCheckbox3;
         },
@@ -129,5 +134,36 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'resources/sass/_layout.scss';
 
+#sd-wrapper {
+    min-height: 100vh;
+}
+#sd-content {
+    min-height: inherit;
+}
+@media (min-height: 500px) {
+    #sd-content {
+        padding-top: $navbar-height;
+    }
+}
+@media (min-width: 768px) {
+    #sd-content {
+        padding-top: $navbar-height-md;
+    }
+}
+
+.sd-view-title {
+    margin: 0;
+    padding-bottom: 2rem;
+    padding-left: 4rem;
+    padding-right: 3rem;
+    padding-top: 2rem;
+}
+.sd-view-content {
+    margin: 0;
+    padding-left: 4rem;
+    padding-right: 3rem;
+    padding-bottom: 2rem;
+}
 </style>

@@ -43,17 +43,28 @@ export default new Vuex.Store({
       return state.showEmailConfirmationNotice;
     },
     apiUrls(state, getters) {
-      var panels, panelDetail;
-      if (getters.isLoggedIn) {
-        panelDetail = id => `/panels/${id}`;
-        panels = getters.searchMode == 'group' ? `/groups/${state.Groups.currentGroup.id}/panels` : "/users/me/panels";
-      } else {
-        panelDetail = id => `/public/panels/${id}`;
-        panels = "/public/panels";
-      }
       return {
-        panels: panels,
-        panelDetail: panelDetail,
+        panels() {
+          if (getters.isLoggedIn) {
+            if (getters.searchMode == 'group') {
+              return `/groups/${state.Groups.currentGroup.id}/panels`;
+            }
+            return "/users/me/panels";
+          }
+          return "/public/panels";
+        },
+        panelDetail(id) {
+          return getters.isLoggedIn ? `/panels/${id}` : `/public/panels/${id}`;
+        },
+        panelThumbnail(panel) {
+          return `/api/public/panels/${panel.id}/image/thumbnail?v=${panel.version}`;
+        },
+        userSearch() {
+          return getters.isLoggedIn ? '/users' : '/public/users';
+        },
+        tagSearch() {
+          return getters.isLoggedIn ? '/tags' : '/public/tags';
+        },
       }
     },
    },
@@ -61,8 +72,8 @@ export default new Vuex.Store({
     toggleLightbox({commit}){
       commit("toggleLightbox")
     },
-    resendEmail({commit}){
-      return Axios.post('emails');
+    resendEmail({commit}, email){
+      return Axios.post('emails', {email});
     },
 
   },

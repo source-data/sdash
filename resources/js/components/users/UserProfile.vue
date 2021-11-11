@@ -2,7 +2,7 @@
     <div>
         <info-bar v-if="user">
             <template v-slot:above-title v-if="isAuthorized">
-                <router-link :to="{path: '/user/' + user.id + '/edit'}" class="sd-edit-icon sd-user-edit-link">
+                <router-link :to="{name: 'useredit', params: {user_id: user.id}}" class="sd-edit-icon sd-user-edit-link">
                     <font-awesome-icon icon="edit" title="Edit user details" />
                     Edit profile
                 </router-link>

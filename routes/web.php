@@ -14,9 +14,7 @@
 // Auth::routes(['verify' => true]);
 
 // Necessary routes for the registration and email verification process
-Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
-// Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-// Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+Route::get('email/verify/{id}/{hash}', 'API\Authentication\EmailVerificationController@verify')->name('verification.verify');
 
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
@@ -31,9 +29,11 @@ Route::get('/panels/{panel}/dar', 'DownloadController@downloadDar');
 Route::get('/panels/{panel}', 'DownloadController@downloadOriginal');
 Route::get('/files/{file}', 'API\FileController@download');
 
+// Allow user to join groups or admin to authorise new members
+Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
+Route::get('/groups/{group}/accept/{token}', 'API\GroupController@acceptUser')->name("group.accept")->middleware('signed');
+
 Route::middleware(['auth:web', 'verified'])->group(function () {
-    Route::get('/groups/{group}/join/{token}', 'API\GroupController@join')->name("group.join")->middleware('signed');
-    Route::get('/groups/{group}/accept/{token}', 'API\GroupController@acceptUser')->name("group.accept")->middleware('signed');
     Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThumbnail');
     Route::get('/panels/{panel}/token/qr', 'API\AccessTokenController@qrCode');
 });

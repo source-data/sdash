@@ -3,7 +3,7 @@
     <b-container class="mt-5">
         <b-row align-h="center">
             <b-col cols sm="10" md="8">
-                <b-card header="Register a new account">
+                <b-card bg-variant="dark" text-variant="light" header="Register a new account">
                     <b-form
                         @submit.prevent="sendRegistration"
                     >
@@ -392,7 +392,7 @@ export default {
                 console.log(response);
                 this.$store.commit('setEmailConfirmationNotice', true);
                 this.$snotify.success("Email confirmation sent.", "Account created.");
-                this.$router.push({path: '/'});
+                this.$router.push({name: 'login'});
             }).catch(error => {
                 window.scroll(0,0);
                 this.formDisabled = false;

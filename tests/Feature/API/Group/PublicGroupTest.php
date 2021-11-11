@@ -37,7 +37,12 @@ class PublicGroupTest extends TestCase
     $this->publicGroup->panels()->attach([$this->privatePanel->id, $this->publicPanel->id]);
   }
 
-  public function testAnUnauthenticatedUserCanOnlySeePublicGroups()
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function an_unauthenticated_user_can_only_view_public_groups()
   {
     $response = $this->getJson('/api/public/groups');
 
@@ -51,7 +56,12 @@ class PublicGroupTest extends TestCase
     $response->assertJsonPath('DATA.0.id', $this->publicGroup->id);
   }
 
-  public function testAnUnauthenticatedUserCanOnlySeePublicPanelInPublicGroups()
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function an_unauthenticated_user_can_only_see_public_panels_in_public_groups()
   {
     $response = $this->getJson('/api/public/groups');
 
@@ -72,7 +82,12 @@ class PublicGroupTest extends TestCase
     $response->assertJsonCount(0, 'DATA.0.public_panels');
   }
 
-  public function testAnUnauthenticatedUserCanRequestTheDetailsOfPublicGroupsPanelsByGroupId()
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function an_unauthenticated_user_can_request_the_details_of_public_groups_using_the_group_id()
   {
     $response = $this->getJson("/api/public/groups/{$this->publicGroup->id}/panels");
 
