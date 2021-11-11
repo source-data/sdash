@@ -35,7 +35,15 @@ const snoptions = {
 }
 
 // Add Vue Bootstrap and Snotify to the global Vue App
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue, {
+  // Set the default popover boundary to viewport. We have lots of popovers that appear inside smaller scrolling
+  // containers (like the sections inside the panel detail view), and these would be positioned strangely because the 
+  // actual default for this property is scrollParent.
+  BPopover: {
+    boundary: 'viewport',
+    placement: 'auto'
+  }
+});
 Vue.use(Snotify, snoptions)
 
 //add toggle button
