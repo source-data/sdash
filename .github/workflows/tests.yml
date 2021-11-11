@@ -46,9 +46,7 @@ jobs:
       run: php artisan migrate
 
     - name: Generate key and passport encryption keys
-      run: |
-        php artisan key:generate
-        php artisan passport:install
+      run: php artisan key:generate
 
     - name: Set up npm
       uses: actions/setup-node@v2
