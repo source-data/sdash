@@ -1,0 +1,26 @@
+name: Build and release the SDash frontend
+description: Builds the SDash frontend with the given env_file and releases the build output under the given tag.
+
+inputs:
+  env_file:
+    description: Path to the environment file used during the build.
+    required: true
+  tag:
+    description: The tag under which the frontend build is released.
+    required: true
+  allow_override:
+    description: Wether to allow overriding an existing tag. false by default.
+    default: false
+
+runs:
+  using: "composite"
+  steps:
+    - uses: './.github/actions/build-frontend'
+      with:
+        env_file: ${{ inputs.env_file }}
+    - uses: meeDamian/github-release@2.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ inputs.tag }}
+        allow_override: ${{ inputs.allow_override }}
+        files: public/

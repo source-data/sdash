@@ -1,5 +1,5 @@
-name: Build frontend
-description: Builds the SDash frontend
+name: Build SDash frontend
+description: Sets up and builds the SDash frontend with the given env_file.
 
 inputs:
   env_file:
@@ -16,7 +16,7 @@ runs:
         cache: 'npm'
 
     - name: Install Frontend dependencies
-      run: npm install --save-dev
+      run: npm install
       shell: bash
 
     - name: Build frontend

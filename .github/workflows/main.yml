@@ -1,0 +1,34 @@
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - run: cp .env.ci .env
+    - uses: ./.github/actions/build-backend
+    - uses: ./.github/actions/build-frontend
+      with:
+        env_file: .env.ci
+
+    - name: Run backend tests
+      run: php artisan test
+
+    - name: Start the server for the frontend tests
+      run: php artisan serve --port 8080 &
+    - name: Run frontend tests
+      run: npx nightwatch --headless --env firefox,chrome
+
+  release:
+    needs: tests
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: ./.github/actions/release-frontend
+      with:
+        env_file: .env.dev
+        tag: dev
+        allow_override: true
