@@ -90,6 +90,20 @@ php artisan test
 
 See also: [Laravel Testing](https://laravel.com/docs/master/http-tests)
 
+### End-to-end testing
+
+Install the dev dependencies to pull in the chromedriver & geckodriver packages:
+
+```
+npm install --save-dev
+```
+
+Start SDash locally, then run the actual tests in Chrome & Firefox:
+
+```
+npx nightwatch --env firefox,chrome
+```
+
 ## API Endpoints Needed
 
 ## User
