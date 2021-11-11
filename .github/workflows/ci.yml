@@ -31,6 +31,7 @@ jobs:
 
   release:
     needs: tests
+    if: ${{ github.ref_name == 'master' }}
     runs-on: ubuntu-18.04
 
     steps:
