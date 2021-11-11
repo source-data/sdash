@@ -3,7 +3,6 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
-require 'recipe/npm.php';
 
 // Project name
 set('application', 'SDash');
@@ -33,21 +32,15 @@ host('dev')
 
 // Tasks
 
-task('npm:compile', function () {
-    run('cd {{release_path}} && npm run production');
-});
-
-//remove node_modules to save space
-task('npm:remove', function () {
-    run('cd {{release_path}} && rm -rf node_modules');
+// fetch frontend resources from github
+task('frontend:fetch', function () {
+    run('cd {{release_path}} && .github/scripts/gh-dl-release.sh source-data/sdash dev public.tgz && rm -rf public/ && tar -xvf public.tgz && rm public.tgz');
 });
 
 // stack together preparatory tasks
 task('sdash:installations', [
+    'frontend:fetch',
     'artisan:migrate',
-    'npm:install',
-    'npm:compile',
-    'npm:remove'
 ]);
 
 // [Optional] if deploy fails automatically unlock.

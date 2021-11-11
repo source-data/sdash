@@ -1,23 +1,14 @@
-name: Tests
+name: Setup SDash backend
+description: Sets up the SDash backend - this includes dependencies, database, caching, ...
 
-on: [push, pull_request]
-
-env:
-  DB_NAME: laravel_db
-  DB_USER: laravel_db_user
-  DB_PASSWORD: laravel_db_password
-  DB_ROOT_USER: root
-  DB_ROOT_PASSWORD: root
-
-jobs:
-  tests:
-    runs-on: ubuntu-18.04
-
-    steps:
+runs:
+  using: "composite"
+  steps:
     # MySQL is included in the virtual environment:
     # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     - name: Start MySQL
       run: sudo systemctl start mysql.service
+      shell: bash
 
     - name: Start Redis
       uses: supercharge/redis-github-action@1.2.0
@@ -29,42 +20,24 @@ jobs:
       with:
         php-version: 7.4
 
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Copy .env
-      run: cp .env.ci .env
-
     - name: Install Backend Dependencies
       # This action has caching built in
       uses: ramsey/composer-install@v1
 
     - name: Create Database and User
+      env:
+        DB_NAME: laravel_db
+        DB_USER: laravel_db_user
+        DB_PASSWORD: laravel_db_password
+        DB_ROOT_USER: root
+        DB_ROOT_PASSWORD: root
       run: mysql -e "CREATE DATABASE ${{ env.DB_NAME }}; CREATE USER '${{ env.DB_USER }}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.DB_PASSWORD }}'; GRANT ALL ON ${{ env.DB_NAME }}.* TO '${{ env.DB_USER }}'@'localhost';" -u${{ env.DB_ROOT_USER }} -p${{ env.DB_ROOT_PASSWORD }}
+      shell: bash
 
     - name: Migrate Database
       run: php artisan migrate
+      shell: bash
 
     - name: Generate key and passport encryption keys
       run: php artisan key:generate
-
-    - name: Set up npm
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
-        cache: 'npm'
-
-    - name: Install Frontend Dependencies
-      run: npm install --save-dev
-
-    - name: Build frontend
-      run: npm run production
-
-    - name: Run backend tests
-      run: php artisan test
-
-    - name: Start the server for the frontend tests
-      run: php artisan serve --port 8080 &
-
-    - name: Run frontend tests
-      run: npx nightwatch --headless --env firefox,chrome
+      shell: bash

@@ -1,0 +1,47 @@
+name: Continuous Integration
+
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-18.04
+
+    steps:
+    # Setup steps
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .env file
+      run: cp .env.ci .env
+    - name: Setup backend
+      uses: ./.github/actions/setup-backend
+    - name: Setup & build frontend
+      uses: ./.github/actions/build-frontend
+      with:
+        env_file: .env.ci
+
+    # Backend tests
+    - name: Run backend tests
+      run: php artisan test
+
+    # End-to-end tests
+    - name: Start the server for the end-to-end tests
+      run: php artisan serve --port 8080 &
+    - name: Run end-to-end tests
+      run: npx nightwatch --headless --env firefox,chrome
+
+  release:
+    needs: tests
+    if: ${{ github.ref_name == 'master' }}
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Release frontend build
+      uses: ./.github/actions/release-frontend
+      with:
+        env_file: .env.dev
+        release_token: ${{ secrets.GITHUB_TOKEN }}
+        tag: dev
+        allow_override: true
