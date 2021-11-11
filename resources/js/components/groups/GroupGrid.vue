@@ -20,7 +20,7 @@
 
                     <div>
                         <h6 class="group-title text-md">
-                            <router-link class="text-light" :to="{ path: '/group/' + group.id }">
+                            <router-link class="text-light" :to="{name: 'group', params: {group_id: group.id}}">
                                 {{ group.name }}
                             </router-link>
                         </h6>

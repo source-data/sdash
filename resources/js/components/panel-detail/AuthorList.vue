@@ -44,7 +44,7 @@
                     </ul>
 
                     <p v-if="author.origin==='users'" class="mt-2 mb-1">
-                        <router-link :to="{ path: '/user/' + author.id }" target="_blank">
+                        <router-link :to="{name: 'user', params: {user_id: author.id}}" target="_blank">
                             View Full Profile
 
                             <font-awesome-icon icon="external-link-alt" size="sm" />

@@ -177,7 +177,7 @@
                                 <span v-if="group.is_public">
                                     <font-awesome-icon icon="lock-open" title="Public group" /> |
                                 </span>
-                                <router-link :to="{ path: '/group/' + group.id }"
+                                <router-link :to="{name: 'group', params: {group_id: group.id}}"
                                     ><font-awesome-icon icon="external-link-alt" />
                                     Go</router-link
                                 ></b-button
@@ -190,7 +190,7 @@
                         >
                             <b-card-body>
                                 <b-card-text>
-                                    <router-link :to="{ path: '/group/' + group.id }"
+                                    <router-link :to="{name: 'group', params: {group_id: group.id}}"
                                         >Go to group</router-link
                                     >
                                 </b-card-text>
