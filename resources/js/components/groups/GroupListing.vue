@@ -18,20 +18,21 @@
             <div class="group-header-image">
                 <img src="/images/group_cover_thumbnail.jpg" alt="The group header image">
 
-                <b-button
-                    v-if="!isGroupMember && !hasRequestedMembership"
-                    variant="outline-secondary"
-                    class="my-2"
-                    :disabled="sendingMembershipRequest"
-                    @click="applyToJoin"
-                >
-                    <font-awesome-icon icon="plus" />
-                    Apply to Join
-                </b-button>
+                <div class="apply-to-join">
+                    <b-button
+                        v-if="!isGroupMember && !hasRequestedMembership"
+                        variant="primary"
+                        :disabled="sendingMembershipRequest"
+                        @click="applyToJoin"
+                    >
+                        <font-awesome-icon icon="plus" />
+                        Apply to join this group
+                    </b-button>
 
-                <b-alert show v-if="hasRequestedMembership" variant="primary">
-                    Your request to join is pending approval
-                </b-alert>
+                    <b-alert show v-if="hasRequestedMembership" variant="primary">
+                        Your request to join this group is pending approval
+                    </b-alert>
+                </div>
             </div>
 
             <div class="group-description text-lg">
@@ -450,10 +451,22 @@ header {
         height: 20rem;
         margin-bottom: 2rem;
         overflow: hidden;
+        position: relative;
         width: 100%;
 
         img {
             width: 100%;
+        }
+
+        .apply-to-join {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+
+            button {
+                border-radius: 1rem;
+                padding: 1rem 2rem;
+            }
         }
     }
 
