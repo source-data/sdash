@@ -2,6 +2,8 @@
     <div v-if="currentGroup">
         <panel-drop-zone></panel-drop-zone>
 
+        <panel-authors-edit-form></panel-authors-edit-form>
+
         <filter-bar></filter-bar>
 
         <header class="sd-view-title">
@@ -260,6 +262,7 @@ import GroupTitleIcon from '../helpers/GroupTitleIcon'
 import GroupMemberRequestIcon from '../helpers/GroupMemberRequestIcon'
 import GroupUserIcon from '../helpers/GroupUserIcon'
 import Lightbox from 'vue-easy-lightbox';
+import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
 import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
 export default {
@@ -273,6 +276,7 @@ export default {
         GroupMemberRequestIcon,
         Lightbox,
         PanelDropZone,
+        PanelAuthorsEditForm,
     },
     props: ["group_id"],
 

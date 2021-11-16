@@ -1,69 +1,82 @@
 <template>
-  <div class="panel-authors-edit--wrapper" id="panel-authors-edit--wrapper">
-    <header class="panel-authors-edit--intro">
-    <p>Edit the authors assigned to this panel.</p>
-    <p>Note that adding an author assigns certain permissions to the user.</p>
-    <ul class="panel-authors-edit--intro-roles">
-      <li><strong>Author (Au)</strong> - can see the panel and its details.</li>
-      <li><strong>Corresponding Author (Cor)</strong> - can edit the panel and details.</li>
-      <li><strong>Curator (Cur)</strong> - can edit the panel and its details but is not listed in the author list.</li>
-    </ul>
-    </header>
-    <section class="panel-authors-edit--add-author-wrapper">
-      <strong class="panel-authors-edit--reorder-title">Search for Authors by Name.</strong>
-      <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
-    </section>
-    <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
-        <strong class="panel-authors-edit--reorder-title">Drag authors to reorder.</strong>
-        <draggable
-        tag="ul"
-        class="panel-authors-order-list"
-        v-model="temporaryAuthorList"
-        v-bind="dragOptions"
-        @start="drag=true"
-        @end="drag=false"
 
-        >
-        <transition-group type="transition" :name="!drag ? 'order-authors' : null">
-         <li v-for="a in temporaryAuthorList" :key="a.order" class="panel-authors-order-list-item">
-          <div class="panel-authors-order-list-item--top-bar">
-            <strong class="panel-authors-order-list-item--name">{{a.firstname}} {{a.surname}}</strong>
-            <div class="panel-authors-order-list-item--remove">
-              <b-button v-if="a.origin==='external'" size="sm" variant="success" class="panel-authors-order-list-item--edit-button"><font-awesome-icon icon="edit" size="sm" @click="editExternalAuthor(a)"/></b-button>
-              <b-button size="sm" variant="danger" class="panel-authors-order-list-item--remove-button"><font-awesome-icon icon="trash-alt" size="sm" @click="removeAuthor(a.order)"/></b-button>
+  <b-sidebar
+      id="author-edit-sidebar"
+      right
+      shadow
+      lazy
+      title="Edit the list of authors"
+      width="420px"
+      bg-variant="dark"
+      text-variant="light"
+      v-model="showAuthorSidebarModel"
+  >
+    <div class="panel-authors-edit--wrapper" id="panel-authors-edit--wrapper">
+      <header class="panel-authors-edit--intro">
+      <p>Edit the authors assigned to this panel.</p>
+      <p>Note that adding an author assigns certain permissions to the user.</p>
+      <ul class="panel-authors-edit--intro-roles">
+        <li><strong>Author (Au)</strong> - can see the panel and its details.</li>
+        <li><strong>Corresponding Author (Cor)</strong> - can edit the panel and details.</li>
+        <li><strong>Curator (Cur)</strong> - can edit the panel and its details but is not listed in the author list.</li>
+      </ul>
+      </header>
+      <section class="panel-authors-edit--add-author-wrapper">
+        <strong class="panel-authors-edit--reorder-title">Search for Authors by Name.</strong>
+        <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
+      </section>
+      <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
+          <strong class="panel-authors-edit--reorder-title">Drag authors to reorder.</strong>
+          <draggable
+          tag="ul"
+          class="panel-authors-order-list"
+          v-model="temporaryAuthorList"
+          v-bind="dragOptions"
+          @start="drag=true"
+          @end="drag=false"
+
+          >
+          <transition-group type="transition" :name="!drag ? 'order-authors' : null">
+          <li v-for="a in temporaryAuthorList" :key="a.order" class="panel-authors-order-list-item">
+            <div class="panel-authors-order-list-item--top-bar">
+              <strong class="panel-authors-order-list-item--name">{{a.firstname}} {{a.surname}}</strong>
+              <div class="panel-authors-order-list-item--remove">
+                <b-button v-if="a.origin==='external'" size="sm" variant="success" class="panel-authors-order-list-item--edit-button"><font-awesome-icon icon="edit" size="sm" @click="editExternalAuthor(a)"/></b-button>
+                <b-button size="sm" variant="danger" class="panel-authors-order-list-item--remove-button"><font-awesome-icon icon="trash-alt" size="sm" @click="removeAuthor(a.order)"/></b-button>
+              </div>
             </div>
-          </div>
-          <em class="panel-authors-order-list-item--institution">{{a.institution_name}}</em>
-          <b-form-radio-group
-           :options="roleOptions"
-            v-model="a.author_role"
-            size="small"
-            :disabled="a.origin==='external'"
-            v-b-tooltip.hover="(a.origin==='external' ? 'External authors may only hold the author role.' : false)"
-            >
-          </b-form-radio-group>
-         </li>
-        </transition-group>
-        </draggable>
-    </section>
-    <div class="panel-authors-edit--error-wrapper" v-if="correspondingAuthorCount<1">
-      A minimum of 1 corresponding author is required.
+            <em class="panel-authors-order-list-item--institution">{{a.institution_name}}</em>
+            <b-form-radio-group
+            :options="roleOptions"
+              v-model="a.author_role"
+              size="small"
+              :disabled="a.origin==='external'"
+              v-b-tooltip.hover="(a.origin==='external' ? 'External authors may only hold the author role.' : false)"
+              >
+            </b-form-radio-group>
+          </li>
+          </transition-group>
+          </draggable>
+      </section>
+      <div class="panel-authors-edit--error-wrapper" v-if="correspondingAuthorCount<1">
+        A minimum of 1 corresponding author is required.
+      </div>
+      <div class="panel-authors-edit--save-wrapper">
+        <b-button
+        :disabled="(expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1)
+        || correspondingAuthorCount < 1"
+        variant="success"
+        @click="saveAuthors"
+        >Save Authors</b-button>
+        <b-button @click="closeSidebar">Cancel</b-button>
+      </div>
+      <section class="panel-authors-edit--add-external-author-wrapper">
+        <strong class="panel-authors-edit--external-title">Add an external author.</strong>
+        <p>You may add an author who is not a member of SDash. They will be notified by email and invited to join SDash.</p>
+        <author-entry-form @created="addExternalAuthor" @modified="saveExternalAuthorEdits" @cancel="cancelExternalAuthorEdits" :details="editedAuthor"></author-entry-form>
+      </section>
     </div>
-    <div class="panel-authors-edit--save-wrapper">
-      <b-button
-      :disabled="(expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1)
-      || correspondingAuthorCount < 1"
-      variant="success"
-      @click="saveAuthors"
-      >Save Authors</b-button>
-      <b-button @click="closeSidebar">Cancel</b-button>
-    </div>
-    <section class="panel-authors-edit--add-external-author-wrapper">
-      <strong class="panel-authors-edit--external-title">Add an external author.</strong>
-      <p>You may add an author who is not a member of SDash. They will be notified by email and invited to join SDash.</p>
-      <author-entry-form @created="addExternalAuthor" @modified="saveExternalAuthorEdits" @cancel="cancelExternalAuthorEdits" :details="editedAuthor"></author-entry-form>
-    </section>
-  </div>
+  </b-sidebar>
 </template>
 
 <script>
@@ -96,7 +109,8 @@ export default {
     }, /* end of data */
     computed: {
       ...mapGetters([
-        "expandedPanelAuthors"
+        "expandedPanelAuthors",
+        "showAuthorSidebar",
       ]),
       dragOptions() {
         return {
@@ -108,6 +122,14 @@ export default {
       },
       correspondingAuthorCount() {
         return this.temporaryAuthorList.filter( author => author.author_role === AuthorTypes.CORRESPONDING).length;
+      },
+      showAuthorSidebarModel: {
+          set(value) {
+              this.$store.commit('setAuthorSidebar', value)
+          },
+          get() {
+              return this.showAuthorSidebar
+          }
       },
     },
 

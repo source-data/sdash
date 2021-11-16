@@ -2,19 +2,7 @@
     <div :class="{ 'anonymous-user': !isLoggedIn }">
         <panel-drop-zone></panel-drop-zone>
 
-        <b-sidebar
-            id="author-edit-sidebar"
-            right
-            shadow
-            lazy
-            title="Edit the list of authors"
-            width="420px"
-            bg-variant="dark"
-            text-variant="light"
-            v-model="showAuthorSidebarModel"
-        >
-            <panel-authors-edit-form></panel-authors-edit-form>
-        </b-sidebar>
+        <panel-authors-edit-form></panel-authors-edit-form>
 
         <filter-bar></filter-bar>
 
@@ -109,21 +97,9 @@ export default {
             "isLoggedIn",
             "hasPanels",
             "loadedPanels",
-            "hasLoadedAllResults",
             "isLightboxOpen",
             "expandedPanel",
-            "showAuthorSidebar",
-            "currentGroup",
-            "mayAddPanelToGroup",
             ]),
-        showAuthorSidebarModel: {
-            set(value) {
-                this.$store.commit('setAuthorSidebar', value)
-            },
-            get() {
-                return this.showAuthorSidebar
-            }
-        },
         numLoadedPanels() {
             return this.loadedPanels.length;
         },
