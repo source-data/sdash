@@ -1,15 +1,14 @@
-name: Deployment
-concurrency: deployment
-on: workflow_dispatch
+name: Deploy SDash
+description: Deploys SDash to the given stage.
 
-jobs:
-  deploy:
-    runs-on: ubuntu-18.04
+inputs:
+  stage:
+    description: Stage to which SDash should be deployed, as defined in deploy.php.
+    required: true
 
-    steps:
-    # Setup steps
-    - name: Checkout
-      uses: actions/checkout@v2
+runs:
+  using: "composite"
+  steps:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -21,4 +20,4 @@ jobs:
       with:
         private-key: ${{ secrets.PRIVATE_KEY }}
         known-hosts: ${{ secrets.KNOWN_HOSTS }}
-        dep: deploy -v
+        dep: deploy ${{ inputs.stage }} -v
