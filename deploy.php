@@ -7,28 +7,29 @@ require 'recipe/laravel.php';
 // Project name
 set('application', 'SDash');
 
-// Project repository
+// Project repository and branch
 set('repository', 'git@github.com:source-data/sdash.git');
+set('branch', 'master');
 
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true);
 
-// Shared files/dirs between deploys
+// No shared files/dirs between deploys
 add('shared_files', []);
 add('shared_dirs', []);
 
-// Writable dirs by web server
+// No writable dirs by web server
 add('writable_dirs', []);
 
+// Deployment path
+set('deploy_path', '/var/www/html/sdash.sourcedata.io');
 
 // Hosts
-
 host('dev')
-    ->hostname('')
-    ->user('deployer')
-    ->set('branch', 'master')
-    ->identityFile('~/.ssh/id_rsa.pub')
-    ->set('deploy_path', '/var/www/html/sdash.sourcedata.io');
+    ->hostname('sdash-dev.sourcedata.io')
+    ->stage('dev')
+    ->user('deployer');
+set('default_stage', 'dev');
 
 // Tasks
 
