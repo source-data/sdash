@@ -1,17 +1,12 @@
 <template>
   <div class="panel-authors-edit--wrapper" id="panel-authors-edit--wrapper">
+  <span v-if="modified">Author list has been modified, please save before closing.</span>
     <header class="panel-authors-edit--intro">
-    <p>Edit the authors assigned to this panel.</p>
-    <p>Note that adding an author assigns certain permissions to the user.</p>
-    <ul class="panel-authors-edit--intro-roles">
-      <li><strong>Author (Au)</strong> - can see the panel and its details.</li>
-      <li><strong>Corresponding Author (Cor)</strong> - can edit the panel and details.</li>
-      <li><strong>Curator (Cur)</strong> - can edit the panel and its details but is not listed in the author list.</li>
-    </ul>
+      <h6 class="panel-authors-edit--main-title h6">Add registered author</h6>
     </header>
     <section class="panel-authors-edit--add-author-wrapper">
-      <strong class="panel-authors-edit--reorder-title">Search for Authors by Name.</strong>
       <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
+      <author-types-table @close="closeAuthorTypesTable" v-if="showAuthorTypesTable"></author-types-table>
     </section>
     <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
         <strong class="panel-authors-edit--reorder-title">Drag authors to reorder.</strong>
@@ -52,7 +47,7 @@
     <div class="panel-authors-edit--save-wrapper">
       <b-button
       :disabled="(expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1)
-      || correspondingAuthorCount < 1"
+      || correspondingAuthorCount < 1 || !modified"
       variant="success"
       @click="saveAuthors"
       >Save Authors</b-button>
@@ -73,11 +68,12 @@ import AuthorTypes from "@/definitions/AuthorTypes";
 import draggable from 'vuedraggable';
 import AuthorMultiselect from '@/components/helpers/AuthorMultiselect';
 import AuthorEntryForm from './AuthorEntryForm';
+import AuthorTypesTable from './AuthorTypesTable';
 
 export default {
 
     name: 'PanelAuthorsEditForm',
-    components: { draggable, AuthorMultiselect, AuthorEntryForm },
+    components: { draggable, AuthorMultiselect, AuthorEntryForm, AuthorTypesTable },
     props: { },
 
     data(){
@@ -87,10 +83,13 @@ export default {
           editedAuthor:{},
           drag: false,
           roleOptions: [
-            {text: "Au.", value: AuthorTypes.AUTHOR},
-            {text: "Corr.", value: AuthorTypes.CORRESPONDING},
-            {text: "Cur.", value: AuthorTypes.CURATOR},
+            {text: "Author", value: AuthorTypes.AUTHOR},
+            {text: "Corresponding author", value: AuthorTypes.CORRESPONDING},
+            {text: "Curator", value: AuthorTypes.CURATOR},
           ],
+          showAuthorTypesTable: true,
+          modified: false,
+          enableOnChangeHandler: false,
         }
 
     }, /* end of data */
@@ -239,30 +238,47 @@ export default {
       scrollToForm(){
         document.querySelector('#author-edit-sidebar .b-sidebar-body').scrollTo({top:0, behavior: 'smooth'});
       },
+      closeAuthorTypesTable() {
+        this.showAuthorTypesTable = false;
+      }
     },
     created() {
       this.temporaryAuthorList = this.expandedPanelAuthors.map(author => ({...author}));
+    },
+    watch: {
+      temporaryAuthorList: {
+        handler() {
+          if(this.enableOnChangeHandler) {
+            this.modified = true;
+          }
+          this.enableOnChangeHandler = true;
+        },
+        deep: false,
+      }
     },
 
 }
 </script>
 
 <style lang="scss">
+  .panel-authors-edit--add-author-wrapper {
+    margin-bottom: 1rem;
+  }
   .panel-authors-edit--wrapper {
-    padding: 1rem 4rem 1rem 2rem;
+    padding: 0;
   }
 
   .panel-authors-order-list {
     margin: 1rem 0;
-    padding: 0.4rem;
-    background-color: #666;
+    padding: 0;
+    background-color: transparent;
 }
 
   .panel-authors-order-list-item {
     display: block;
     list-style-type:none;
-    margin:0 0 0.5rem 0;
-    background-color: #343a40;
+    margin:0 0 0.75rem 0;
+    background-color: #2f3150;
     padding: 0.5rem;
     cursor:move;
   }
@@ -293,8 +309,7 @@ export default {
   }
 
   .ghost {
-  opacity: 0.6;
-  box-shadow:0 0 1rem blue;
+  opacity: 0.45;
 }
 
 .panel-authors-order-list-item--name {
