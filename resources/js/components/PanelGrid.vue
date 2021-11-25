@@ -10,8 +10,10 @@
             header-text-variant="light"
             header-class="sd-author-modal-header"
             hide-footer
+            scrollable
             title="Edit List of Authors"
             v-model="showAuthorSidebarModel"
+            no-close-on-backdrop
         >
             <panel-authors-edit-form></panel-authors-edit-form>
         </b-modal>
