@@ -11,7 +11,7 @@
     <vue-snotify></vue-snotify>
 
     <!-- widget for providing feedback to us -->
-    <feedback-widget v-if="isLoggedIn"></feedback-widget>
+    <feedback-widget v-if="isLoggedIn && !showAuthorSidebar"></feedback-widget>
 
     <!-- loading placeholder while checking for login -->
     <div v-if="!applicationIsLoaded" class="text-center">
@@ -95,6 +95,7 @@ export default {
             'currentUser',
             'isLoggedIn',
             'applicationIsLoaded',
+            'showAuthorSidebar',
         ]),
         hasAcceptedTerms() {
             return this.confCheckbox1 && this.confCheckbox2 && this.confCheckbox3;

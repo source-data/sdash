@@ -85,8 +85,10 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-button type="submit" variant="success">{{ isEditing ? 'Save Edits' : 'Save Author' }}</b-button>
-      <b-button type="reset">Cancel Entry</b-button>
+      <div class="sd-author-entry-form--button-wrapper">
+        <b-button type="reset">Cancel Entry</b-button>
+        <b-button type="submit" variant="success">{{ isEditing ? 'Save Edits' : 'Confirm Author' }}</b-button>
+      </div>
 
   </b-form>
  </div>
@@ -170,6 +172,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
+  .sd-author-entry-form--button-wrapper {
+    text-align: right;
+  }
 </style>
