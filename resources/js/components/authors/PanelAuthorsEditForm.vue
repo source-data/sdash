@@ -294,10 +294,10 @@ export default {
   }
   .panel-authors-edit--edit-warning {
       display: block;
-      background: orange;
+      background: #ffc107;
       padding: 2px 8px;
       margin-bottom: 0.85rem;
-      color: #fff;
+      color: #212529;
       border-radius: 4px;
   }
   .panel-authors-edit--wrapper {
