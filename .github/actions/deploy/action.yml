@@ -1,0 +1,23 @@
+name: Deploy SDash
+description: Deploys SDash to the given stage.
+
+inputs:
+  stage:
+    description: Stage to which SDash should be deployed, as defined in deploy.php.
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+    - name: Install Backend Dependencies
+      uses: ramsey/composer-install@v1
+    - name: Deploy
+      uses: deployphp/action@master
+      with:
+        private-key: ${{ secrets.PRIVATE_KEY }}
+        known-hosts: ${{ secrets.KNOWN_HOSTS }}
+        dep: deploy ${{ inputs.stage }} -v
