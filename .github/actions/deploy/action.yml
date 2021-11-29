@@ -24,6 +24,6 @@ runs:
     - name: Deploy
       uses: deployphp/action@master
       with:
-        dep: deploy ${{ inputs.stage }} -v
+        dep: deploy ${{ inputs.stage }} -vvv
         known-hosts: ${{ inputs.known-hosts }}
         private-key: ${{ inputs.private-key }}
