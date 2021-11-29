@@ -2,6 +2,12 @@ name: Deploy SDash
 description: Deploys SDash to the given stage.
 
 inputs:
+  known-hosts:
+    description: The output of ssh-keyscan for the server where SDash should be deployed.
+    required: true
+  private-key:
+    description: The private key that allows access to the server where SDash should be deployed.
+    required: true
   stage:
     description: Stage to which SDash should be deployed, as defined in deploy.php.
     required: true
@@ -18,6 +24,6 @@ runs:
     - name: Deploy
       uses: deployphp/action@master
       with:
-        private-key: ${{ secrets.PRIVATE_KEY }}
-        known-hosts: ${{ secrets.KNOWN_HOSTS }}
         dep: deploy ${{ inputs.stage }} -v
+        known-hosts: ${{ inputs.known-hosts }}
+        private-key: ${{ inputs.private-key }}
