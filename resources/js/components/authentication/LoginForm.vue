@@ -167,7 +167,9 @@ export default {
                 if(errorData.STATUS && errorData.STATUS === '403') {
                     this.setEmailConfirmationNotice(true);
                 }
-
+                if(errorData.STATUS === '401') {
+                    this.$snotify.error(errorData.MESSAGE, "Login Failed");
+                }
                 if(errorData.message) {
                     this.$snotify.error(errorData.message, "Login Failed");
                 }

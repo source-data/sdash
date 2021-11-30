@@ -49,6 +49,8 @@ class LoginController extends Controller
         // If they don't, return a 403 response and deny the login.
         $user = User::where($this->username(), $request->only($this->username()))->first();
 
+        if (empty($user)) return API::response(401, 'Invalid login attempt.', []);
+
         if (!$user->hasVerifiedEmail()) return API::response(403, 'Your email address is not verified.', []);
 
         if ($this->attemptLogin($request)) {

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import UserLevels from './UserLevels'
+import UserLevels from '@/definitions/UserLevels'
 import authGuards from './authGuards'
 import PanelGrid from '@/components/PanelGrid'
 import EditUser from '@/components/users/EditUser'

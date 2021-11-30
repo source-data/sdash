@@ -1,4 +1,4 @@
-import UserLevels from "./UserLevels";
+import UserLevels from "../definitions/UserLevels";
 import store from '@/stores/store';
 
 const authGuards = (to, from, next) => {

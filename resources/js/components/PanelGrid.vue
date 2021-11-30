@@ -17,7 +17,7 @@
                 <div class="text-lg">
                     Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
                     Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
-                    Comment and discuss initiating an early scientific dissemination of results. 
+                    Comment and discuss initiating an early scientific dissemination of results.
                 </div>
             </section>
 
@@ -25,7 +25,7 @@
                 <span v-if="isLoggedIn">My Dashboard</span>
                 <span v-else>SmartFigures</span>
             </h2>
-        
+
             <aside class="align-text-bottom text-right">
                 {{ numLoadedPanels }} SmartFigures
             </aside>
@@ -128,10 +128,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .no-panel-alert {
     max-width: 480px;
     margin: 0 auto;
 }
+
 
 .wrapper.anonymous-user {
     background-image: url("/images/landing-page-bg.jpg");
@@ -142,6 +144,8 @@ export default {
 #sd-featured-jumbotron {
     margin: 100px 20vw;
 }
+
+
 @media (max-width: 1200px) {
     #sd-featured-jumbotron {
         margin: 50px 10vw;

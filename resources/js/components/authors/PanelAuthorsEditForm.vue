@@ -1,32 +1,42 @@
 <template>
-
-  <b-sidebar
+  <b-modal
       id="author-edit-sidebar"
-      right
-      shadow
-      lazy
-      title="Edit the list of authors"
-      width="420px"
-      bg-variant="dark"
-      text-variant="light"
+      body-bg-variant="dark"
+      body-text-variant="light"
+      header-bg-variant="dark"
+      header-text-variant="light"
+      header-class="sd-author-modal-header"
+      hide-footer
+      scrollable
+      title="Edit List of Authors"
       v-model="showAuthorSidebarModel"
+      no-close-on-backdrop
   >
+    <template #modal-header="{close}">
+    <!-- header with close button -->
+        <h5 id="author-edit-sidebar___BV_modal_title_" class="modal-title">Edit List of Authors</h5>
+        <button
+        type="button"
+        aria-label="Close"
+        class="close text-light"
+        v-b-tooltip.hover.left="{variant:'warning'}"
+        title="Have you saved all changes?"
+        @click="close()">×</button>
+    </template>
+
     <div class="panel-authors-edit--wrapper" id="panel-authors-edit--wrapper">
       <header class="panel-authors-edit--intro">
-      <p>Edit the authors assigned to this panel.</p>
-      <p>Note that adding an author assigns certain permissions to the user.</p>
-      <ul class="panel-authors-edit--intro-roles">
-        <li><strong>Author (Au)</strong> - can see the panel and its details.</li>
-        <li><strong>Corresponding Author (Cor)</strong> - can edit the panel and details.</li>
-        <li><strong>Curator (Cur)</strong> - can edit the panel and its details but is not listed in the author list.</li>
-      </ul>
+        <h6 class="panel-authors-edit--main-title h6">Add registered author</h6>
+        <p>Authors will receive an email notification when they are added to the panel. This will occur when you click the "Confirm Authors" button.</p>
       </header>
       <section class="panel-authors-edit--add-author-wrapper">
-        <strong class="panel-authors-edit--reorder-title">Search for Authors by Name.</strong>
         <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
+        <author-types-table @close="closeAuthorTypesTable" v-if="showAuthorTypesTable"></author-types-table>
       </section>
       <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
-          <strong class="panel-authors-edit--reorder-title">Drag authors to reorder.</strong>
+          <h6 class="panel-authors-edit--reorder-title h6">Author List</h6>
+          <div class="panel-authors-aside-note">Drag authors to reorder</div>
+          <span v-if="modified" class="panel-authors-edit--edit-warning">Author list has been modified. To save your edits, click "Confirm Authors".</span>
           <draggable
           tag="ul"
           class="panel-authors-order-list"
@@ -41,13 +51,14 @@
             <div class="panel-authors-order-list-item--top-bar">
               <strong class="panel-authors-order-list-item--name">{{a.firstname}} {{a.surname}}</strong>
               <div class="panel-authors-order-list-item--remove">
-                <b-button v-if="a.origin==='external'" size="sm" variant="success" class="panel-authors-order-list-item--edit-button"><font-awesome-icon icon="edit" size="sm" @click="editExternalAuthor(a)"/></b-button>
-                <b-button size="sm" variant="danger" class="panel-authors-order-list-item--remove-button"><font-awesome-icon icon="trash-alt" size="sm" @click="removeAuthor(a.order)"/></b-button>
+                <button v-if="a.origin==='external'" class="panel-authors-order-list-item--edit-button" @click="editExternalAuthor(a)"><font-awesome-icon icon="pen"/></button>
+                <button class="panel-authors-order-list-item--remove-button"  @click="removeAuthor(a.order)">✕</button>
               </div>
             </div>
-            <em class="panel-authors-order-list-item--institution">{{a.institution_name}}</em>
+            <span class="panel-authors-order-list-item--institution">{{a.institution_name}}</span>
             <b-form-radio-group
             :options="roleOptions"
+              class="sd-author-role-radio-group"
               v-model="a.author_role"
               size="small"
               :disabled="a.origin==='external'"
@@ -62,21 +73,41 @@
         A minimum of 1 corresponding author is required.
       </div>
       <div class="panel-authors-edit--save-wrapper">
+        <b-button @click="closeSidebar">Cancel</b-button>
         <b-button
         :disabled="(expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1)
-        || correspondingAuthorCount < 1"
+        || correspondingAuthorCount < 1 || !modified"
         variant="success"
         @click="saveAuthors"
-        >Save Authors</b-button>
-        <b-button @click="closeSidebar">Cancel</b-button>
+        >Confirm Authors</b-button>
       </div>
       <section class="panel-authors-edit--add-external-author-wrapper">
-        <strong class="panel-authors-edit--external-title">Add an external author.</strong>
-        <p>You may add an author who is not a member of SDash. They will be notified by email and invited to join SDash.</p>
-        <author-entry-form @created="addExternalAuthor" @modified="saveExternalAuthorEdits" @cancel="cancelExternalAuthorEdits" :details="editedAuthor"></author-entry-form>
+        <a class="panel-authors-edit--external-title h6"
+          :class="showExternalAuthorForm ? null : 'collapsed'"
+          :aria-expanded="showExternalAuthorForm ? 'true' : 'false'"
+          aria-controls="external-author-collapse"
+          @click="showExternalAuthorForm = !showExternalAuthorForm"
+        >
+          Add an external author
+          <span v-if="showExternalAuthorForm">-</span>
+          <span v-if="!showExternalAuthorForm">+</span>
+        </a>
+        <!-- External Author Form -->
+        <b-collapse id="external-author-collapse"
+          v-model="showExternalAuthorForm"
+          @shown="scrollToExternalAuthorEntryForm"
+        >
+          <author-entry-form
+            @created="addExternalAuthor"
+            @modified="saveExternalAuthorEdits"
+            @cancel="cancelExternalAuthorEdits"
+            :details="editedAuthor"
+          >
+          </author-entry-form>
+        </b-collapse>
       </section>
     </div>
-  </b-sidebar>
+  </b-modal>
 </template>
 
 <script>
@@ -86,11 +117,12 @@ import AuthorTypes from "@/definitions/AuthorTypes";
 import draggable from 'vuedraggable';
 import AuthorMultiselect from '@/components/helpers/AuthorMultiselect';
 import AuthorEntryForm from './AuthorEntryForm';
+import AuthorTypesTable from './AuthorTypesTable';
 
 export default {
 
     name: 'PanelAuthorsEditForm',
-    components: { draggable, AuthorMultiselect, AuthorEntryForm },
+    components: { draggable, AuthorMultiselect, AuthorEntryForm, AuthorTypesTable },
     props: { },
 
     data(){
@@ -100,10 +132,14 @@ export default {
           editedAuthor:{},
           drag: false,
           roleOptions: [
-            {text: "Au.", value: AuthorTypes.AUTHOR},
-            {text: "Corr.", value: AuthorTypes.CORRESPONDING},
-            {text: "Cur.", value: AuthorTypes.CURATOR},
+            {text: "Author", value: AuthorTypes.AUTHOR},
+            {text: "Corresponding author", value: AuthorTypes.CORRESPONDING},
+            {text: "Curator", value: AuthorTypes.CURATOR},
           ],
+          showAuthorTypesTable: true,
+          modified: false,
+          enableOnChangeHandler: false,
+          showExternalAuthorForm: false,
         }
 
     }, /* end of data */
@@ -208,6 +244,7 @@ export default {
 
       },
       cancelExternalAuthorEdits() {
+        this.showExternalAuthorForm = false;
         const authorIndex = this.temporaryAuthorList.findIndex( item => item.editing === true);
         if(authorIndex >= 0) delete this.temporaryAuthorList[authorIndex].editing;
         this.scrollToForm();
@@ -234,7 +271,7 @@ export default {
       },
       editExternalAuthor(authorData) {
 
-        document.getElementById('sd-author-entry-form').scrollIntoView({behavior: 'smooth'});
+        this.showExternalAuthorForm = true;
 
         for(let i = 0; i < this.temporaryAuthorList.length; i++) {
           if (this.temporaryAuthorList[i].id === authorData.id && this.temporaryAuthorList[i].order === authorData.order && this.temporaryAuthorList[i].origin === 'external') {
@@ -261,35 +298,70 @@ export default {
       scrollToForm(){
         document.querySelector('#author-edit-sidebar .b-sidebar-body').scrollTo({top:0, behavior: 'smooth'});
       },
+      scrollToExternalAuthorEntryForm() {
+        document.getElementById('sd-author-entry-form').scrollIntoView({behavior: 'smooth'});
+      },
+      closeAuthorTypesTable() {
+        this.showAuthorTypesTable = false;
+      }
     },
     created() {
       this.temporaryAuthorList = this.expandedPanelAuthors.map(author => ({...author}));
+    },
+    watch: {
+      temporaryAuthorList: {
+        handler() {
+          if(this.enableOnChangeHandler) {
+            this.modified = true;
+          }
+          this.enableOnChangeHandler = true;
+        },
+        deep: true,
+      }
     },
 
 }
 </script>
 
 <style lang="scss">
+  .panel-authors-edit--add-author-wrapper {
+    margin-bottom: 1rem;
+  }
+  .panel-authors-edit--edit-warning {
+      display: block;
+      background: #ffc107;
+      padding: 2px 8px;
+      margin-bottom: 0.85rem;
+      color: #212529;
+      border-radius: 4px;
+  }
   .panel-authors-edit--wrapper {
-    padding: 1rem 4rem 1rem 2rem;
+    padding: 0;
+  }
+
+  .panel-authors-edit--list-wrapper {
+    margin-top:1rem;
+  }
+
+  .panel-authors-aside-note {
+    font-size: 11px;
+    text-align: right;
   }
 
   .panel-authors-order-list {
-    margin: 1rem 0;
-    padding: 0.4rem;
-    background-color: #666;
+    margin: 0.5rem 0;
+    padding: 0;
+    background-color: transparent;
 }
 
   .panel-authors-order-list-item {
     display: block;
     list-style-type:none;
-    margin:0 0 0.5rem 0;
-    background-color: #343a40;
-    padding: 0.5rem;
-    cursor:move;
-  }
-  .panel-authors-order-list-item:last-child {
-    margin-bottom:0;
+    margin:0 0 1rem 0;
+    background-color: #2f3150;
+    padding: 0.85rem 1rem;
+    cursor: move;
+    border-radius: 9px;
   }
 
   .panel-authors-order-list-item--top-bar {
@@ -298,13 +370,22 @@ export default {
     justify-content: space-between;
     position: relative;
   }
-  .panel-authors-order-list-item--remove-button,
-  .panel-authors-order-list-item--edit-button
-   {
-    padding: 0.25rem 0.25rem;
-    font-size: 0.875rem;
-    line-height: 0.5;
+
+  .panel-authors-order-list-item--edit-button,
+  .panel-authors-order-list-item--remove-button {
+      color: #fff;
+      padding: 2px 0 2px 4px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      font-weight: normal;
   }
+  .panel-authors-order-list-item--edit-button {
+    font-size: 1rem;
+    position: relative;
+    top: -2px;
+  }
+
 
   .order-authors-move {
     transition: transform 0.5s;
@@ -315,8 +396,7 @@ export default {
   }
 
   .ghost {
-  opacity: 0.6;
-  box-shadow:0 0 1rem blue;
+  opacity: 0.45;
 }
 
 .panel-authors-order-list-item--name {
@@ -325,21 +405,47 @@ export default {
 }
 
 .panel-authors-order-list-item--institution {
-  font-size:0.85em;
+  font-size:0.85rem;
+  padding-top: 3px;
+}
+
+.sd-author-role-radio-group {
+  font-size: 0.85rem;
+
+  .custom-control-label {
+    line-height: 1.5rem;
+  }
+
+  .custom-control-inline {
+    margin-right: 2rem;
+  }
 }
 
 .panel-authors-order-list-item--remove {
     position: absolute;
     right: -4px;
-    top: -5px;
+    top: -9px;
 }
 
 .panel-authors-edit--add-external-author-wrapper {
   margin: 1rem 0;
 }
 
+.panel-authors-edit--external-title,
+.panel-authors-edit--external-title:hover,
+.panel-authors-edit--external-title:focus,
+.panel-authors-edit--external-title:active
+ {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.panel-authors-edit--save-wrapper {
+  text-align: right;
+}
+
 .panel-authors-edit--error-wrapper {
-    border: dashed 2px #983a3a;
     line-height: 1.2;
     padding: 0.15rem 0.25rem;
     font-size: 0.85rem;

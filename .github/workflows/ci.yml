@@ -1,9 +1,12 @@
 name: Continuous Integration
-
-on: push
+concurrency: ci
+on:
+  - push
+  - workflow_dispatch
 
 jobs:
   tests:
+    name: Unit & E2E tests
     runs-on: ubuntu-18.04
 
     steps:
@@ -30,6 +33,7 @@ jobs:
       run: npx nightwatch --headless --env firefox,chrome
 
   release:
+    name: Release frontend build artifact
     needs: tests
     if: ${{ github.ref_name == 'master' }}
     runs-on: ubuntu-18.04
@@ -45,3 +49,20 @@ jobs:
         release_token: ${{ secrets.GITHUB_TOKEN }}
         tag: dev
         allow_override: true
+
+  dev-deploy:
+    if: "false" # disable deployment job for now
+    name: Deployment to dev
+    needs: release
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Deploy to dev
+      uses: ./.github/actions/deploy
+      with:
+        stage: dev
+        private-key: ${{ secrets.PRIVATE_KEY }}
+        known-hosts: ${{ secrets.KNOWN_HOSTS }}

@@ -19,6 +19,5 @@ npm-debug.log
 yarn-error.log
 capistrano.log
 /log
-deploy.php
 tests/e2e/output/*
 *.noupload.*
