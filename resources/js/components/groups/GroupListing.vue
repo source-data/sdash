@@ -41,57 +41,53 @@
                 {{ currentGroup.description }}
             </div>
 
-            <b-container fluid class="group-members">
-                <b-row>
-                    <b-col cols="1" class="group-members-icon">
-                        <font-awesome-icon icon="user-cog" size="lg" />
-                    </b-col>
+            <div class="group-members">
+                <div class="group-members-icon">
+                    <font-awesome-icon icon="user-cog" size="lg" />
+                </div>
 
-                    <ul class="col-11 group-members-list text-xs list-unstyled">
-                        <li
-                            v-for="user in groupAdministrators"
-                            :key="user.user_id"
-                            class="group-member bg-light text-dark"
-                        >
-                            <div class="group-member-name">
-                                <router-link :to="{name: 'user', params: {user_id: user.id}}">
-                                    {{ user.firstname + ' ' + user.surname }}
-                                </router-link>
-                            </div>
+                <ul class="group-members-list text-xs list-unstyled">
+                    <li
+                        v-for="user in groupAdministrators"
+                        :key="user.user_id"
+                        class="group-member bg-light text-dark"
+                    >
+                        <div class="group-member-name">
+                            <router-link :to="{name: 'user', params: {user_id: user.id}}">
+                                {{ user.firstname + ' ' + user.surname }}
+                            </router-link>
+                        </div>
 
-                            <div class="group-member-organisation">
-                                {{ user.institution_name }}
-                            </div>
-                        </li>
-                    </ul>
-                </b-row>
-            </b-container>
+                        <div class="group-member-organisation">
+                            {{ user.institution_name }}
+                        </div>
+                    </li>
+                </ul>
+            </div>
 
-            <b-container v-if="groupMembers.length" fluid class="group-members">
-                <b-row>
-                    <b-col cols="1" class="group-members-icon">
-                        <font-awesome-icon icon="users" size="lg" />
-                    </b-col>
+            <div v-if="groupMembers.length" class="group-members">
+                <div class="group-members-icon">
+                    <font-awesome-icon icon="users" size="lg" />
+                </div>
 
-                    <ul class="col-11 group-members-list text-xs list-unstyled">
-                        <li
-                            v-for="user in groupMembers"
-                            :key="user.user_id"
-                            class="group-member bg-light text-dark"
-                        >
-                            <div class="group-member-name">
-                                <router-link :to="{name: 'user', params: {user_id: user.id}}">
-                                    {{ user.firstname + ' ' + user.surname }}
-                                </router-link>
-                            </div>
+                <ul class="group-members-list text-xs list-unstyled">
+                    <li
+                        v-for="user in groupMembers"
+                        :key="user.user_id"
+                        class="group-member bg-light text-dark"
+                    >
+                        <div class="group-member-name">
+                            <router-link :to="{name: 'user', params: {user_id: user.id}}">
+                                {{ user.firstname + ' ' + user.surname }}
+                            </router-link>
+                        </div>
 
-                            <div class="group-member-organisation">
-                                {{ user.institution_name }}
-                            </div>
-                        </li>
-                    </ul>
-                </b-row>
-            </b-container>
+                        <div class="group-member-organisation">
+                            {{ user.institution_name }}
+                        </div>
+                    </li>
+                </ul>
+            </div>
 
             <div>
                 <div class="group-actions" v-if="isGroupAdmin">
@@ -475,8 +471,11 @@ header {
     }
 
     .group-members {
+        display: flex;
+
         .group-members-icon {
             font-size: 2rem;
+            margin-right: 1rem;
         }
 
         .group-members-list {
