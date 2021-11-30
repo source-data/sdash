@@ -41,9 +41,9 @@
                 {{ currentGroup.description }}
             </div>
 
-            <b-container fluid>
+            <b-container fluid class="group-members">
                 <b-row>
-                    <b-col cols="1">
+                    <b-col cols="1" class="group-members-icon">
                         <font-awesome-icon icon="user-cog" size="lg" />
                     </b-col>
 
@@ -67,9 +67,9 @@
                 </b-row>
             </b-container>
 
-            <b-container v-if="groupMembers.length" fluid>
+            <b-container v-if="groupMembers.length" fluid class="group-members">
                 <b-row>
-                    <b-col cols="1">
+                    <b-col cols="1" class="group-members-icon">
                         <font-awesome-icon icon="users" size="lg" />
                     </b-col>
 
@@ -474,19 +474,25 @@ header {
         }
     }
 
-    .group-members-list {
-        display: flex;
-        flex-wrap: wrap;
-        margin: -0.25rem;
-
-        .group-member {
-            border-radius: 0.5rem;
-            margin: 0.25rem;
-            padding: 0.3rem 0.85rem;
+    .group-members {
+        .group-members-icon {
+            font-size: 2rem;
         }
-        .group-member-name {
-            font-weight: bolder;
-            text-decoration: underline;
+
+        .group-members-list {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -0.25rem;
+
+            .group-member {
+                border-radius: 0.5rem;
+                margin: 0.25rem;
+                padding: 0.3rem 0.85rem;
+            }
+            .group-member-name {
+                font-weight: bolder;
+                text-decoration: underline;
+            }
         }
     }
 }
