@@ -1,40 +1,40 @@
 <template>
-<multiselect
-class="sd-author-multiselect"
-@select="addUser"
-:id="id"
-label="name"
-track-by="id"
-placeholder="Type user name to search"
-open-direction="bottom"
-:options="users"
-:multiple="false"
-:searchable="true"
-:loading="isLoading"
-:internal-search="false"
-:clear-on-select="true"
-:close-on-select="true"
-:reset-after="true"
-:options-limit="20"
-:max-height="600"
-:show-no-results="true"
-:hide-selected="true"
-@search-change="asyncFind">
-    <template slot="option" slot-scope="props">
-        <div class="sd-group-user-option">
-            <div class="sd-group-user--info">
-                <div class="sd-group-user--name">
-                    {{ props.option.firstname + ' ' + props.option.surname }}
-                </div>
-                <div class="sd-group-user--affiliation">
-                    {{ props.option.institution_name }}
+    <multiselect
+        class="sd-author-multiselect"
+        @select="addUser"
+        :id="id"
+        label="name"
+        track-by="id"
+        :placeholder="placeholder"
+        open-direction="bottom"
+        :options="users"
+        :multiple="false"
+        :searchable="true"
+        :loading="isLoading"
+        :internal-search="false"
+        :clear-on-select="true"
+        :close-on-select="true"
+        :reset-after="true"
+        :options-limit="20"
+        :max-height="600"
+        :show-no-results="true"
+        :hide-selected="true"
+        @search-change="asyncFind"
+    >
+        <template slot="option" slot-scope="props">
+            <div class="sd-group-user-option">
+                <div class="sd-group-user--info">
+                    <div class="sd-group-user--name">
+                        {{ props.option.firstname + ' ' + props.option.surname }}
+                    </div>
+                    <div class="sd-group-user--affiliation">
+                        {{ props.option.institution_name }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </template>
-    <span slot="noResult">No matching users found.</span>
-</multiselect>
-
+        </template>
+        <span slot="noResult">No matching users found.</span>
+    </multiselect>
 </template>
 
 <script>
@@ -53,6 +53,7 @@ export default {
     props: {
         id: String,
         initialUsers: Array,
+        placeholder: String,
     },
     data() {
         return {

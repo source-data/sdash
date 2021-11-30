@@ -38,14 +38,7 @@
 
 
                 <div class="filter-group">
-                    <h5>
-                        Authors
-                        <span v-b-tooltip.hover.top title="Lists only registered users">
-                            <font-awesome-icon icon="info-circle" size="sm" />
-                        </span>
-                    </h5>
-
-                    <author-multiselect class="filter-author-selector" @select="addAuthor"></author-multiselect>
+                    <author-multiselect class="filter-author-selector" @select="addAuthor" placeholder="Authors & Users"></author-multiselect>
 
                     <b-list-group class="filter-author-list" v-if="filterAuthorList.length > 0">
                         <b-list-group-item v-for="a in filterAuthorList" :key="a.id" class="filter-author-list-item">
