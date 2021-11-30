@@ -482,7 +482,7 @@ header {
         .group-member {
             border-radius: 0.5rem;
             margin: 0.25rem;
-            padding: 0.1rem 0.35rem;
+            padding: 0.3rem 0.85rem;
         }
         .group-member-name {
             font-weight: bolder;
