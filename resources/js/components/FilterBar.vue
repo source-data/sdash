@@ -9,7 +9,7 @@
             @click="toggleSidebar"
         >
             <div class="toggle-icon bg-primary text-dark">
-                <font-awesome-icon icon="sliders-h" />
+                <font-awesome-icon icon="sliders-h" size="lg" />
             </div>
         </div>
 
@@ -413,7 +413,7 @@ $sidebar-z-index: $navbar-z-index - 2;
         background-color: transparent !important;
         background-image: url(/images/filter-sidebar-toggle.svg);
         height: 100px;
-        width: 33px;
+        width: 38px;
 
         // Vertically align the icon in the middle
         display: flex;
