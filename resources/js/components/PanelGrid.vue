@@ -2,7 +2,7 @@
     <div :class="{ 'anonymous-user': !isLoggedIn }">
         <panel-drop-zone></panel-drop-zone>
 
-        <panel-authors-edit-form></panel-authors-edit-form>
+        <panel-authors-edit-modal></panel-authors-edit-modal>
 
         <filter-bar></filter-bar>
 
@@ -71,7 +71,7 @@ import store from "@/stores/store";
 import { mapGetters, mapActions } from "vuex";
 import FilterBar from "./FilterBar";
 import PanelActionBar from "./PanelActionBar";
-import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
+import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
 import InfoFooter from "@/components/InfoFooter";
 import PanelListingGrid from "./PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
@@ -83,7 +83,7 @@ export default {
         FilterBar,
         InfoFooter,
         PanelActionBar,
-        PanelAuthorsEditForm,
+        PanelAuthorsEditModal,
         PanelListingGrid,
         Lightbox,
         PanelDropZone,
