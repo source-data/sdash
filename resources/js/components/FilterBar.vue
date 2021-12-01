@@ -37,7 +37,15 @@
                 <h4>Search by</h4>
 
                 <div class="filter-group">
-                    <author-multiselect class="filter-author-selector" @select="addAuthor" placeholder="Authors & Users" rounded></author-multiselect>
+                    <h5 hidden>
+                        Authors
+                    </h5>
+
+                    <author-multiselect
+                        class="filter-author-selector"
+                        @select="addAuthor"
+                        placeholder="Authors & Users"
+                    ></author-multiselect>
 
                     <b-list-group class="filter-author-list" v-if="filterAuthorList.length > 0">
                         <b-list-group-item v-for="a in filterAuthorList" :key="a.id" class="filter-author-list-item">
@@ -50,7 +58,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h5>
+                    <h5 hidden>
                         Keywords
                     </h5>
 
