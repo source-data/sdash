@@ -53,7 +53,10 @@ export default {
     props: {
         id: String,
         initialUsers: Array,
-        placeholder: String,
+        placeholder: {
+            type: String,
+            default: "Type user name to search"
+        },
     },
     data() {
         return {

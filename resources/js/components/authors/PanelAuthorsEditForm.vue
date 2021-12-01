@@ -30,7 +30,7 @@
         <p>Authors will receive an email notification when they are added to the panel. This will occur when you click the "Confirm Authors" button.</p>
       </header>
       <section class="panel-authors-edit--add-author-wrapper">
-        <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList" placeholder="Type user name to search"></author-multiselect>
+        <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
         <author-types-table @close="closeAuthorTypesTable" v-if="showAuthorTypesTable"></author-types-table>
       </section>
       <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
