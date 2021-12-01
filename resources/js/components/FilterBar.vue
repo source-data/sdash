@@ -74,7 +74,7 @@
                     </b-list-group>
                 </div>
 
-                <b-button variant="outline-secondary" class='pull-right' @click="resetFilters()" v-if="hasActiveFilters">
+                <b-button variant="primary" class='pull-right' @click="resetFilters()" v-if="hasActiveFilters">
                     Reset
                 </b-button>
             </section>
@@ -434,6 +434,11 @@ section {
         padding: 0.5rem 0;
     }
 }
+@media (min-width: 576px) {
+    section {
+        padding: 1rem 6rem;
+    }
+}
 
 .sd-filter-accordion-header {
     text-align: left;
@@ -461,6 +466,8 @@ section {
 
 .filter-author-list-item,
 .filter-keyword-list-item {
+    background: inherit;
+    border: none;
     padding: 0.5rem 0.75rem;
 }
 
