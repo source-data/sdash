@@ -93,12 +93,7 @@ export default {
 
 <style lang="scss">
     .multiselect {
-        border: solid 1px black;
         margin: 1rem 0;
-    }
-    .multiselect,
-    .multiselect .multiselect__tags {
-        border-radius: 1.5rem !important;
     }
 
     .sd-group-keywords-option {
