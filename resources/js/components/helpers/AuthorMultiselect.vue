@@ -1,6 +1,7 @@
 <template>
     <multiselect
         class="sd-author-multiselect"
+        :class="{rounded: rounded}"
         @select="addUser"
         :id="id"
         label="name"
@@ -57,6 +58,10 @@ export default {
             type: String,
             default: "Type user name to search"
         },
+        rounded: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
@@ -113,6 +118,13 @@ export default {
     }
     .multiselect.sd-author-multiselect .multiselect__tags {
         border: solid 1px #ced4da;
+    }
+    .multiselect.rounded {
+        border: solid 1px black;
+    }
+    .multiselect.rounded,
+    .multiselect.rounded .multiselect__tags {
+        border-radius: 1.5rem !important;
     }
 
     .sd-group-user-option

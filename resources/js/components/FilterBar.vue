@@ -36,9 +36,8 @@
             <section id="sd-panel-filters">
                 <h4>Search by</h4>
 
-
                 <div class="filter-group">
-                    <author-multiselect class="filter-author-selector" @select="addAuthor" placeholder="Authors & Users"></author-multiselect>
+                    <author-multiselect class="filter-author-selector" @select="addAuthor" placeholder="Authors & Users" rounded></author-multiselect>
 
                     <b-list-group class="filter-author-list" v-if="filterAuthorList.length > 0">
                         <b-list-group-item v-for="a in filterAuthorList" :key="a.id" class="filter-author-list-item">
