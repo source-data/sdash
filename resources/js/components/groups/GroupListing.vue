@@ -46,7 +46,7 @@
                     <font-awesome-icon icon="user-cog" size="lg" />
                 </div>
 
-                <ul class="group-members-list text-xs list-unstyled">
+                <ul class="group-members-list text-xxs list-unstyled">
                     <li
                         v-for="user in groupAdministrators"
                         :key="user.user_id"
@@ -70,7 +70,7 @@
                     <font-awesome-icon icon="users" size="lg" />
                 </div>
 
-                <ul class="group-members-list text-xs list-unstyled">
+                <ul class="group-members-list text-xxs list-unstyled">
                     <li
                         v-for="user in groupMembers"
                         :key="user.user_id"
