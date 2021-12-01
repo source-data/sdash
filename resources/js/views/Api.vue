@@ -779,6 +779,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 @import 'resources/sass/_layout.scss';
 @import '/vendor/toc.css';
 @import '/vendor/prism.css';
@@ -815,5 +816,9 @@ h4,
 
 .alert {
     margin-bottom: 0;
+}
+
+.card-header {
+    color: $mostly-black-blue;
 }
 </style>
