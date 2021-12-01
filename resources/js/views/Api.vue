@@ -779,15 +779,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+@import 'resources/sass/_layout.scss';
 @import '/vendor/toc.css';
 @import '/vendor/prism.css';
 
 #toc {
     position: -webkit-sticky;
     position: sticky;
-    top: 20px;
+    top: $navbar-height + 1.5rem;
     z-index: 1000;
+}
+@media (min-width: 768px) {
+    #toc {
+        top: $navbar-height-md + 1.5rem;
+    }
 }
 
 code[class*="language-"],
