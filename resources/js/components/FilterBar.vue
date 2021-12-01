@@ -431,8 +431,12 @@ $sidebar-z-index: $navbar-z-index - 2;
 
 #sd-panel-filters::v-deep {
     select,
-    .multiselect .multiselect__tags {
+    .multiselect__tags {
         border: solid 1.5px $mostly-black-blue;
+        border-radius: 1.5rem !important;
+    }
+    .multiselect__content-wrapper {
+        border: solid 1px $mostly-black-blue;
         border-radius: 1.5rem !important;
     }
 }
