@@ -11,11 +11,13 @@
                         class="group-img-container"
                         :style="group.public_panels.length == 0 ? imageContainerColor(group.id) : ''"
                     >
-                        <img
-                            :class="{'transparent' : group.public_panels.length == 0}"
-                            :src="thumbnailUrl(group.public_panels)"
-                            :alt="group.name"
-                            @error="setDefaultThumbnail" />
+                        <router-link :to="{name: 'group', params: {group_id: group.id}}">
+                            <img
+                                :class="{'transparent' : group.public_panels.length == 0}"
+                                :src="thumbnailUrl(group.public_panels)"
+                                :alt="group.name"
+                                @error="setDefaultThumbnail" />
+                        </router-link>
                     </div>
 
                     <div>
