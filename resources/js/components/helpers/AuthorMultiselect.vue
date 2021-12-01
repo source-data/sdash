@@ -29,6 +29,10 @@
             </div>
         </template>
 
+        <span slot="caret" class="multiselect-caret">
+            <font-awesome-icon icon="search" />
+        </span>
+
         <span slot="noResult">No matching users found.</span>
     </multiselect>
 </template>
@@ -153,5 +157,11 @@ export default {
 
     .custom__remove {
         cursor: pointer;
+    }
+
+    .multiselect-caret {
+        position: absolute;
+        right: 20px;
+        top: 9px;
     }
 </style>
