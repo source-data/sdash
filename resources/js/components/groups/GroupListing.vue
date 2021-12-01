@@ -2,7 +2,7 @@
     <div v-if="currentGroup">
         <panel-drop-zone></panel-drop-zone>
 
-        <panel-authors-edit-form></panel-authors-edit-form>
+        <panel-authors-edit-modal></panel-authors-edit-modal>
 
         <filter-bar></filter-bar>
 
@@ -258,7 +258,7 @@ import GroupTitleIcon from '../helpers/GroupTitleIcon'
 import GroupMemberRequestIcon from '../helpers/GroupMemberRequestIcon'
 import GroupUserIcon from '../helpers/GroupUserIcon'
 import Lightbox from 'vue-easy-lightbox';
-import PanelAuthorsEditForm from "@/components/authors/PanelAuthorsEditForm";
+import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
 import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
 export default {
@@ -272,7 +272,7 @@ export default {
         GroupMemberRequestIcon,
         Lightbox,
         PanelDropZone,
-        PanelAuthorsEditForm,
+        PanelAuthorsEditModal,
     },
     props: ["group_id"],
 
