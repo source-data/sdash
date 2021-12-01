@@ -1,7 +1,5 @@
 <template>
     <multiselect
-        class="sd-author-multiselect"
-        :class="{rounded: rounded}"
         @select="addUser"
         :id="id"
         label="name"
@@ -10,15 +8,11 @@
         open-direction="bottom"
         :options="users"
         :multiple="false"
-        :searchable="true"
         :loading="isLoading"
         :internal-search="false"
-        :clear-on-select="true"
-        :close-on-select="true"
         :reset-after="true"
         :options-limit="20"
         :max-height="600"
-        :show-no-results="true"
         :hide-selected="true"
         @search-change="asyncFind"
     >
@@ -34,6 +28,7 @@
                 </div>
             </div>
         </template>
+
         <span slot="noResult">No matching users found.</span>
     </multiselect>
 </template>
@@ -41,7 +36,6 @@
 <script>
 
 import Multiselect from 'vue-multiselect'
-import store from '@/stores/store'
 import { mapActions } from 'vuex'
 import _ from 'lodash'
 
@@ -58,10 +52,6 @@ export default {
             type: String,
             default: "Type user name to search"
         },
-        rounded: {
-            type: Boolean,
-            default: false
-        }
     },
     data() {
         return {
@@ -108,23 +98,18 @@ export default {
 </script>
 
 <style lang="scss">
-    .sd-author-multiselect {
-      margin: 1rem 0;
+    .multiselect {
+        border: solid 1px black;
+        margin: 1rem 0;
+    }
+    .multiselect,
+    .multiselect .multiselect__tags {
+        border-radius: 1.5rem !important;
     }
 
     .sd-unconfirmed-user {
         color: red;
         font-weight: normal;
-    }
-    .multiselect.sd-author-multiselect .multiselect__tags {
-        border: solid 1px #ced4da;
-    }
-    .multiselect.rounded {
-        border: solid 1px black;
-    }
-    .multiselect.rounded,
-    .multiselect.rounded .multiselect__tags {
-        border-radius: 1.5rem !important;
     }
 
     .sd-group-user-option
