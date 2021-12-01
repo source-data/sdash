@@ -34,9 +34,9 @@
             </section>
 
             <section id="sd-panel-filters">
-                <h4>Search by</h4>
+                <h4 class="text-sm mb-0">Search by</h4>
 
-                <div class="filter-group">
+                <div class="filter-group pt-0">
                     <h5 hidden>
                         Authors
                     </h5>
@@ -80,7 +80,7 @@
             </section>
 
             <section id="sd-panel-sorting">
-                <h4>Sort by</h4>
+                <h4 class="text-sm mb-0">Sort by</h4>
 
                 <div class="filter-group">
                     <b-form-select
@@ -94,7 +94,7 @@
             </section>
 
             <section v-if="isLoggedIn" id="sd-my-groups">
-                <h4>My Groups</h4>
+                <h4 class="text-sm">My Groups</h4>
 
                 <div role="tablist" class="sd-group-list-wrapper">
                     <b-card class="mb-1" no-body>
