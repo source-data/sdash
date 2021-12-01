@@ -404,10 +404,20 @@ $sidebar-z-index: $navbar-z-index - 2;
     z-index: $sidebar-z-index + 1;
 
     .toggle-icon {
-        border-radius: 50%;
-        padding: 1rem;
+        // Position the icon 1/3rd of the way down
         position: absolute;
+        right: -23px;
         top: 35vh;
+
+        // The curved border comes from an svg
+        background-color: transparent !important;
+        background-image: url(/images/filter-sidebar-toggle.svg);
+        height: 100px;
+        width: 33px;
+
+        // Vertically align the icon in the middle
+        display: flex;
+        align-items: center;
     }
 }
 #sd-panel-filters-toggle.expanded {
