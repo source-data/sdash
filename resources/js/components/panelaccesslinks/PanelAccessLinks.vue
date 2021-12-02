@@ -17,7 +17,7 @@
                         ref="sd-share-modal"
                         title="Share with Group"
                         @show="resetSharingModal"
-                        ok-only 
+                        ok-only
                         ok-variant="secondary"
                         ok-title="Cancel"
                         button-size="sm"
@@ -131,7 +131,7 @@
                             :value="tokenizedPanelUrl"
                             id="sd-public-link"
                             readonly></b-form-input>
-                        
+
                         <b-input-group-append>
                             <b-button variant="light" @click="copyLink">
                                 <font-awesome-icon icon="copy" />
@@ -161,11 +161,11 @@
 
             <b-row v-if="!isPublic && !loadingStatus">
                 <h3 class="col-7">
-                    Make the SmartFigure publicly available in the web.
+                    Make the SmartFigure publicly available on the web.
                 </h3>
 
                 <b-col cols="5">
-                    <b-button 
+                    <b-button
                         variant="dark"
                         class="text-primary"
                         id="sd-publish-button"
@@ -182,7 +182,7 @@
                         selector="sd-publish-button"
                     >
                         <template v-slot:title>
-                            Make Public 
+                            Make Public
 
                             <b-button @click="closePublishPopover" class="close" aria-label="Close">
                                 <span class="d-inline-block" aria-hidden="true">&times;</span>
@@ -190,7 +190,7 @@
                         </template>
 
                         <template>
-                            A public SmartFigure will be accessible to everyone from the SDash 
+                            A public SmartFigure will be accessible to everyone from the SDash
                             <a :href="dashboardUrl">public page</a> under a CC BY 4.0 license
                             (use, distribution, and reproduction in any medium allowed,
                             provided the original work is properly cited).
@@ -226,7 +226,7 @@
                         selector="sd-unpublish-button"
                     >
                         <template v-slot:title>
-                            Make Private 
+                            Make Private
 
                             <b-button @click="closeUnpublishPopover" class="close" aria-label="Close">
                                 <span class="d-inline-block" aria-hidden="true">&times;</span>
