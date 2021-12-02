@@ -2,236 +2,253 @@
   <section id="sd-registration-page">
     <b-container class="mt-5">
         <b-row align-h="center">
-            <b-col cols sm="10" md="8">
-                <b-card bg-variant="dark" text-variant="light" header="Register a new account">
-                    <b-form
-                        @submit.prevent="sendRegistration"
-                    >
-                        <b-row>
-                            <b-col>
-                                <h6>Mandatory information</h6>
-                                <hr>
-                            </b-col>
-                        </b-row>
+            <b-col cols sm="12" md="10">
+                <b-card bg-variant="dark" text-variant="light">
+                    <b-card-body>
+                        <b-card-title title-tag="h1" class="h2 text-primary pb-4">Register a New Account</b-card-title>
 
-                        <!-- first name -->
-                        <b-form-group
-                            label="First name / given name*"
-                            label-for="sd-register__firstname"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                            :invalid-feedback="firstNameFeedback"
-                            :state="firstNameCheck"
-                        >
-                            <b-form-input v-model="firstName"
-                            :disabled="formDisabled"
-                            id="sd-register__firstname"
-                            debounce="300"
-                            @input="clearErrors('firstname')"
-                            ></b-form-input>
-                        </b-form-group>
+                        <b-card-text>
+
+                            <b-form
+                                @submit.prevent="sendRegistration"
+                            >
+                                <!-- mandatory information block -->
+                                <b-row class="pb-5">
+                                    <b-col cols sm="12" lg="3">
+                                        <h6 class="sd-header-alongside-input pb-4">Mandatory information</h6>
+                                    </b-col>
+                                    <b-col cols sm="12" lg="9">
 
 
-                        <!-- surname -->
-                        <b-form-group
-                            label="Surname / family name*"
-                            label-for="sd-register__surname"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                            :invalid-feedback="surnameFeedback"
-                            :state="surnameCheck"
-                        >
-                            <b-form-input v-model="surname" :disabled="formDisabled"
-                            id="sd-register__surname"
-                            debounce="300"
-                            @input="clearErrors('surname')"
-                            ></b-form-input>
-                        </b-form-group>
+                                        <!-- first name -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="First name / given name*"
+                                            label-for="sd-register__firstname"
+                                            label-cols-md="4"
+                                            :invalid-feedback="firstNameFeedback"
+                                            :state="firstNameCheck"
+                                        >
+                                            <b-form-input v-model="firstName"
+                                            :disabled="formDisabled"
+                                            id="sd-register__firstname"
+                                            debounce="300"
+                                            @input="clearErrors('firstname')"
+                                            ></b-form-input>
+                                        </b-form-group>
 
-                        <!-- email -->
-                        <b-form-group
-                            label="Email address*"
-                            label-for="sd-register__email"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                            :invalid-feedback="emailFeedback"
-                            :state="emailCheck"
-                        >
-                            <b-form-input
-                            debounce="300"
-                            @input="clearErrors('email')"
-                            v-model="email"
-                            :disabled="formDisabled"
-                            id="sd-register__email"
-                            type="email"></b-form-input>
-                        </b-form-group>
 
-                        <!-- password 1 -->
-                        <b-form-group
-                            label="Password*"
-                            label-for="sd-register__password"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                            :invalid-feedback="passwordFeedback"
-                            :state="passwordCheck"
-                        >
-                            <b-form-input
-                            v-model="password1"
-                            autocomplete="new-password"
-                            :disabled="formDisabled"
-                            id="sd-register__password"
-                            type="password"
-                            debounce="300"
-                            @input="clearErrors('password')"
-                            ></b-form-input>
-                        </b-form-group>
+                                        <!-- surname -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Surname / family name*"
+                                            label-for="sd-register__surname"
+                                            label-cols-md="4"
+                                            :invalid-feedback="surnameFeedback"
+                                            :state="surnameCheck"
+                                        >
+                                            <b-form-input v-model="surname" :disabled="formDisabled"
+                                            id="sd-register__surname"
+                                            debounce="300"
+                                            @input="clearErrors('surname')"
+                                            ></b-form-input>
+                                        </b-form-group>
 
-                        <!-- password 2 -->
-                        <b-form-group
-                            label="Confirm password*"
-                            label-for="sd-register__confirm-password"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                            :invalid-feedback="passwordRepeatFeedback"
-                            :state="passwordRepeatCheck"
-                        >
-                            <b-form-input
-                            v-model="password2"
-                            :disabled="formDisabled"
-                            autocomplete="new-password" id="sd-register__confirm-password"
-                            type="password"
-                            debounce="300"
-                            @input="clearErrors('password_confirmation')"
-                            ></b-form-input>
-                        </b-form-group>
-                        <b-row>
-                            <b-col>
-                                <h6>Optional information</h6>
-                                <hr>
-                            </b-col>
-                        </b-row>
+                                        <!-- email -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Email address*"
+                                            label-for="sd-register__email"
+                                            label-cols-md="4"
+                                            :invalid-feedback="emailFeedback"
+                                            :state="emailCheck"
+                                        >
+                                            <b-form-input
+                                            debounce="300"
+                                            @input="clearErrors('email')"
+                                            v-model="email"
+                                            :disabled="formDisabled"
+                                            id="sd-register__email"
+                                            type="email"></b-form-input>
+                                        </b-form-group>
 
-                        <!-- orcid -->
-                        <b-form-group
-                            label="ORCID"
-                            label-for="sd-register__orcid"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                            :invalid-feedback="orcidFeedback"
-                            :state="orcidCheck"
-                        >
-                            <b-form-input v-model="orcid"
-                            :disabled="formDisabled"
-                            id="sd-register__orcid"
-                            debounce="300"
-                            @input="clearErrors('orcid')"
-                            ></b-form-input>
-                        </b-form-group>
+                                        <!-- password 1 -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Password*"
+                                            label-for="sd-register__password"
+                                            label-cols-md="4"
+                                            :invalid-feedback="passwordFeedback"
+                                            :state="passwordCheck"
+                                        >
+                                            <b-form-input
+                                            v-model="password1"
+                                            autocomplete="new-password"
+                                            :disabled="formDisabled"
+                                            id="sd-register__password"
+                                            type="password"
+                                            debounce="300"
+                                            @input="clearErrors('password')"
+                                            ></b-form-input>
+                                        </b-form-group>
 
-                        <!-- institution -->
-                        <b-form-group
-                            label="Institution name"
-                            label-for="sd-register__institution"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                        >
-                            <b-form-input v-model="institutionName" :disabled="formDisabled" id="sd-register__institution"></b-form-input>
-                        </b-form-group>
+                                        <!-- password 2 -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Confirm password*"
+                                            label-for="sd-register__confirm-password"
+                                            label-cols-md="4"
+                                            :invalid-feedback="passwordRepeatFeedback"
+                                            :state="passwordRepeatCheck"
+                                        >
+                                            <b-form-input
+                                            v-model="password2"
+                                            :disabled="formDisabled"
+                                            autocomplete="new-password" id="sd-register__confirm-password"
+                                            type="password"
+                                            debounce="300"
+                                            @input="clearErrors('password_confirmation')"
+                                            ></b-form-input>
+                                        </b-form-group>
 
-                        <!-- institution address -->
-                        <b-form-group
-                            label="Institution address"
-                            label-for="sd-register__institution-address"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                        >
-                            <b-form-input v-model="institutionAddress" :disabled="formDisabled" id="sd-register__institution-address"></b-form-input>
-                        </b-form-group>
+                                    </b-col>
+                                </b-row>
 
-                        <!-- department -->
-                        <b-form-group
-                            label="Department name"
-                            label-for="sd-register__department"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                        >
-                            <b-form-input v-model="department" :disabled="formDisabled" id="sd-register__department"></b-form-input>
-                        </b-form-group>
+                                <!-- optional information block -->
+                                <b-row class="pb-5">
+                                    <b-col cols sm="12" lg="3">
+                                        <h6 class="sd-header-alongside-input pb-4">Optional information</h6>
+                                    </b-col>
+                                    <b-col cols sm="12" lg="9">
 
-                        <!-- linkedin -->
-                        <b-form-group
-                            label="LinkIn profile"
-                            label-for="sd-register__linkedin"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                        >
-                            <b-form-input v-model="linkedIn" :disabled="formDisabled" id="sd-register__linkedin"></b-form-input>
-                        </b-form-group>
+                                        <!-- orcid -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="ORCID"
+                                            label-for="sd-register__orcid"
+                                            label-cols-md="4"
+                                            :invalid-feedback="orcidFeedback"
+                                            :state="orcidCheck"
+                                        >
+                                            <b-form-input v-model="orcid"
+                                            :disabled="formDisabled"
+                                            id="sd-register__orcid"
+                                            debounce="300"
+                                            @input="clearErrors('orcid')"
+                                            ></b-form-input>
+                                        </b-form-group>
 
-                        <!-- twitter -->
-                        <b-form-group
-                            label="Twitter feed"
-                            label-for="sd-register__twitter"
-                            label-cols-sm="4"
-                            label-align-sm="right"
-                        >
-                            <b-form-input v-model="twitter" :disabled="formDisabled" id="sd-register__twitter"></b-form-input>
-                        </b-form-group>
-                        <b-row>
-                            <b-col>
-                                <h6>Privacy notification</h6>
-                                <hr>
-                                <p>This site is designed to facilitate the submission and sharing of scientific figures. It collects Personally Identifiable Information such as the names, e-mail addresses, organizational affiliations, IP addresses, and Open Researcher and Contributor IDs (ORC ID) of those submitting content (the "PI Information").</p>
-                                <p>This PI Information is collected to facilitate communications regarding posted figures, to track/report on submissions and system usage. This PI information may be shared with the data controller (EMBO) and other registered users. The PI Information stored in relationship to a figure submission might be used in case of ethics concerns or violations.</p>
-                                <p>Please confirm the following:</p>
-                            </b-col>
-                        </b-row>
+                                        <!-- institution -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Institution name"
+                                            label-for="sd-register__institution"
+                                            label-cols-md="4"
+                                        >
+                                            <b-form-input v-model="institutionName" :disabled="formDisabled" id="sd-register__institution"></b-form-input>
+                                        </b-form-group>
 
-                        <!-- accept conditions -->
-                        <b-form-checkbox
-                        :disabled="formDisabled"
-                        id="sd-conditions"
-                        v-model="acceptConditions"
-                        name="sd-conditions"
-                        :invalid-feedback="acceptConditionsFeedback"
-                        :state="acceptConditionsCheck"
-                        >
-                        I agree with the conditions above and confirm my personal information is correct.
-                        </b-form-checkbox>
+                                        <!-- institution address -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Institution address"
+                                            label-for="sd-register__institution-address"
+                                            label-cols-md="4"
+                                        >
+                                            <b-form-input v-model="institutionAddress" :disabled="formDisabled" id="sd-register__institution-address"></b-form-input>
+                                        </b-form-group>
 
-                        <!-- obtain consent -->
-                        <b-form-checkbox
-                        :disabled="formDisabled"
-                        id="sd-consent"
-                        v-model="acceptConsent"
-                        name="sd-consent"
-                        :invalid-feedback="acceptConsentFeedback"
-                        :state="acceptConsentCheck"
-                        >
-                        I will obtain consent from all persons and entities that may have intellectual property rights pertaining to the content I will post and share on this platform.
-                        </b-form-checkbox>
+                                        <!-- department -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Department name"
+                                            label-for="sd-register__department"
+                                            label-cols-md="4"
+                                        >
+                                            <b-form-input v-model="department" :disabled="formDisabled" id="sd-register__department"></b-form-input>
+                                        </b-form-group>
 
-                        <!-- obtain permissions -->
-                        <b-form-checkbox
-                        :disabled="formDisabled"
-                        id="sd-permissions"
-                        v-model="acceptPermissions"
-                        name="sd-permissions"
-                        :invalid-feedback="acceptPermissionFeedback"
-                        :state="acceptPermissionCheck"
-                        >
-                        I will obtain permission from any relevant co-authors before publicly posting or sharing content.
-                        </b-form-checkbox>
+                                        <!-- linkedin -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="LinkIn profile"
+                                            label-for="sd-register__linkedin"
+                                            label-cols-md="4"
+                                        >
+                                            <b-form-input v-model="linkedIn" :disabled="formDisabled" id="sd-register__linkedin"></b-form-input>
+                                        </b-form-group>
 
-                        <!-- submit -->
-                        <b-row class="mt-4">
-                            <b-col class="text-center">
-                                <b-button variant="primary" :disabled="submitButtonIsDisabled" type="submit">Register</b-button>
+                                        <!-- twitter -->
+                                        <b-form-group
+                                            class="mb-4"
+                                            label="Twitter feed"
+                                            label-for="sd-register__twitter"
+                                            label-cols-md="4"
+                                        >
+                                            <b-form-input v-model="twitter" :disabled="formDisabled" id="sd-register__twitter"></b-form-input>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
 
-                            </b-col>
-                        </b-row>
+                                <b-row class="pb-5">
+                                    <b-col cols sm="12" lg="3">
+                                        <h6 class="pb-4">Privacy Notification</h6>
+                                    </b-col>
+                                    <b-col cols sm="12" lg="9">
+                                        <p>This site is designed to facilitate the submission and sharing of scientific figures. It collects Personally Identifiable Information such as the names, e-mail addresses, organizational affiliations, IP addresses, and Open Researcher and Contributor IDs (ORC ID) of those submitting content (the "PI Information").</p>
+                                        <p>This PI Information is collected to facilitate communications regarding posted figures, to track/report on submissions and system usage. This PI information may be shared with the data controller (EMBO) and other registered users. The PI Information stored in relationship to a figure submission might be used in case of ethics concerns or violations.</p>
+                                        <p>Please confirm the following:</p>
 
-                    </b-form>
+
+                                        <!-- accept conditions -->
+                                        <b-form-checkbox
+                                        class="pb-4"
+                                        :disabled="formDisabled"
+                                        id="sd-conditions"
+                                        v-model="acceptConditions"
+                                        name="sd-conditions"
+                                        :invalid-feedback="acceptConditionsFeedback"
+                                        :state="acceptConditionsCheck"
+                                        >
+                                        I agree with the conditions above and confirm my personal information is correct.
+                                        </b-form-checkbox>
+
+                                        <!-- obtain consent -->
+                                        <b-form-checkbox
+                                        class="pb-4"
+                                        :disabled="formDisabled"
+                                        id="sd-consent"
+                                        v-model="acceptConsent"
+                                        name="sd-consent"
+                                        :invalid-feedback="acceptConsentFeedback"
+                                        :state="acceptConsentCheck"
+                                        >
+                                        I will obtain consent from all persons and entities that may have intellectual property rights pertaining to the content I will post and share on this platform.
+                                        </b-form-checkbox>
+
+                                        <!-- obtain permissions -->
+                                        <b-form-checkbox
+                                        class="pb-4"
+                                        :disabled="formDisabled"
+                                        id="sd-permissions"
+                                        v-model="acceptPermissions"
+                                        name="sd-permissions"
+                                        :invalid-feedback="acceptPermissionFeedback"
+                                        :state="acceptPermissionCheck"
+                                        >
+                                        I will obtain permission from any relevant co-authors before publicly posting or sharing content.
+                                        </b-form-checkbox>
+
+                                        <b-button variant="primary"
+                                        class="sd-big-button wide"
+                                        :disabled="submitButtonIsDisabled" type="submit">Register</b-button>
+                                    </b-col>
+                                </b-row>
+                                <!-- submit -->
+
+                            </b-form>
+                        </b-card-text>
+                    </b-card-body>
                 </b-card>
             </b-col>
         </b-row>
@@ -419,5 +436,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+ .sd-header-alongside-input {
+     padding-top: 0.565rem;
+ }
 </style>
