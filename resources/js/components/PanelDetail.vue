@@ -28,7 +28,7 @@
                 >{{ expandedPanel.title }}</a>
 
                 <button
-                    class='edit text-xs'
+                    class='edit text-xxs'
                     v-if="iCanEditThisPanel && !isEditingTitle"
                     @click="editPanelTitle"
                     title="Edit panel title"
@@ -42,7 +42,7 @@
                 <author-list></author-list>
 
                 <button
-                    class='edit text-xs'
+                    class='edit text-xxs'
                     v-if="iCanEditThisPanel"
                     @click="editAuthorList"
                     title="Edit panel authors"
@@ -80,7 +80,7 @@
                             title="View image" />
 
                         <button
-                            class='edit text-xs'
+                            class='edit text-xxs'
                             v-if="iCanEditThisPanel"
                             @click="displayImageUploader"
                             title="Change image"
@@ -98,7 +98,7 @@
                 </section>
 
                 <section class="description">
-                    <h2 class="text-xs">
+                    <h2 class="text-xxs">
                         Description
                     </h2>
 
@@ -111,7 +111,7 @@
                     </div>
 
                     <button
-                        class='edit text-xs'
+                        class='edit text-xxs'
                         v-if="!editingCaption && iCanEditThisPanel"
                         @click="editPanelCaption"
                         title="Edit panel description"
@@ -128,7 +128,7 @@
                 </section>
 
                 <section class="comments">
-                    <h2 class="text-xs">
+                    <h2 class="text-xxs">
                         Comments
                     </h2>
 
@@ -151,7 +151,7 @@
                                 aria-controls="panel-sources"
                                 aria-selected="true"
                             >
-                                <h2 class="section-heading text-xs">
+                                <h2 class="section-heading text-xxs">
                                     Sources ({{ fileCount }})
                                 </h2>
                             </a>
@@ -166,14 +166,14 @@
                                 role="tab"
                                 aria-controls="panel-keywords"
                             >
-                                <h2 class="section-heading text-xs">
+                                <h2 class="section-heading text-xxs">
                                     Keywords
                                 </h2>
                             </a>
                         </li>
                     </ul>
 
-                    <div class="content tab-content text-xs">
+                    <div class="content tab-content text-xxs">
                         <section
                             class="tab-pane fade show active"
                             id="panel-sources"
@@ -199,17 +199,17 @@
                 </div>
 
                 <section class="sharing">
-                    <h2 class="text-xs">
+                    <h2 class="text-xxs">
                         Share
                     </h2>
 
-                    <div class="content text-xs">
+                    <div class="content text-xxs">
                         <panel-access-links></panel-access-links>
                     </div>
                 </section>
 
                 <section class="panel-actions container-fluid">
-                    <h2 class="text-xs" hidden>
+                    <h2 class="text-xxs" hidden>
                         Actions
                     </h2>
 

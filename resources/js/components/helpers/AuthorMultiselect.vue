@@ -1,46 +1,45 @@
 <template>
-<multiselect
-class="sd-author-multiselect"
-@select="addUser"
-:id="id"
-label="name"
-track-by="id"
-placeholder="Type user name to search"
-open-direction="bottom"
-:options="users"
-:multiple="false"
-:searchable="true"
-:loading="isLoading"
-:internal-search="false"
-:clear-on-select="true"
-:close-on-select="true"
-:reset-after="true"
-:options-limit="20"
-:max-height="600"
-:show-no-results="true"
-:hide-selected="true"
-@search-change="asyncFind">
-    <template slot="option" slot-scope="props">
-        <div class="sd-group-user-option">
-            <div class="sd-group-user--info">
-                <div class="sd-group-user--name">
-                    {{ props.option.firstname + ' ' + props.option.surname }}
-                </div>
-                <div class="sd-group-user--affiliation">
-                    {{ props.option.institution_name }}
+    <multiselect
+        @select="addUser"
+        :id="id"
+        label="name"
+        track-by="id"
+        :placeholder="placeholder"
+        open-direction="bottom"
+        :options="users"
+        :multiple="false"
+        :loading="isLoading"
+        :internal-search="false"
+        :reset-after="true"
+        :options-limit="20"
+        :max-height="600"
+        :hide-selected="true"
+        @search-change="asyncFind"
+    >
+        <template slot="option" slot-scope="props">
+            <div class="sd-group-user-option">
+                <div class="sd-group-user--info">
+                    <div class="sd-group-user--name">
+                        {{ props.option.firstname + ' ' + props.option.surname }}
+                    </div>
+                    <div class="sd-group-user--affiliation">
+                        {{ props.option.institution_name }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </template>
-    <span slot="noResult">No matching users found.</span>
-</multiselect>
+        </template>
 
+        <span slot="caret" class="multiselect-caret">
+            <font-awesome-icon icon="search" />
+        </span>
+
+        <span slot="noResult">No matching users found.</span>
+    </multiselect>
 </template>
 
 <script>
 
 import Multiselect from 'vue-multiselect'
-import store from '@/stores/store'
 import { mapActions } from 'vuex'
 import _ from 'lodash'
 
@@ -53,6 +52,10 @@ export default {
     props: {
         id: String,
         initialUsers: Array,
+        placeholder: {
+            type: String,
+            default: "Type user name to search"
+        },
     },
     data() {
         return {
@@ -99,16 +102,13 @@ export default {
 </script>
 
 <style lang="scss">
-    .sd-author-multiselect {
-      margin: 1rem 0;
+    .multiselect {
+        margin: 1rem 0;
     }
 
     .sd-unconfirmed-user {
         color: red;
         font-weight: normal;
-    }
-    .multiselect.sd-author-multiselect .multiselect__tags {
-        border: solid 1px #ced4da;
     }
 
     .sd-group-user-option
@@ -157,5 +157,11 @@ export default {
 
     .custom__remove {
         cursor: pointer;
+    }
+
+    .multiselect-caret {
+        position: absolute;
+        right: 20px;
+        top: 9px;
     }
 </style>

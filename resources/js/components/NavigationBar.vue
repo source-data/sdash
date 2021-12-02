@@ -12,7 +12,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav primary-nav ml-auto">
+            <div class="navbar-nav primary-nav">
                 <!-- Only the link text itself should be clickable, but the whole nav-item should display the active
                 state. Therefore we need to apply the vue-router's classes for the active state to the nav-item instead
                 of the link as usual. That's possible with the v-slot API:
@@ -36,7 +36,7 @@
                 </router-link>
             </div>
 
-            <div class="navbar-nav secondary-nav ml-auto">
+            <div class="navbar-nav secondary-nav">
                 <div class="nav-item dropdown">
                     <a
                         class="nav-link" href="#" id="navbarSearchMenuLink" role="button" data-toggle="dropdown"
@@ -221,7 +221,21 @@ export default {
     .secondary-nav > *:last-child {
         padding-right: $navbar-padding-right-md;
     }
+
+    /* Dropdown nav-items need margins instead of padding to correctly position their dropdown menus close to them. */
+    .nav-item.dropdown {
+        padding: 0;
+        margin-bottom: $navbar-padding-bottom-md;
+        margin-left: 2vw;
+        margin-right: 2vw;
+        margin-top: $navbar-padding-top-md;
+    }
+    .nav-item.dropdown:last-child {
+        padding: 0;
+        margin-right: $navbar-padding-right-md;
+    }
 }
+
 
 /* height == line-height to vertically center the text inside the nav-links. */
 .navbar-brand > img,
@@ -234,6 +248,8 @@ export default {
 
 /* Styling for the links in the navbar. */
 .navbar-nav {
+    margin-left: auto;
+
     /* The selectors have to be this specific to override the styling for .nav-link. */
     > .nav-item > .nav-link {
         color: $mostly-black-blue;
@@ -251,6 +267,7 @@ export default {
     > .nav-item.router-link-exact-active > .nav-link:hover {
         color: $very-light-gray;
     }
+
 }
 
 /* The search & login icons are a bit too large compared to the text if they have the same font size. */
@@ -271,6 +288,7 @@ img.profile-picture {
         background-color: $vivid-orange;
         border-bottom-left-radius: 0.75rem;
         border-bottom-right-radius: 0.75rem;
+        margin-left: 0;
         margin-right: $navbar-padding-right-md - 1; /* This roughly aligns the registration link with the login link. */
         padding: 0;
         position: absolute;
@@ -291,6 +309,16 @@ img.profile-picture {
         font-size: 1.125rem;
         line-height: 1rem;
         visibility: visible !important;
+    }
+}
+
+/* The search & profile dropdowns need some right margin in the collapsed view on smaller screens. */
+.dropdown-menu {
+    margin-right: 10%;
+}
+@media (min-width: 768px) {
+    .dropdown-menu {
+        margin-right: 0;
     }
 }
 </style>

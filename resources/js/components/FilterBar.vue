@@ -1,4 +1,4 @@
-    <template>
+<template>
     <div id="sd-panel-filters">
         <div
             id="sd-panel-filters-toggle"
@@ -9,7 +9,7 @@
             @click="toggleSidebar"
         >
             <div class="toggle-icon bg-primary text-dark">
-                <font-awesome-icon icon="sliders-h" />
+                <font-awesome-icon icon="sliders-h" size="lg" />
             </div>
         </div>
 
@@ -34,18 +34,18 @@
             </section>
 
             <section id="sd-panel-filters">
-                <h4>Search by</h4>
+                <h4 class="text-sm mb-0">Search by</h4>
 
-
-                <div class="filter-group">
-                    <h5>
+                <div class="filter-group pt-0">
+                    <h5 hidden>
                         Authors
-                        <span v-b-tooltip.hover.top title="Lists only registered users">
-                            <font-awesome-icon icon="info-circle" size="sm" />
-                        </span>
                     </h5>
 
-                    <author-multiselect class="filter-author-selector" @select="addAuthor"></author-multiselect>
+                    <author-multiselect
+                        class="filter-author-selector"
+                        @select="addAuthor"
+                        placeholder="Authors & Users"
+                    ></author-multiselect>
 
                     <b-list-group class="filter-author-list" v-if="filterAuthorList.length > 0">
                         <b-list-group-item v-for="a in filterAuthorList" :key="a.id" class="filter-author-list-item">
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h5>
+                    <h5 hidden>
                         Keywords
                     </h5>
 
@@ -74,13 +74,13 @@
                     </b-list-group>
                 </div>
 
-                <b-button variant="outline-secondary" class='pull-right' @click="resetFilters()" v-if="hasActiveFilters">
+                <b-button variant="primary" class='pull-right' @click="resetFilters()" v-if="hasActiveFilters">
                     Reset
                 </b-button>
             </section>
 
             <section id="sd-panel-sorting">
-                <h4>Sort by</h4>
+                <h4 class="text-sm mb-0">Sort by</h4>
 
                 <div class="filter-group">
                     <b-form-select
@@ -94,7 +94,7 @@
             </section>
 
             <section v-if="isLoggedIn" id="sd-my-groups">
-                <h4>My Groups</h4>
+                <h4 class="text-sm">My Groups</h4>
 
                 <div role="tablist" class="sd-group-list-wrapper">
                     <b-card class="mb-1" no-body>
@@ -365,6 +365,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 @import 'resources/sass/_layout.scss';
 
 $panel-filters-sidebar-width: 80vw;
@@ -403,10 +404,20 @@ $sidebar-z-index: $navbar-z-index - 2;
     z-index: $sidebar-z-index + 1;
 
     .toggle-icon {
-        border-radius: 50%;
-        padding: 1rem;
+        // Position the icon 1/3rd of the way down
         position: absolute;
+        right: -23px;
         top: 35vh;
+
+        // The curved border comes from an svg
+        background-color: transparent !important;
+        background-image: url(/images/filter-sidebar-toggle.svg);
+        height: 100px;
+        width: 38px;
+
+        // Vertically align the icon in the middle
+        display: flex;
+        align-items: center;
     }
 }
 #sd-panel-filters-toggle.expanded {
@@ -418,11 +429,28 @@ $sidebar-z-index: $navbar-z-index - 2;
     }
 }
 
+#sd-panel-filters::v-deep {
+    select,
+    .multiselect__tags {
+        border: solid 1.5px $mostly-black-blue;
+        border-radius: 1.5rem !important;
+    }
+    .multiselect__content-wrapper {
+        border: solid 1px $mostly-black-blue;
+        border-radius: 1.5rem !important;
+    }
+}
+
 section {
     padding: 1rem 1.5rem;
 
     .filter-group {
         padding: 0.5rem 0;
+    }
+}
+@media (min-width: 576px) {
+    section {
+        padding: 1rem 6rem;
     }
 }
 
@@ -452,6 +480,8 @@ section {
 
 .filter-author-list-item,
 .filter-keyword-list-item {
+    background: inherit;
+    border: none;
     padding: 0.5rem 0.75rem;
 }
 
