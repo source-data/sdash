@@ -221,6 +221,19 @@ export default {
     .secondary-nav > *:last-child {
         padding-right: $navbar-padding-right-md;
     }
+
+    /* Dropdown nav-items need margins instead of padding to correctly position their dropdown menus close to them. */
+    .nav-item.dropdown {
+        padding: 0;
+        margin-bottom: $navbar-padding-bottom-md;
+        margin-left: 2vw;
+        margin-right: 2vw;
+        margin-top: $navbar-padding-top-md;
+    }
+    .nav-item.dropdown:last-child {
+        padding: 0;
+        margin-right: $navbar-padding-right-md;
+    }
 }
 
 /* height == line-height to vertically center the text inside the nav-links. */
