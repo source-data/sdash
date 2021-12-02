@@ -2,22 +2,24 @@
   <section id="sd-registration-page">
     <b-container class="mt-5">
         <b-row align-h="center">
-            <b-col cols sm="10" md="8">
-                <b-card bg-variant="dark" text-variant="light" header="Reset your password">
+            <b-col cols lg="4" md="6" sm="8">
+                <b-card bg-variant="dark" text-variant="light">
+                    <b-card-title title-tag="h1" class="h2 text-primary pb-4">Reset your Password</b-card-title>
                     <b-form
                         @submit.prevent="sendPasswordReset"
                     >
                         <b-form-group
+                            label-sr-only
                             id="email-fieldset"
                             label="Email"
-                            label-cols-sm="3"
-                            label-align-sm="right"
                             valid-feedback="OK"
                             :invalid-feedback="emailFeedback"
                             :state="emailCheck"
                             :disabled="loading"
                         >
                         <b-form-input
+                        placeholder="E-Mail Address"
+                        class="sd-text-input"
                         id="login-email"
                         v-model="email"
                         autocomplete="username"
@@ -28,8 +30,9 @@
                         ></b-form-input>
                         </b-form-group>
                         <b-form-row>
-                          <b-col cols-sm="7" cols-md="5" offset-sm="3">
+                          <b-col>
                             <b-button
+                            class="sd-big-button full-width"
                             :disabled="submitDisabled"
                             type="submit"
                             variant="primary"
