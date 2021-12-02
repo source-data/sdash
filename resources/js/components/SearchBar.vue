@@ -1,5 +1,5 @@
 <template>
-    <div class="search ml-auto" :class="{ active: isActive }">
+    <div class="search" :class="{ active: isActive }">
         <label class="icon">
             <font-awesome-icon icon="search" />
         </label>
@@ -82,8 +82,12 @@ export default {
 <style lang="scss" scoped>
 .search {
     position: relative;
-    width: 480px;
     border-radius: 3px;
+}
+@media (min-width: 768px) {
+    .search {
+        width: 480px;
+    }
 }
 
 .search input {
