@@ -1,0 +1,44 @@
+/* =========================
+FORM CONTROLS
+==========================*/
+
+.sd-text-input {
+  font-size: 1rem;
+  font-weight: bold;
+  color: $very-dark-desaturated-blue;
+  padding: 1.8rem 1rem;
+}
+
+.sd-text-input::placeholder {
+  font-size: 1rem;
+  font-weight: bold;
+  color: $very-dark-desaturated-blue;
+}
+
+.sd-big-checkbox {
+
+  label {
+    padding-left: 0.875rem;
+    font-weight: bold;
+  }
+}
+
+.sd-big-button {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1;
+  height: calc(2.5em + 1rem + 2px);
+  border-radius: 6px;
+
+
+  &.full-width {
+
+    width: 100%;
+
+  }
+
+  &.wide {
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
+}

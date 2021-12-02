@@ -2,49 +2,65 @@
   <section id="sd-login-page">
     <b-container class="mt-5">
         <b-row align-h="center">
-            <b-col cols md="6">
-                <b-card bg-variant="dark" text-variant="light" header="Log in">
+            <b-col cols lg="4" md="6" sm="8">
+                <b-card bg-variant="dark" text-variant="light">
                     <b-form
                         @submit.prevent="sendLogin"
                     >
                         <b-form-group
+                            label-sr-only
                             id="email-fieldset"
                             label="Email"
                             valid-feedback="Allowed"
                             :invalid-feedback="emailFeedback"
                             :state="emailCheck"
                             :disabled="loading"
+                            class="mb-4"
                         >
-                        <b-form-input
-                        id="login-email"
-                        v-model="email"
-                        autocomplete="username"
-                        :state="emailCheck"
-                        debounce="500"
-                        trim
-                        ></b-form-input>
+                            <b-form-input
+                            size="lg"
+                            id="login-email"
+                            v-model="email"
+                            autocomplete="username"
+                            :state="emailCheck"
+                            placeholder="E-Mail Address"
+                            debounce="500"
+                            trim
+                            class="sd-text-input"
+                            ></b-form-input>
                         </b-form-group>
                         <b-form-group
+                            label-sr-only
                             id="password-fieldset"
                             label="Password"
                             valid-feedback="Allowed"
                             :invalid-feedback="passwordFeedback"
                             :state="passwordCheck"
                             :disabled="loading"
+                            class="mb-4"
                         >
-                            <b-form-input id="login-password" v-model="password"
+                            <b-form-input
+                            size="lg"
+                            placeholder="Password"
+                            id="login-password"
+                            v-model="password"
                             autocomplete="current-password"
-                            :state="passwordCheck"                             type="password"
-                            debounce="300" trim>
+                            :state="passwordCheck"
+                            type="password"
+                            debounce="300"
+                            class="sd-text-input"
+                            trim>
                             </b-form-input>
                         </b-form-group>
                         <b-form-group
                             id="remember-input-group"
+                            class="mb-4"
                         >
                         <b-form-checkbox
                             id="sd-remember-checkbox"
                             v-model="remember"
                             name="remember"
+                            class="sd-big-checkbox"
                         >Remember me</b-form-checkbox>
 
                         </b-form-group>
@@ -57,9 +73,11 @@
                         :disabled="submitDisabled"
                         type="submit"
                         variant="primary"
+                        class="sd-big-button full-width"
                         >{{ loginButtonCaption }} <b-spinner small v-if="loading"></b-spinner></b-button>
-
-                        <router-link class="btn btn-link" :to="{ name: 'passwordreset'}">Forgot your password?</router-link>
+                        <div class="text-right py-1">
+                            <router-link class="text-white small" :to="{ name: 'passwordreset'}">Forgot your password?</router-link>
+                        </div>
                     </b-form>
                 </b-card>
             </b-col>
