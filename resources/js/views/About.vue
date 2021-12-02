@@ -1,112 +1,113 @@
 <template>
-<div class="container">
-    <div class="row" style="margin: 10px auto;">
-        <div class="col-md-8">
-            <h2 class="pb-3 mb-4 border-bottom">
-                About
-            </h2>
-            <div>
-                <h3>Aims</h3>
-                <blockquote>
-                    <p><strong>SDash is an online open source platform for sharing of scientific results among collaborators.</strong></p>
-                </blockquote>
-                <hr />
-                <p>
-                    SDash enables scientists to generate and share <em>SmartFigures</em> that link a scientific figure to the underlying source data
-                    and structured machine-readable metadata. Users can manage their SmartFigures to share them with groups of colleagues or
-                    make them public to share with the whole scientific community. Users can comment and discuss initiating
-                    an early scientific dissemination of results.
-                </p>
-                <p>SDash provides:</p>
-                <ul>
-                    <li>an <strong>intuitive</strong> way of sharing scientific results</li>
-                    <li><strong>direct</strong> access to underlying data for in-depth analysis</li>
-                    <li>a <strong>rapid</strong> mechanism to disseminate scientific results</li>
-                    <li>a <strong>painless</strong> route for organizing results and data</li>
-                </ul>
-            </div>
-            <div>
-                <h3>How does it work?</h3>
-                <p>
-                    <img src="/images/sdash_infographic2.jpg" alt="A flow diagram showing how SDash works." class="sdash-about--infographic">
-                </p>
-                <p>
-                    Scientists have their own personal workspace where they upload their result figures by a simple drag &amp; drop.
-                    Research results and underlying data are easily organized by linking them with local or remote data files,
-                    computer scripts, and protocols. By creating or participating in groups of collaborating peers, researchers
-                    can control the visibility of their content. Online commenting opens the interdisciplinary dialogue to exchange ideas,
-                    promote critical debates and provides a way for early dissemination of findings ultimately prepare your figures for publication.
-                </p>
-                <p><em>Learn more: <a href="https://elifesciences.org/labs/9d062a9b/smartfigures-dashboard-and-editor-tools-for-quick-and-easy-research-communication">
-                            SmartFigures Dashboard and Editor: tools for quick and easy research communication</a></em></p>
-            </div>
-        </div>
+    <div>
+        <article id="about-content">
+            <h2>About SDash</h2>
 
-        <aside class="col-md-4">
-            <div class="p-3">
-                <p class="font-italic">SDash is developed by <a href="https://sourcedata.embo.org/" class="sd-sidebar-logo--link"><img src="/images/logos/sourcedata.png" alt="SourceData - Making data discoverable" class="sd-sidebar-logo--image"></a></p>
-            </div>
-            <div class="card bg-dark" style="margin-bottom: 1rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Do you have any questions?</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Contact</h6>
-                    <p class="card-text">
-                        <strong>Hannah Sonntag</strong><br />
-                        SDash and SourceData Coordinator<br />
-                        <a href="mailto:hannah.sonntag@embo.org">hannah.sonntag@embo.org</a>
-                    </p>
-                </div>
-            </div>
-            <div class="card bg-dark">
-                <div class="card-body">
-                    <h5 class="card-title" style="margin: 0;">Our partners</h5>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="https://www.biologie.hu-berlin.de/en/gruppenseiten-en/sfb1315" class="sd-sidebar--sfb-link"><img src="/images/logos/sfb.svg" alt="The SFB logo." class="sd-sidebar--sfb-logo"></a></li>
-                    <li class="list-group-item"><a href="https://www.sib.swiss/"><img src="/images/logos/sib.png" alt="Swiss Institute of Bioinformatics" class="sd-sidebar--sib-logo"></a></li>
-                    <li class="list-group-item"><a href="https://substance.io/"><img src="/images/logos/substance.svg" alt="Substance - self-publish your research" class="sd-sidebar--substance-logo"></a></li>
+            <p>
+                <h3 class="text-light">Aims</h3>
+
+                SDash is an online open source platform for sharing of scientific results among collaborators.
+                
+                <p>
+                    SDash enables scientists to generate and share SmartFigures that link a scientific figure to the
+                    underlying source data and structured machine-readable metadata. Users can manage their SmartFigures
+                    to share them with groups of colleagues or make them public to share with the whole scientific
+                    community. Users can comment and discuss initiating an early scientific dissemination of results.
+                </p>
+
+            <p>
+                <h3>SDash provides:</h3>
+
+                <ul>
+                    <li>
+                        an intuitive way of sharing scientific results
+                    </li>
+
+                    <li>
+                        direct access to underlying data for in-depth analysis
+                    </li>
+
+                    <li>
+                        a rapid mechanism to disseminate scientific results
+                    </li>
+
+                    <li>
+                        a painless route for organizing results and data
+                    </li>
                 </ul>
-            </div>
-        </aside>
+
+            <p>
+                <h3>How does it work?</h3>
+
+                <img src="/images/sdash_infographic2.jpg" alt="A flow diagram showing how SDash works.">
+
+                Scientists have their own personal workspace where they upload their result figures by a simple drag
+                &amp; drop. Research results and underlying data are easily organized by linking them with local or
+                remote data files, computer scripts, and protocols. By creating or participating in groups of
+                collaborating peers, researchers can control the visibility of their content. Online commenting opens
+                the interdisciplinary dialogue to exchange ideas, promote critical debates and provides a way for early
+                dissemination of findings ultimately prepare your figures for publication.
+
+            <p>
+                Learn more:
+
+                <a
+                    class="text-info"
+                    href="https://elifesciences.org/labs/9d062a9b/smartfigures-dashboard-and-editor-tools-for-quick-and-easy-research-communication"
+                >
+                    SmartFigures Dashboard and Editor: tools for quick and easy research communication
+                </a>
+            </p>
+        </article>
+
+        <info-footer></info-footer>
     </div>
-</div>
 </template>
 
 <script>
-export default {
-    name: 'About',
-    
-    data(){
-        return {
+import InfoFooter from "@/components/InfoFooter";
 
-        }
-    },
-}
+export default {
+  name: "About",
+  components: { InfoFooter },
+  data() {
+    return {};
+  },
+};
 </script>
 
 <style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
+@import 'resources/sass/_text.scss';
 
-.sd-sidebar-logo--image {
-    max-width: 260px;
-    padding: 5px 10px;
+#about-content {
+    font-size: $font-size-md;
+    margin: 2rem 5%;
+}
+@media (min-width: 768px) {
+    #about-content {
+        margin: 6rem 5%;
+        max-width: 1095px;
+    }
 }
 
-.sd-sidebar--sfb-logo {
+h2, h3 {
+    color: $vivid-orange;
+}
+h2 {
+    font-size: $font-size-xl;
+}
+h3 {
+    font-size: $font-size-md;
+}
+
+p {
+    margin-top: 3rem;
+}
+
+img {
+    margin-bottom: 3rem;
+    margin-top: 2rem;
     width: 100%;
-}
-
-.sd-sidebar--sib-logo {
-    max-width: 240px;
-}
-
-.sd-sidebar--substance-logo {
-    max-width: 240px;
-}
-
-.sdash-about--infographic {
-    display:block;
-    box-sizing: border-box;
-    max-width:75%;
-    margin: 3rem auto;
 }
 </style>
