@@ -100,7 +100,7 @@ class UsersTableSeeder extends Seeder
                 'role' => 'user',
                 'institution_name' => 'Very Good University',
                 'institution_address' => '139 Example Street, Paris, Italia',
-                'department_name' => 'School of Oriental and Asiatic Studies',
+                'department_name' => 'SOAS',
                 'linkedin' => 'http://linkedin.com',
                 'twitter' => 'https://twitter.com',
                 'orcid' => '0000-0003-2219-5841',
