@@ -59,7 +59,7 @@ __Database Seeding__
 
 Run `php artisan db:seed` to seed the database with some test data
 This includes a demo user with SuperAdmin privileges
-* email address: embo_it@embo.org
+* email address: superadmin@example.org
 * password: superadmin
 
 You can completely refresh your database (losing any non-seeded data) by running `php artisan migrate:refresh --seed`

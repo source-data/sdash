@@ -18,7 +18,7 @@ class UserEmailVerificationTest extends TestCase
     private $tempUserData = [
         'firstname' => 'Bob',
         'surname' => 'Dobalina',
-        'email' => 'bd@astrazeneca.se',
+        'email' => 'bd@az.se',
         'password' => 'blabbadabbadab',
         'password_confirmation' => 'blabbadabbadab',
         'orcid' => '0000-0002-3202-0263',
