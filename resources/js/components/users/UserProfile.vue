@@ -105,11 +105,13 @@
             </footer>
         </article>
 
-        <b-spinner
-            v-if="loading"
-            variant="primary"
-            label="Spinning"
-        ></b-spinner>
+        <div class="spinner-container">
+            <b-spinner
+                v-if="loading"
+                variant="primary"
+                label="Spinning"
+            ></b-spinner>
+        </div>
     </div>
 </template>
 
@@ -213,5 +215,10 @@ header {
 
 footer {
     margin-top: 100px;
+}
+
+.spinner-container {
+    margin-top: 5rem;
+    text-align: center;
 }
 </style>
