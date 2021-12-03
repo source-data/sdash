@@ -40,3 +40,14 @@ a:hover {
 .bg-light a:hover {
     color: $mostly-black-blue-hover;
 }
+
+.btn-desat-blue {
+    color: $mostly-white-gray;
+    background-color: $very-dark-desaturated-blue;
+    border-color: $very-dark-desaturated-blue;
+}
+.btn-desat-blue:hover {
+    color: $mostly-white-gray;
+    background-color: $very-dark-desaturated-blue;
+    border-color: $very-dark-desaturated-blue;
+}
