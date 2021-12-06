@@ -32,12 +32,12 @@
         id="sd-consent-modal"
         ref="sd-consent-modal"
         size="lg"
-        content-class="bg-dark text-light"
+        content-class="bg-light text-dark"
         footer-border-variant="dark"
         header-border-variant="dark"
     >
         <template #modal-header>
-            <h5 class="modal-title text-light">Privacy Notification</h5>
+            <h5 class="modal-title text-dark">Privacy Notification</h5>
         </template>
         <p>This site is designed to facilitate the submission and sharing of scientific figures.
             It collects Personally Identifiable Information such as the names, e-mail addresses,
@@ -136,6 +136,7 @@ export default {
 
 <style lang="scss">
 @import 'resources/sass/_layout.scss';
+@import 'resources/sass/_colors.scss';
 
 #sd-wrapper {
     min-height: 100vh;
@@ -166,5 +167,24 @@ export default {
     padding-left: 4rem;
     padding-right: 3rem;
     padding-bottom: 2rem;
+}
+
+#sd-consent-modal {
+    .modal-header {
+        background-color:$very-dark-desaturated-blue;
+    }
+
+    .modal-title {
+        color: $mostly-white-gray !important;
+    }
+
+    .modal-header {
+        margin-bottom: 1rem;
+    }
+
+    .modal-footer {
+        background-color:$very-dark-desaturated-blue;
+        margin-top: 1rem;
+    }
 }
 </style>
