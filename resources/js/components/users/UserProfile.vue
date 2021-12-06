@@ -141,6 +141,11 @@ export default {
             return this.isProfileOfLoggedInUser || (this.currentUser.role === 'superadmin')
         },
     },
+    watch: {
+        'user_id': function updateDisplayedUser() {
+            this.fetchData()
+        },
+    },
     created() {
         this.fetchData()
     },
