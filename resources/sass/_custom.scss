@@ -42,3 +42,44 @@ FORM CONTROLS
     padding-right: 8rem;
   }
 }
+
+/*=========================================
+SDASH POPOVERS AND MODALS
+==========================================*/
+.sd-custom-popover {
+
+  .popover-body {
+    background-color: $mostly-white-gray;
+  }
+
+  .popover-header {
+    background-color: $mostly-black-blue;
+    color: $mostly-white-gray;
+
+    .btn.close {
+      position: relative;
+      top: -5px;
+    }
+  }
+
+  &.bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
+    border-bottom-color: $mostly-black-blue;
+  }
+
+  &.bs-popover-bottom .popover-header::before, .bs-popover-auto[x-placement^=bottom] .popover-header::before {
+    border-bottom-color: $mostly-black-blue;
+  }
+
+  .btn.close {
+    color: $mostly-white-gray;
+  }
+
+  a,
+  a:focus,
+  a:hover,
+  a:active {
+    color: $body-color !important;
+    text-decoration: underline;
+  }
+
+}

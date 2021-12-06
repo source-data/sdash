@@ -180,6 +180,7 @@
                         triggers="click"
                         placement="top"
                         selector="sd-publish-button"
+                        custom-class="sd-custom-popover"
                     >
                         <template v-slot:title>
                             Make Public
@@ -191,7 +192,7 @@
 
                         <template>
                             A public SmartFigure will be accessible to everyone from the SDash
-                            <a :href="dashboardUrl">public page</a> under a CC BY 4.0 license
+                            <a :href="dashboardUrl" class="">public page</a> under a CC BY 4.0 license
                             (use, distribution, and reproduction in any medium allowed,
                             provided the original work is properly cited).
                         </template>
@@ -199,7 +200,7 @@
                         <div class="sd-popover-content">
                             <p>I confirm that all co-authors agreed to make this figure public.</p>
                             <div>
-                                <b-button variant="success" small @click="updatePublicStatus(1)">Yes</b-button>
+                                <b-button variant="primary" small @click="updatePublicStatus(1)">Yes</b-button>
                                 <b-button variant="outline-dark" small @click="closePublishPopover">No</b-button>
                             </div>
                         </div>
