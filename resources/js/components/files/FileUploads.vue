@@ -91,7 +91,7 @@
                     <b-popover
                         :ref="'edit-category-popover-' + data.item.id"
                         :target="'edit-category-' + data.item.id"
-                        triggers="click"
+                        triggers="click blur"
                         placement="top"
                         @show="updateFileCategory(data.item.id, data.item.file_category_id)"
                         @hidden="clearUpdate"
@@ -150,7 +150,7 @@
                         <b-popover
                             :ref="'edit-description-popover-' + data.item.id"
                             :target="'edit-description-' + data.item.id"
-                            triggers="click"
+                            triggers="click blur"
                             placement="top"
                             @show="updateFileDescription(data.item.id, data.item.description)"
                             @hidden="clearUpdate"
@@ -226,7 +226,7 @@
                     <b-popover
                         :ref="'delete-popover-' + data.item.id"
                         :target="'delete-button-' + data.item.id"
-                        triggers="click"
+                        triggers="click blur"
                         placement="top"
                         @show="confirmDeletion(data.item.id)"
                         @hidden="clearDeletion"

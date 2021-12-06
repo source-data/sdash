@@ -179,7 +179,7 @@
                     <b-popover
                         ref="sd-publish-popover"
                         target="sd-publish-button"
-                        triggers="click"
+                        triggers="click blur"
                         placement="top"
                         selector="sd-publish-button"
                         custom-class="sd-custom-popover"
@@ -224,7 +224,7 @@
                     <b-popover
                         ref="sd-unpublish-popover"
                         target="sd-unpublish-button"
-                        triggers="click"
+                        triggers="click blur"
                         placement="top"
                         selector="sd-unpublish-button"
                         custom-class="sd-custom-popover"

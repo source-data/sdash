@@ -45,7 +45,7 @@
             <b-popover
                 ref="delete-popover"
                 target="sd-mass-delete-panels"
-                triggers="click"
+                triggers="click blur"
                 placement="bottom"
                 custom-class="sd-custom-popover"
             >
@@ -82,7 +82,7 @@
             <b-popover
                 ref="sharing-group-popover"
                 target="sd-add-panels-to-sharing-group"
-                triggers="click"
+                triggers="click blur"
                 placement="bottom"
                 @hidden="onGroupsPopoverHide"
                 custom-class="sd-custom-popover"
