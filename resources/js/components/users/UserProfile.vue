@@ -169,7 +169,7 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
 
