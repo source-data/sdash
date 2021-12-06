@@ -21,6 +21,8 @@
                         ok-variant="secondary"
                         ok-title="Cancel"
                         button-size="sm"
+                        header-border-variant="dark"
+                        footer-border-variant="dark"
                     >
                         <b-form-group
                             id="sd-group-selector"
@@ -46,7 +48,7 @@
                             <b-button
                                 @click="addPanelToGroup"
                                 size="sm"
-                                variant="info"
+                                variant="primary"
                                 :disabled="!selectedSharingGroupId"
                             >
                                 <font-awesome-icon icon="users" size="1x" />
@@ -225,6 +227,7 @@
                         triggers="click"
                         placement="top"
                         selector="sd-unpublish-button"
+                        custom-class="sd-custom-popover"
                     >
                         <template v-slot:title>
                             Make Private
@@ -462,5 +465,29 @@ button.btn-dark.text-primary:hover {
 }
 .download-link a {
     text-decoration: underline;
+}
+
+</style>
+
+<style lang="scss">
+@import 'resources/sass/_colors.scss';
+
+#sd-share-modal {
+    .modal-header {
+        background-color:$very-dark-desaturated-blue;
+    }
+
+    .modal-title {
+        color: $mostly-white-gray !important;
+    }
+
+    .modal-header {
+        margin-bottom: 1rem;
+    }
+
+    .modal-footer {
+        background-color:$very-dark-desaturated-blue;
+        margin-top: 1rem;
+    }
 }
 </style>

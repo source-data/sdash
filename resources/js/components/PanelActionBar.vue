@@ -47,6 +47,7 @@
                 target="sd-mass-delete-panels"
                 triggers="click"
                 placement="bottom"
+                custom-class="sd-custom-popover"
             >
                 <template v-slot:title>
                     Are you sure?
@@ -60,10 +61,12 @@
                         >
                     </b-button>
                 </template>
-                <p>
+                <p class="mb-2">
                     <b-button @click="closeDeletePopover" size="sm"
                         >Cancel</b-button
                     >
+                </p>
+                <p>
                     <b-button
                         @click="deleteMultiplePanels"
                         size="sm"
@@ -82,6 +85,7 @@
                 triggers="click"
                 placement="bottom"
                 @hidden="onGroupsPopoverHide"
+                custom-class="sd-custom-popover"
             >
                 <template v-slot:title>
                     Add to group
@@ -116,11 +120,11 @@
                     </b-form-select>
                 </b-form-group>
 
-                <p>
+                <p class="mb-2">
                     <b-button
                         @click="addPanelsToGroup"
                         size="sm"
-                        variant="info"
+                        variant="primary"
                         :disabled="!selectedSharingGroupId"
                     >
                         <font-awesome-icon icon="users" size="1x" />
@@ -128,12 +132,13 @@
                     </b-button>
                 </p>
 
-                <p>
+                <p class="mb-2">
                     <label class="d-block">or create new sharing group</label>
                     <b-button @click="closeGroupsPopover" size="sm">
                         Cancel
                     </b-button>
-
+                </p>
+                <p>
                     <b-button @click="createGroup" size="sm" variant="success">
                         <font-awesome-icon icon="users" size="1x" />
                         Create New Group

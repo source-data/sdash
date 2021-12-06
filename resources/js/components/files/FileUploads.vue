@@ -43,7 +43,7 @@
                 </b-col>
 
                 <b-col cols="auto">
-                    <b-button variant="success" @click.prevent="submitFile" :disabled="disableSubmit">
+                    <b-button variant="primary" @click.prevent="submitFile" :disabled="disableSubmit">
                         <span v-if="!uploadToggle">Attach File</span>
                         <span v-if="uploadToggle">Add Link</span>
                     </b-button>
@@ -95,6 +95,7 @@
                         placement="top"
                         @show="updateFileCategory(data.item.id, data.item.file_category_id)"
                         @hidden="clearUpdate"
+                        custom-class="sd-custom-popover"
                     >
                         <template v-slot:title>
                             Category
@@ -116,7 +117,7 @@
                             </b-form-group>
 
                             <div class="update-buttons">
-                                <b-button variant="success" small @click="saveFileCategory">Save</b-button>
+                                <b-button variant="primary" small @click="saveFileCategory">Save</b-button>
 
                                 <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">
                                     Cancel
@@ -153,6 +154,7 @@
                             placement="top"
                             @show="updateFileDescription(data.item.id, data.item.description)"
                             @hidden="clearUpdate"
+                            custom-class="sd-custom-popover"
                         >
                             <template v-slot:title>
                                 Description
@@ -174,7 +176,7 @@
                                 </b-form-group>
 
                                 <div class="update-buttons">
-                                    <b-button variant="success" small @click="saveFileDescription">
+                                    <b-button variant="primary" small @click="saveFileDescription">
                                         Save
                                     </b-button>
 
@@ -228,6 +230,7 @@
                         placement="top"
                         @show="confirmDeletion(data.item.id)"
                         @hidden="clearDeletion"
+                        custom-class="sd-custom-popover"
                     >
                         <template v-slot:title>
                             Are you sure?

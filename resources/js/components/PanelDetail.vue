@@ -234,6 +234,7 @@
                                 target="sd-delete-panel"
                                 triggers="click"
                                 placement="top"
+                                custom-class="sd-custom-popover"
                             >
                                 <template v-slot:title>
                                     Are you sure?
