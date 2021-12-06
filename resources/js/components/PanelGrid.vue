@@ -135,7 +135,7 @@ export default {
 }
 
 
-.wrapper.anonymous-user {
+.anonymous-user {
     background-image: url("/images/landing-page-bg.jpg");
     background-repeat: no-repeat;
     background-size: contain;
