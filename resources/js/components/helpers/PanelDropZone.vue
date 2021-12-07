@@ -2,8 +2,21 @@
     <vue-full-screen-file-drop
         @drop='uploadPanel'
         formFieldName="file"
-        text="Please drop a JPG, PNG, GIF, TIF or PDF file"
         v-if="panelDropEnabled">
+        <div class="vue-full-screen-file-drop__content text-primary text-xl font-weight-bold">
+            <p>
+                Please drop a
+                <br>
+                JPG, PNG, GIF, TIFF or PDF file
+                <br>
+                or browse for files
+            </p>
+
+            <button class="btn btn-primary text-md font-weight-bold">
+                + Upload SmartFigure
+            </button>
+        </div>
+
     </vue-full-screen-file-drop>
 </template>
 
@@ -74,6 +87,20 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import 'resources/sass/_colors.scss';
 
+.vue-full-screen-file-drop {
+    background-color: $mostly-black-blue !important;
+}
+
+.vue-full-screen-file-drop__content {
+    flex-direction: column;
+    text-align: center;
+}
+
+.vue-full-screen-file-drop__content::before {
+    border: 3px dashed $vivid-orange !important;
+    border-radius: 2rem !important;
+}
 </style>
