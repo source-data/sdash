@@ -1,11 +1,18 @@
 <template>
-  <div class="sd-feedback-widget" :class="{ 'sd-feedback-widget__visible' : isVisible }" >
-    <button class="sd-feedback-widget--show" @click="isVisible=!isVisible">
+  <div
+    id="sd-feedback-widget"
+    class="bg-dark-desat text-light"
+    :class="{ 'visible' : isVisible }"
+  >
+    <button id="sd-show-feedback-widget" class="btn btn-primary" @click="isVisible=!isVisible">
       Give Feedback
     </button>
+
     <b-form @submit.stop.prevent :aria-hidden="!isVisible">
-      <h4>Feedback</h4>
-      <p>Please use this form to provide us with any feedback on SDash. Feedback is not anonymous - your name and email address will be sent to the site administrator.</p>
+      <h4 hidden>
+        Feedback
+      </h4>
+
       <b-form-group
         id="sd-feedback-widget--message-wrapper"
         label="What would you like us to know?"
@@ -17,17 +24,31 @@
         <b-form-textarea
           id="sd-feedback-widget--message"
           v-model="message"
-          placeholder="Write your feedback here."
+          placeholder="My feedback to this..."
           rows="6"
           :disabled="submitting"
           :state="enableSubmission"
-        >
-
-        </b-form-textarea>
+        ></b-form-textarea>
       </b-form-group>
+
       <b-form-group>
-        <b-button class="sd-feedback-widget--submit" :disabled="submitting || !enableSubmission" variant="success" @click.prevent="sendFeedback">Submit</b-button>
-        <b-button class="sd-feedback-widget--cancel"  variant="secondary" @click.prevent="cancelFeedback" :disabled="submitting">Cancel</b-button>
+        <b-button
+          class="sd-feedback-widget--submit"
+          :disabled="submitting || !enableSubmission"
+          variant="info"
+          @click.prevent="sendFeedback"
+        >
+          Submit
+        </b-button>
+
+        <b-button
+          class="sd-feedback-widget--cancel"
+          variant="secondary"
+          @click.prevent="cancelFeedback"
+          :disabled="submitting"
+        >
+          Cancel
+        </b-button>
       </b-form-group>
     </b-form>
   </div>
@@ -95,49 +116,48 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  .sd-feedback-widget {
-    position:fixed;
-    box-sizing: border-box;
-    border: solid 2px #0c93af;
-    width: 340px;
-    padding: 1.5rem;
-    top:20%;
-    right:-340px;
-    z-index:999999;
-    background-color: #efefef;
-    transition: right 0.25s ease-in;
-    box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+<style lang="scss" scoped>
 
-    p, label {
-      color: darken(#0c93af, 10%);
-    }
+#sd-feedback-widget {
+  position: fixed;
+  width: 340px;
+  padding: 1.5rem;
+  top: 20%;
+  right: -340px;
+  z-index: 999999;
+  transition: right 0.25s ease-in;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+  border-top-left-radius: 0.5rem;
+}
+#sd-feedback-widget.visible {
+  right: 0;
+}
 
-  }
+#sd-show-feedback-widget {
+  font-size: 1.25rem;
+  padding: 0.125rem 1rem;
 
-  .sd-feedback-widget.sd-feedback-widget__visible {
-    right:0;
-  }
+  /* Rotate the element so the text reads from bottom to top. Rotating the element around its own bottom-left corner
+   * and positioning it at its parent's bottom-left corner lets it appear just outside and flush with the bottom and
+   * left borders of its parent.
+   */
+  transform: rotate(270deg);
+  transform-origin: bottom left;
 
-  .sd-feedback-widget--show {
-    position: absolute;
-    transform: rotate(270deg);
-    left:-102px;
-    top: 5rem;
-    font-size: 1.25rem;
-    border: solid 2px #0c93af;
-    color: #fff;
-    border-radius: 0.25rem 0.25rem 0 0;
-    border-bottom: none;
-    background-color: #0c93af;
-    padding: 0.125rem 1rem;
-    z-index:-1;
-  }
+  position: absolute;
+  left: 0;
+  bottom: 0;
 
-  .sd-feedback-widget--show:focus {
-    outline:inherit;
-    border:inherit;
-    border-bottom: none;
-  }
+  z-index: -1;
 
+  /* this makes the top-left and top-right corners rounded, but these rounded corners end up on the bottom-left and
+   * top-left due to the element's rotation.
+   */
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+#sd-show-feedback-widget:focus {
+  outline: inherit;
+  border: inherit;
+  border-bottom: none;
+}
 </style>
