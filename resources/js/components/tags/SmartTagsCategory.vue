@@ -1,5 +1,5 @@
 <template>
-    <div class="form-group">
+    <div class="form-group sourcedata-tags" :class="'sourcedata-tags-' + type">
         <label>{{ title }}</label>
 
         <vue-tags-input
@@ -197,6 +197,24 @@ export default {
 
 .sd-tag-clickable:hover {
     border: dotted 1px #cecece;
+}
+
+
+.sourcedata-tags::v-deep .ti-tag {
+    color: $mostly-white-gray;
+}
+.sourcedata-tags-assay::v-deep .ti-tag {
+    background-color: $sourcedata-color-assay;
+}
+.sourcedata-tags-intervention::v-deep .ti-tag {
+    background-color: $sourcedata-color-intervention;
+}
+.sourcedata-tags-method::v-deep .ti-tag {
+    background-color: $sourcedata-color-method;
+    color: $very-dark-blue;
+}
+.sourcedata-tags-other::v-deep .ti-tag {
+    background-color: $sourcedata-color-other;
 }
 
 </style>
