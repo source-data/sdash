@@ -301,10 +301,6 @@ const getters = {
             ? true
             : false;
     },
-    isGroupOwner(state, getters, rootState) {
-        if (!state.currentGroup) return false;
-        return state.currentGroup.user_id === rootState.Users.user.id;
-    },
     isGroupMember(state, getters, rootState) {
         if (!state.currentGroup || !state.currentGroup.confirmed_users) {
             return false;
@@ -317,7 +313,7 @@ const getters = {
     },
     mayAddPanelToGroup(state, getters) {
         // We're only allowed to add panels to a group if we're an owner or a member.
-        return getters.isGroupOwner || getters.isGroupMember;
+        return getters.isGroupMember;
     },
     hasRequestedMembership(state) {
         if (!state.currentGroup || !state.currentGroup.pivot) {

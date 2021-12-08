@@ -162,7 +162,7 @@
                         </div>
                     </b-popover>
                 </div>
-                <div class="group-actions" v-if="isGroupMember && !isGroupOwner">
+                <div class="group-actions" v-if="isGroupMember">
                     <b-button
                         variant="outline-danger"
                         @click.prevent
@@ -232,7 +232,7 @@
             </div>
 
             <panel-listing-grid v-if="hasPanels" list_root="user"></panel-listing-grid>
-            
+
             <b-alert v-if="!hasPanels && !isLoadingPanels" show variant="danger" class="no-panel-alert mt-3">
                 No Panels Found
             </b-alert>
@@ -290,7 +290,6 @@ export default {
             'hasPanels',
             'hasLoadedAllResults',
             'isGroupAdmin',
-            "isGroupOwner",
             "isGroupMember",
             "hasRequestedMembership",
             "isLightboxOpen",
