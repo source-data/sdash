@@ -26,13 +26,12 @@ class PublicGroupTest extends TestCase
     $this->privatePanel = factory(Panel::class)->create(['user_id' => $this->user->id, 'is_public' => false]);
     $this->publicPanel = factory(Panel::class)->create(['user_id' => $this->user->id, 'is_public' => true]);
     $this->privateGroup = factory(Group::class)->create([
-      'user_id' => $this->user->id,
       'is_public' => false
     ]);
     $this->publicGroup = factory(Group::class)->create([
-      'user_id' => $this->user->id,
       'is_public' => true
     ]);
+    $this->publicGroup->users()->attach($this->user->id, ['role' => 'admin', 'status' => 'confirmed']);
     $this->privateGroup->panels()->attach([$this->privatePanel->id, $this->publicPanel->id]);
     $this->publicGroup->panels()->attach([$this->privatePanel->id, $this->publicPanel->id]);
   }

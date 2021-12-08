@@ -76,7 +76,8 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
         $owner = factory(User::class)->create(['id' => 99]);
-        $group = factory(Group::class)->create(['user_id' => $owner->id]);
+        $group = factory(Group::class)->create();
+        $owner->groups()->attach($group->id, ['status' => 'confirmed', 'role' => 'admin']);
         $user->groups()->attach($group->id, ['status' => 'pending']);
 
         $dbUser = User::find($user->id);
@@ -100,7 +101,8 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
         $owner = factory(User::class)->create(['id' => 99]);
-        $group = factory(Group::class)->create(['user_id' => $owner->id]);
+        $group = factory(Group::class)->create();
+        $owner->groups()->attach($group->id, ['status' => 'confirmed', 'role' => 'admin']);
         $user->groups()->attach($group->id, ['status' => 'confirmed']);
 
         $dbUser = User::find($user->id);

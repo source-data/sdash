@@ -19,12 +19,16 @@ class GroupsTableSeeder extends Seeder
 
         //get panels and users
         $users = User::all();
-        $panels = Panel::whereIn('user_id', [2, 3])->where('is_public', false)->limit(15)->get();
+        $panels = Panel::where('is_public', false)->limit(8)->get();
 
         $newGroups->each(function ($group) use ($panels, $users) {
 
-            $users->each(function ($user) use ($group) {
-                $group->users()->attach($user->id, ['status' => 'confirmed']);
+            $randomGroupAdmin = $users->random(1);
+
+            $group->users()->attach($randomGroupAdmin[0]->id, ['status' => 'confirmed', 'role' => 'admin']);
+
+            $users->each(function ($user) use ($group, $randomGroupAdmin) {
+                if ($user->id !== $randomGroupAdmin[0]->id) $group->users()->attach($user->id, ['status' => 'confirmed']);
             });
 
             $panels->each(function ($panel) use ($group) {

@@ -24,7 +24,7 @@ class UserAddedToGroupTest extends TestCase
         parent::setUp();
         $this->invitingUser = factory(User::class)->create();
         $this->invitedUser = factory(User::class)->create();
-        $this->group = factory(Group::class)->create(['user_id' => $this->invitingUser->id]);
+        $this->group = factory(Group::class)->create();
         $this->token = sha1(now()->timestamp . $this->invitedUser->id . Str::random(24));
         // add the group creator as an admin
         $this->group->users()->attach($this->invitingUser->id, ['role' => 'admin', 'status' => 'confirmed']);
