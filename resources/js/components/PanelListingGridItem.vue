@@ -1,10 +1,5 @@
 <template>
-    <li
-        :id="itemId"
-        class="sd-grid-item"
-        :class="{ 'sd-grid-item__expanded': isExpanded }"
-        :style="sdGridItemStyle"
-    >
+    <li :id="itemId" class="sd-grid-item">
         <div class="sd-grid-image-container">
             <header class="sd-grid-item--image-header">
                 <button
@@ -74,46 +69,39 @@
                     {{ panelAuthorsAbbreviated }}
                 </address>
             </div>
-
-            <div class="css_arrow" v-if="isExpanded"></div>
         </div>
 
-        <div
-            class="sd-grid-extra"
-            id="panel-detail"
-            v-if="isExpanded"
-            :style="sdGridExtraStyle"
-        >
-            <button
-                type="button"
-                aria-label="Close"
-                class="close sd-grid-extra--close text-light"
-                @click.prevent="toggleExpanded"
-            >
-                <span aria-hidden="true">&#10005;</span>
-            </button>
+        <b-modal v-model="isExpanded" hide-header hide-footer static lazy>
+            <div class="sd-grid-extra">
+                <button
+                    type="button"
+                    aria-label="Close"
+                    class="close sd-grid-extra--close text-light"
+                    @click.prevent="toggleExpanded"
+                >
+                    <span aria-hidden="true">&#10005;</span>
+                </button>
 
-            <b-row v-if="!hasPanelDetail">
-                <b-col class="text-center">
-                    <b-spinner
-                        variant="primary"
-                        label="Spinning"
-                        class="m-5"
-                        style="width: 4rem; height: 4rem;"
-                    ></b-spinner>
-                </b-col>
-            </b-row>
+                <b-row v-if="!hasPanelDetail">
+                    <b-col class="text-center">
+                        <b-spinner
+                            variant="primary"
+                            label="Spinning"
+                            class="m-5"
+                            style="width: 4rem; height: 4rem;"
+                        ></b-spinner>
+                    </b-col>
+                </b-row>
 
-            <panel-detail v-if="hasPanelDetail" @resized="updatePanelDetailHeight"></panel-detail>
-        </div>
+                <panel-detail v-if="hasPanelDetail" @resized="updatePanelDetailHeight"></panel-detail>
+            </div>
+        </b-modal>
     </li>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import store from "@/stores/store";
 import PanelDetail from "./PanelDetail";
-import AuthorTypes from "@/definitions/AuthorTypes";
 
 export default {
     name: "PanelListingGridItem",
@@ -123,9 +111,7 @@ export default {
     },
 
     data() {
-        return {
-            panelDetailHeight: false,
-        };
+        return {};
     } /* end of data */,
 
     computed: {
@@ -198,17 +184,6 @@ export default {
             if (this.selectedPanels.length === 0) return false;
             return _.includes(this.selectedPanels, this.panelId);
         },
-        sdGridItemStyle() {
-            return this.panelDetailHeight ? {
-                'margin-bottom': (this.panelDetailHeight + 32) + 'px',
-            } : {};
-        },
-        sdGridExtraStyle() {
-            return this.panelDetailHeight ? {
-                'max-height': this.panelDetailHeight + 'px',
-                'height': this.panelDetailHeight + 'px',
-            } : {};
-        },
     },
 
     methods: {
@@ -220,9 +195,6 @@ export default {
             } else {
                 this.$store.dispatch("expandPanel", this.panelId);
                 this.$store.dispatch("loadPanelDetail", this.panelId);
-                this.$scrollTo("#scroll-anchor-" + this.panelId, 500, {
-                    offset: -60
-                });
             }
         },
         toggleSelected() {
@@ -242,13 +214,6 @@ export default {
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
-
-.sd-grid-item__expanded .sd-grid-extra {
-    min-height: 25rem;
-}
-.sd-grid-item.sd-grid-item__expanded {
-    margin-bottom: 27rem;
-}
 
 $panel-thumbnail-height: 20rem;
 $panel-title-font-size: $font-size-md;
@@ -307,20 +272,8 @@ $panel-text-margins: 1.5rem;
 }
 
 .sd-grid-extra {
-    border-radius: 0.75rem;
-    cursor: default;
-    position: absolute;
-    left: 0;
     width: 100%;
     background-color: $very-dark-desaturated-blue;
-    color: #ddd;
-    font-size: 16px;
-    margin-top: 6px;
-    max-height: 0;
-    height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease-in;
-    z-index: 5;
 }
 .sd-grid-extra--close {
     position: absolute;
@@ -328,49 +281,6 @@ $panel-text-margins: 1.5rem;
     top: 1rem;
     right: 2vw;
     opacity: 1;
-}
-.sd-grid-extra--wrapper {
-    height: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-}
-.sd-grid-extra--wrapper > div {
-    padding: 48px;
-}
-.sd-grid-extra--image-container {
-    flex: 0 0 50%;
-    display: flex;
-}
-.sd-grid-extra--info-container {
-    flex: 0 0 50%;
-}
-.sd-grid-extra--image-wrapper {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-}
-.sd-grid-extra--image {
-    max-width: 100%;
-    max-height: 100%;
-    display: none;
-}
-.css_arrow {
-    display: none;
-}
-.sd-grid-item__expanded .css_arrow {
-    display: block;
-    width: 0px;
-    height: 0px;
-    border: solid 15px transparent;
-    border-bottom: solid 20px $very-dark-desaturated-blue;
-    border-top: none;
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-10px);
-}
-.sd-grid-actions {
-    margin-top: 1em;
 }
 .sd-grid-item--image-header {
     cursor: auto;
@@ -411,9 +321,6 @@ $panel-text-margins: 1.5rem;
 .panel-select-button {
     position: absolute;
     top: 6px;
-}
-
-.panel-select-button {
     right: 6px;
     padding: 0;
     margin: 0;
@@ -424,13 +331,11 @@ $panel-text-margins: 1.5rem;
     border-radius: 50%;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.25s;
+.sd-grid-item::v-deep .modal-dialog {
+    max-width: initial;
+    margin: 7rem 0;
 }
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
+.sd-grid-item::v-deep .modal-body {
+    padding: 0;
 }
 </style>
