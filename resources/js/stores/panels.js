@@ -586,6 +586,17 @@ const getters = {
     },
     privatePanels(state) {
         return state.onlyMyPanels;
+    },
+    filtersAreApplied(state) {
+        if(
+            state.onlyMyPanels === false
+            && state.filterAuthors.length === 0
+            && state.filterKeywords.length === 0
+        ) {
+          return false;
+        }
+
+        return true;
     }
 };
 

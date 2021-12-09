@@ -11,6 +11,10 @@
             <div class="toggle-icon bg-primary text-dark">
                 <font-awesome-icon icon="sliders-h" size="lg" />
             </div>
+            <div class="sd-panel-filters-toggle-icon-wrapper">
+                <b-badge v-if="filtersAreApplied" pill class="sd-panel-filter-toggle-icon sd-panel-filter-toggle-icon--filters" variant="success" v-b-tooltip.hover.right.v-light title="Filters applied"><font-awesome-icon icon="sliders-h" size="sm"/></b-badge>
+                <b-badge v-if="hasPendingUserGroups" pill class="sd-panel-filter-toggle-icon sd-panel-filter-toggle-icon--group-invitations" variant="info" v-b-tooltip.hover.right.v-light title="Group invitations"><font-awesome-icon icon="users" size="sm"/></b-badge>
+            </div>
         </div>
 
         <b-sidebar
@@ -238,10 +242,14 @@ export default {
             "userGroups",
             "confirmedUserGroups",
             "pendingUserGroups",
-            "privatePanels"
+            "privatePanels",
+            "filtersAreApplied",
         ]),
         hasActiveFilters() {
             return (this.filterAuthorList.length > 0) || (this.filterKeywordList.length > 0) || (this.sortOrder !== 'creation-date-desc')
+        },
+        hasPendingUserGroups() {
+            return this.pendingUserGroups.length > 0;
         },
         privacyLevel: {
             get() {
@@ -493,4 +501,22 @@ section {
 .create-group-link {
     padding: 0.75rem;
 }
+
+.sd-panel-filters-toggle-icon-wrapper {
+    position: absolute;
+    top: 7rem;
+}
+
+.badge.sd-panel-filter-toggle-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+    margin-left: 2px;
+}
+
+
+
 </style>
