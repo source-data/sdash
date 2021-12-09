@@ -625,6 +625,7 @@ section.description button.edit {
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
     color: inherit;
+    height: 1.5rem;
 
     /* Make the h2 positioning work by setting position to relative */
     position: relative;
