@@ -260,6 +260,7 @@ export default {
     caption-side: bottom;
 
     padding-top: 0.5rem;
+    width: 100%;
 
     * {
         overflow: hidden;
@@ -337,7 +338,12 @@ export default {
 
 .sd-grid-item::v-deep .modal-dialog {
     max-width: initial;
-    margin: 7rem 0;
+    margin: 5rem 0;
+}
+@media (min-width: 768px) {
+    .sd-grid-item::v-deep .modal-dialog {
+        margin: 5rem 1rem;
+    }
 }
 .sd-grid-item::v-deep .modal-body {
     padding: 0;
