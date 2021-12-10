@@ -24,7 +24,7 @@
             </header>
             <div
                 class="sd-grid-image-container-inner"
-                @click="toggleExpanded"
+                v-b-modal="modalId"
                 tabindex="0"
             >
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
@@ -71,13 +71,18 @@
             </div>
         </div>
 
-        <b-modal v-model="isExpanded" hide-header hide-footer static lazy>
+        <b-modal
+            :id="modalId"
+            hide-header hide-footer
+            static lazy
+            @show="showPanel" @hidden="hidePanel"
+        >
             <div class="sd-grid-extra">
                 <button
                     type="button"
                     aria-label="Close"
                     class="close sd-grid-extra--close text-light"
-                    @click.prevent="toggleExpanded"
+                    @click="$bvModal.hide(modalId)"
                 >
                     <span aria-hidden="true">&#10005;</span>
                 </button>
@@ -152,9 +157,6 @@ export default {
             }
             return false;
         },
-        isExpanded() {
-            return this.panelId === this.expandedPanelId;
-        },
         itemId() {
             return "grid-item-" + this.panelId;
         },
@@ -184,18 +186,19 @@ export default {
             if (this.selectedPanels.length === 0) return false;
             return _.includes(this.selectedPanels, this.panelId);
         },
+        modalId() {
+            return "panel-detail-modal-" + this.panelId;
+        }
     },
 
     methods: {
         //run as event handlers, for example
-
-        toggleExpanded() {
-            if (this.isExpanded) {
-                this.$store.dispatch("closeExpandedPanels");
-            } else {
-                this.$store.dispatch("expandPanel", this.panelId);
-                this.$store.dispatch("loadPanelDetail", this.panelId);
-            }
+        showPanel() {
+            this.$store.dispatch("expandPanel", this.panelId);
+            this.$store.dispatch("loadPanelDetail", this.panelId);
+        },
+        hidePanel() {
+            this.$store.dispatch("closeExpandedPanels");
         },
         toggleSelected() {
             if (this.panelSelected) {
