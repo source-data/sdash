@@ -176,27 +176,19 @@ export default {
 }
 #sd-partners-information img {
     height: 7rem;
+    max-width: 100%;
 }
 
 .sd-partners-list {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
+    gap: 1rem;
 }
-.sd-partners-list > * {
-    margin-right: auto;
-    padding-bottom: 1rem;
-}
-.sd-partners-list > *:not(:first-child) {
-    margin-left: 1rem;
-}
-@media (max-width: 575.98px) {
+@media (min-width: 768px) {
     .sd-partners-list {
-        flex-direction: column;
-    }
-    .sd-partners-list > * {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        margin-top: 1rem;
+        flex-direction: row;
+        gap: 2rem;
     }
 }
 
