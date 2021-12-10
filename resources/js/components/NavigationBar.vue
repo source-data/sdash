@@ -203,7 +203,7 @@ export default {
     padding-left: $navbar-padding-left * 2;
     padding-top: $navbar-padding-top * 0.5;
 }
-.nav-item.router-link-exact-active {
+.nav-item.router-link-active {
     background-color: $very-dark-blue;
 }
 @media (min-width: 768px) {
@@ -261,10 +261,10 @@ export default {
         color: $mostly-black-blue-hover;
     }
 
-    > .nav-item.router-link-exact-active > .nav-link {
+    > .nav-item.router-link-active > .nav-link {
         color: $mostly-white-gray;
     }
-    > .nav-item.router-link-exact-active > .nav-link:hover {
+    > .nav-item.router-link-active > .nav-link:hover {
         color: $very-light-gray;
     }
 
