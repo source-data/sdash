@@ -231,6 +231,7 @@ export default {
     display: table;
     // needed to position the <header> with the panel select button
     position: relative;
+    width: 100%;
 }
 
 .sd-grid-image-container-inner {
@@ -242,9 +243,15 @@ export default {
 
 .sd-grid-image {
     display: block;
-    height: 250px;
-    max-width: 100%;
-    width: auto;
+    width: 100%;
+}
+@media (min-width: 576px) {
+    .sd-grid-image {
+        display: block;
+        height: 250px;
+        max-width: 100%;
+        width: auto;
+    }
 }
 
 .sd-grid-item-text {
