@@ -219,38 +219,11 @@
                 </template>
 
                 <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
-                    <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id">
-                        <font-awesome-icon icon="trash-alt" />
-                    </b-button>
+                    <b-form-checkbox v-model="selectedItems" :value="data.item.id"></b-form-checkbox>
+                </template>
 
-                    <b-popover
-                        :ref="'delete-popover-' + data.item.id"
-                        :target="'delete-button-' + data.item.id"
-                        triggers="click blur"
-                        placement="top"
-                        @show="confirmDeletion(data.item.id)"
-                        @hidden="clearDeletion"
-                        custom-class="sd-custom-popover"
-                    >
-                        <template v-slot:title>
-                            Are you sure?
-                            <b-button @click="closeDeletePopover(data.item.id)" class="close" aria-label="Close">
-                                <span class="d-inline-block" aria-hidden="true">&times;</span>
-                            </b-button>
-                        </template>
-
-                        <div class="confirm-delete-content">
-                            <div class="delete-buttons">
-                                <b-button variant="danger" small @click="deleteFile">
-                                    Delete it!
-                                </b-button>
-
-                                <b-button variant="outline-dark" small @click="closeDeletePopover(data.item.id)">
-                                    Cancel
-                                </b-button>
-                            </div>
-                        </div>
-                    </b-popover>
+                <template #head(action)>
+                    <b-form-checkbox :checked="allItemsSelected" @change="toggleSelectAll"></b-form-checkbox>
                 </template>
 
                 <template v-slot:custom-foot>
@@ -264,13 +237,43 @@
                     </b-tr>
                 </template>
             </b-table>
+
+            <b-button variant="danger" class="text-light" id="delete-selected-sources" :disabled="selectedItems.length === 0">
+                <font-awesome-icon icon="trash-alt" /> Delete selected
+            </b-button>
+
+            <b-popover
+                ref="delete-popover"
+                target="delete-selected-sources"
+                triggers="click blur"
+                placement="top"
+                custom-class="sd-custom-popover"
+            >
+                <template v-slot:title>
+                    Are you sure?
+                    <b-button @click="closeDeletePopover()" class="close" aria-label="Close">
+                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                    </b-button>
+                </template>
+
+                <div class="confirm-delete-content">
+                    <div class="delete-buttons">
+                        <b-button variant="danger" small @click="deleteFiles">
+                            Delete it!
+                        </b-button>
+
+                        <b-button variant="outline-dark" small @click="closeDeletePopover()">
+                            Cancel
+                        </b-button>
+                    </div>
+                </div>
+            </b-popover>
         </div>
     </div>
 </template>
 
 <script>
 
-import store from '@/stores/store'
 import formatter from '@/services/formatter'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -287,14 +290,15 @@ export default {
             fileToDelete: {},
             fileToUpdate: {},
             fields:[
-                {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
+                {key:'action', label:'', sortable: false},
                 {key:'description', label:'Description', sortable: true, sortByFormatted:true, formatter:"distillDescription"},
+                {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
                 {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"distillResourceLink"},
                 {key:'size', label: 'Size', sortable: true, sortByFormatted:true, formatter:"distillFileSize"},
-                {key:'action', label:'', sortable: false},
             ],
             selectedCategoryId: null,
-            fileDescriptionText: ""
+            fileDescriptionText: "",
+            selectedItems: [],
         }
     }, /* end of data */
     mixins: [formatter],
@@ -318,10 +322,27 @@ export default {
                 return categories
             },[])
             return categories
-        }
+        },
+        selectedFiles() {
+            let files = this.getFiles;
+            let selectedFiles = this.selectedItems.map(function getFile(id) {
+                let matchingFiles = files.filter(function idMatches(file) {
+                    return file.id === id;
+                });
+                if (matchingFiles.length === 1) {
+                    return matchingFiles[0];
+                } else {
+                    console.log('no attachment (or multiple) found for id', id)
+                }
+            });
+            return selectedFiles;
+        },
+        allItemsSelected() {
+            let numSelected = this.selectedItems.length;
+            return numSelected > 0 && numSelected === this.getFiles.length;
+        },
     },
     methods:{ //run as event handlers, for example
-
         updatedFile(){
             this.url = null
         },
@@ -356,29 +377,29 @@ export default {
                 this.$snotify.error("Not a valid URL - did you include http(s)://?", "Upload failed")
             })
         },
-        deleteFile(){
-            if(!this.fileToDelete){
-
+        deleteFiles(){
+            if(!this.selectedFiles) {
                 this.$snoftify.error("Select a file to delete", "Deletion Failed")
                 return;
-
             }
-            this.closeDeletePopover(this.fileToDelete.id)
-            this.$store.dispatch("deleteFile", this.fileToDelete).then(response => {
-                this.$snotify.success(response.data.MESSAGE, "File Deleted")
-                this.clearDeletion()
-            }).catch(error => {
-                this.$snotify.error(error.data.message, "Deletion failed")
-                this.clearDeletion()
-            })
+            this.closeDeletePopover()
+            this.selectedFiles.forEach(file => {
+                this.$store.dispatch("deleteFile", file).then(response => {
+                    this.clearSelection()
+                }).catch(error => {
+                    this.$snotify.error(error.data.message, "Deletion failed")
+                    this.clearSelection()
+                })
+            });
 
         },
-        confirmDeletion(id){
-            let toDelete = this.getFiles.filter(file => file.id === id)[0]
-            this.fileToDelete = toDelete
+        clearSelection() {
+            this.selectedItems = []
         },
-        clearDeletion(){
-            this.fileToDelete = {}
+        toggleSelectAll() {
+            this.selectedItems = this.selectedItems.length === this.getFiles.length
+                ? [] // clear the selections if all attachments are selected
+                : this.getFiles.map(file => file.id); // select all files if none or only some are selected
         },
         clearUpdate(){
             this.fileToUpdate = {}
@@ -397,9 +418,9 @@ export default {
         distillDescription(value, key, item){
             return item.description || ""
         },
-        closeDeletePopover(id){
-            if(this.$refs["delete-popover-" + id]) {
-                this.$refs["delete-popover-" + id].$emit("close")
+        closeDeletePopover(){
+            if(this.$refs["delete-popover"]) {
+                this.$refs["delete-popover"].$emit("close")
             }
         },
         closeCategoryPopover(id){
