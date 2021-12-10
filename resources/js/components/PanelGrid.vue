@@ -25,10 +25,6 @@
                 <span v-if="isLoggedIn">My Dashboard</span>
                 <span v-else>SmartFigures</span>
             </h2>
-
-            <aside class="align-text-bottom text-right">
-                {{ numLoadedPanels }} SmartFigures
-            </aside>
         </header>
 
         <div class="sd-view-content">
@@ -100,9 +96,6 @@ export default {
             "isLightboxOpen",
             "expandedPanel",
             ]),
-        numLoadedPanels() {
-            return this.loadedPanels.length;
-        },
     },
 
     methods: {
