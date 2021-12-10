@@ -164,9 +164,15 @@ export default {
 }
 .sd-view-content {
     margin: 0;
-    padding-left: 4rem;
-    padding-right: 3rem;
+    padding-left: 2.75rem;
+    padding-right: 2.5rem;
     padding-bottom: 2rem;
+}
+@media (min-width: 768px) {
+    .sd-view-content {
+        padding-left: 4rem;
+        padding-right: 3rem;
+    }
 }
 
 #sd-consent-modal {

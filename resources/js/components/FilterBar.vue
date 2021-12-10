@@ -426,8 +426,22 @@ $sidebar-z-index: $navbar-z-index - 2;
         // Vertically align the icon in the middle
         display: flex;
         align-items: center;
+
+        * {
+            margin-left: 7.5px;
+        }
     }
 }
+@media (min-width: 768px) {
+    #sd-panel-filters-toggle {
+        width: $left-sidebar-toggle-width-md;
+
+        .toggle-icon * {
+            margin-left: unset;
+        }
+    }
+}
+
 #sd-panel-filters-toggle.expanded {
     left: $panel-filters-sidebar-width;
 }

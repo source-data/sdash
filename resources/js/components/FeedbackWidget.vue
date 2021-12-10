@@ -117,6 +117,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'resources/sass/_text.scss';
 
 #sd-feedback-widget {
   position: fixed;
@@ -134,8 +135,8 @@ export default {
 }
 
 #sd-show-feedback-widget {
-  font-size: 1.25rem;
-  padding: 0.125rem 1rem;
+    font-size: $font-size-xs;
+    padding: 0.125rem 1rem;
 
   /* Rotate the element so the text reads from bottom to top. Rotating the element around its own bottom-left corner
    * and positioning it at its parent's bottom-left corner lets it appear just outside and flush with the bottom and
@@ -159,5 +160,11 @@ export default {
   outline: inherit;
   border: inherit;
   border-bottom: none;
+}
+@media (min-width: 768px) {
+  #sd-show-feedback-widget {
+    font-size: 1.25rem;
+    padding: 0.125rem 1rem;
+  }
 }
 </style>
