@@ -22,6 +22,7 @@
                     </transition>
                 </button>
             </header>
+
             <div
                 class="sd-grid-image-container-inner"
                 v-b-modal="modalId"
@@ -218,60 +219,53 @@ export default {
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
 
-$panel-thumbnail-height: 20rem;
-$panel-title-font-size: $font-size-md;
-$panel-authors-font-size: $font-size-sm;
-$panel-title-max-height: 2.5 * $panel-title-font-size;
-$panel-authors-max-height: 2.5 * $panel-authors-font-size;
-$panel-text-margins: 1.5rem;
-
 .sd-grid-item {
     box-sizing: border-box;
-    height: $panel-thumbnail-height + $panel-title-max-height + $panel-authors-max-height + $panel-text-margins;
     transition: all 0.3s ease-in;
     outline: 1px red;
 }
 
 .sd-grid-image-container {
-    height: 100%;
+    // Having the container as display:table and the text child as display:table-caption lets us limit the width of the
+    // text to the width of the image above it. Adapted from https://stackoverflow.com/a/25386583/3385618
+    display: table;
+    // needed to position the <header> with the panel select button
     position: relative;
 }
 
-
 .sd-grid-image-container-inner {
+    // indicate that the image can be interacted with
     cursor: pointer;
-    height: $panel-thumbnail-height;
-    width: 100%;
+    // needed to position the panel access reasons in the <footer> at the bottom-right of the image
     position: relative;
 }
 
 .sd-grid-image {
     display: block;
-    height: 100%;
+    height: 250px;
     max-width: 100%;
     width: auto;
 }
 
 .sd-grid-item-text {
-    height: $panel-title-max-height + $panel-authors-max-height;
+    // see comment at .sd-grid-image-container
+    display: table-caption;
+    caption-side: bottom;
+
     padding-top: 0.5rem;
-    /* Take the element out of the flow to limit its width. */
-    position: absolute;
-    width: 100%;
-}
-.sd-grid-item-text * {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.sd-grid-item-text .panel-title {
-    font-size: $panel-title-font-size;
-    max-height: $panel-title-max-height;
-}
-.sd-grid-item-text .panel-authors {
-    font-size: $panel-authors-font-size;
-    font-weight: lighter;
-    line-height: 1.2;
-    max-height: $panel-authors-max-height;
+
+    * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .panel-title {
+        font-size: $font-size-md;
+    }
+    .panel-authors {
+        font-size: $font-size-sm;
+        font-weight: lighter;
+        line-height: 1.2;
+    }
 }
 
 .sd-grid-extra {
