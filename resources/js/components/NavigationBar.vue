@@ -300,7 +300,7 @@ img.profile-picture {
         z-index: 10; /* Lets the registration link appear in front of the panels. */
     }
     .register-nav .nav-item {
-        padding-bottom: $navbar-padding-bottom-md;
+        padding-bottom: 2rem;
         padding-top: 0.5rem;
     }
     .register-secondary-text {
