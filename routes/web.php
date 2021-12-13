@@ -18,9 +18,6 @@ Route::get('email/verify/{id}/{hash}', 'API\Authentication\EmailVerificationCont
 
 Route::get('/panels/{panel}/image', 'API\ImageController@showPanelImage');
 
-// Special single panel route
-Route::get('/panel/{panel}', 'PanelController@show');
-
 // download routes - special access gates for these routes are defined in the controller
 Route::get('/panels/{panel}/pdf', 'DownloadController@downloadPdf');
 Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint');
