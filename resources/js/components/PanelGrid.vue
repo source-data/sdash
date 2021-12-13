@@ -4,7 +4,7 @@
 
         <panel-authors-edit-modal></panel-authors-edit-modal>
 
-        <filter-bar></filter-bar>
+        <filter-bar ref="filterBar"></filter-bar>
 
         <header class="sd-view-title">
             <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
@@ -25,9 +25,24 @@
                 <span v-if="isLoggedIn">My Dashboard</span>
                 <span v-else>SmartFigures</span>
             </h2>
+
+            <div class="details-bar">
+                <div class="selection-criteria">
+                    <div class="search" v-if="searchQuery">
+                        <font-awesome-icon icon="search" />
+                        <div class="tag">
+                            {{ searchQuery }}
+                            <button type="button" class="close" @click="clearSearch">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-count">{{ numLoadedPanels }} SmartFigures</div>
+            </div>
         </header>
 
-        <div class="sd-view-content">
+        <div class="sd-view-content" ref="mainContent">
             <div v-if="isLoadingPanels" class="text-center">
                 <b-spinner
                     variant="primary"
@@ -75,6 +90,7 @@ import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
 export default {
     name: "PanelGrid",
+
     components: {
         FilterBar,
         InfoFooter,
@@ -84,8 +100,15 @@ export default {
         Lightbox,
         PanelDropZone,
     },
+
+    props: {
+        query: String
+    },
+
     data() {
-        return {};
+        return {
+            searchQuery: "",
+        };
     },
     computed: {
         ...mapGetters([
@@ -96,27 +119,59 @@ export default {
             "isLightboxOpen",
             "expandedPanel",
             ]),
+        numLoadedPanels() {
+            return this.loadedPanels.length;
+        },
     },
 
     methods: {
         ...mapActions([
             'toggleLightbox',
         ]),
+        reloadPanels() {
+            store.commit("clearLoadedPanels");
+            store.commit("setPagination", true);
+            store.commit("clearSelectedPanels");
+            store.commit("setSearchMode", "user");
+
+            // Click on main content block to hide open dropdowns
+            this.$refs.mainContent.click();
+
+            // Clear active filters
+            this.$refs.filterBar.clearFilters();
+
+            if (this.searchQuery) {
+                store.dispatch("setSearchString", this.searchQuery);
+            } else {
+                store.dispatch("setSearchString", "");
+            }
+
+            store.dispatch("fetchPanelList").catch(error => {
+                this.$snotify.error(
+                    "We couldn't find any panels for you.",
+                    "Sorry!"
+                );
+            });
+        },
+        clearSearch() {
+            this.$router.push({
+                name: 'dashboard',
+            }).catch(err => {});
+        }
     },
 
     mounted() {
-        store.commit("clearLoadedPanels");
-        store.commit("setPagination", true);
-        store.commit("clearSelectedPanels");
-        store.commit("setSearchMode", "user");
+        this.searchQuery = this.query;
+        this.reloadPanels();
         store.dispatch("fetchFileCategories");
-        store.dispatch("fetchPanelList").catch(error => {
-            this.$snotify.error(
-                "We couldn't find any panels for you.",
-                "Sorry!"
-            );
-        });
     },
+
+    watch: {
+        $route(to) {
+            this.searchQuery = to.query.q || "";
+            this.reloadPanels();
+        }
+    }
 };
 </script>
 
@@ -137,7 +192,6 @@ export default {
 #sd-featured-jumbotron {
     margin: 100px 20vw;
 }
-
 
 @media (max-width: 1200px) {
     #sd-featured-jumbotron {

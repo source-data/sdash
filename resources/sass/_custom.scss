@@ -83,3 +83,40 @@ SDASH POPOVERS AND MODALS
   }
 
 }
+
+/*=========================================
+DETAILS BAR
+==========================================*/
+
+.details-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+
+    .selection-criteria {
+        flex-grow: 1;
+
+        .search {
+            display: inline-block;
+        }
+    }
+
+    .tag {
+        display: inline-block;
+        margin-left: 5px;
+        padding: 0 5px;
+        background-color: $vivid-orange;
+
+        .close {
+            margin-left: 5px;
+            font-size: 1.2rem;
+            color: $mostly-white-gray;
+            text-shadow: none;
+            opacity: 1;
+        }
+    }
+
+    .result-count {
+        text-align: right;
+    }
+}

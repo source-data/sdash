@@ -11,13 +11,13 @@
             @blur="defocusInput"
         ></b-form-input>
         <ul class="dropdown">
-            <li @click.prevent.stop="searchPanels">
+            <li @click.prevent.stop="search('panels')">
                 <span class="icon">
                     <font-awesome-icon icon="images" />
                 </span>
                 Search smartfigures
             </li>
-            <li v-if="!excludeGroups">
+            <li @click.prevent.stop="search('groups')" v-if="!excludeGroups">
                 <span class="icon">
                     <font-awesome-icon icon="users" />
                 </span>
@@ -55,27 +55,29 @@ export default {
         defocusInput() {
             this.inputOnFocus = false;
         },
-        searchPanels() {
-            this.$store.dispatch("setLoadingState", true);
-            this.$store.dispatch("clearLoadedPanels");
-            this.$store.dispatch("setSearchString", this.searchQuery);
-            this.$store.dispatch("fetchPanelList");
-        },
-        resetSearch() {
-            this.$store.dispatch("setLoadingState", true);
-            this.$store.dispatch("clearLoadedPanels");
-            this.$store.dispatch("setSearchString", this.searchQuery);
-            this.$store.dispatch("fetchPanelList");
-        }
-    },
-
-    watch: {
-        searchQuery(value) {
-            if (value.length === 0) {
-                this.resetSearch();
+        search(category) {
+            let name = "";
+            if (category === "panels") {
+                name = "dashboard";
+            } else if (category === "groups") {
+                name = "groups";
+            } else {
+                console.log("Invalid search category");
+                return;
             }
-        }
-    }
+
+            const query = {};
+            if (this.searchQuery) {
+                query.q = this.searchQuery;
+            }
+
+            this.$router.push({
+                name,
+                query,
+            }).catch(err => {});
+            this.searchQuery = "";
+        },
+    },
 };
 </script>
 

@@ -2,9 +2,24 @@
     <div>
         <header class="sd-view-title">
             <h2 class="text-primary">Groups</h2>
+
+            <div class="details-bar">
+                <div class="selection-criteria">
+                    <div class="search" v-if="searchQuery">
+                        <font-awesome-icon icon="search" />
+                        <div class="tag">
+                            {{ searchQuery }}
+                            <button type="button" class="close" @click="clearSearch">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-count">{{ publicGroups.length }} Groups</div>
+            </div>
         </header>
 
-        <b-container class="sd-view-content" fluid>
+        <b-container class="sd-view-content" ref="mainContent" fluid>
             <b-row class="sd-group-grid" cols="1" cols-md="2" cols-lg="3" cols-xl="4">
                 <b-col class="sd-group-grid-item" v-for="group in publicGroups" :key="group.id">
                     <div
@@ -96,10 +111,14 @@ export default {
     components: {
         InfoFooter,
     },
-    props: [],
+
+    props: {
+        query: String
+    },
 
     data() {
         return {
+            searchQuery: "",
             defaultThumbnailUrl: '/images/group_cover_thumbnail.jpg',
             backgroundColors: [
                 '#f06292', // pink
@@ -144,11 +163,34 @@ export default {
         },
         setDefaultThumbnail(event) {
             event.target.src = this.defaultThumbnailUrl;
+        },
+        reloadGroups() {
+            const params = {};
+            if (this.searchQuery) {
+                params.search = this.searchQuery;
+            }
+            this.fetchPublicGroups(params);
+
+            // Click on main content block to hide open dropdowns
+            this.$refs.mainContent.click();
+        },
+        clearSearch() {
+            this.$router.push({
+                name: 'groups',
+            }).catch(err => {});
         }
     },
 
     mounted() {
-        this.fetchPublicGroups();
+        this.searchQuery = this.query;
+        this.reloadGroups();
+    },
+
+    watch: {
+        $route(to) {
+            this.searchQuery = to.query.q || "";
+            this.reloadGroups();
+        }
     }
 };
 </script>

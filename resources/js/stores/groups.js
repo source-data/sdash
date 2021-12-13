@@ -187,7 +187,7 @@ const actions = {
         );
     },
     fetchPublicGroups({ commit }, payload) {
-        return Axios.get("groups", payload).then(response => {
+        return Axios.get("groups", { params: payload }).then(response => {
             commit("setPublicGroups", response.data.DATA);
             return response;
         });

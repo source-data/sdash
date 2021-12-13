@@ -27,9 +27,10 @@ const router = new Router({
             path: "/",
             name: "dashboard",
             component: PanelGrid,
+            props: route => ({ query: route.query.q }),
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/login",
@@ -37,7 +38,7 @@ const router = new Router({
             component: LoginForm,
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/password-reset",
@@ -45,7 +46,7 @@ const router = new Router({
             component: PasswordReset,
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/password-update/:token",
@@ -57,7 +58,7 @@ const router = new Router({
             }),
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/register",
@@ -65,7 +66,7 @@ const router = new Router({
             component: RegistrationForm,
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/user/:user_id",
@@ -74,7 +75,7 @@ const router = new Router({
             props: true,
             meta: {
                 access: UserLevels.USER
-            },
+            }
         },
         {
             path: "/user/:user_id/edit",
@@ -83,15 +84,16 @@ const router = new Router({
             props: true,
             meta: {
                 access: UserLevels.USER
-            },
+            }
         },
         {
             path: "/groups",
             name: "groups",
             component: GroupGrid,
+            props: route => ({ query: route.query.q }),
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/group/new",
@@ -99,7 +101,7 @@ const router = new Router({
             component: CreateGroup,
             meta: {
                 access: UserLevels.USER
-            },
+            }
         },
         {
             path: "/group/:group_id/edit",
@@ -108,7 +110,7 @@ const router = new Router({
             props: true,
             meta: {
                 access: UserLevels.USER
-            },
+            }
         },
         {
             path: "/group/:group_id",
@@ -117,7 +119,7 @@ const router = new Router({
             props: true,
             meta: {
                 access: UserLevels.GUEST
-            },
+            }
         },
         {
             path: "/about",
@@ -136,9 +138,8 @@ const router = new Router({
             props: false,
             meta: {
                 access: UserLevels.GUEST
-            },
-        },
-
+            }
+        }
     ]
 });
 

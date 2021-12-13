@@ -50,8 +50,17 @@ class GroupController extends Controller
      */
     public function listPublicGroups(Request $request)
     {
-        $groups = Group::where('is_public', true)
-            ->with([
+        $search = $request->input('search');
+        if ($search) {
+            $query = Group::where('is_public', true)
+            ->where("name", "like", "%{$search}%")
+            ->orWhere("description", "like", "%{$search}%");
+        }
+        else {
+            $query = Group::where('is_public', true);
+        }
+
+        $groups = $query->with([
                 'administrators' => function ($query) {
                     $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
                 },
