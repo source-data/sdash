@@ -16,6 +16,7 @@ import PasswordReset from '@/components/authentication/PasswordReset'
 import RegistrationForm from '@/components/authentication/RegistrationForm'
 import PasswordUpdateForm from '@/components/authentication/PasswordUpdateForm'
 import FourOhFourPage from '@/views/404';
+import SinglePanel from '@/views/SinglePanel';
 
 Vue.use(Router)
 
@@ -118,6 +119,11 @@ const router = new Router({
             meta: {
                 access: UserLevels.GUEST
             },
+        },
+        {
+            path: "/panel/:panel_id",
+            name: "singlepanel",
+            component: SinglePanel,
         },
         {
             path: "/about",
