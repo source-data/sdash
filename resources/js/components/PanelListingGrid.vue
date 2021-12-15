@@ -81,14 +81,10 @@ export default {
 .panel-grid {
     position: relative;
     width: 100%;
-}
 
-@media (min-width: 576px) {
-    .panel-grid {
-        display:flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 15px;
-    }
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
 }
 </style>

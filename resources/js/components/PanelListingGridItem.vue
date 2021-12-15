@@ -223,6 +223,12 @@ export default {
     box-sizing: border-box;
     transition: all 0.3s ease-in;
     outline: 1px red;
+    width: 100%;
+}
+@media (min-width: 576px) {
+    .sd-grid-item {
+        width: unset;
+    }
 }
 
 .sd-grid-image-container {
