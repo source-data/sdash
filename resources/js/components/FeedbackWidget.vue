@@ -123,7 +123,7 @@ export default {
   position: fixed;
   width: 340px;
   padding: 1.5rem;
-  top: 20%;
+  top: 5%;
   right: -340px;
   z-index: 999999;
   transition: right 0.25s ease-in;
@@ -132,6 +132,11 @@ export default {
 }
 #sd-feedback-widget.visible {
   right: 0;
+}
+@media (min-height: 450px) {
+  #sd-feedback-widget {
+    top: 20%;
+  }
 }
 
 #sd-show-feedback-widget {
