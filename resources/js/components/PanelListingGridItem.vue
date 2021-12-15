@@ -258,9 +258,9 @@ export default {
     // see comment at .sd-grid-image-container
     display: table-caption;
     caption-side: bottom;
+    max-height: 80px;
 
-    padding-top: 0.5rem;
-    width: 100%;
+    padding-top: 0.25rem;
 
     * {
         overflow: hidden;
@@ -268,11 +268,17 @@ export default {
     }
     .panel-title {
         font-size: $font-size-md;
+        line-height: 1.6rem;
+        max-height: 3.2rem;
+        word-break: break-all;
+        margin-bottom: 0.25rem;
     }
     .panel-authors {
         font-size: $font-size-sm;
         font-weight: lighter;
-        line-height: 1.2;
+        line-height: 1.3rem;
+        max-height: 2.6rem;
+        margin: 0;
     }
 }
 
