@@ -263,7 +263,7 @@ export default {
 }
 @media (min-width: 1200px) {
     .sd-view-content {
-        margin: 4rem auto;
+        margin: 4rem auto 0;
         padding: 0;
         max-width: 1200px;
     }
