@@ -8,7 +8,7 @@
             An error occurred.
         </div>
 
-        <article v-if="expandedPanel">
+        <article v-if="expandedPanel.id">
             <header>
                 <h1 class="panel-title">{{ expandedPanel.title }}</h1>
 
@@ -42,8 +42,8 @@
                     <table class="table table-sm table-borderless text-light">
                         <tr v-for="source in getFiles" :key="source.id">
                             <td>
-                                <span v-if="source.file_category_id">
-                                    {{ getFileCategoryById(source.file_category_id).name }}
+                                <span>
+                                    {{ getFileCategoryName(source) }}
                                 </span>
                             </td>
 
@@ -54,11 +54,11 @@
                             </td>
 
                             <td>
-                                <a class="text-info" :href="source.url">
+                                <a v-if="source.url" class="text-info" :href="source.url">
                                     {{ source.url }}
                                 </a>
 
-                                <a class="text-info" :href="'/files/' + source.id">
+                                <a v-else class="text-info" :href="'/files/' + source.id">
                                     {{source.original_filename}}
                                 </a>
                             </td>
@@ -156,7 +156,16 @@
             </section>
 
             <footer>
+                <p v-if="expandedPanel.is_public">
+                    &copy; 2021 The Authors. This figure is licensed under the terms of the
+                    <a class="text-info" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License</a>,
+                    which permits use, distribution and reproduction in any medium, provided the original work is
+                    properly cited.
+                </p>
 
+                <p>
+                    <Strong>Created:</Strong> {{ formatDate(expandedPanel.created_at) }} | <strong>Last updated:</strong> {{ formatDate(expandedPanel.updated_at) }}
+                </p>
             </footer>
         </article>
     </div>
@@ -171,7 +180,6 @@ export default {
     components: {
         AuthorList,
     },
-    props: ["panel_id"],
     data() {
         return {
             notAllowed: false,
@@ -185,10 +193,10 @@ export default {
             "getFiles",
             "getFileCategoryById",
             // tags
-            'methodTags',
-            'interventionTags',
-            'assayTags',
-            'otherTags',
+            "methodTags",
+            "interventionTags",
+            "assayTags",
+            "otherTags",
         ]),
         panelImageUrl() {
             return this.apiUrls.panelImage(this.expandedPanel);
@@ -198,8 +206,18 @@ export default {
         ...mapActions([
             "loadPanelDetail",
             "closeExpandedPanels",
+            "fetchFileCategories",
         ]),
-        fetchPanel: function(panel_id) {
+        getFileCategoryName: function(source) {
+            if (source.file_category_id !== null) {
+                let category = this.getFileCategoryById(source.file_category_id)
+                if (category && category.name) {
+                    return category.name
+                }
+            }
+            return ""
+        },
+        fetchPanel: function() {
             this.loadPanelDetail(this.$route.params.panel_id).catch(error => {
                 if (error.status == 401) {
                     this.notAllowed = true;
@@ -207,13 +225,28 @@ export default {
                     this.otherError = true;
                 }
             });
+        },
+        formatDate(dateString) {
+            let date = new Date(dateString),
+                locale = 'en-US',
+                formatOptions = {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false,
+                    timeZoneName: 'short'
+                }
+            return date.toLocaleString(locale, formatOptions)
         }
     },
     watch: {
-        panel_id: panel_id => this.fetchPanel(panel_id),
+        "$route.params.panel_id": panel_id => this.fetchPanel(),
     },
     created() {
-        this.fetchPanel(this.panel_id)
+        this.fetchFileCategories()
+        this.fetchPanel()
     },
     destroyed() {
         this.closeExpandedPanels();
@@ -225,18 +258,34 @@ export default {
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
 
+.sd-view-content {
+    padding: 2rem;
+}
+@media (min-width: 1200px) {
+    .sd-view-content {
+        margin: 4rem auto;
+        padding: 0;
+        max-width: 1200px;
+    }
+}
+
 article {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
     justify-content: space-between;
-
-    margin: 2rem 0;
-    max-width: 1200px;
 }
-@media (min-width: 992px) {
-    article {
-        margin: 3rem 5rem;
+
+/* Ensure that panel titles that don't fit on a single line AND can't be line-wrapped (like filenames without spaces or
+ * dashes) don't inadvertently increase the width of the page.
+ */
+header {
+    width: 100%;
+
+    h1 {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
@@ -261,6 +310,7 @@ section {
     }
     > .content {
         min-height: 5rem;
+        overflow: auto;
     }
 }
 @media (min-width: 992px) {
