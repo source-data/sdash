@@ -53,10 +53,11 @@
                 </b-popover>
             </b-link>
 
-            <span v-else>{{ author.firstname }} {{ author.surname }}</span>
-
-            <!-- remove me as author popover-->
-            <span v-if="author.origin==='users' && author.id===currentUser.id && !iOwnThisPanel">
+            <!-- not whitespace between spans to ensure there is no space between the author name and the comma after it -->
+            <span v-else>{{ author.firstname }} {{ author.surname }}</span><span
+                v-if="author.origin==='users' && author.id===currentUser.id && !iOwnThisPanel"
+            >
+                <!-- remove me as author popover-->
                 <button
                     v-b-tooltip.hover.left="{ customClass: 'sd-remove-author-tooltip' }" title="Remove me"
                     id="sd-panel-author-list--remove-me"
