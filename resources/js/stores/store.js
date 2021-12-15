@@ -56,6 +56,9 @@ export default new Vuex.Store({
         panelDetail(id) {
           return getters.isLoggedIn ? `/panels/${id}` : `/public/panels/${id}`;
         },
+        panelImage(panel) {
+          return `/panels/${panel.id}/image?v=${panel.version}`;
+        },
         panelThumbnail(panel) {
           return `/api/public/panels/${panel.id}/image/thumbnail?v=${panel.version}`;
         },

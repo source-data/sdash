@@ -20,12 +20,12 @@
                     </b-input-group-append>
                 </b-input-group>
 
-                <a
+                <router-link
                     v-if="!isEditingTitle"
-                    :href="panelUrl"
-                    target="_blank"
-                    title="Open panel in a new tab"
-                >{{ expandedPanel.title }}</a>
+                    :to="{name: 'singlepanel', params: {panel_id: expandedPanel.id}}"
+                >
+                    {{ expandedPanel.title }}
+                </router-link>
 
                 <button
                     class='edit text-xxs'
@@ -310,6 +310,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            "apiUrls",
             "expandedPanel",
             "iOwnThisPanel",
             "iHaveAuthorPrivileges",
@@ -322,12 +323,7 @@ export default {
             return this.link_base + '/' + this.expandedPanel.id
         },
         fullImageUrl() {
-            return (
-                "/panels/" +
-                this.expandedPanel.id +
-                "/image?v=" +
-                this.expandedPanel.version
-            );
+            return this.apiUrls.panelImage(this.expandedPanel);
         },
         commentCountTitle() {
             return "Discuss (" + this.commentCount + ")";
