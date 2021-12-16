@@ -290,6 +290,7 @@ img.profile-picture {
         background-color: $vivid-orange;
         border-bottom-left-radius: 0.75rem;
         border-bottom-right-radius: 0.75rem;
+        box-shadow: 0 0 1px #555;
         margin-left: 0;
         margin-right: $navbar-padding-right-md - 1; /* This roughly aligns the registration link with the login link. */
         padding: 0;
