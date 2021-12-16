@@ -168,7 +168,7 @@ export default {
 @media (min-width: 768px) {
     .sd-view-title,
     .sd-view-content {
-        padding-left: 4rem;
+        padding-left: 3.5rem;
         padding-right: 3rem;
     }
 }
