@@ -48,7 +48,7 @@ jobs:
         env_file: .env.dev
         release_token: ${{ secrets.GITHUB_TOKEN }}
         release_tag: dev
-        release_tag: Development Build
+        release_title: Development Build
         is_prerelease: true
 
   dev-deploy:
