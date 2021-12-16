@@ -139,7 +139,7 @@ export default {
 }
 
 #sd-show-feedback-widget {
-  box-shadow: 0 -1px 1px #555;
+  box-shadow: 0 0 1px #555;
   font-size: $font-size-xs;
   padding: 0.125rem 1rem;
 
