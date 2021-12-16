@@ -47,8 +47,9 @@ jobs:
       with:
         env_file: .env.dev
         release_token: ${{ secrets.GITHUB_TOKEN }}
-        tag: dev
-        allow_override: true
+        release_tag: dev
+        release_tag: Development Build
+        is_prerelease: true
 
   dev-deploy:
     if: "false" # disable deployment job for now
