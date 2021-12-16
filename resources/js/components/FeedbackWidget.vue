@@ -52,7 +52,6 @@
       </b-form-group>
     </b-form>
   </div>
-
 </template>
 
 <script>
@@ -140,8 +139,9 @@ export default {
 }
 
 #sd-show-feedback-widget {
-    font-size: $font-size-xs;
-    padding: 0.125rem 1rem;
+  box-shadow: 0 -1px 1px #555;
+  font-size: $font-size-xs;
+  padding: 0.125rem 1rem;
 
   /* Rotate the element so the text reads from bottom to top. Rotating the element around its own bottom-left corner
    * and positioning it at its parent's bottom-left corner lets it appear just outside and flush with the bottom and

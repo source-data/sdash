@@ -8,9 +8,12 @@
             :aria-expanded="isSidebarExpanded"
             @click="toggleSidebar"
         >
-            <div class="toggle-icon bg-primary text-dark">
+            <div class="toggle-icon-background bg-primary"></div>
+
+            <div class="toggle-icon text-dark">
                 <font-awesome-icon icon="sliders-h" size="lg" />
             </div>
+
             <div class="sd-panel-filters-toggle-icon-wrapper">
                 <b-badge v-if="filtersAreApplied" pill class="sd-panel-filter-toggle-icon sd-panel-filter-toggle-icon--filters" variant="success" v-b-tooltip.hover.right.v-light title="Filters applied"><font-awesome-icon icon="sliders-h" size="sm"/></b-badge>
                 <b-badge v-if="hasPendingUserGroups" pill class="sd-panel-filter-toggle-icon sd-panel-filter-toggle-icon--group-invitations" variant="info" v-b-tooltip.hover.right.v-light title="Group invitations"><font-awesome-icon icon="users" size="sm"/></b-badge>
@@ -403,7 +406,9 @@ $sidebar-z-index: $navbar-z-index - 2;
     }
 }
 
+$filter-bar-box-shadow: 1px 0 1px #999;
 #sd-panel-filters-toggle {
+    box-shadow: $filter-bar-box-shadow;
     cursor: pointer;
     height: 100vh;
     position: fixed;
@@ -411,7 +416,8 @@ $sidebar-z-index: $navbar-z-index - 2;
     width: $left-sidebar-toggle-width;
     z-index: $sidebar-z-index + 1;
 
-    .toggle-icon {
+    .toggle-icon-background {
+        filter: drop-shadow($filter-bar-box-shadow);
         // Position the icon 1/3rd of the way down
         position: absolute;
         right: -23px;
@@ -421,23 +427,28 @@ $sidebar-z-index: $navbar-z-index - 2;
         background-color: transparent !important;
         background-image: url(/images/filter-sidebar-toggle.svg);
         height: 100px;
-        width: 38px;
+        width: 23px;
+    }
 
+    .toggle-icon {
+        // Position the icon 1/3rd of the way down
+        position: absolute;
+        right: -15px;
+        top: 35vh;
+        height: 100px;
+
+        background-color: transparent !important;
         // Vertically align the icon in the middle
         display: flex;
         align-items: center;
-
-        * {
-            margin-left: 7.5px;
-        }
     }
 }
 @media (min-width: 768px) {
     #sd-panel-filters-toggle {
         width: $left-sidebar-toggle-width-md;
 
-        .toggle-icon * {
-            margin-left: unset;
+        .toggle-icon {
+            right: -12px;
         }
     }
 }

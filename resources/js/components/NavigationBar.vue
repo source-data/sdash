@@ -149,11 +149,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:math";
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_layout.scss';
 
+$navbar-box-shadow-size: 1px;
 .navbar {
+    box-shadow: 0 $navbar-box-shadow-size $navbar-box-shadow-size #bbb;
     font-size: 1.5rem;
     /* The free space from any navbar content to the top and bottom is set via the content's padding or margin to allow
      * the primary nav-items' active state background to encompass the whole navbar.
@@ -205,6 +206,7 @@ export default {
 }
 .nav-item.router-link-active {
     background-color: $very-dark-blue;
+    box-shadow: 0 $navbar-box-shadow-size+1 $very-dark-blue;
 }
 @media (min-width: 768px) {
     .nav-item {
