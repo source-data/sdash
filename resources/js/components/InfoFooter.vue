@@ -135,7 +135,7 @@ export default {
 @import 'resources/sass/_colors.scss';
 
 #sd-panel-grid-footer > section {
-    padding: 5vw 7.5vw;
+    padding: 5rem 7.5vw;
 }
 
 .call-to-action-text {
@@ -153,10 +153,7 @@ export default {
 .call-to-action-image img {
     display: block;
     margin: 0 auto;
-    width: 100%;
-}
-#sd-entice-logged-in-user .call-to-action-image img {
-    max-width: 25vw;
+    max-height: 12rem;
 }
 
 .sd-contact-label,
