@@ -155,20 +155,18 @@ export default {
     }
 }
 
-.sd-view-title {
-    margin: 0;
-    padding-bottom: 2rem;
-    padding-left: 4rem;
-    padding-right: 3rem;
-    padding-top: 2rem;
-}
+.sd-view-title,
 .sd-view-content {
     margin: 0;
     padding-left: 2.75rem;
     padding-right: 2.5rem;
+    padding-top: 2rem;
+}
+.sd-view-content {
     padding-bottom: 2rem;
 }
 @media (min-width: 768px) {
+    .sd-view-title,
     .sd-view-content {
         padding-left: 4rem;
         padding-right: 3rem;

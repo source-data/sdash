@@ -10,11 +10,11 @@
             <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
 
             <section v-else id="sd-featured-jumbotron">
-                <h1 class="text-xxl text-primary">
+                <h1 class="text-xl text-primary">
                     Share scientific results with your collaborators.
                 </h1>
 
-                <div class="text-lg">
+                <div class="text-md">
                     Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
                     Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
                     Comment and discuss initiating an early scientific dissemination of results.
@@ -190,12 +190,13 @@ export default {
 }
 
 #sd-featured-jumbotron {
-    margin: 100px 20vw;
+    margin: 1.5rem 0;
+    max-width: 1200px;
 }
 
-@media (max-width: 1200px) {
+@media (min-width: 768px) {
     #sd-featured-jumbotron {
-        margin: 50px 10vw;
+        margin: 2rem 10vw;
     }
 }
 </style>
