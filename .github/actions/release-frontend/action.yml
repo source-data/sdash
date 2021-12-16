@@ -25,7 +25,9 @@ runs:
     - uses: './.github/actions/build-frontend'
       with:
         env_file: ${{ inputs.env_file }}
-
+    - name: Compress build artifact
+      run: tar -czf public.tgz public/
+      shell: bash
     - uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: ${{ inputs.release_token }}
