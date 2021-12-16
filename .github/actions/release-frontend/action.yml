@@ -34,4 +34,4 @@ runs:
         automatic_release_tag: ${{ inputs.release_tag }}
         title: ${{ inputs.release_title }}
         prerelease: ${{ inputs.is_prerelease }}
-        files: public/
+        files: public.tgz
