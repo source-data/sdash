@@ -222,7 +222,7 @@
                     <b-form-checkbox v-model="selectedItems" :value="data.item.id"></b-form-checkbox>
                 </template>
 
-                <template #head(action)>
+                <template v-if="showBatchActions" #head(action)>
                     <b-form-checkbox :checked="allItemsSelected" @change="toggleSelectAll"></b-form-checkbox>
                 </template>
 
@@ -238,11 +238,18 @@
                 </template>
             </b-table>
 
-            <b-button variant="danger" class="text-light" id="delete-selected-sources" :disabled="selectedItems.length === 0">
+            <b-button
+                v-if="showBatchActions"
+                variant="danger"
+                class="text-light"
+                id="delete-selected-sources"
+                :disabled="selectedItems.length === 0"
+            >
                 <font-awesome-icon icon="trash-alt" /> Delete selected
             </b-button>
 
             <b-popover
+                v-if="showBatchActions"
                 ref="delete-popover"
                 target="delete-selected-sources"
                 triggers="click blur"
@@ -341,6 +348,9 @@ export default {
             let numSelected = this.selectedItems.length;
             return numSelected > 0 && numSelected === this.getFiles.length;
         },
+        showBatchActions() {
+            return this.iCanEditThisPanel && this.getFiles.length > 0
+        }
     },
     methods:{ //run as event handlers, for example
         updatedFile(){
