@@ -73,7 +73,7 @@
                 </h2>
 
                 <div class="content">
-                    <div>
+                    <div class="panel-keyword-category">
                         Measured Variables
                     </div>
 
@@ -83,7 +83,7 @@
                         </span>
                     </div>
             
-                    <div>
+                    <div class="panel-keyword-category">
                         Controlled Variables
                     </div>
 
@@ -93,7 +93,7 @@
                         </span>
                     </div>
             
-                    <div>
+                    <div class="panel-keyword-category">
                         Instruments / Methods
                     </div>
 
@@ -340,9 +340,12 @@ section {
         background-color: $mostly-white-gray;
         border-radius: 0.5rem;
         color: $mostly-black-blue;
-        height: 2rem;
-        padding: 0.2rem 1rem;
     }
+}
+.panel-keyword-category,
+.panel-keyword {
+    height: 2rem;
+    padding: 0.2rem 1rem;
 }
 @media (min-width: 568px) {
     .panel-keywords-experiment .content {
@@ -350,7 +353,6 @@ section {
         gap: 1rem;
         grid-template-columns: max-content auto;
     }
-
     .panel-keywords {
         margin-bottom: 0;
     }
