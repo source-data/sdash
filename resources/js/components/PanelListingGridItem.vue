@@ -254,7 +254,7 @@ export default {
 @media (min-width: 576px) {
     .sd-grid-image {
         display: block;
-        height: 250px;
+        height: 200px;
         max-width: 100%;
         width: auto;
     }

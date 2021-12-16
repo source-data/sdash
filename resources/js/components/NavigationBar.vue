@@ -217,7 +217,7 @@ $navbar-box-shadow-size: 1px;
     }
     /* The primary nav links should be a bit larger on larger screens */
     .primary-nav {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
 
     .secondary-nav > *:last-child {
