@@ -134,8 +134,8 @@ class GroupController extends Controller
     public function show(Request $request, Group $group)
     {
         // only the group admin can view unconfirmed users
-        if ($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(401, "Admin level access denied", []);
-        if (!Gate::allows("view-group", $group)) return API::response(401, "Access denied", []);
+        if ($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(403, "Admin level access denied", []);
+        if (!Gate::allows("view-group", $group)) return API::response(403, "Access denied", []);
 
         if ($request->get('unconfirmed_users')) {
             $group->load(['users' => function ($query) {
@@ -235,7 +235,7 @@ class GroupController extends Controller
                 ]
             );
         } else {
-            return API::response(401, "You are not an administrator of the group", []);
+            return API::response(403, "You are not an administrator of the group", []);
         }
     }
 
@@ -347,7 +347,7 @@ class GroupController extends Controller
                 ]
             );
         } else {
-            return API::response(401, "You are not an administrator of the group.", []);
+            return API::response(403, "You are not an administrator of the group.", []);
         }
     }
 
@@ -367,7 +367,7 @@ class GroupController extends Controller
             $group->delete();
             return API::response(200, "The group was deleted", []);
         } else {
-            return API::response(401, "You are not the owner of the group.", []);
+            return API::response(403, "You are not the owner of the group.", []);
         }
     }
 
@@ -386,7 +386,7 @@ class GroupController extends Controller
         $user = auth()->user();
         $userRecord = $group->users()->wherePivot("token", "=", $token)->first();
 
-        if (!$user->is($userRecord)) return API::response(401, "Permission denied.", []);
+        if (!$user->is($userRecord)) return API::response(403, "Permission denied.", []);
 
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
         return API::response(200, "Group updated.", [

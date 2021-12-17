@@ -180,14 +180,8 @@ class UserController extends Controller
 
             /*
             User should not be removed from group if:
-                1. They are group owner
-                2. They are last remaining admin
+                They are last remaining admin
             */
-
-            // 1.
-            if ($loggedInUser->id === $group->user_id) return API::response(403, "Group owner cannot leave group.", []);
-
-            // 2.
             if ($group->users()->wherePivot("role", "admin")->count() < 2 && $group->users()->where("user_id", $loggedInUser->id)->wherePivot("role", "admin")->exists()) return API::response(403, "A group must have an administrator", []);
 
             $group->users()->detach($loggedInUser->id);
