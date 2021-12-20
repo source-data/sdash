@@ -33,13 +33,41 @@ class GroupController extends Controller
 
 
     /**
-     * Display a listing of the resource.
+     * List panels
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return void
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->input('search');
+        $query = Group::where(function ($query) {
+            $query->whereIn('id', function ($query) {
+                $user = auth()->user();
+                $query->select('group_id')
+                    ->from('group_user')
+                    ->where('user_id', '=', $user->id)
+                    ->where('status', '=', 'confirmed');
+            })
+            ->orWhere('is_public', true);
+        });
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where("name", "like", "%{$search}%")
+                ->orWhere("description", "like", "%{$search}%");
+            });
+        }
+        $groups = $query->with([
+                'administrators' => function ($query) {
+                    $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
+                },
+                'publicPanels' => function ($query) {
+                    $query->select(['panels.id', 'title', 'version']);
+                },
+            ])
+            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers'])
+            ->get();
+        return API::response(200, "A list of public groups", $groups);
     }
 
     /**
@@ -50,25 +78,8 @@ class GroupController extends Controller
      */
     public function listPublicGroups(Request $request)
     {
-        $search = $request->input('search');
-        if ($search) {
-            $query = Group::where('is_public', true)
-            ->where("name", "like", "%{$search}%")
-            ->orWhere("description", "like", "%{$search}%");
-        }
-        else {
-            $query = Group::where('is_public', true);
-        }
-
-        $groups = $query->with([
-                'administrators' => function ($query) {
-                    $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
-                },
-                'publicPanels' => function ($query) {
-                    $query->select(['panels.id', 'title', 'version']);
-                },
-            ])
-            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers'])
+        $groups = Group::where('is_public', true)
+            ->withCount(['publicPanels'])
             ->get();
         return API::response(200, "A list of public groups", $groups);
     }
