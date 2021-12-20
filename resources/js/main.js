@@ -7,7 +7,7 @@ import Snotify, { SnotifyPosition } from 'vue-snotify'
 import './bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-    faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy, faDownload,
+    faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faChevronDown, faCircle, faCopy, faDownload,
     faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages, faInfoCircle,
     faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave, faSearch, faSearchPlus,
     faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserCog, faUserPlus, faUsers,
@@ -37,7 +37,7 @@ const snoptions = {
 // Add Vue Bootstrap and Snotify to the global Vue App
 Vue.use(BootstrapVue, {
   // Set the default popover boundary to viewport. We have lots of popovers that appear inside smaller scrolling
-  // containers (like the sections inside the panel detail view), and these would be positioned strangely because the 
+  // containers (like the sections inside the panel detail view), and these would be positioned strangely because the
   // actual default for this property is scrollParent.
   BPopover: {
     boundary: 'viewport',
@@ -57,7 +57,7 @@ Vue.use(LoadScript);
 
 // Add Fontawesome to the global Vue App
 library.add([
-    faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faCircle, faCopy,
+    faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faChevronDown, faCircle, faCopy,
     faCreativeCommons, faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome,
     faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faOrcid, faPaste, faPen, faPlus, faQrcode,
     faSave, faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser,

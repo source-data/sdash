@@ -6,7 +6,23 @@
       </header>
       <section class="panel-authors-edit--add-author-wrapper">
         <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
-        <author-types-table @close="closeAuthorTypesTable" v-if="showAuthorTypesTable"></author-types-table>
+        <div class="panel-authors-edit--table-expand-wrapper">
+          <div class="sd-author-types-table-note">Note that adding an author assigns <strong>certain permissions</strong> to the user.</div>
+          <div class="panel-authors-edit--expand-button-wrapper">
+            <button
+              class="panel-authors-edit--expand-button"
+              :aria-expanded="showAuthorTypesTable ? 'true' : 'false'"
+              aria-controls="panel-authors-edit--author-types-table-collapse"
+              @click="showAuthorTypesTable = !showAuthorTypesTable"
+            >
+              <font-awesome-icon icon="times" v-if="showAuthorTypesTable"/>
+              <font-awesome-icon icon="chevron-down" v-if="!showAuthorTypesTable"/>
+            </button>
+          </div>
+        </div>
+          <b-collapse id="panel-authors-edit--author-types-table-collapse" v-model="showAuthorTypesTable">
+            <author-types-table v-if="showAuthorTypesTable"></author-types-table>
+          </b-collapse>
       </section>
       <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
           <h6 class="panel-authors-edit--reorder-title h6">Author List</h6>
@@ -307,7 +323,7 @@ export default {
   }
 
   .panel-authors-edit--list-wrapper {
-    margin-top:1rem;
+    margin-top:0.5rem;
   }
 
   .panel-authors-aside-note {
@@ -420,4 +436,25 @@ export default {
     background-color: #dab1b1;
     color: #983a3a;
 }
+
+.panel-authors-edit--expand-button {
+  background: none;
+  padding: none;
+  border: none;
+  color: #fff;
+}
+
+.panel-authors-edit--table-expand-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    font-size: 0.687rem;
+    justify-content: space-between;
+}
+
+  .sd-author-types-table-note {
+      text-align: right;
+      margin: 0 0 6px 0;
+      padding-right: 1.5rem;
+      flex-grow:1;
+  }
 </style>
