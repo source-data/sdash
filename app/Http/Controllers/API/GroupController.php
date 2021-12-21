@@ -79,6 +79,11 @@ class GroupController extends Controller
     public function listPublicGroups(Request $request)
     {
         $groups = Group::where('is_public', true)
+            ->with([
+                'publicPanels' => function ($query) {
+                    $query->select(['panels.id', 'title', 'version']);
+                },
+            ])
             ->withCount(['publicPanels'])
             ->get();
         return API::response(200, "A list of public groups", $groups);
