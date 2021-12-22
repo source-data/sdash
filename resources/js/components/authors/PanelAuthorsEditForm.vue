@@ -296,6 +296,7 @@ export default {
         handler() {
           if(this.enableOnChangeHandler) {
             this.modified = true;
+            this.$emit('modified');
           }
           this.enableOnChangeHandler = true;
         },

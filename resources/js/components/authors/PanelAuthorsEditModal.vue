@@ -12,16 +12,9 @@
       v-model="showAuthorSidebarModel"
       no-close-on-backdrop
   >
-    <template #modal-header="{close}">
+    <template #modal-header>
     <!-- header with close button -->
         <h5 id="author-edit-sidebar___BV_modal_title_" class="modal-title">Edit List of Authors</h5>
-        <button
-        type="button"
-        aria-label="Close"
-        class="close text-light"
-        v-b-tooltip.hover.left="{variant:'warning'}"
-        title="Have you saved all changes?"
-        @click="close()">×</button>
     </template>
     <panel-authors-edit-form></panel-authors-edit-form>
   </b-modal>
