@@ -64,7 +64,38 @@
         A minimum of 1 corresponding author is required.
       </div>
       <div class="panel-authors-edit--save-wrapper">
-        <b-button @click="closeSidebar">Cancel</b-button>
+        <b-button v-if="!modified" @click="closeSidebar">Cancel</b-button>
+        <b-button v-if="modified" id="sd-trigger-cancel-confirmation">Cancel</b-button>
+          <b-popover
+              v-if="modified"
+              ref="close-authors-popover"
+              target="sd-trigger-cancel-confirmation"
+              triggers="click"
+              placement="top"
+              custom-class="sd-custom-popover"
+          >
+              <template v-slot:title>
+                  Close the author list?
+              </template>
+              <div class="confirm-close-author-modal">
+                  <p>You modified the author list. Do you really want to close without saving your changes?</p>
+                  <div class="delete-buttons">
+                      <b-button
+                          variant="primary"
+                          small
+                          @click="closeSidebar"
+                          >Close now</b-button
+                      >
+                      <b-button
+                          variant="outline-dark"
+                          small
+                          @click="closeAuthorClosePopover"
+                          >Don't close</b-button
+                      >
+                  </div>
+              </div>
+          </b-popover>
+
         <b-button
         :disabled="(expandedPanelAuthors.length < 1 && temporaryAuthorList.length <  1)
         || correspondingAuthorCount < 1 || !modified"
@@ -193,6 +224,11 @@ export default {
       },
       closeSidebar(){
         this.$store.commit("setAuthorSidebar", false);
+      },
+      closeAuthorClosePopover() {
+          if (this.$refs["close-authors-popover"]) {
+              this.$refs["close-authors-popover"].$emit("close");
+          }
       },
       addUserAuthor(userdata) {
 
