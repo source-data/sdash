@@ -1,55 +1,31 @@
 <template>
     <div>
-        <form v-if="iCanEditThisPanel" class="add-source">
-            <div class="form-row">
-                <b-col cols="auto" class="source-type-toggle text-dark">
-                    <toggle-button
-                        v-model="uploadToggle"
-                        @change="clearUploads"
-                        :disabled="pendingUpload"
-                        :css-colors="true"
-                        :labels="{checked:'URL', unchecked:'File'}"
-                        :width="80"
-                        :height="38"
-                    />
-                </b-col>
+        <div v-if="iCanEditThisPanel" class="add-source">
+            <div class="form-group attach-link">
+                <b-form-input
+                    v-model="url"
+                    size="sm"
+                    type="url"
+                    placeholder="Enter a URL"
+                ></b-form-input>
 
-                <b-col cols="auto">
-                    <b-form-select v-model="categoryId" :options="fileCategories">
-                        <template v-slot:first>
-                            <b-form-select-option value="null">Category</b-form-select-option>
-                        </template>
-                    </b-form-select>
-                </b-col>
-
-                <b-col cols="auto" v-if="!uploadToggle">
-                    <b-form-file
-                        @change="updatedFile"
-                        no-drop
-                        single
-                        v-model="file"
-                        :disabled="pendingUpload"
-                        placeholder="Select a file"
-                    ></b-form-file>
-                </b-col>
-
-                <b-col cols="auto" v-if="uploadToggle">
-                    <b-form-input
-                        @change="updatedUrl"
-                        v-model="url"
-                        type="url"
-                        placeholder="Enter a URL"
-                    ></b-form-input>
-                </b-col>
-
-                <b-col cols="auto">
-                    <b-button variant="primary" @click.prevent="submitFile" :disabled="disableSubmit">
-                        <span v-if="!uploadToggle">Attach File</span>
-                        <span v-if="uploadToggle">Add Link</span>
-                    </b-button>
-                </b-col>
+                <b-button variant="primary" @click.prevent="sendUrl" :disabled="disableUrlSubmit">
+                    <span>Link source file</span>
+                </b-button>
             </div>
-        </form>
+
+            <div class="form-group upload-file">
+                <b-form-file
+                    no-drop
+                    single
+                    size="sm"
+                    v-model="file"
+                    :disabled="pendingUpload"
+                    @input="sendFile"
+                    placeholder="Upload source file"
+                ></b-form-file>
+            </div>
+        </div>
 
         <!-- file list -->
         <div class="panel-sources-list">
@@ -292,7 +268,6 @@ export default {
             file: null,
             url:  null,
             categoryId: null,
-            uploadToggle: true,
             pendingUpload: false,
             fileToDelete: {},
             fileToUpdate: {},
@@ -320,8 +295,11 @@ export default {
         iCanEditThisPanel(){
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
         },
-        disableSubmit(){
-            return (this.file===null && this.url===null) || this.pendingUpload
+        disableUrlSubmit() {
+            return this.pendingUpload || this.url === null
+        },
+        disableFileSubmit() {
+            return this.pendingUpload || this.file === null
         },
         fileCategories(){
             let categories = this.getFileCategories.reduce((categories, category) => {
@@ -353,26 +331,11 @@ export default {
         }
     },
     methods:{ //run as event handlers, for example
-        updatedFile(){
-            this.url = null
-        },
-        updatedUrl(){
-            this.file = null
-        },
-        clearUploads(){
-            this.updatedFile()
-            this.updatedUrl()
-            this.categoryId = null
-        },
-        submitFile(){
-            if(this.file) this.sendFile()
-            if(this.url) this.sendUrl()
-        },
         sendFile(){
             this.pendingUpload = true
             this.$store.dispatch("storeFile", {file:this.file, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
-                this.clearUploads()
+                this.file = null
                 this.pendingUpload = false
             }).catch(error => {
                 this.$snotify.error(error.data.message, "Upload failed")
@@ -382,7 +345,7 @@ export default {
         sendUrl(){
             this.$store.dispatch("storeUrl", {url:this.url, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "URL Stored")
-                this.clearUploads()
+                this.url = null
             }).catch(error => {
                 this.$snotify.error("Not a valid URL - did you include http(s)://?", "Upload failed")
             })
@@ -503,35 +466,53 @@ export default {
 
 <style lang="scss" scoped>
 @import 'resources/sass/_colors.scss';
+@import 'resources/sass/_text.scss';
 
 .add-source {
-    margin-bottom: 0.75rem;
-}
-.add-source > * {
-    padding: 0;
-}
-.add-source > *:not(:last-child) {
-    padding-right: 1rem;
-}
-.add-source > .form-row > .col-auto > * {
-    border-radius: 0.65rem;
-}
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 
-/* To influence the style of the URL/File toggle button in a scoped block, we need to use deep selectors that apply
- * to child elements: https://vue-loader.vuejs.org/guide/scoped-css.html#child-component-root-elements
- */
-.add-source::v-deep .v-switch-core {
-    background-color: $mostly-white-gray;
-}
-.add-source::v-deep .v-switch-button {
-    background-color: $very-dark-desaturated-blue !important;
-}
-.add-source::v-deep .v-switch-label {
-    color: $mostly-black-blue !important;
-}
-.add-source::v-deep .vue-js-switch {
-    font-size: inherit;
-    font-weight: inherit;
+    .form-group {
+        // let the form fields grow to take the available space.
+        flex-grow: 1;
+        flex-shrink: 0;
+
+        margin-bottom: 0;
+
+        // "append" the button directly to the input field.
+        display: flex;
+        ::v-deep input.form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0 0.5rem;
+            white-space: nowrap;
+        }
+
+        // trying to make sure the font-size set by the container sticks to all child components.
+        button,
+        ::v-deep input,
+        ::v-deep .b-custom-control-sm.custom-file,
+        ::v-deep .b-custom-control-sm .custom-file-input,
+        ::v-deep .b-custom-control-sm .custom-file-label,
+        ::v-deep .input-group-sm.custom-file,
+        ::v-deep .input-group-sm .custom-file-input,
+        ::v-deep .input-group-sm .custom-file-label {
+            font-size: inherit;
+        }
+    }
+
+    // The upload-file input needs less space than the attach-link part.
+    .form-group.upload-file {
+        flex-basis: 200px;
+    }
+    .form-group.attach-link {
+        flex-basis: 250px;
+    }
 }
 
 .panel-sources-list {
