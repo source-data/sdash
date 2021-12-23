@@ -62,6 +62,44 @@
                                 <font-awesome-icon icon="edit" title="Edit category" />
                             </span>
                         </a>
+
+                        <b-popover
+                            :ref="'edit-category-popover-' + data.item.id"
+                            :target="'edit-category-' + data.item.id"
+                            triggers="click blur"
+                            placement="top"
+                            @show="updateFileCategory(data.item.id, data.item.file_category_id)"
+                            @hidden="clearUpdate"
+                            custom-class="sd-custom-popover"
+                        >
+                            <template v-slot:title>
+                                Category
+                                <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
+                                    <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                </b-button>
+                            </template>
+
+                            <div class="update-file-category">
+                                <b-form-group
+                                    :id="'update-category-form-group-' + data.item.id"
+                                    :label-for="'update-category-input-' + data.item.id"
+                                >
+                                    <b-form-select v-model="selectedCategoryId" :options="fileCategories">
+                                        <template v-slot:first>
+                                            <b-form-select-option value="">(none)</b-form-select-option>
+                                        </template>
+                                    </b-form-select>
+                                </b-form-group>
+
+                                <div class="update-buttons">
+                                    <b-button variant="primary" small @click="saveFileCategory">Save</b-button>
+
+                                    <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">
+                                        Cancel
+                                    </b-button>
+                                </div>
+                            </div>
+                        </b-popover>
                     </template>
 
                     <template v-if="!iCanEditThisPanel">
@@ -69,51 +107,15 @@
                             {{ getFileCategoryName(data.item.file_category_id) }}
                         </span>
 
-                        <span v-if="!data.item.file_category_id" class="text-info">&mdash;</span>
+                        <span v-else>&mdash;</span>
                     </template>
 
-                    <b-popover
-                        :ref="'edit-category-popover-' + data.item.id"
-                        :target="'edit-category-' + data.item.id"
-                        triggers="click blur"
-                        placement="top"
-                        @show="updateFileCategory(data.item.id, data.item.file_category_id)"
-                        @hidden="clearUpdate"
-                        custom-class="sd-custom-popover"
-                    >
-                        <template v-slot:title>
-                            Category
-                            <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
-                                <span class="d-inline-block" aria-hidden="true">&times;</span>
-                            </b-button>
-                        </template>
-
-                        <div class="update-file-category">
-                            <b-form-group
-                                :id="'update-category-form-group-' + data.item.id"
-                                :label-for="'update-category-input-' + data.item.id"
-                            >
-                                <b-form-select v-model="selectedCategoryId" :options="fileCategories">
-                                    <template v-slot:first>
-                                        <b-form-select-option value="">(none)</b-form-select-option>
-                                    </template>
-                                </b-form-select>
-                            </b-form-group>
-
-                            <div class="update-buttons">
-                                <b-button variant="primary" small @click="saveFileCategory">Save</b-button>
-
-                                <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">
-                                    Cancel
-                                </b-button>
-                            </div>
-                        </div>
-                    </b-popover>
                 </template>
 
                 <template v-slot:cell(description)="data">
                     <template v-if="!iOwnThisPanel">
                         <span v-if="data.item.description">{{ data.item.description }}</span>
+                        <span v-else>&mdash;</span>
                     </template>
 
                     <template v-if="iOwnThisPanel">

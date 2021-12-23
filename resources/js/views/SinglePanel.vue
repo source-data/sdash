@@ -61,15 +61,19 @@
                                 </td>
 
                                 <td>
-                                    <span>
+                                    <span v-if="source.file_category_id">
                                         {{ getFileCategoryName(source) }}
                                     </span>
+
+                                    <span v-else>&mdash;</span>
                                 </td>
 
                                 <td>
                                     <span v-if="source.description">
                                         {{ source.description }}
                                     </span>
+
+                                    <span v-else>&mdash;</span>
                                 </td>
                             </tr>
                         </tbody>
