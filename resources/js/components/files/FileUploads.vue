@@ -334,11 +334,14 @@ export default {
     },
     methods:{ //run as event handlers, for example
         sendFile(){
+            if (!this.file) {
+                return;
+            }
             this.pendingUpload = true
             this.$store.dispatch("storeFile", {file:this.file, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
-                this.file = null
                 this.pendingUpload = false
+                this.file = null
             }).catch(error => {
                 this.$snotify.error(error.data.message, "Upload failed")
                 this.pendingUpload = false
