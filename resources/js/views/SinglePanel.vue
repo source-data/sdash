@@ -40,29 +40,39 @@
 
                 <div class="content">
                     <table class="table table-sm table-borderless text-light">
-                        <tr v-for="source in getFiles" :key="source.id">
-                            <td>
-                                <span>
-                                    {{ getFileCategoryName(source) }}
-                                </span>
-                            </td>
+                        <thead>
+                            <tr>
+                                <td>Filename / URL</td>
+                                <td>Category</td>
+                                <td>Description</td>
+                            </tr>
+                        </thead>
 
-                            <td>
-                                <span v-if="source.description">
-                                    {{ source.description }}
-                                </span>
-                            </td>
+                        <tbody>
+                            <tr v-for="source in getFiles" :key="source.id">
+                                <td>
+                                    <a v-if="source.url" class="text-info" :href="source.url">
+                                        {{ source.url }}
+                                    </a>
 
-                            <td>
-                                <a v-if="source.url" class="text-info" :href="source.url">
-                                    {{ source.url }}
-                                </a>
+                                    <a v-else class="text-info" :href="'/files/' + source.id">
+                                        {{source.original_filename}}
+                                    </a>
+                                </td>
 
-                                <a v-else class="text-info" :href="'/files/' + source.id">
-                                    {{source.original_filename}}
-                                </a>
-                            </td>
-                        </tr>
+                                <td>
+                                    <span>
+                                        {{ getFileCategoryName(source) }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span v-if="source.description">
+                                        {{ source.description }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </section>
