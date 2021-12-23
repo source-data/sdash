@@ -171,6 +171,7 @@
 
                 <template v-slot:cell(link)="data">
                     <a
+                        v-if="data.item.url"
                         class="source-url"
                         :href="data.item.url"
                         v-b-tooltip.hover.left
@@ -181,6 +182,7 @@
                     </a>
 
                     <a
+                        v-if="data.item.original_filename"
                         class="source-file"
                         v-b-tooltip.hover.left
                         :title="data.item.original_filename"
