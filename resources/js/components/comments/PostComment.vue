@@ -95,4 +95,8 @@ export default {
     bottom: 0.5rem;
     right: 0.5rem;
 }
+
+.sd-cancel-reply {
+    margin-bottom: 0.3rem;
+}
 </style>
