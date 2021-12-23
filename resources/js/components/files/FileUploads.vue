@@ -37,6 +37,14 @@
                 primary-key="id"
                 ref="fileUploadsTable"
             >
+                <template v-if="showBatchActions" #head(action)>
+                    <b-form-checkbox :checked="allItemsSelected" @change="toggleSelectAll"></b-form-checkbox>
+                </template>
+
+                <template v-slot:cell(action)="data">
+                    <b-form-checkbox v-model="selectedItems" :value="data.item.id"></b-form-checkbox>
+                </template>
+
                 <template v-slot:cell(category)="data">
                     <template v-if="iCanEditThisPanel">
                         <a
@@ -196,14 +204,6 @@
                     <span v-if="data.item.file_size">{{formatBytes(data.item.file_size, decimals=0)}}</span>
                 </template>
 
-                <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
-                    <b-form-checkbox v-model="selectedItems" :value="data.item.id"></b-form-checkbox>
-                </template>
-
-                <template v-if="showBatchActions" #head(action)>
-                    <b-form-checkbox :checked="allItemsSelected" @change="toggleSelectAll"></b-form-checkbox>
-                </template>
-
                 <template v-slot:custom-foot>
                     <b-tr v-if="pendingUpload">
                         <b-td class="text-center">
@@ -273,13 +273,13 @@ export default {
             pendingUpload: false,
             fileToDelete: {},
             fileToUpdate: {},
-            fields:[
-                {key:'action', label:'', sortable: false},
+            baseFields: [
                 {key:'description', label:'Description', sortable: true, sortByFormatted:true, formatter:"distillDescription"},
                 {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
                 {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"distillResourceLink"},
                 {key:'size', label: 'Size', sortable: true, sortByFormatted:true, formatter:"distillFileSize"},
             ],
+            batchActionField: {key:'action', label:'', sortable: false},
             selectedCategoryId: null,
             fileDescriptionText: "",
             selectedItems: [],
@@ -330,6 +330,13 @@ export default {
         },
         showBatchActions() {
             return this.iCanEditThisPanel && this.getFiles.length > 0
+        },
+        fields() {
+            if (this.showBatchActions) {
+                // returns a new list and leaves baseFields unmodified
+                return [this.batchActionField, ...this.baseFields]
+            }
+            return this.baseFields
         }
     },
     methods:{ //run as event handlers, for example
