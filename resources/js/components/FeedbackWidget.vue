@@ -116,6 +116,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'resources/sass/_layout.scss';
 @import 'resources/sass/_text.scss';
 
 #sd-feedback-widget {
@@ -124,7 +125,7 @@ export default {
   padding: 1.5rem;
   top: 5%;
   right: -340px;
-  z-index: 999999;
+  z-index: $feedback-widget-z-index;
   transition: right 0.25s ease-in;
   box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
   border-top-left-radius: 0.5rem;
