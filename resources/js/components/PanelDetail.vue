@@ -119,7 +119,7 @@
                         <font-awesome-icon icon="pen" />
                     </button>
 
-                    <span class="sd-license-notice" v-if="isPublic">
+                    <span class="sd-license-notice text-xxs" v-if="isPublic">
                         <font-awesome-icon :icon="['fab', 'creative-commons']" />
                         2021 The Authors. Published under the terms of the
                         <a href="https://creativecommons.org/licenses/by/4.0/"
