@@ -16,7 +16,7 @@ runs:
         cache: 'npm'
 
     - name: Install Frontend dependencies
-      run: npm install
+      run: npm ci
       shell: bash
 
     - name: Build frontend
