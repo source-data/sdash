@@ -3,7 +3,7 @@
         <ul class="sd-comments list-unstyled">
             <comment v-for="thisComment in comments" :key="thisComment.id" :comment_id="thisComment.id"></comment>
         </ul>
-        <post-comment></post-comment>
+        <post-comment v-if="isLoggedIn"></post-comment>
     </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
     components: { Comment, PostComment },
     props: [],
     computed:{
-        ...mapGetters(['comments', 'commentCount']),
+        ...mapGetters(['comments', 'commentCount', 'isLoggedIn']),
     },
     data(){
 
