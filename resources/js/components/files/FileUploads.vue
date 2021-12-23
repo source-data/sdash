@@ -472,6 +472,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    margin-bottom: 0.5rem;
 
     .form-group {
         // let the form fields grow to take the available space.
