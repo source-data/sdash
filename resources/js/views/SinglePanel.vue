@@ -23,7 +23,7 @@
                 <img :src="panelImageUrl" :alt="'image for ' + expandedPanel.title" />
             </section>
 
-            <section class="panel-description">
+            <section class="panel-description" v-if="showDescription">
                 <h2>
                     Description
                 </h2>
@@ -33,7 +33,7 @@
                 </div>
             </section>
 
-            <section class="panel-sources">
+            <section class="panel-sources" v-if="showSources">
                 <h2>
                     Sources
                 </h2>
@@ -77,7 +77,7 @@
                 </div>
             </section>
 
-            <section class="panel-keywords-experiment">
+            <section class="panel-keywords-experiment" v-if="showExperimentalKeywords">
                 <h2>
                     Experimental Design Keywords
                 </h2>
@@ -115,7 +115,7 @@
                 </div>
             </section>
 
-            <section class="panel-keywords-general">
+            <section class="panel-keywords-general" v-if="showGeneralKeywords">
                 <h2>
                     General Keywords
                 </h2>
@@ -211,6 +211,20 @@ export default {
         panelImageUrl() {
             return this.apiUrls.panelImage(this.expandedPanel);
         },
+        showDescription() {
+            return this.notEmpty(this.expandedPanel.caption);
+        },
+        showSources() {
+            return this.notEmpty(this.getFiles);
+        },
+        showExperimentalKeywords() {
+            return this.notEmpty(this.assayTags.length)
+                || this.notEmpty(this.interventionTags)
+                || this.notEmpty(this.methodTags);
+        },
+        showGeneralKeywords() {
+            return this.notEmpty(this.otherTags);
+        },
     },
     methods: {
         ...mapActions([
@@ -249,7 +263,10 @@ export default {
                     timeZoneName: 'short'
                 }
             return date.toLocaleString(locale, formatOptions)
-        }
+        },
+        notEmpty(strOrList) {
+            return strOrList && strOrList.length > 0;
+        },
     },
     watch: {
         "$route.params.panel_id": panel_id => this.fetchPanel(),
