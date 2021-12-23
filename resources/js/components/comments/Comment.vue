@@ -31,7 +31,7 @@
                     v-b-tooltip.hover.top="{ customClass: 'sd-reply-to-tooltip' }" title="Reply to this comment"
                     v-scroll-to="{
                         el: '#sd-post-comment',
-                        container: '.sd-panel-detail-tab-card .card-text'
+                        container: '.comments .content'
                     }"
                 >
                     Reply
