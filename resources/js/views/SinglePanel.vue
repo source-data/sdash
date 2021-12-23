@@ -77,7 +77,7 @@
                         Measured Variables
                     </div>
 
-                    <div class="panel-keywords">
+                    <div class="panel-keywords sourcedata-tags-assay">
                         <span class="panel-keyword" v-for="tag in assayTags" :key="tag.id">
                             {{ tag.content }}
                         </span>
@@ -87,7 +87,7 @@
                         Controlled Variables
                     </div>
 
-                    <div class="panel-keywords">
+                    <div class="panel-keywords sourcedata-tags-intervention">
                         <span class="panel-keyword" v-for="tag in interventionTags" :key="tag.id">
                             {{ tag.content }}
                         </span>
@@ -97,7 +97,7 @@
                         Instruments / Methods
                     </div>
 
-                    <div class="panel-keywords">
+                    <div class="panel-keywords sourcedata-tags-method">
                         <span class="panel-keyword" v-for="tag in methodTags" :key="tag.id">
                             {{ tag.content }}
                         </span>
@@ -110,8 +110,8 @@
                     General Keywords
                 </h2>
 
-                <div class="content panel-keywords">
-                    <span class="panel-keyword" v-for="tag in methodTags" :key="tag.id">
+                <div class="content panel-keywords general-tags">
+                    <span class="panel-keyword" v-for="tag in otherTags" :key="tag.id">
                         {{ tag.content }}
                     </span>
                 </div>
@@ -337,9 +337,7 @@ section {
     margin-bottom: 1rem;
 
     .panel-keyword {
-        background-color: $mostly-white-gray;
         border-radius: 0.5rem;
-        color: $mostly-black-blue;
     }
 }
 .panel-keyword-category,
@@ -356,6 +354,21 @@ section {
     .panel-keywords {
         margin-bottom: 0;
     }
+}
+
+.sourcedata-tags-assay .panel-keyword {
+    background-color: $sourcedata-color-assay;
+}
+.sourcedata-tags-intervention .panel-keyword {
+    background-color: $sourcedata-color-intervention;
+}
+.sourcedata-tags-method .panel-keyword {
+    background-color: $sourcedata-color-method;
+    color: $very-dark-blue;
+}
+.general-tags .panel-keyword {
+    background-color: $sourcedata-color-other;
+    color: $mostly-white-gray;
 }
 
 .panel-download-link:not(:last-child) {
