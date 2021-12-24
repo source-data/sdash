@@ -5,16 +5,13 @@ namespace App\Http\Controllers\API;
 use API;
 use App\User;
 use App\Models\Group;
-use Obiefy\API\APIResponse;
 use App\Models\UserConsent;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Obiefy\API\Facades\API as FacadesAPI;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -209,7 +206,7 @@ class UserController extends Controller
      *
      * @param User $user
      * @param Request $request
-     * @return APIResponse
+     * @return \Illuminate\Http\Response
      */
     public function changePassword(User $user, Request $request)
     {
@@ -229,5 +226,46 @@ class UserController extends Controller
         return API::response(200, "Password changed", ["success" => true]);
 
         return $request;
+    }
+
+    /**
+     * Change user avatar
+     *
+     * @param User $user
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changeAvatar(User $user, Request $request)
+    {
+        $loggedInUser = auth()->user();
+
+        if (($loggedInUser->id !== $user->id)
+            && !$loggedInUser->is_superadmin()) {
+            abort(403, 'Access denied');
+        }
+
+        if (!$request->file('avatar')) {
+            return API::response(400, "No avatar uploaded", []);
+        }
+
+        // Delete existing avatar
+        if ($user->avatar !== null) {
+            Storage::disk('public')->delete('avatars/' . $user->avatar);
+        }
+
+        // Process the uploaded image
+        $filename = Str::random(20) . '.' . $request->file('avatar')->getClientOriginalExtension();
+        $request->file('avatar')->storeAs('avatars/', $filename, 'public');
+
+        // Update the user avatar
+        $user->avatar = $filename;
+
+        if ($user->save()) {
+            return API::response(200, "Avatar changed", [
+                "avatar" => $filename,
+            ]);
+        } else {
+            return API::response(500, "Failed to change avatar", []);
+        }
     }
 }

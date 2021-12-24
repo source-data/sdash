@@ -9,7 +9,11 @@
                         <font-awesome-icon icon="search" />
                         <div class="tag">
                             {{ searchQuery }}
-                            <button type="button" class="close" @click="clearSearch">
+                            <button
+                                type="button"
+                                class="close"
+                                @click="clearSearch"
+                            >
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -20,24 +24,41 @@
         </header>
 
         <b-container class="sd-view-content" ref="mainContent" fluid>
-            <b-row class="sd-group-grid" cols="1" cols-md="2" cols-lg="3" cols-xl="4">
-                <b-col class="sd-group-grid-item" v-for="group in publicGroups" :key="group.id">
-                    <div
-                        class="group-img-container"
-                        :style="group.public_panels.length == 0 ? imageContainerColor(group.id) : ''"
-                    >
-                        <router-link :to="{name: 'group', params: {group_id: group.id}}">
+            <b-row
+                class="sd-group-grid"
+                cols="1"
+                cols-md="2"
+                cols-lg="3"
+                cols-xl="4"
+            >
+                <b-col
+                    class="sd-group-grid-item"
+                    v-for="group in publicGroups"
+                    :key="group.id"
+                >
+                    <div class="group-img-container">
+                        <router-link
+                            :to="{
+                                name: 'group',
+                                params: { group_id: group.id }
+                            }"
+                        >
                             <img
-                                :class="{'transparent' : group.public_panels.length == 0}"
-                                :src="thumbnailUrl(group.public_panels)"
+                                :src="coverPhotoUrl(group.cover_photo)"
                                 :alt="group.name"
-                                @error="setDefaultThumbnail" />
+                            />
                         </router-link>
                     </div>
 
                     <div>
                         <h6 class="group-title text-md">
-                            <router-link class="text-light" :to="{name: 'group', params: {group_id: group.id}}">
+                            <router-link
+                                class="text-light"
+                                :to="{
+                                    name: 'group',
+                                    params: { group_id: group.id }
+                                }"
+                            >
                                 {{ group.name }}
                             </router-link>
                         </h6>
@@ -52,20 +73,37 @@
                                 {{ group.confirmed_users_count }}
                             </li>
                             <li>
-                                <font-awesome-icon icon="layer-group" fixed-width />
+                                <font-awesome-icon
+                                    icon="layer-group"
+                                    fixed-width
+                                />
                                 {{ group.public_panels_count }}
                             </li>
                             <li>
-                                <font-awesome-icon icon="envelope" fixed-width />
+                                <font-awesome-icon
+                                    icon="envelope"
+                                    fixed-width
+                                />
 
-                                <ul class="group-admins list-unstyled list-inline">
-                                    <li v-for="user in group.administrators" :key="user.id">
+                                <ul
+                                    class="group-admins list-unstyled list-inline"
+                                >
+                                    <li
+                                        v-for="user in group.administrators"
+                                        :key="user.id"
+                                    >
                                         <b-link
-                                            :id="'popover-' + group.id + '-' + user.id"
+                                            :id="
+                                                'popover-' +
+                                                    group.id +
+                                                    '-' +
+                                                    user.id
+                                            "
                                             class="text-light"
                                             href="#"
                                         >
-                                            {{ user.firstname }} {{ user.surname }}
+                                            {{ user.firstname }}
+                                            {{ user.surname }}
                                         </b-link>
                                     </li>
                                 </ul>
@@ -73,19 +111,37 @@
                         </ul>
                     </div>
 
-                    <b-popover v-for="user in group.administrators" :key="'user-' + group.id + '-' + user.id"
-                        :target="'popover-' + group.id + '-' + user.id" triggers="click blur" placement="bottom">
+                    <b-popover
+                        v-for="user in group.administrators"
+                        :key="'user-' + group.id + '-' + user.id"
+                        :target="'popover-' + group.id + '-' + user.id"
+                        triggers="click blur"
+                        placement="bottom"
+                    >
                         <ul class="list-unstyled mt-1 mb-1">
                             <li v-if="user.email">
-                                <font-awesome-icon icon="envelope" fixed-width />
-                                <a :href="'mailto:' + user.email">{{ user.email }}</a>
+                                <font-awesome-icon
+                                    icon="envelope"
+                                    fixed-width
+                                />
+                                <a :href="'mailto:' + user.email">{{
+                                    user.email
+                                }}</a>
                             </li>
                             <li v-if="user.orcid">
-                                <font-awesome-icon :icon="['fab', 'orcid']" fixed-width />
-                                <a :href="'https://orcid.org/' + user.orcid">{{ 'orcid.org/' + user.orcid }}</a>
+                                <font-awesome-icon
+                                    :icon="['fab', 'orcid']"
+                                    fixed-width
+                                />
+                                <a :href="'https://orcid.org/' + user.orcid">{{
+                                    "orcid.org/" + user.orcid
+                                }}</a>
                             </li>
                             <li v-if="user.institution_name">
-                                <font-awesome-icon icon="building" fixed-width />
+                                <font-awesome-icon
+                                    icon="building"
+                                    fixed-width
+                                />
                                 {{ user.institution_name }}
                             </li>
                             <li v-if="user.department_name">
@@ -109,7 +165,7 @@ import InfoFooter from "@/components/InfoFooter";
 export default {
     name: "GroupGrid",
     components: {
-        InfoFooter,
+        InfoFooter
     },
 
     props: {
@@ -118,27 +174,8 @@ export default {
 
     data() {
         return {
-            searchQuery: "",
-            defaultThumbnailUrl: '/images/group_cover_thumbnail.jpg',
-            backgroundColors: [
-                '#f06292', // pink
-                '#dce775', // lime
-                '#a1887f', // brown
-                '#4dd0e1', // cyan
-                '#81c784', // green
-                '#ba68c8', // purple
-                '#4db6ac', // teal
-                '#9575cd', // deep-purple
-                '#fff176', // yellow
-                '#7986cb', // indigo
-                '#ffb74d', // orange
-                '#e57373', // red
-                '#ffd54f', // amber
-                '#64b5f6', // blue
-                '#ff8a65', // deep-orange
-                '#4fc3f7', // light-blue
-            ]
-        }
+            searchQuery: ""
+        };
     },
 
     computed: {
@@ -147,22 +184,10 @@ export default {
 
     methods: {
         ...mapActions(["fetchPublicGroups"]),
-        thumbnailUrl(panels) {
-            if (panels.length) {
-                const panel = panels[0];
-                return this.apiUrls.panelThumbnail(panel);
-            } else {
-                return this.defaultThumbnailUrl;
-            }
-        },
-        imageContainerColor(panelId) {
-            const color = this.backgroundColors[panelId % this.backgroundColors.length];
-            return {
-                backgroundColor: color
-            };
-        },
-        setDefaultThumbnail(event) {
-            event.target.src = this.defaultThumbnailUrl;
+        coverPhotoUrl(filename) {
+            return filename
+                ? "/storage/cover_photos/" + filename
+                : "/images/group_cover_thumbnail.jpg";
         },
         reloadGroups() {
             const params = {};
@@ -175,9 +200,11 @@ export default {
             this.$refs.mainContent.click();
         },
         clearSearch() {
-            this.$router.push({
-                name: 'groups',
-            }).catch(err => {});
+            this.$router
+                .push({
+                    name: "groups"
+                })
+                .catch(err => {});
         }
     },
 
@@ -227,7 +254,7 @@ header {
     .group-details {
         margin-bottom: 2.5rem;
         width: 100%;
-        
+
         > li {
             display: inline;
             font-size: 0.875em;

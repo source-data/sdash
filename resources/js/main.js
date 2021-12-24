@@ -16,6 +16,7 @@ import { faCreativeCommons, faOrcid } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
 import VueLazyload from 'vue-lazyload'
 import Avatar from 'vue-avatar'
+import VueCookies from 'vue-cookies';
 import VueScrollTo from 'vue-scrollto'
 import ToggleButton from 'vue-js-toggle-button'
 import VueTagsInput from '@johmun/vue-tags-input'
@@ -48,6 +49,9 @@ Vue.use(Snotify, snoptions)
 
 //add toggle button
 Vue.use(ToggleButton)
+
+// Include a cookie handler
+Vue.use(VueCookies);
 
 // Add scroll to links behaviour
 Vue.use(VueScrollTo)

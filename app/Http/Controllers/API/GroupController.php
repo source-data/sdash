@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use API;
-use App\User;
 use App\Models\Group;
 use App\Models\Panel;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Repositories\GroupRepository;
-use App\Notifications\UserAddedToGroup;
 use App\Notifications\UserAppliedToJoinGroup;
 use App\Repositories\Interfaces\GroupRepositoryInterface;
-use FFI;
 
 class GroupController extends Controller
 {
@@ -480,6 +476,44 @@ class GroupController extends Controller
             return redirect('/group/' . $group->id);
         } else {
             throw new \Exception("You are not permitted to perform this action.");
+        }
+    }
+
+    /**
+     * Change group cover photo
+     *
+     * @param Group $group
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changeCoverPhoto(Group $group, Request $request)
+    {
+        if (!Gate::allows('modify-group', $group)) {
+            abort(403, 'Access denied');
+        }
+
+        if (!$request->file('cover_photo')) {
+            return API::response(400, "No cover photo uploaded", []);
+        }
+
+        // Delete existing cover photo
+        if ($group->cover_photo !== null) {
+            Storage::disk('public')->delete('cover_photos/' . $group->cover_photo);
+        }
+
+        // Process the uploaded image
+        $filename = Str::random(20) . '.' . $request->file('cover_photo')->getClientOriginalExtension();
+        $request->file('cover_photo')->storeAs('cover_photos/', $filename, 'public');
+
+        // Update the group cover photo
+        $group->cover_photo = $filename;
+
+        if ($group->save()) {
+            return API::response(200, "Cover photo changed", [
+                "cover_photo" => $filename,
+            ]);
+        } else {
+            return API::response(500, "Failed to change cover photo", []);
         }
     }
 }

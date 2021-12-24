@@ -14,6 +14,7 @@ class Group extends Model
     protected $fillable = [
         'name',
         'description',
+        'cover_photo',
         'url',
         'is_public',
     ];

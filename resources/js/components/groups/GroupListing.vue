@@ -1,6 +1,6 @@
 <template>
     <div v-if="currentGroup">
-        <panel-drop-zone></panel-drop-zone>
+        <panel-drop-zone v-if="!showImageUploadDialog"></panel-drop-zone>
 
         <panel-authors-edit-modal></panel-authors-edit-modal>
 
@@ -17,8 +17,36 @@
                 />
             </h2>
 
+            <image-uploader
+                field="cover_photo"
+                ref="coverPhotoUploader"
+                @crop-upload-success="coverPhotoUploadSuccess"
+                v-model="showImageUploadDialog"
+                :width="800"
+                :height="400"
+                :url="coverPhotoUploadUrl"
+                :method="requestMethod"
+                :headers="requestHeaders"
+                :params="requestParams"
+                :no-circle="true"
+                lang-type="en"
+                img-format="jpg"
+            ></image-uploader>
+
             <div class="group-header-image">
-                <img src="/images/group_cover_thumbnail.jpg" alt="The group header image">
+                <img
+                    :src="coverPhotoUrl"
+                    :alt="'Cover photo of ' + currentGroup.name"
+                />
+
+                <button
+                    class="edit text-xxs"
+                    v-if="isGroupAdmin"
+                    @click="toggleCoverPhotoUploadDialog"
+                    title="Change cover photo"
+                >
+                    <font-awesome-icon icon="pen" />
+                </button>
 
                 <div class="apply-to-join">
                     <b-button
@@ -31,7 +59,11 @@
                         Apply to join this group
                     </b-button>
 
-                    <b-alert show v-if="hasRequestedMembership" variant="primary">
+                    <b-alert
+                        show
+                        v-if="hasRequestedMembership"
+                        variant="primary"
+                    >
                         Your request to join this group is pending approval
                     </b-alert>
                 </div>
@@ -53,8 +85,13 @@
                         class="group-member bg-light text-dark"
                     >
                         <div class="group-member-name">
-                            <router-link :to="{name: 'user', params: {user_id: user.id}}">
-                                {{ user.firstname + ' ' + user.surname }}
+                            <router-link
+                                :to="{
+                                    name: 'user',
+                                    params: { user_id: user.id }
+                                }"
+                            >
+                                {{ user.firstname + " " + user.surname }}
                             </router-link>
                         </div>
 
@@ -77,8 +114,13 @@
                         class="group-member bg-light text-dark"
                     >
                         <div class="group-member-name">
-                            <router-link :to="{name: 'user', params: {user_id: user.id}}">
-                                {{ user.firstname + ' ' + user.surname }}
+                            <router-link
+                                :to="{
+                                    name: 'user',
+                                    params: { user_id: user.id }
+                                }"
+                            >
+                                {{ user.firstname + " " + user.surname }}
                             </router-link>
                         </div>
 
@@ -94,10 +136,7 @@
                     <b-button
                         variant="outline-success"
                         :to="{
-                            path:
-                                '/group/' +
-                                currentGroup.id +
-                                '/edit'
+                            path: '/group/' + currentGroup.id + '/edit'
                         }"
                         v-b-tooltip.hover.top
                         title="Edit the group details"
@@ -131,19 +170,16 @@
                                 class="close"
                                 aria-label="Close"
                             >
-                                <span
-                                    class="d-inline-block"
-                                    aria-hidden="true"
+                                <span class="d-inline-block" aria-hidden="true"
                                     >&times;</span
                                 >
                             </b-button>
                         </template>
                         <div class="confirm-delete-content">
                             <p>
-                                Delete the user group? Panels will
-                                not be deleted from the system but
-                                will no longer be shared with the
-                                group.
+                                Delete the user group? Panels will not be
+                                deleted from the system but will no longer be
+                                shared with the group.
                             </p>
                             <div class="delete-buttons">
                                 <b-button
@@ -189,17 +225,14 @@
                                 class="close"
                                 aria-label="Close"
                             >
-                                <span
-                                    class="d-inline-block"
-                                    aria-hidden="true"
+                                <span class="d-inline-block" aria-hidden="true"
                                     >&times;</span
                                 >
                             </b-button>
                         </template>
                         <div class="confirm-delete-content">
                             <p>
-                                Remove yourself and your panels from
-                                the group?
+                                Remove yourself and your panels from the group?
                             </p>
                             <div class="delete-buttons">
                                 <b-button
@@ -231,9 +264,17 @@
                 ></b-spinner>
             </div>
 
-            <panel-listing-grid v-if="hasPanels" list_root="user"></panel-listing-grid>
+            <panel-listing-grid
+                v-if="hasPanels"
+                list_root="user"
+            ></panel-listing-grid>
 
-            <b-alert v-if="!hasPanels && !isLoadingPanels" show variant="danger" class="no-panel-alert mt-3">
+            <b-alert
+                v-if="!hasPanels && !isLoadingPanels"
+                show
+                variant="danger"
+                class="no-panel-alert mt-3"
+            >
                 No Panels Found
             </b-alert>
         </div>
@@ -249,21 +290,24 @@
 </template>
 
 <script>
-import store from '@/stores/store'
-import { mapGetters, mapActions } from 'vuex'
-import FilterBar from '../FilterBar'
-import PanelListingGrid from '../PanelListingGrid'
-import InfoFooter from '@/components/InfoFooter'
-import GroupTitleIcon from '../helpers/GroupTitleIcon'
-import GroupMemberRequestIcon from '../helpers/GroupMemberRequestIcon'
-import GroupUserIcon from '../helpers/GroupUserIcon'
-import Lightbox from 'vue-easy-lightbox';
+import Axios from "axios";
+import ImageUploader from "vue-image-crop-upload/upload-2.vue";
+import store from "@/stores/store";
+import { mapGetters, mapActions } from "vuex";
+import FilterBar from "../FilterBar";
+import PanelListingGrid from "../PanelListingGrid";
+import InfoFooter from "@/components/InfoFooter";
+import GroupTitleIcon from "../helpers/GroupTitleIcon";
+import GroupMemberRequestIcon from "../helpers/GroupMemberRequestIcon";
+import GroupUserIcon from "../helpers/GroupUserIcon";
+import Lightbox from "vue-easy-lightbox";
 import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
-import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
+import PanelDropZone from "@/components/helpers/PanelDropZone.vue";
 
 export default {
     name: "GroupListing",
     components: {
+        ImageUploader,
         PanelListingGrid,
         FilterBar,
         InfoFooter,
@@ -272,7 +316,7 @@ export default {
         GroupMemberRequestIcon,
         Lightbox,
         PanelDropZone,
-        PanelAuthorsEditModal,
+        PanelAuthorsEditModal
     },
     props: ["group_id"],
 
@@ -280,50 +324,76 @@ export default {
         return {
             isSidebarExpanded: true,
             sendingMembershipRequest: false,
+            showImageUploadDialog: false,
+            requestMethod: "POST",
+            requestHeaders: {
+                "X-XSRF-TOKEN": this.$cookies.get("XSRF-TOKEN")
+            },
+            requestParams: {
+                _method: "PATCH"
+            }
         };
     } /* end of data */,
     computed: {
         ...mapGetters([
             "currentUser",
-            'currentGroup',
-            'isLoadingPanels',
-            'hasPanels',
-            'hasLoadedAllResults',
-            'isGroupAdmin',
+            "currentGroup",
+            "isLoadingPanels",
+            "hasPanels",
+            "hasLoadedAllResults",
+            "isGroupAdmin",
             "isGroupMember",
             "hasRequestedMembership",
             "isLightboxOpen",
-            "expandedPanel",
-            ]),
-        shouldShowMembershipRequest(){
-            return (this.currentGroup && this.isGroupAdmin && this.currentGroup.requested_users_count)
+            "expandedPanel"
+        ]),
+        shouldShowMembershipRequest() {
+            return (
+                this.currentGroup &&
+                this.isGroupAdmin &&
+                this.currentGroup.requested_users_count
+            );
         },
-        membershipRequestCaption(){
-            if(!this.shouldShowMembershipRequest) return '';
-            if(this.currentGroup.requested_users_count === 1) return '1 member request';
-            return this.currentGroup.requested_users_count + ' member requests';
+        membershipRequestCaption() {
+            if (!this.shouldShowMembershipRequest) return "";
+            if (this.currentGroup.requested_users_count === 1)
+                return "1 member request";
+            return this.currentGroup.requested_users_count + " member requests";
         },
         sidebarToggleText() {
             return this.isSidebarExpanded ? "Hide sidebar" : "Show sidebar";
         },
         groupAdministrators() {
             if (this.currentGroup.administrators) {
-            return this.currentGroup.administrators;
+                return this.currentGroup.administrators;
             }
             if (this.currentGroup.confirmed_users) {
                 return this.currentGroup.confirmed_users.filter(
                     user => user.pivot.role == "admin"
                 );
             }
-            return []
+            return [];
         },
         groupMembers() {
             if (!this.currentGroup.confirmed_users) {
-                return []
+                return [];
             }
             return this.currentGroup.confirmed_users.filter(
                 user => user.pivot.role != "admin"
-            )
+            );
+        },
+        coverPhotoUrl() {
+            return this.currentGroup.cover_photo
+                ? "/storage/cover_photos/" + this.currentGroup.cover_photo
+                : "/images/group_cover_thumbnail.jpg";
+        },
+        coverPhotoUploadUrl() {
+            return (
+                process.env.MIX_API_URL +
+                "/groups/" +
+                this.currentGroup.id +
+                "/cover"
+            );
         }
     },
     methods: {
@@ -331,7 +401,7 @@ export default {
             "removeUserFromGroup",
             "deleteUserGroup",
             "fetchCurrentGroup",
-            'toggleLightbox',
+            "toggleLightbox"
         ]),
         fetchPanels() {
             store
@@ -362,13 +432,18 @@ export default {
         },
         applyToJoin() {
             this.sendingMembershipRequest = true;
-            this.$store.dispatch("applyToJoin", {groupId: this.group_id})
-            .then(response => {
-                this.sendingMembershipRequest = false;
-                this.$snotify.success("Application Sent!", "OK")
-            }).catch(err => {
-                this.$snotify.error("Could not complete the action", "Sorry!")
-            })
+            this.$store
+                .dispatch("applyToJoin", { groupId: this.group_id })
+                .then(response => {
+                    this.sendingMembershipRequest = false;
+                    this.$snotify.success("Application Sent!", "OK");
+                })
+                .catch(err => {
+                    this.$snotify.error(
+                        "Could not complete the action",
+                        "Sorry!"
+                    );
+                });
         },
         quitGroup() {
             this.removeUserFromGroup(this.currentUser.id)
@@ -396,6 +471,14 @@ export default {
         },
         toggleSidebar() {
             this.isSidebarExpanded = !this.isSidebarExpanded;
+        },
+        toggleCoverPhotoUploadDialog() {
+            this.showImageUploadDialog = !this.showImageUploadDialog;
+        },
+        coverPhotoUploadSuccess(response) {
+            this.currentGroup.cover_photo = response.DATA.cover_photo;
+            this.showImageUploadDialog = false;
+            this.$refs.coverPhotoUploader.setStep(1);
         }
     },
     created() {
@@ -457,6 +540,21 @@ header {
             width: 100%;
         }
 
+        button.edit {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            color: white;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+        button.edit,
+        button.edit * {
+            border: none;
+            outline: none;
+        }
+
         .apply-to-join {
             position: absolute;
             right: 20px;
@@ -494,7 +592,6 @@ header {
         }
     }
 }
-
 
 .sd-filter-wrapper {
     flex: 0 0 300px;

@@ -63,6 +63,7 @@ const actions = {
                 user_id: response.data.DATA.user_id,
                 name: response.data.DATA.name,
                 description: response.data.DATA.description,
+                cover_photo: response.data.DATA.cover_photo,
                 is_public: response.data.DATA.is_public,
                 url: response.data.DATA.url,
                 updated_at: response.data.DATA.updated_at,
@@ -91,13 +92,16 @@ const actions = {
                 user_id: response.data.DATA.group.user_id,
                 name: response.data.DATA.group.name,
                 description: response.data.DATA.group.description,
+                cover_photo: response.data.DATA.cover_photo,
                 is_public: response.data.DATA.group.is_public,
                 url: response.data.DATA.group.url,
                 updated_at: response.data.DATA.group.updated_at,
                 created_at: response.data.DATA.group.created_at,
                 confirmed_users: response.data.DATA.group.confirmed_users,
-                confirmed_users_count: response.data.DATA.group.confirmed_users_count,
-                requested_users_count: response.data.DATA.group.requested_users_count,
+                confirmed_users_count:
+                    response.data.DATA.group.confirmed_users_count,
+                requested_users_count:
+                    response.data.DATA.group.requested_users_count,
                 pivot: {
                     group_id: response.data.DATA.group.id,
                     role: "admin",

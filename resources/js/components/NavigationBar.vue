@@ -64,8 +64,8 @@
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     >
                         <img
-                            class="profile-picture" src="/images/profile-picture-placeholder.jpeg"
-                            alt="User profile picture" loading="lazy"
+                            class="profile-picture" :src="avatarUrl"
+                            :alt="'Avatar of ' + fullName" loading="lazy"
                         >
                     </a>
 
@@ -129,7 +129,12 @@ export default {
         },
         fullName() {
             return this.isGuest ? '' : (this.user.firstname + ' ' + this.user.surname);
-        }
+        },
+        avatarUrl() {
+            return this.user.avatar
+                ? "/storage/avatars/" + this.user.avatar
+                : "/images/default_avatar.jpg";
+        },
     },
     methods: {
         ...mapMutations(['expireCurrentUser', 'clearPanels', 'clearGroups']),
