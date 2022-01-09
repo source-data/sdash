@@ -20,6 +20,7 @@ const defaultState = {
     page: 0,
     nextPage: 1,
     lastPage: 1, // the default needs to be higher than the "page" variable above - to show that all pages haven't loaded
+    pageSize: 20,
     selectedPanels: [],
     editingCaption: false
 };
@@ -57,8 +58,8 @@ const actions = {
 
         //pagination
         params.params.paginate = state.paginate;
-        if (state.page < state.lastPage && state.page !== null)
-            params.params.page = state.nextPage;
+        if (state.page <= state.lastPage && state.page !== null)
+            params.params.page = state.page;
         if (state.searchText) params.params.search = state.searchText;
         if (state.searchTags) params.params.tags = state.searchTags;
         if (state.filterAuthors)
@@ -69,14 +70,11 @@ const actions = {
         if (state.onlyMyPanels) params.params.private = true;
 
         return Axios.get(searchUrl, params).then(response => {
-            commit("addToLoadedPanels", response.data);
+            commit("setLoadedPanels", response.data);
             commit("setPanelLoadingState", false);
 
             return response;
         });
-    },
-    loadMorePanels({ commit, dispatch, state }) {
-        return dispatch("fetchPanelList");
     },
     setLoadingState({ commit }, payload) {
         commit("setPanelLoadingState", payload);
@@ -255,14 +253,16 @@ const mutations = {
             state.editingCaption = !state.editingCaption;
         }
     },
-
-    addToLoadedPanels(state, payload) {
-        state.loadedPanels.push(...payload.DATA.data); //panels
-        state.panelsLoaded += payload.DATA.data.length;
+    setCurrentPage(state, value) {
+        state.page = value;
+    },
+    setLoadedPanels(state, payload) {
+        state.loadedPanels = payload.DATA.data; //panels
+        state.panelsLoaded = payload.DATA.data.length;
         state.panelsAvailable = payload.DATA.total;
         state.page = payload.DATA.current_page;
-        state.nextPage++;
         state.lastPage = payload.DATA.last_page;
+        state.pageSize = payload.DATA.per_page;
     },
     updateLoadedPanel(state, updatedPanel) {
         const index = _.findIndex(state.loadedPanels, oldPanel => {
@@ -292,7 +292,6 @@ const mutations = {
         state.panelsLoaded = 0;
         state.panelsAvailable = 0;
         state.page = 0;
-        state.nextPage = 1;
         state.lastPage = 0;
     },
     updateExpandedPanelId(state, panelId = null) {
@@ -437,7 +436,18 @@ const getters = {
     isLoadingPanels(state) {
         return state.loading;
     },
-
+    currentPage(state) {
+        return state.page;
+    },
+    pageSize(state) {
+        return state.pageSize;
+    },
+    paginate(state) {
+        return state.paginate;
+    },
+    totalPanels(state) {
+        return state.panelsAvailable;
+    },
     hasPanels(state) {
         return state.panelsLoaded > 0;
     },
