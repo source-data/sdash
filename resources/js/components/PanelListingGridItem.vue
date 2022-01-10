@@ -276,31 +276,66 @@ $image-height: 233px;
     }
 }
 
+$title-font-size: $font-size-sm;
+$title-height: $font-size-md;
+$authors-font-size: $font-size-xs;
+$authors-height: $font-size-sm;
 .sd-grid-item-text {
-    // see comment at .sd-grid-image-container
+    // see comment at .sd-grid-item
     display: table-caption;
     caption-side: bottom;
-    max-height: 100px;
-    overflow: hidden;
-
     padding-top: 0.25rem;
 
-    * {
-        overflow: hidden;
-    }
     .panel-title {
-        font-size: $font-size-sm;
-        line-height: 1.3rem;
-        max-height: 1.3rem;
-        word-break: break-all;
+        font-size: $title-font-size;
+        line-height: $title-height;
+        max-height: $title-height;
         margin-bottom: 0.25rem;
     }
     .panel-authors {
-        font-size: $font-size-xs;
+        font-size: $authors-font-size;
         font-weight: lighter;
-        line-height: 1.125rem;
-        max-height: 1.125rem;
+        line-height: $authors-height;
+        max-height: $authors-height;
         margin: 0;
+    }
+
+    /* We have some requirements for the title and authors:
+     * 1) They must each take up only a single line. 
+     * 2) They must be only as wide as the panel image they belong to (or slightly wider if the image is very narrow:
+     *    their target width then comes from the min-width set on their surrounding sd-grid-item).
+     * 3) If their text overflows they must indicate to users that there is more text.
+     *
+     * The only way to accomplish 2) in CSS seems to be using `display: table-caption`. Since we then can't set an
+     * explicit width, and that is a requirement for text-overflow: ellipsis, 3) can't be accomplished that way. This
+     * solution here uses a fade-out instead to show that there is more text than can be shown.
+     */
+    .panel-title,
+    .panel-authors {
+        // relative positioning is needed here to absolutely position the fade-out below
+        position: relative;
+        // hide any text overflow beyond the first line
+        overflow: hidden;
+        // break words as close to the edge of the first line as possible
+        word-break: break-all;
+    }
+    // These pseudo-elements generate the fade-out effect through a linear gradient from transparent to the background
+    // color.
+    .panel-title::after,
+    .panel-authors::after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 15%;
+        background: linear-gradient(to right, rgba(02, 01, 38, 0), rgba(02, 01, 38, 1) 100%);
+    }
+    .panel-authors::after {
+        height: $authors-height;
+    }
+    .panel-title::after {
+        height: 1.3rem;
     }
 }
 
