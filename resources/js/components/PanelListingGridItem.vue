@@ -1,33 +1,33 @@
 <template>
     <li :id="itemId" class="sd-grid-item">
         <div class="sd-grid-image-container">
-            <header class="sd-grid-item--image-header">
-                <button
-                    class="panel-select-button"
-                    @click="toggleSelected"
-                    v-if="IOwnThisPanel"
-                >
-                    <transition name="fade">
-                        <font-awesome-layers
-                            class="fa-2x panel-select-button--icon text-success"
-                            v-if="panelSelected"
-                        >
-                            <font-awesome-icon icon="circle" />
-                            <font-awesome-icon
-                                icon="check"
-                                transform="shrink-6"
-                                :style="{ color: 'white' }"
-                            />
-                        </font-awesome-layers>
-                    </transition>
-                </button>
-            </header>
-
             <div
                 class="sd-grid-image-container-inner"
                 v-b-modal="modalId"
                 tabindex="0"
             >
+                <header class="sd-grid-item--image-header">
+                    <button
+                        class="panel-select-button"
+                        @click="toggleSelected"
+                        v-if="IOwnThisPanel"
+                    >
+                        <transition name="fade">
+                            <font-awesome-layers
+                                class="fa-2x panel-select-button--icon text-success"
+                                v-if="panelSelected"
+                            >
+                                <font-awesome-icon icon="circle" />
+                                <font-awesome-icon
+                                    icon="check"
+                                    transform="shrink-6"
+                                    :style="{ color: 'white' }"
+                                />
+                            </font-awesome-layers>
+                        </transition>
+                    </button>
+                </header>
+
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
 
                 <footer
@@ -60,16 +60,16 @@
                     />
                 </footer>
             </div>
+        </div>
 
-            <div class="sd-grid-item-text">
-                <h6 class="panel-title">
-                    {{ thisPanel.title }}
-                </h6>
+        <div class="sd-grid-item-text">
+            <h6 class="panel-title">
+                {{ thisPanel.title }}
+            </h6>
 
-                <address class="panel-authors">
-                    {{ panelAuthorsAbbreviated }}
-                </address>
-            </div>
+            <address class="panel-authors">
+                {{ panelAuthorsAbbreviated }}
+            </address>
         </div>
 
         <b-modal
@@ -219,7 +219,12 @@ export default {
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
 
+$image-height: 233px;
+
 .sd-grid-item {
+    // Having the container as display:table and the text child as display:table-caption lets us limit the width of the
+    // text to the width of the image above it. Adapted from https://stackoverflow.com/a/25386583/3385618
+    display: table;
     box-sizing: border-box;
     transition: all 0.3s ease-in;
     outline: 1px red;
@@ -227,63 +232,116 @@ export default {
 }
 @media (min-width: 576px) {
     .sd-grid-item {
+        max-width: 48%;
+        min-width: 31%;
         width: unset;
+    }
+}
+@media (min-width: 768px) {
+    .sd-grid-item {
+        max-width: 31%;
+        min-width: 16%;
     }
 }
 
 .sd-grid-image-container {
-    // Having the container as display:table and the text child as display:table-caption lets us limit the width of the
-    // text to the width of the image above it. Adapted from https://stackoverflow.com/a/25386583/3385618
-    display: table;
-    // needed to position the <header> with the panel select button
-    position: relative;
+    // flex display to center the image inside this container
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+}
+@media (min-width: 576px) {
+    .sd-grid-image-container {
+        height: $image-height;
+    }
 }
 
 .sd-grid-image-container-inner {
     // indicate that the image can be interacted with
     cursor: pointer;
-    // needed to position the panel access reasons in the <footer> at the bottom-right of the image
+    // needed to position <header> with the panel select button and the panel access reasons in the <footer> at the
+    // bottom-right of the image
     position: relative;
+    width: 100%;
+}
+@media (min-width: 576px) {
+    .sd-grid-image-container-inner {
+        width: auto; // override the width set above
+    }
 }
 
 .sd-grid-image {
-    display: block;
     width: 100%;
 }
 @media (min-width: 576px) {
     .sd-grid-image {
-        display: block;
-        height: 233px;
+        max-height: $image-height;
         max-width: 100%;
-        width: auto;
+        width: auto; // override the width set above
     }
 }
 
+$title-font-size: $font-size-sm;
+$title-height: $font-size-md;
+$authors-font-size: $font-size-xs;
+$authors-height: $font-size-sm;
 .sd-grid-item-text {
-    // see comment at .sd-grid-image-container
+    // see comment at .sd-grid-item
     display: table-caption;
     caption-side: bottom;
-    max-height: 100px;
-    overflow: hidden;
-
     padding-top: 0.25rem;
 
     .panel-title {
-        font-size: $font-size-md;
-        line-height: 1.6rem;
-        max-height: 3.2rem;
-        word-break: break-all;
+        font-size: $title-font-size;
+        line-height: $title-height;
+        max-height: $title-height;
         margin-bottom: 0.25rem;
-        overflow: hidden;
     }
     .panel-authors {
-        font-size: $font-size-sm;
+        font-size: $authors-font-size;
         font-weight: lighter;
-        line-height: 1.3rem;
-        max-height: 2.6rem;
+        line-height: $authors-height;
+        max-height: $authors-height;
         margin: 0;
+    }
+
+    /* We have some requirements for the title and authors:
+     * 1) They must each take up only a single line. 
+     * 2) They must be only as wide as the panel image they belong to (or slightly wider if the image is very narrow:
+     *    their target width then comes from the min-width set on their surrounding sd-grid-item).
+     * 3) If their text overflows they must indicate to users that there is more text.
+     *
+     * The only way to accomplish 2) in CSS seems to be using `display: table-caption`. Since we then can't set an
+     * explicit width, and that is a requirement for text-overflow: ellipsis, 3) can't be accomplished that way. This
+     * solution here uses a fade-out instead to show that there is more text than can be shown.
+     */
+    .panel-title,
+    .panel-authors {
+        // relative positioning is needed here to absolutely position the fade-out below
+        position: relative;
+        // hide any text overflow beyond the first line
         overflow: hidden;
+        // break words as close to the edge of the first line as possible
+        word-break: break-all;
+    }
+    // These pseudo-elements generate the fade-out effect through a linear gradient from transparent to the background
+    // color.
+    .panel-title::after,
+    .panel-authors::after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 15%;
+        background: linear-gradient(to right, rgba(02, 01, 38, 0), rgba(02, 01, 38, 1) 100%);
+    }
+    .panel-authors::after {
+        height: $authors-height;
+    }
+    .panel-title::after {
+        height: 1.3rem;
     }
 }
 
