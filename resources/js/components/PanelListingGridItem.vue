@@ -1,33 +1,33 @@
 <template>
     <li :id="itemId" class="sd-grid-item">
         <div class="sd-grid-image-container">
-            <header class="sd-grid-item--image-header">
-                <button
-                    class="panel-select-button"
-                    @click="toggleSelected"
-                    v-if="IOwnThisPanel"
-                >
-                    <transition name="fade">
-                        <font-awesome-layers
-                            class="fa-2x panel-select-button--icon text-success"
-                            v-if="panelSelected"
-                        >
-                            <font-awesome-icon icon="circle" />
-                            <font-awesome-icon
-                                icon="check"
-                                transform="shrink-6"
-                                :style="{ color: 'white' }"
-                            />
-                        </font-awesome-layers>
-                    </transition>
-                </button>
-            </header>
-
             <div
                 class="sd-grid-image-container-inner"
                 v-b-modal="modalId"
                 tabindex="0"
             >
+                <header class="sd-grid-item--image-header">
+                    <button
+                        class="panel-select-button"
+                        @click="toggleSelected"
+                        v-if="IOwnThisPanel"
+                    >
+                        <transition name="fade">
+                            <font-awesome-layers
+                                class="fa-2x panel-select-button--icon text-success"
+                                v-if="panelSelected"
+                            >
+                                <font-awesome-icon icon="circle" />
+                                <font-awesome-icon
+                                    icon="check"
+                                    transform="shrink-6"
+                                    :style="{ color: 'white' }"
+                                />
+                            </font-awesome-layers>
+                        </transition>
+                    </button>
+                </header>
+
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
 
                 <footer
@@ -60,16 +60,16 @@
                     />
                 </footer>
             </div>
+        </div>
 
-            <div class="sd-grid-item-text">
-                <h6 class="panel-title">
-                    {{ thisPanel.title }}
-                </h6>
+        <div class="sd-grid-item-text">
+            <h6 class="panel-title">
+                {{ thisPanel.title }}
+            </h6>
 
-                <address class="panel-authors">
-                    {{ panelAuthorsAbbreviated }}
-                </address>
-            </div>
+            <address class="panel-authors">
+                {{ panelAuthorsAbbreviated }}
+            </address>
         </div>
 
         <b-modal
@@ -219,7 +219,12 @@ export default {
 @import 'resources/sass/_colors.scss';
 @import 'resources/sass/_text.scss';
 
+$image-height: 233px;
+
 .sd-grid-item {
+    // Having the container as display:table and the text child as display:table-caption lets us limit the width of the
+    // text to the width of the image above it. Adapted from https://stackoverflow.com/a/25386583/3385618
+    display: table;
     box-sizing: border-box;
     transition: all 0.3s ease-in;
     outline: 1px red;
@@ -227,36 +232,47 @@ export default {
 }
 @media (min-width: 576px) {
     .sd-grid-item {
+        max-width: 30%;
+        min-width: 16%;
         width: unset;
     }
 }
 
 .sd-grid-image-container {
-    // Having the container as display:table and the text child as display:table-caption lets us limit the width of the
-    // text to the width of the image above it. Adapted from https://stackoverflow.com/a/25386583/3385618
-    display: table;
-    // needed to position the <header> with the panel select button
-    position: relative;
+    // flex display to center the image inside this container
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+}
+@media (min-width: 576px) {
+    .sd-grid-image-container {
+        height: $image-height;
+    }
 }
 
 .sd-grid-image-container-inner {
     // indicate that the image can be interacted with
     cursor: pointer;
-    // needed to position the panel access reasons in the <footer> at the bottom-right of the image
+    // needed to position <header> with the panel select button and the panel access reasons in the <footer> at the
+    // bottom-right of the image
     position: relative;
+    width: 100%;
+}
+@media (min-width: 576px) {
+    .sd-grid-image-container-inner {
+        width: auto; // override the width set above
+    }
 }
 
 .sd-grid-image {
-    display: block;
     width: 100%;
 }
 @media (min-width: 576px) {
     .sd-grid-image {
-        display: block;
-        height: 233px;
+        max-height: $image-height;
         max-width: 100%;
-        width: auto;
+        width: auto; // override the width set above
     }
 }
 
