@@ -232,9 +232,15 @@ $image-height: 233px;
 }
 @media (min-width: 576px) {
     .sd-grid-item {
-        max-width: 30%;
-        min-width: 16%;
+        max-width: 48%;
+        min-width: 31%;
         width: unset;
+    }
+}
+@media (min-width: 768px) {
+    .sd-grid-item {
+        max-width: 31%;
+        min-width: 16%;
     }
 }
 
