@@ -9,7 +9,7 @@
                 <header class="sd-grid-item--image-header">
                     <button
                         class="panel-select-button"
-                        @click="toggleSelected"
+                        v-on:click.stop="toggleSelected"
                         v-if="IOwnThisPanel"
                     >
                         <transition name="fade">
