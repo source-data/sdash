@@ -19,7 +19,7 @@
                     :target="'popover-' + author.origin + '-' + author.id"
                     triggers="click blur"
                     placement="bottom"
-                    custom-class="bg-light"
+                    custom-class="sd-custom-popover"
                 >
                     <ul class="list-unstyled mt-1 mb-1">
                         <li v-if="author.email">
@@ -71,6 +71,7 @@
                     target="sd-panel-author-list--remove-me"
                     triggers="click"
                     placement="bottom"
+                    custom-class="sd-custom-popover"
                 >
                     <template v-slot:title>
                         Remove yourself as author?

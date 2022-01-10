@@ -53,6 +53,7 @@
                     :target="'remove-comment-' + thisComment.id"
                     triggers="click blur"
                     placement="right"
+                    custom-class="sd-custom-popover"
                 >
                     <template v-slot:title>
                             Delete Comment?

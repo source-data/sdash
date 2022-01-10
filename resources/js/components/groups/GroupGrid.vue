@@ -117,6 +117,7 @@
                         :target="'popover-' + group.id + '-' + user.id"
                         triggers="click blur"
                         placement="bottom"
+                        custom-class="sd-custom-popover"
                     >
                         <ul class="list-unstyled mt-1 mb-1">
                             <li v-if="user.email">

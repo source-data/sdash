@@ -165,6 +165,7 @@
                         placement="bottom"
                         selector="sd-delete-group"
                         :key="currentGroup.id"
+                        custom-class="sd-custom-popover"
                     >
                         <template v-slot:title>
                             Are you sure?
@@ -221,6 +222,7 @@
                         placement="bottom"
                         selector="sd-quit-group"
                         :key="currentGroup.id"
+                        custom-class="sd-custom-popover"
                     >
                         <template v-slot:title>
                             Are you sure?

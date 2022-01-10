@@ -50,10 +50,11 @@ SDASH POPOVERS AND MODALS
 
   .popover-body {
     background-color: $mostly-white-gray;
+    color: $mostly-black-blue;
   }
 
   .popover-header {
-    background-color: $mostly-black-blue;
+    background-color: $very-dark-desaturated-blue;
     color: $mostly-white-gray;
 
     .btn.close {
@@ -63,11 +64,11 @@ SDASH POPOVERS AND MODALS
   }
 
   &.bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
-    border-bottom-color: $mostly-black-blue;
+    border-bottom-color: $very-dark-desaturated-blue;
   }
 
   &.bs-popover-bottom .popover-header::before, .bs-popover-auto[x-placement^=bottom] .popover-header::before {
-    border-bottom-color: $mostly-black-blue;
+    border-bottom-color: $very-dark-desaturated-blue;
   }
 
   .btn.close {
@@ -78,7 +79,7 @@ SDASH POPOVERS AND MODALS
   a:focus,
   a:hover,
   a:active {
-    color: $body-color !important;
+    color: $mostly-black-blue !important;
     text-decoration: underline;
   }
 }
@@ -88,6 +89,12 @@ SDASH POPOVERS AND MODALS
 
   .close {
     color: inherit;
+  }
+
+  // A popover that is opened within a modal needs a different background color for its header to differentiate it from
+  // the modal's background color. Usually they're the same (see above).
+  .sd-custom-popover .popover-header {
+    background-color: $mostly-black-blue;
   }
 }
 
