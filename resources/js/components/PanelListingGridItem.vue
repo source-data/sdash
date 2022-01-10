@@ -285,21 +285,22 @@ $image-height: 233px;
 
     padding-top: 0.25rem;
 
-    .panel-title {
-        font-size: $font-size-md;
-        line-height: 1.6rem;
-        max-height: 3.2rem;
-        word-break: break-all;
-        margin-bottom: 0.25rem;
+    * {
         overflow: hidden;
     }
-    .panel-authors {
+    .panel-title {
         font-size: $font-size-sm;
-        font-weight: lighter;
         line-height: 1.3rem;
-        max-height: 2.6rem;
+        max-height: 1.3rem;
+        word-break: break-all;
+        margin-bottom: 0.25rem;
+    }
+    .panel-authors {
+        font-size: $font-size-xs;
+        font-weight: lighter;
+        line-height: 1.125rem;
+        max-height: 1.125rem;
         margin: 0;
-        overflow: hidden;
     }
 }
 
