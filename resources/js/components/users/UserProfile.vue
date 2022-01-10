@@ -110,7 +110,7 @@
                     </b-col>
                 </b-row>
 
-                <b-row v-if="user.twitter">
+                <b-row>
                     <b-col>
                         Profile Image
                     </b-col>
