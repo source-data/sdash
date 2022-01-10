@@ -42,6 +42,7 @@ task('frontend:fetch', function () {
 task('sdash:installations', [
     'frontend:fetch',
     'artisan:migrate',
+    'artisan:storage:link',
 ]);
 
 // [Optional] if deploy fails automatically unlock.
