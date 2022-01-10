@@ -310,12 +310,13 @@ header {
     }
 
     .avatar {
-        position: relative;
         margin-bottom: 5px;
+        position: relative;
+        width: 150px;
     }
 
     .avatar img {
-        width: 150px;
+        width: 100%;
     }
 
     .avatar button.edit {
