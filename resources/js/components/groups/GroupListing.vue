@@ -145,6 +145,7 @@
                         <font-awesome-icon icon="edit" />
                         Edit
                     </b-button>
+
                     <b-button
                         variant="outline-danger"
                         @click.prevent
@@ -156,6 +157,7 @@
                         <font-awesome-icon icon="trash-alt" />
                         Delete
                     </b-button>
+
                     <b-popover
                         ref="delete-group-popover"
                         target="sd-delete-group"
@@ -199,7 +201,8 @@
                         </div>
                     </b-popover>
                 </div>
-                <div class="group-actions" v-if="isGroupMember">
+
+                <div class="group-actions mt-2" v-if="isGroupMember">
                     <b-button
                         variant="outline-danger"
                         @click.prevent
@@ -596,11 +599,6 @@ header {
 .sd-filter-wrapper {
     flex: 0 0 300px;
     max-width: 300px;
-}
-
-.group-actions button {
-    margin: 0;
-    margin-right: 1em;
 }
 
 .sidebar,
