@@ -1,11 +1,6 @@
 <template>
   <b-modal
       id="author-edit-sidebar"
-      body-bg-variant="dark"
-      body-text-variant="light"
-      header-bg-variant="dark"
-      header-text-variant="light"
-      header-class="sd-author-modal-header"
       hide-footer
       scrollable
       title="Edit List of Authors"

@@ -81,7 +81,14 @@ SDASH POPOVERS AND MODALS
     color: $body-color !important;
     text-decoration: underline;
   }
+}
 
+.modal-content {
+  background-color: $very-dark-desaturated-blue;
+
+  .close {
+    color: inherit;
+  }
 }
 
 /*=========================================

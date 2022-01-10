@@ -25,6 +25,9 @@ $theme-colors: (
     "info": $dark-cyan,
     "dark-desat": $very-dark-desaturated-blue
 );
+$body-bg: $mostly-black-blue;
+$body-color: $mostly-white-gray;
+
 
 .bg-light-gray {
     background-color: $very-light-gray !important;

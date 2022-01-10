@@ -24,18 +24,11 @@
     </div>
 
     <!-- vue router mounts components here -->
-    <main id="sd-content" class="bg-dark text-light">
+    <main id="sd-content">
         <router-view v-if="applicationIsLoaded"></router-view>
     </main>
 
-    <b-modal
-        id="sd-consent-modal"
-        ref="sd-consent-modal"
-        size="lg"
-        content-class="bg-light text-dark"
-        footer-border-variant="dark"
-        header-border-variant="dark"
-    >
+    <b-modal id="sd-consent-modal" ref="sd-consent-modal" size="lg">
         <template #modal-header>
             <h5 class="modal-title text-dark">Privacy Notification</h5>
         </template>

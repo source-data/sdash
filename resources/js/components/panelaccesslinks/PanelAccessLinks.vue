@@ -21,8 +21,6 @@
                         ok-variant="secondary"
                         ok-title="Cancel"
                         button-size="sm"
-                        header-border-variant="dark"
-                        footer-border-variant="dark"
                     >
                         <b-form-group
                             id="sd-group-selector"
@@ -474,19 +472,10 @@ button.btn-dark.text-primary:hover {
 
 #sd-share-modal {
     .modal-header {
-        background-color:$very-dark-desaturated-blue;
-    }
-
-    .modal-title {
-        color: $mostly-white-gray !important;
-    }
-
-    .modal-header {
         margin-bottom: 1rem;
     }
 
     .modal-footer {
-        background-color:$very-dark-desaturated-blue;
         margin-top: 1rem;
     }
 }
