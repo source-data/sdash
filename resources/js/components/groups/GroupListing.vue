@@ -37,6 +37,7 @@
                 <img
                     :src="coverPhotoUrl"
                     :alt="'Cover photo of ' + currentGroup.name"
+                    draggable="false"
                 />
 
                 <button
@@ -530,7 +531,6 @@ header {
     }
 
     .group-header-image {
-        height: 20rem;
         margin-bottom: 2rem;
         overflow: hidden;
         position: relative;
