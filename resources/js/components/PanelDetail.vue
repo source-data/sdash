@@ -366,6 +366,7 @@ export default {
                             "Update succeeded"
                         );
                         this.stopEditingPanelTitle();
+                        this.$store.commit("updateLoadedPanel", updatedPanel);
                     })
                     .catch(error => {
                         this.$snotify.error(
