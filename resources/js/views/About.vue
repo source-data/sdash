@@ -1,6 +1,6 @@
 <template>
     <div>
-        <article id="about-content">
+        <article id="sd-about" class="info-content">
             <h2>About SDash</h2>
 
             <p>

@@ -7,6 +7,7 @@ import EditUser from '@/components/users/EditUser'
 import GroupGrid from '@/components/groups/GroupGrid'
 import EditGroup from '@/components/groups/EditGroup'
 import About from '@/views/About';
+import Tutorial from '@/views/Tutorial';
 import Api from '@/views/Api';
 import UserProfile from '@/components/users/UserProfile'
 import CreateGroup from '@/components/groups/CreateGroup'
@@ -131,6 +132,11 @@ const router = new Router({
             path: "/about",
             name: "about",
             component: About
+        },
+        {
+            path: "/tutorial",
+            name: "tutorial",
+            component: Tutorial
         },
         {
             path: "/docs/api",

@@ -134,3 +134,38 @@ DETAILS BAR
         text-align: right;
     }
 }
+
+/*=========================================
+INFO VIEWS (About, Tutorial, ...)
+==========================================*/
+
+.info-content {
+  font-size: $font-size-md;
+  margin: 2rem 5% 4rem;
+
+  h2, h3 {
+    color: $vivid-orange;
+  }
+  h2 {
+    font-size: $font-size-xl;
+  }
+  h3 {
+    font-size: $font-size-md;
+  }
+
+  p {
+    margin-top: 3rem;
+  }
+
+  img {
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+    width: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .info-content {
+      margin: 6rem 5% 10rem;
+      max-width: 1095px;
+  }
+}
