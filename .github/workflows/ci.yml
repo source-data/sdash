@@ -32,7 +32,7 @@ jobs:
     - name: Run end-to-end tests
       run: npx nightwatch --headless --env firefox,chrome
 
-  release:
+  release-dev:
     name: Release frontend build artifact
     needs: tests
     if: ${{ github.ref_name == 'master' }}
@@ -50,6 +50,25 @@ jobs:
         release_tag: dev
         release_title: Development Build
         is_prerelease: true
+
+  release-prod:
+    name: Release frontend build artifact
+    needs: tests
+    if: ${{ github.ref_name == 'prod_server' }}
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Release frontend build
+      uses: ./.github/actions/release-frontend
+      with:
+        env_file: .env.prod
+        release_token: ${{ secrets.GITHUB_TOKEN }}
+        release_tag: prod
+        release_title: Production Build
+        is_prerelease: false
 
   dev-deploy:
     if: "false" # disable deployment job for now

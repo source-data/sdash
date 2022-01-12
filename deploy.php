@@ -4,6 +4,7 @@ namespace Deployer;
 
 require 'recipe/laravel.php';
 
+
 // Project name
 set('application', 'SDash');
 
@@ -28,14 +29,28 @@ set('deploy_path', '/var/www/html/sdash.sourcedata.io');
 host('dev')
     ->hostname('sdash-dev.sourcedata.io')
     ->stage('dev')
-    ->user('deployer');
+    ->user('deployer')
+    ->set('frontend-release-tag', 'dev');
+// host('staging')
+//     ->hostname('sdash-staging')
+//     ->stage('staging')
+//     ->user('deployer');
+host('prod')
+    ->hostname('sdash.sourcedata.io')
+    ->stage('production')
+    ->user('deployer')
+    ->set('branch', 'prod_server')
+    ->set('frontend-release-tag', 'prod');
+
 set('default_stage', 'dev');
 
 // Tasks
 
 // fetch frontend resources from github
 task('frontend:fetch', function () {
-    run('cd {{release_path}} && .github/scripts/gh-dl-release.sh source-data/sdash dev public.tgz && rm -rf public/ && tar -xvf public.tgz && rm public.tgz');
+    $frontendReleaseTag = get('frontend-release-tag');
+    $frontendReleaseAssetName = 'public.tgz';
+    run("cd {{release_path}} && .github/scripts/gh-dl-release.sh source-data/sdash $frontendReleaseTag $frontendReleaseAssetName && rm -rf public/ && tar -xvf public.tgz && rm public.tgz");
 });
 
 // stack together preparatory tasks
