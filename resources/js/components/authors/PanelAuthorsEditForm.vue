@@ -378,7 +378,7 @@ export default {
     display: block;
     list-style-type:none;
     margin:0 0 1rem 0;
-    background-color: #2f3150;
+    background-color: #020126;
     padding: 0.85rem 1rem;
     cursor: move;
     border-radius: 9px;
