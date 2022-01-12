@@ -11,14 +11,14 @@
         <tr>
           <td>Author</td>
           <td>&check;</td>
-          <td>&check;</td>
+          <td></td>
           <td>&check;</td>
         </tr>
         <tr>
           <td>Corresponding Author</td>
           <td>&check;</td>
-          <td></td>
-          <td></td>
+          <td>&check;</td>
+          <td>&check;</td>
         </tr>
         <tr>
           <td>Curator</td>
