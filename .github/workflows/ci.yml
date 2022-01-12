@@ -33,7 +33,7 @@ jobs:
       run: npx nightwatch --headless --env firefox,chrome
 
   release-dev:
-    name: Release frontend build artifact
+    name: Release frontend build artifact for the dev server
     needs: tests
     if: ${{ github.ref_name == 'master' }}
     runs-on: ubuntu-18.04
@@ -52,7 +52,7 @@ jobs:
         is_prerelease: true
 
   release-prod:
-    name: Release frontend build artifact
+    name: Release frontend build artifact for the prod server
     needs: tests
     if: ${{ github.ref_name == 'prod_server' }}
     runs-on: ubuntu-18.04
@@ -73,7 +73,7 @@ jobs:
   dev-deploy:
     if: "false" # disable deployment job for now
     name: Deployment to dev
-    needs: release
+    needs: release-dev
     runs-on: ubuntu-18.04
 
     steps:
