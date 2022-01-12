@@ -10,7 +10,7 @@
             @focus="focusInput"
             @blur="defocusInput"
         ></b-form-input>
-        <ul class="dropdown">
+        <ul class="dropdown text-dark">
             <li @click.prevent.stop="search('panels')">
                 <span class="icon">
                     <font-awesome-icon icon="images" />
