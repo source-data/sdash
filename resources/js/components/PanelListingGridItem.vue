@@ -107,6 +107,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import AuthorTypes from "@/definitions/AuthorTypes";
 import PanelDetail from "./PanelDetail";
 
 export default {
@@ -131,7 +132,9 @@ export default {
             "selectedPanels",
         ]),
         panelAuthorsAbbreviated() {
-            let authors = this.panelAuthors(this.thisPanel);
+            let authors = this.panelAuthors(this.thisPanel).filter(
+                author => author.author_role !== AuthorTypes.CURATOR
+            );
             if (authors.length <= 0) {
                 return '';
             }
