@@ -391,7 +391,7 @@ export default {
         coverPhotoUrl() {
             return this.currentGroup.cover_photo
                 ? "/storage/cover_photos/" + this.currentGroup.cover_photo
-                : "/images/group_cover_thumbnail.jpg";
+                : "/images/group_cover.jpg";
         },
         coverPhotoUploadUrl() {
             return (
