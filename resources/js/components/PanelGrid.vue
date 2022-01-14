@@ -11,13 +11,16 @@
 
             <section v-else id="sd-featured-jumbotron">
                 <h1 class="text-xl text-primary">
-                    Share scientific results with your collaborators.
+                    Figures at the heart of scientific exchange
                 </h1>
 
                 <div class="text-md">
-                    Generate SmartFigures that link a scientific figure to the underlying source data and structured machine-readable metadata.
-                    Share your SmartFigures with groups of colleagues or make them public to share with the whole scientific community.
-                    Comment and discuss initiating an early scientific dissemination of results.
+                    Add SmartFigures to your own dashboard, link them to the underlying source data and start the
+                    conversation with your peers. SDash is a pilot platform developed by SourceData at EMBO.
+
+                    <p class="mt-2">
+                        Register now and let us know what you think.
+                    </p>
                 </div>
             </section>
 
