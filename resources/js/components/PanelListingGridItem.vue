@@ -145,8 +145,13 @@ export default {
             if (authors.length == 1) {
                 return nameFirstAuthor;
             }
+
             let lastAuthor = authors[authors.length - 1],
                 nameLastAuthor = getAuthorDisplayName(lastAuthor);
+
+            if (authors.length == 2) {
+                return `${nameFirstAuthor}, ${nameLastAuthor}`;
+            }
             return `${nameFirstAuthor} [...] ${nameLastAuthor}`;
         },
         thumbnailUrl() {
