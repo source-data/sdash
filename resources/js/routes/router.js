@@ -94,7 +94,7 @@ const router = new Router({
             component: GroupGrid,
             props: route => ({ query: route.query.q }),
             meta: {
-                access: UserLevels.GUEST
+                access: UserLevels.USER
             }
         },
         {
