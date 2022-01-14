@@ -15,7 +15,6 @@ const defaultState = {
     sortOrder: null,
     onlyMyPanels: false,
     loading: true,
-    panelsLoaded: 0,
     panelsAvailable: 0,
     page: 0,
     nextPage: 1,
@@ -258,7 +257,6 @@ const mutations = {
     },
     setLoadedPanels(state, payload) {
         state.loadedPanels = payload.DATA.data; //panels
-        state.panelsLoaded = payload.DATA.data.length;
         state.panelsAvailable = payload.DATA.total;
         state.page = payload.DATA.current_page;
         state.lastPage = payload.DATA.last_page;
@@ -284,12 +282,10 @@ const mutations = {
     },
     addNewlyCreatedPanelToStore(state, payload) {
         state.loadedPanels.unshift(payload.DATA);
-        // state.panelsLoaded++
         // state.panelsAvailable++
     },
     clearLoadedPanels(state) {
         state.loadedPanels = [];
-        state.panelsLoaded = 0;
         state.panelsAvailable = 0;
         state.page = 0;
         state.lastPage = 0;
@@ -449,13 +445,13 @@ const getters = {
         return state.panelsAvailable;
     },
     hasPanels(state) {
-        return state.panelsLoaded > 0;
+        return state.loadedPanels.length > 0;
     },
     loadedPanels(state) {
         return state.loadedPanels;
     },
     hasLoadedAllResults(state) {
-        return state.panelsLoaded >= state.panelsAvailable;
+        return state.loadedPanels.length >= state.panelsAvailable;
     },
     expandedPanelId(state) {
         return state.expandedPanelId;
