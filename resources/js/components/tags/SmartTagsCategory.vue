@@ -152,9 +152,10 @@ export default {
 
         },
         tagSearch(tag){
+            const keyWord = {id: tag.tag_id, name: tag.text}
+            this.$store.commit("setKeywordFilter", [keyWord])
             this.$store.dispatch("setLoadingState", true)
             this.$store.dispatch("clearLoadedPanels")
-            this.$store.dispatch("setSearchString", tag.text)
             this.$store.dispatch("fetchPanelList")
         }
 

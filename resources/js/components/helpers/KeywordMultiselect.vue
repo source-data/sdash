@@ -72,7 +72,7 @@ export default {
                             if (!_.find(alreadySelected, (already) => {
                                 return (already.id === keyword.id);
                             })) {
-                                console.log(keyword, alreadySelected);
+                                // console.log(keyword, alreadySelected);
                                 selectList.push(keyword);
                             }
                         });

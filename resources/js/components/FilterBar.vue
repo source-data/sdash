@@ -69,10 +69,10 @@
                         Keywords
                     </h5>
 
-                    <keyword-multiselect class="filter-keyword-selector" @select="addKeyword"></keyword-multiselect>
+                    <keyword-multiselect :initital-keywords="filterKeywords" class="filter-keyword-selector" @select="addKeyword"></keyword-multiselect>
 
-                    <b-list-group class="filter-keyword-list" v-if="filterKeywordList.length > 0">
-                        <b-list-group-item v-for="k in filterKeywordList" :key="k.id" class="filter-keyword-list-item">
+                    <b-list-group class="filter-keyword-list" v-if="filterKeywords.length > 0">
+                        <b-list-group-item v-for="k in filterKeywords" :key="k.id" class="filter-keyword-list-item">
                             {{k.name}}
                             <button type="button" class="close" aria-label="Remove" @click="removeKeyword(k.id)">
                                 <span aria-hidden="true">&times;</span>
@@ -227,7 +227,6 @@ export default {
     data() {
       return {
         filterAuthorList:[],
-        filterKeywordList:[],
         isSidebarExpanded: false,
         sortOrder: 'creation-date-desc',
         sortOrderOptions: [
@@ -247,9 +246,10 @@ export default {
             "pendingUserGroups",
             "privatePanels",
             "filtersAreApplied",
+            "filterKeywords",
         ]),
         hasActiveFilters() {
-            return (this.filterAuthorList.length > 0) || (this.filterKeywordList.length > 0) || (this.sortOrder !== 'creation-date-desc')
+            return (this.filterAuthorList.length > 0) || (this.filterKeywords.length > 0) || (this.sortOrder !== 'creation-date-desc')
         },
         hasPendingUserGroups() {
             return this.pendingUserGroups.length > 0;
@@ -323,17 +323,19 @@ export default {
                 id: keywordData.id,
                 name: keywordData.content
             };
-            let index = this.filterKeywordList.findIndex(keyword => keyword.id === keywordData.id)
+            const localKeywordList = [...this.filterKeywords]
+            let index = localKeywordList.findIndex(keyword => keyword.id === keywordData.id)
             if (index === -1) {
-                this.filterKeywordList.push(newKeyword)
+                localKeywordList.push(newKeyword)
             }
-            this.$store.commit("setKeywordFilter", this.filterKeywordList)
+            this.$store.commit("setKeywordFilter", localKeywordList)
             this.applyFilters()
         },
         removeKeyword(keywordId) {
-            let index = this.filterKeywordList.findIndex(keyword => keyword.id === keywordId)
-            if (index > -1) this.filterKeywordList.splice(index, 1)
-            this.$store.commit("setKeywordFilter", this.filterKeywordList)
+            const localKeywordList = [...this.filterKeywords]
+            let index = localKeywordList.findIndex(keyword => keyword.id === keywordId)
+            if (index > -1) localKeywordList.splice(index, 1)
+            this.$store.commit("setKeywordFilter", localKeywordList)
             this.applyFilters()
         },
         changeSortOrder() {
@@ -342,7 +344,6 @@ export default {
         },
         clearFilters() {
             this.filterAuthorList = []
-            this.filterKeywordList = []
             this.sortOrder = 'creation-date-desc'
             this.$store.commit("resetAuthorFilter")
             this.$store.commit("resetKeywordFilter")

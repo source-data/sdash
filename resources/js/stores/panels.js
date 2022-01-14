@@ -466,6 +466,9 @@ const getters = {
     expandedPanelAuthors(state, getters) {
         return getters.panelAuthors(state.expandedPanelDetail);
     },
+    filterKeywords(state) {
+        return state.filterKeywords;
+    },
     panelAuthors: (state) => (panel) => {
         if (
             !panel.authors
