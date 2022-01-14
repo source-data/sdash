@@ -20,12 +20,12 @@
                     </b-input-group-append>
                 </b-input-group>
 
-                <router-link
+                <a
                     v-if="!isEditingTitle"
-                    :to="{name: 'singlepanel', params: {panel_id: expandedPanel.id}}"
-                >
-                    {{ expandedPanel.title }}
-                </router-link>
+                    :href="panelUrl"
+                    target="_blank"
+                    title="Open panel in a new tab"
+                >{{ expandedPanel.title }}</a>
 
                 <button
                     class='edit text-xxs'
