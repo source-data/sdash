@@ -118,6 +118,9 @@ export default {
     created() {
         let query = queryStringDehasher(this.$route)
         if(query) this.$store.commit("setSearchString", query)
+        if (this.$route.query.firstLogin) {
+            this.$store.dispatch("setPrivate", true);
+        }
     },
     mounted() {
         if (this.isLoggedIn && !this.currentUser.has_consented) {

@@ -31,7 +31,7 @@ class EmailVerificationController extends Controller
    *
    * @var string
    */
-  protected $redirectTo = '/';
+  protected $redirectTo = '/?firstLogin=1';
 
   /**
    * Create a new controller instance.
