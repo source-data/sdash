@@ -6,7 +6,7 @@
             <p>
                 <h3 class="text-light">Aims</h3>
 
-                SDash is an online open source platform for sharing of scientific results among collaborators.
+                SDash is an open source platform for sharing scientific results.
                 
                 <p>
                     SDash enables scientists to generate and share SmartFigures that link a scientific figure to the

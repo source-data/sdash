@@ -2,12 +2,11 @@
     <div class="panel-authors-edit--wrapper" id="panel-authors-edit--wrapper">
       <header class="panel-authors-edit--intro">
         <h6 class="panel-authors-edit--main-title h6">Add registered author</h6>
-        <p>Authors will receive an email notification when they are added to the panel. This will occur when you click the "Confirm Authors" button.</p>
       </header>
       <section class="panel-authors-edit--add-author-wrapper">
         <author-multiselect @select="addUserAuthor" :initial-users="temporaryAuthorList"></author-multiselect>
         <div class="panel-authors-edit--table-expand-wrapper">
-          <div class="sd-author-types-table-note">Note that adding an author assigns <strong>certain permissions</strong> to the user.</div>
+          <div class="sd-author-types-table-note">Author permissions:</div>
           <div class="panel-authors-edit--expand-button-wrapper">
             <button
               class="panel-authors-edit--expand-button"
@@ -27,7 +26,11 @@
       <section class="panel-authors-edit--list-wrapper" v-if="temporaryAuthorList.length > 0">
           <h6 class="panel-authors-edit--reorder-title h6">Author List</h6>
           <div class="panel-authors-aside-note">Drag authors to reorder</div>
-          <span v-if="modified" class="panel-authors-edit--edit-warning">Author list has been modified. To save your edits, click "Confirm Authors".</span>
+          <span v-if="modified" class="panel-authors-edit--edit-warning">
+            Author list has been modified! <br>
+            Click “Confirm Authors” to save these changes and trigger an email
+            notification to the new/removed authors.
+          </span>
           <draggable
           tag="ul"
           class="panel-authors-order-list"

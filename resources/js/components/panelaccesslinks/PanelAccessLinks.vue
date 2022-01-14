@@ -3,13 +3,13 @@
         <section v-if="iCanEditThisPanel" class="container-fluid share-with-group">
             <b-row>
                 <h3 class="col-7">
-                    Share with user groups
+                    Share with other users
                 </h3>
 
                 <div class="col-5">
                     <b-button v-b-modal.sd-share-modal variant="primary">
                         <font-awesome-icon icon="users" />
-                        Share with Group
+                        Select/Create user groups
                     </b-button>
 
                     <b-modal
@@ -94,7 +94,7 @@
         <section class="container-fluid get-link">
             <b-row v-if="iCanEditThisPanel">
                 <h3 class="col-7">
-                    Get a link to share this SmartFigure with anyone.
+                    Share with anyone via a link:
                 </h3>
 
                 <b-col cols="5">
@@ -186,7 +186,7 @@
 
             <b-row v-if="!isPublic && !loadingStatus">
                 <h3 class="col-7">
-                    Make the SmartFigure publicly available on the web.
+                    Share globally on the web:
                 </h3>
 
                 <b-col cols="5">

@@ -200,7 +200,7 @@
 
                 <section class="sharing">
                     <h2 class="text-xxs">
-                        Share
+                        Sharing options
                     </h2>
 
                     <div class="content text-xxs">
