@@ -45,25 +45,25 @@ class GroupController extends Controller
                     ->where('user_id', '=', $user->id)
                     ->where('status', '=', 'confirmed');
             })
-            ->orWhere('is_public', true);
+                ->orWhere('is_public', true);
         });
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->where("name", "like", "%{$search}%")
-                ->orWhere("description", "like", "%{$search}%");
+                    ->orWhere("description", "like", "%{$search}%");
             });
         }
         $groups = $query->with([
-                'administrators' => function ($query) {
-                    $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
-                },
-                'publicPanels' => function ($query) {
-                    $query->select(['panels.id', 'title', 'version']);
-                },
-            ])
-            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers'])
+            'administrators' => function ($query) {
+                $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
+            },
+            'publicPanels' => function ($query) {
+                $query->select(['panels.id', 'title', 'version']);
+            },
+        ])
+            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers', 'panels'])
             ->get();
-        return API::response(200, "A list of public groups", $groups);
+        return API::response(200, "A list of groups", $groups);
     }
 
     /**
@@ -132,7 +132,7 @@ class GroupController extends Controller
 
         $newGroup->load(['confirmedUsers' => function ($query) {
             $query->withPivot(['role', 'token', 'status']);
-        }])->loadCount(['confirmedUsers', 'panels']);
+        }])->loadCount(['confirmedUsers', 'panels', 'publicPanels']);
 
         return API::response(200, "Group created", $newGroup);
     }

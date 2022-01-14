@@ -77,7 +77,7 @@
                                     icon="layer-group"
                                     fixed-width
                                 />
-                                {{ group.public_panels_count }}
+                                {{ group.panels_count }}
                             </li>
                             <li>
                                 <font-awesome-icon
