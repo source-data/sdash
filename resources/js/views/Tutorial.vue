@@ -6,87 +6,99 @@
             <p>
                 <h3 hidden aria-hidden>Aims</h3>
 
-                This quick tutorial will give you an overview of SDash most important features.
+                This quick tutorial will give you a short overview of SDash's most important features.
                 <strong>You will learn how to:</strong>
 
                 <ul>
-                    <li>Upload figures</li>
+                    <li>Use the Dashboard</li>
                     <li>Add information, keywords and smart tags</li>
                     <li>Create a sharing group with other users or allow public sharing</li>
                     <li>Export your figures in order to use them outside of SDash</li>
-                    <li>SEARCH/Browse for stuff</li>
                 </ul>
 
             <p>
-                <h3>Step 1. Upload a Figure to your Dashboard</h3>
+                <h3>Step 1. Use the Dashboard</h3>
 
-                Drag and drop your result figure to import your result figure on your personal dashboard or use the
-                "plus button" at the top right. Your SmartFigure is now on your personal dashboard only visible to you
-                as indicated by the lock on the figure.
+                Welcome to you Dashboard. Here you find SmartFigures you have created yourself as well as SmartFigures
+                that were shared with you or are publicly available. You can search for authors or keywords to discover
+                your peers' research.
+                <br>
+                To create your first SmartFigure simply drag and drop your result figure from your file browser to the
+                Dashboard or use the "plus button" at the top right. Your SmartFigure is now on your personal dashboard
+                only visible to you.
 
-                <img src="/images/tutorial/upload-figure.png" alt="A screenshot showing how to upload a figure.">
+                <img
+                    src="/images/tutorial/upload-figure.png"
+                    alt="A screenshot showing how to upload a figure."
+                    class="mb-0">
 
             <p>
                 <h3>Step 2. Give your SmartFigure more information</h3>
 
-                Click on the figure to see and edit the details such as the title and the contributing authors.
+                Click on the figure to see and edit the details such as the title, the description and the contributing
+                authors.
                 <br>
-                Your coauthors will be notified and will have access to this SmartFigure that they are coauthoring.
-                <br>
-                Add a figure description. 
-                <br>
-                You can allow the smart tag engine to automatically detect key entities of your experiment from your
-                description text in the figure. The smart tags will be categorized as "measured variable", "controlled
-                variable", "Instrument/Methods" characterizing your experiment. You can also add any keyword to your
-                figure which can allow you to search and filter your results according to keywords.
+                When giving your SmartFigure a description you can allow the smart tag engine to automatically detect
+                key entities of your experiment from the text you enter. The smart tags will be categorized as
+                "measured variable", "controlled variable", "Instrument/Methods" characterizing your experiment. You
+                can also add any keyword to your figure which can allow you to search and filter your results according
+                to keywords. 
 
                 <img src="/images/tutorial/figure-tagging.png" alt="A screenshot showing how to tag a figure.">
+
+                Credit your colleagues by including them in the list of authors. Your coauthors will be notified and
+                will have access to this SmartFigure depending on their role.
 
             <p>
                 <h3>Step 3. Attach relevant files</h3>
 
-                In the "source" tab you can link to external resources or attach raw data files and protocols to
-                support this figure. 
+                You can attach your underlying research data, external resources, scripts and protocols or anything
+                that is relevant for your SmartFigure in the "Sources" tab. This way you will never have to look for
+                these files.
 
             <p>
                 <h3>Step 4. Share your figures with other users or publicly</h3>
 
-                <img
-                    src="/images/tutorial/add-figure-to-group.png"
-                    alt="A screenshot showing how to add a figure to a group."
-                    class="img-inline">
+                You have full control over who has access to your SmartFigure. By default, your SmartFigure is private
+                and only accessible to yourself. But you have the options to:
 
-                You can share your SmartFigure at several levels.
-                <br>
-                You can either share the figure with groups of other SDash users or create a public link exposing your
-                figure to the worldwide web.
-                <br>
-                For sharing in a group of SDash users you can either create a new group and select the members your
-                trusted circle of collaborators, or you share the figure in an existing group you are already a member
-                in. The groups that you are a member of are displayed on the left of your dashboard.
-                <br>
-                Creating a public link will create a landing page displaying your figure along with all information you
-                have added. The QR code can be used in talks or poster presentations to make you research more visible.
-                By revoking the public link, you can restrict access again.
+                <ul>
+                    <li>
+                        share the SmartFigure with <strong>groups of other SDash users:</strong> You can either create
+                        a new group and select the members from your trusted circle of collaborators, or you share the
+                        figure in an existing group you are already a member of. The groups that you are a member of
+                        are displayed on the left bar on your dashboard.
+
+                        <img
+                            src="/images/tutorial/add-figure-to-group.png"
+                            alt="A screenshot showing how to add a figure to a group."
+                            class="img-sm">
+                    </li>
+                    <li>
+                        create <strong>a public link</strong> exposing your SmartFigure to everyone you provide with
+                        this link. This link is also available as a QR code for talks or poster presentations to make
+                        you research more visible. By revoking the public link, you can restrict access again.
+                    </li>
+                    <li>
+                        Make your SmartFigure public: This will make your SmartFigure publicly available and searchable
+                        on the public dashboard and is therefore visible to the web.
+                    </li>
+                </ul>
+
+                The sharing status of your SmartFigures is indicated by the little lock symbol or the arrows in the
+                lower right of the figure. Figures shared in a group now have the two-way arrow label to indicate their
+                shared status.
 
             <p>
-                <h3>Step 5. Discuss results, exchange ideas</h3>
+                <h3>Step 5. Export Your Data</h3>
 
-                Figures shared in a group now have the two-way arrow label to indicate their shared status. In the
-                "discuss" tab you can leave comments on your own figures. You can also comment on shared figures from
-                your peers. The comments are visible for everybody with whom the figure is shared, allowing
-                collaborative discussions.
-
-            <p>
-                <h3>Step 6. Export Your Data</h3>
+                The download button gives you several options to download either only the figure, or a figure package
+                including all the entered information as well as the attached files.
 
                 <img
                     src="/images/tutorial/figure-export.png"
                     alt="A screenshot showing how to export a figure."
-                    class="img-inline">
-
-                The download button gives you several options to download either only the figure, or a figure package
-                including all the entered information as well as the  attached files.
+                    class="img-sm">
         </article>
 
         <info-footer></info-footer>
@@ -107,9 +119,10 @@ export default {
 
 <style lang="scss" scoped>
 @media (min-width: 568px) {
-    .img-inline {
-        float: right;
-        margin: 0 0 0 1.5rem;
+    .img-sm {
+        display: block;
+        margin: 1rem 0;
+        height: 10rem;
         width: unset;
     }
 }
