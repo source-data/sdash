@@ -407,9 +407,8 @@ $sidebar-z-index: $navbar-z-index - 2;
     }
 }
 
-$filter-bar-box-shadow: 1px 0 1px #999;
 #sd-panel-filters-toggle {
-    box-shadow: $filter-bar-box-shadow;
+    box-shadow: 1px 0 2px #999;
     cursor: pointer;
     height: 100vh;
     position: fixed;
@@ -418,7 +417,7 @@ $filter-bar-box-shadow: 1px 0 1px #999;
     z-index: $sidebar-z-index + 1;
 
     .toggle-icon-background {
-        filter: drop-shadow($filter-bar-box-shadow);
+        filter: drop-shadow(1.5px 0 1px #999);
         // Position the icon 1/3rd of the way down
         position: absolute;
         right: -23px;
