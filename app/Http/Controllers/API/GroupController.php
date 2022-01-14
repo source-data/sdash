@@ -97,7 +97,7 @@ class GroupController extends Controller
         $request->validate([
             'name'          => ['required', 'min:5'],
             'url'           => ['nullable', 'url'],
-            'description'   => ['required'],
+            'description'   => ['required', 'max:250'],
             'is_public'     => ['boolean'],
             'members.*.id'  => ['exists:users'],
             'panels.*'      => ['exists:panels,id'],
@@ -264,7 +264,7 @@ class GroupController extends Controller
         $request->validate([
             'name'                  => ['required', 'min:5'],
             'url'                   => ['nullable', 'url'],
-            'description'           => ['required'],
+            'description'           => ['required', 'max:250'],
             'is_public'             => ['boolean'],
             'members.*.id'          => ['exists:users'],
             'members.*.status'      => Rule::in(['pending', 'requested', 'confirmed']),

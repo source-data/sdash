@@ -4,7 +4,8 @@ import Axios from "axios";
 const state = {
     publicGroups: [],
     userGroups: [],
-    currentGroup: null
+    currentGroup: null,
+    groupDescriptionMaxLength: 250,
 };
 
 const actions = {
@@ -324,7 +325,19 @@ const getters = {
             return false;
         }
         return state.currentGroup.pivot.status === "requested";
-    }
+    },
+    groupDescriptionMaxLength(state) {
+        return state.groupDescriptionMaxLength
+    },
+    isGroupDescriptionValid: (state) => (description) => {
+        if (description.length <= 0) {
+            return false;
+        }
+        if (description.length >= state.groupDescriptionMaxLength) {
+            return false;
+        }
+        return true;
+    },
 };
 
 export default {

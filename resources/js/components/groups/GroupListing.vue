@@ -597,6 +597,11 @@ header {
         }
     }
 }
+@media (min-width: 1200px) {
+    header .group-header-image {
+        width: 70%;
+    }
+}
 
 .sd-filter-wrapper {
     flex: 0 0 300px;
