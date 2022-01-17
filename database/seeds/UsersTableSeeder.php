@@ -28,7 +28,8 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('superadmin'),
                 'created_at' => \date('Y-m-d H:i:s'),
                 'updated_at' => \date('Y-m-d H:i:s'),
-                'email_verified_at' => \date('Y-m-d H:i:s')
+                'email_verified_at' => \date('Y-m-d H:i:s'),
+                'has_consented' => true,
             ],
             [
                 'firstname' => 'Joseph',
@@ -44,7 +45,8 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'created_at' => \date('Y-m-d H:i:s'),
                 'updated_at' => \date('Y-m-d H:i:s'),
-                'email_verified_at' => \date('Y-m-d H:i:s')
+                'email_verified_at' => \date('Y-m-d H:i:s'),
+                'has_consented' => true,
             ],
             [
                 'firstname' => 'Hasiao-Chun',
@@ -60,7 +62,8 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'created_at' => \date('Y-m-d H:i:s'),
                 'updated_at' => \date('Y-m-d H:i:s'),
-                'email_verified_at' => \date('Y-m-d H:i:s')
+                'email_verified_at' => \date('Y-m-d H:i:s'),
+                'has_consented' => true,
             ],
             [
                 'firstname' => 'Bosco',
@@ -76,7 +79,8 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'created_at' => \date('Y-m-d H:i:s'),
                 'updated_at' => \date('Y-m-d H:i:s'),
-                'email_verified_at' => \date('Y-m-d H:i:s')
+                'email_verified_at' => \date('Y-m-d H:i:s'),
+                'has_consented' => true,
             ],
             [
                 'firstname' => 'Anthony',
@@ -92,7 +96,8 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'created_at' => \date('Y-m-d H:i:s'),
                 'updated_at' => \date('Y-m-d H:i:s'),
-                'email_verified_at' => \date('Y-m-d H:i:s')
+                'email_verified_at' => \date('Y-m-d H:i:s'),
+                'has_consented' => true,
             ],
             [
                 'firstname' => 'Rodrigo',
@@ -108,7 +113,8 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'created_at' => \date('Y-m-d H:i:s'),
                 'updated_at' => \date('Y-m-d H:i:s'),
-                'email_verified_at' => \date('Y-m-d H:i:s')
+                'email_verified_at' => \date('Y-m-d H:i:s'),
+                'has_consented' => true,
             ]
         ]);
     }

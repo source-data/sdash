@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-md bg-light">
+    <nav id="sd-navbar" class="navbar navbar-expand-md bg-light">
         <router-link class="navbar-brand" :to="{ name: 'dashboard'}">
             <img src="/images/logos/sdash.svg" alt="SDash" loading="lazy">
         </router-link>
@@ -84,7 +84,7 @@
                         </router-link>
 
                         <a
-                            class="dropdown-item" href="#"
+                            class="dropdown-item" href="/logout"
                             @click.prevent="logOut"
                         >
                             Logout

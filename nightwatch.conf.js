@@ -4,7 +4,8 @@ dotenv.config()
 const output_folder = "tests/e2e/output"
 
 module.exports = {
-    src_folders: ["tests/e2e"],
+    src_folders: ["tests/e2e/specs"],
+    page_objects_path: ['tests/e2e/pages'],
     output_folder: output_folder,
 
     // Common configuration options for the webdriver
