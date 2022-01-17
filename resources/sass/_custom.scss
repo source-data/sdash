@@ -168,6 +168,10 @@ INFO VIEWS (About, Tutorial, ...)
   section p:last-child img {
     margin-bottom: 0;
   }
+
+  a {
+    text-decoration: underline;
+  }
 }
 @media (min-width: 768px) {
   .info-content {

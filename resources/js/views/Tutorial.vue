@@ -135,6 +135,22 @@
                         class="img-sm">
                 </p>
             </section>
+
+            <section>
+                <h3>Give us your Feedback!</h3>
+
+                <p>
+                    We would love to hear back from you! SDash is in the pilot phase and we work on improving the
+                    workflow and functionalities. Please let us know if you find any bugs or have other suggestions. We
+                    are grateful for your feedback, as it will help us to improve SDash in the future.
+                </p>
+
+                <p>
+                    If you want to learn more about Sdash, SourceData and SmartFigures, you can also check out our
+                    <a href="https://sourcedata.embo.org">SourceData search website</a>, our <a href="https://elifesciences.org/labs/9d062a9b/smartfigures-dashboard-and-editor-tools-for-quick-and-easy-research-communication">eLife labs post</a>
+                    or get directly in touch with our <a href="mailto:Hannah.Sonntag@embo.org">Coordinator Hannah</a>.
+                </p>
+            </section>
         </article>
 
         <info-footer></info-footer>
