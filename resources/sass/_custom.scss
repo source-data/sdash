@@ -142,6 +142,7 @@ INFO VIEWS (About, Tutorial, ...)
 .info-content {
   font-size: $font-size-md;
   margin: 2rem 5% 4rem;
+  max-width: 1095px;
 
   h2, h3 {
     color: $vivid-orange;
@@ -153,19 +154,23 @@ INFO VIEWS (About, Tutorial, ...)
     font-size: $font-size-md;
   }
 
-  p {
+  section {
     margin-top: 3rem;
   }
 
   img {
+    display: block;
     margin-bottom: 3rem;
     margin-top: 2rem;
-    width: 100%;
+    max-width: min(100%, 800px);
+  }
+
+  section p:last-child img {
+    margin-bottom: 0;
   }
 }
 @media (min-width: 768px) {
   .info-content {
       margin: 6rem 5% 10rem;
-      max-width: 1095px;
   }
 }
