@@ -15,11 +15,10 @@ See REST naming conventions at [https://restfulapi.net/resource-naming/](https:/
 * In the root directory, run the following commands:
 ```
 $ php artisan migrate
-$ php artisan passport:install
 $ npm install
 $ npm run dev
 ```
-This will install the database structure and contents, the routes needed for user authentication using Laravel Passport and the front-end resources for the auth pages.
+This will install the database structure and contents, the routes needed for user authentication using [Laravel Sanctum](https://laravel.com/docs/7.x/sanctum) and the front-end resources for the auth pages.
 
 The .env file found in the project route (or created by you from the .env.example file) needs to have these properties filled in, referring to the URL where the VUE application is mounted and the URL for API calls.
 
@@ -29,6 +28,8 @@ MIX_API_URL=http://sdash.laravel/api
 MIX_SMART_TAG_URL=https://smtag.sourcedata.io/api/v1/tag
 
 ```
+
+For local deployment and development with docker and docker-compose see `docker-compose/docker_help.md`.
 
 ### Deployment
 
@@ -58,7 +59,7 @@ __Database Seeding__
 
 Run `php artisan db:seed` to seed the database with some test data
 This includes a demo user with SuperAdmin privileges
-* email address: embo_it@embo.org
+* email address: superadmin@example.org
 * password: superadmin
 
 You can completely refresh your database (losing any non-seeded data) by running `php artisan migrate:refresh --seed`
@@ -88,6 +89,20 @@ php artisan test
 ```
 
 See also: [Laravel Testing](https://laravel.com/docs/master/http-tests)
+
+### End-to-end testing
+
+Install the dev dependencies to pull in the chromedriver & geckodriver packages:
+
+```
+npm install --save-dev
+```
+
+Start SDash locally, then run the actual tests in Chrome & Firefox:
+
+```
+npx nightwatch --env firefox,chrome
+```
 
 ## API Endpoints Needed
 

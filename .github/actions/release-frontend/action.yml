@@ -1,0 +1,37 @@
+name: Build and release the SDash frontend
+description: Builds the SDash frontend with the given env_file and releases the build output under the given tag.
+
+inputs:
+  env_file:
+    description: Path to the environment file used during the build.
+    required: true
+  release_token:
+    description: The token that allows releasing on Github.
+    required: true
+  release_tag:
+    description: The tag that will be created or updated to be associated with the release.
+    required: true
+  release_title:
+    description: The name of the release.
+    required: true
+  is_prerelease:
+    description: Wether the release should be marked as pre-release.
+    required: false
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - uses: './.github/actions/build-frontend'
+      with:
+        env_file: ${{ inputs.env_file }}
+    - name: Compress build artifact
+      run: tar -czf public.tgz public/
+      shell: bash
+    - uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: ${{ inputs.release_token }}
+        automatic_release_tag: ${{ inputs.release_tag }}
+        title: ${{ inputs.release_title }}
+        prerelease: ${{ inputs.is_prerelease }}
+        files: public.tgz

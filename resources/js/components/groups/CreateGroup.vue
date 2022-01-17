@@ -83,7 +83,7 @@
                 <section v-if="selectedPanels" class="sd-group-panel-list">
                     <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper" :key="panel.id">
                         <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
-                        <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
+                        <img class="sd-group-panel-list-grid-image" v-lazy="thumbnailUrl(panel)">
                     </div>
 
                 </section>
@@ -120,8 +120,11 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'apiUrls',
             'selectedPanels',
             'loadedPanels',
+            'isGroupDescriptionValid',
+            'groupDescriptionMaxLength',
         ]),
         selectedPanelDetails(){
             return this.loadedPanels.filter((item) => this.selectedPanels.indexOf(item.id) >= 0)
@@ -158,14 +161,20 @@ export default {
             let regex = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)
             return this.groupUrl.match(regex) ? true : false
         },
-        groupDescriptionState(){
-            return this.groupDescription.length > 0 ? true : false
+        groupDescriptionState() {
+            return this.isGroupDescriptionValid(this.groupDescription);
         },
-        groupDescriptionValid(){
+        groupDescriptionValid() {
             return  this.groupDescriptionState === true ? 'Group description is valid' : ''
         },
         groupDescriptionInvalid(){
-            return (this.groupDescriptionState === false) ? 'Group description is required' : ''
+            if (this.groupDescriptionState === true) {
+                return ''
+            }
+            if (this.groupDescription) {
+                return `Group description must be ${this.groupDescriptionMaxLength} characters or fewer`
+            }
+            return 'Group description is required'
         },
         disableSubmission(){
             return !(this.groupNameValid && this.groupDescriptionValid && this.groupUrlValid)
@@ -215,10 +224,10 @@ export default {
             }).catch(err => {
                 this.$snotify.error("Could not save new sharing group", "Sorry!")
             })
-
-        }
-
-
+        },
+        thumbnailUrl(panel) {
+            return this.apiUrls.panelThumbnail(panel);
+        },
     }
 
 }

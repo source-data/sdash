@@ -21,14 +21,11 @@ class FileRepository implements FileRepositoryInterface
         $mimeType = $file->getMimeType();
         $fileSize = $file->getSize();
 
-        try
-        {
-            $file->storeAs($savePath . 'attachments', $convertedFilename );
-
-        } catch(\Exception $e){
+        try {
+            $file->storeAs($savePath . 'attachments', $convertedFilename);
+        } catch (\Exception $e) {
             error_log("Failed to save file {$originalFilename} to {$savePath} as {$convertedFilename}. \r\n Error in FileRepository.php");
             throw new \Exception("Failed to save the uploaded file");
-
         }
 
         $newFile = File::create([
@@ -42,23 +39,22 @@ class FileRepository implements FileRepositoryInterface
         ]);
 
         return File::find($newFile->id);
-
     }
 
 
     public function archiveAndRemove(File $file)
     {
 
-        if($file->type === "url"){
+        if ($file->type === "url") {
             $file->delete();
             return true;
         }
 
         $panel = $file->panel;
 
-        try{
-            Storage::move($panel->save_path . DIRECTORY_SEPARATOR . 'attachments' . DIRECTORY_SEPARATOR . $file->filename, $panel->save_path . DIRECTORY_SEPARATOR . 'attachments' . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->filename  );
-        }catch(\Exception $e) {
+        try {
+            Storage::move($panel->save_path . DIRECTORY_SEPARATOR . 'attachments' . DIRECTORY_SEPARATOR . $file->filename, $panel->save_path . DIRECTORY_SEPARATOR . 'attachments' . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->filename);
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
             throw new \Exception("Failed to remove physical file.");
@@ -69,6 +65,5 @@ class FileRepository implements FileRepositoryInterface
         $file->delete();
 
         return true;
-
     }
 }

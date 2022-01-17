@@ -6,6 +6,7 @@ import Comments from './comments'
 import Files from './files'
 import Tags from './tags'
 import Groups from './groups'
+import Axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,8 @@ export default new Vuex.Store({
     lightboxOpen: false,
     searchMode: 'user',
     showAuthorSidebar: false,
+    applicationLoaded: false,
+    showEmailConfirmationNotice: false,
   },
   getters: {
     isLightboxOpen(state) {
@@ -32,12 +35,48 @@ export default new Vuex.Store({
     },
     showAuthorSidebar(state){
       return state.showAuthorSidebar
-    }
-
+    },
+    applicationIsLoaded(state){
+      return state.applicationLoaded
+    },
+    showEmailConfirmationNotice(state){
+      return state.showEmailConfirmationNotice;
+    },
+    apiUrls(state, getters) {
+      return {
+        panels() {
+          if (getters.isLoggedIn) {
+            if (getters.searchMode == 'group') {
+              return `/groups/${state.Groups.currentGroup.id}/panels`;
+            }
+            return "/users/me/panels";
+          }
+          return "/public/panels";
+        },
+        panelDetail(id) {
+          return getters.isLoggedIn ? `/panels/${id}` : `/public/panels/${id}`;
+        },
+        panelImage(panel) {
+          return `/panels/${panel.id}/image?v=${panel.version}`;
+        },
+        panelThumbnail(panel) {
+          return `/api/public/panels/${panel.id}/image/thumbnail?v=${panel.version}`;
+        },
+        userSearch() {
+          return getters.isLoggedIn ? '/users' : '/public/users';
+        },
+        tagSearch() {
+          return getters.isLoggedIn ? '/tags' : '/public/tags';
+        },
+      }
+    },
    },
   actions: {
     toggleLightbox({commit}){
       commit("toggleLightbox")
+    },
+    resendEmail({commit}, email){
+      return Axios.post('emails', {email});
     },
 
   },
@@ -50,6 +89,12 @@ export default new Vuex.Store({
     },
     setAuthorSidebar(state, value) {
       state.showAuthorSidebar = value
+    },
+    setApplicationLoaded(state, value) {
+      state.applicationLoaded = value;
+    },
+    setEmailConfirmationNotice(state, value) {
+      state.showEmailConfirmationNotice = value;
     }
 
   }

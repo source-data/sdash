@@ -3,18 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use API;
-use App\User;
 use App\Models\Group;
 use App\Models\Panel;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use App\Repositories\GroupRepository;
-use App\Notifications\UserAddedToGroup;
+use App\Notifications\UserAppliedToJoinGroup;
 use App\Repositories\Interfaces\GroupRepositoryInterface;
-use FFI;
 
 class GroupController extends Controller
 {
@@ -31,13 +29,41 @@ class GroupController extends Controller
 
 
     /**
-     * Display a listing of the resource.
+     * List panels
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return void
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->input('search');
+        $query = Group::where(function ($query) {
+            $query->whereIn('id', function ($query) {
+                $user = auth()->user();
+                $query->select('group_id')
+                    ->from('group_user')
+                    ->where('user_id', '=', $user->id)
+                    ->where('status', '=', 'confirmed');
+            })
+                ->orWhere('is_public', true);
+        });
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where("name", "like", "%{$search}%")
+                    ->orWhere("description", "like", "%{$search}%");
+            });
+        }
+        $groups = $query->with([
+            'administrators' => function ($query) {
+                $query->select('users.id', 'firstname', 'surname', 'department_name', 'institution_name', 'orcid', 'email');
+            },
+            'publicPanels' => function ($query) {
+                $query->select(['panels.id', 'title', 'version']);
+            },
+        ])
+            ->withCount(['confirmedUsers', 'publicPanels', 'requestedUsers', 'panels'])
+            ->get();
+        return API::response(200, "A list of groups", $groups);
     }
 
     /**
@@ -52,7 +78,7 @@ class GroupController extends Controller
         $request->validate([
             'name'          => ['required', 'min:5'],
             'url'           => ['nullable', 'url'],
-            'description'   => ['required'],
+            'description'   => ['required', 'max:250'],
             'is_public'     => ['boolean'],
             'members.*.id'  => ['exists:users'],
             'panels.*'      => ['exists:panels,id'],
@@ -87,7 +113,7 @@ class GroupController extends Controller
 
         $newGroup->load(['confirmedUsers' => function ($query) {
             $query->withPivot(['role', 'token', 'status']);
-        }])->loadCount(['confirmedUsers', 'panels']);
+        }])->loadCount(['confirmedUsers', 'panels', 'publicPanels']);
 
         return API::response(200, "Group created", $newGroup);
     }
@@ -101,8 +127,8 @@ class GroupController extends Controller
     public function show(Request $request, Group $group)
     {
         // only the group admin can view unconfirmed users
-        if ($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(401, "Admin level access denied", []);
-        if (!Gate::allows("view-group", $group)) return API::response(401, "Access denied", []);
+        if ($request->get('unconfirmed_users') && !Gate::allows("modify-group", $group)) return API::response(403, "Admin level access denied", []);
+        if (!Gate::allows("view-group", $group)) return API::response(403, "Access denied", []);
 
         if ($request->get('unconfirmed_users')) {
             $group->load(['users' => function ($query) {
@@ -218,12 +244,12 @@ class GroupController extends Controller
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
                         $query->withPivot(['role', 'token', 'status']);
-                    }])->withCount(['confirmedUsers', 'panels'])->first(),
+                    }])->withCount(['confirmedUsers', 'panels', 'requestedUsers'])->first(),
                     "panels" => Panel::whereIn('id', $affectedPanelIds)->with(['accessToken', 'groups', 'tags', 'user', 'authors', 'externalAuthors'])->get()
                 ]
             );
         } else {
-            return API::response(401, "You are not an administrator of the group", []);
+            return API::response(403, "You are not an administrator of the group", []);
         }
     }
 
@@ -240,9 +266,10 @@ class GroupController extends Controller
         $request->validate([
             'name'                  => ['required', 'min:5'],
             'url'                   => ['nullable', 'url'],
-            'description'           => ['required'],
+            'description'           => ['required', 'max:250'],
             'is_public'             => ['boolean'],
             'members.*.id'          => ['exists:users'],
+            'members.*.status'      => Rule::in(['pending', 'requested', 'confirmed']),
             'panels.*'              => ['exists:panels,id']
         ]);
 
@@ -285,6 +312,10 @@ class GroupController extends Controller
 
                     $this->groupRepository->addMemberToGroup($group, $newMember);
                 } else {
+
+                    // accept any newly accepted users to the group
+                    $this->groupRepository->acceptMembershipRequest($group, $newMember["id"], $newMember["status"]);
+
                     // if the new member (submitted) has a different group role (user / admin) from the existing (stored) member
                     // update the stored member's status to match the submitted one.
                     if (isset($newMember["admin"])) {
@@ -325,12 +356,12 @@ class GroupController extends Controller
                 [
                     "group" => Group::where('id', $group->id)->with(['confirmedUsers' => function ($query) {
                         $query->withPivot(['role', 'token', 'status']);
-                    }])->withCount(['confirmedUsers', 'panels'])->first(),
+                    }])->withCount(['confirmedUsers', 'panels', 'requestedUsers'])->first(),
                     "panels" => $group->panels()->with(['groups', 'tags', 'user'])->get()
                 ]
             );
         } else {
-            return API::response(401, "You are not an administrator of the group.", []);
+            return API::response(403, "You are not an administrator of the group.", []);
         }
     }
 
@@ -350,19 +381,17 @@ class GroupController extends Controller
             $group->delete();
             return API::response(200, "The group was deleted", []);
         } else {
-            return API::response(401, "You are not the owner of the group.", []);
+            return API::response(403, "You are not the owner of the group.", []);
         }
     }
-
-
 
     public function join(Group $group, String $token)
     {
         $user = $group->users()->wherePivot("token", "=", $token)->first();
 
-        if (!$user) return redirect('/dashboard');
+        if (empty($user)) return redirect('/');
 
-        $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
+        $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]);
         return view('addtogroup', ['user' => $user, 'group' => $group]);
     }
 
@@ -371,13 +400,13 @@ class GroupController extends Controller
         $user = auth()->user();
         $userRecord = $group->users()->wherePivot("token", "=", $token)->first();
 
-        if (!$user->is($userRecord)) return API::response(401, "Permission denied.", []);
+        if (!$user->is($userRecord)) return API::response(403, "Permission denied.", []);
 
         $group->users()->updateExistingPivot($user->id, ["status" => "confirmed", "token" => null]); //,
         return API::response(200, "Group updated.", [
             "group" => $user->groups()->where('groups.id', $group->id)->with(['confirmedUsers' => function ($query) {
                 $query->withPivot(['role']);
-            }])->withCount(['confirmedUsers', 'panels'])->withPivot(["role", "status", "token"])->first()
+            }])->withCount(['confirmedUsers', 'panels', 'requestedUsers'])->withPivot(["role", "status", "token"])->first()
         ]);
     }
 
@@ -391,6 +420,100 @@ class GroupController extends Controller
             return API::response(200, "User removed from group.", []);
         } else {
             return API::response(403, "You cannot decline this group invitation.", []);
+        }
+    }
+
+    /**
+     * Allows an authenticated user to apply to join a panel group
+     *
+     * @param Group $group
+     * @return void
+     */
+    public function apply(Group $group)
+    {
+        $user = auth()->user();
+
+        try {
+            $token = $this->groupRepository->applyToGroup($group, $user);
+            $groupAdmins = $group->users()->wherePivot('role', 'admin')->get();
+            foreach ($groupAdmins as $groupAdmin) {
+                $groupAdmin->notify(new UserAppliedToJoinGroup($user, $group, $token));
+            }
+            return API::response(200, "You have applied to join the group.", [
+                "group" => $user->groups()
+                    ->where('groups.id', $group->id)
+                    ->with(['confirmedUsers' => function ($query) {
+                        $query->withPivot(['role']);
+                    }])
+                    ->withCount(['confirmedUsers', 'panels', 'requestedUsers'])
+                    ->withPivot(["role", "status", "token"])
+                    ->first()
+            ]);
+        } catch (\App\Exceptions\UserAlreadyAppliedToGroupException $e) {
+            return API::response(400, "You have  already applied to join the group.", []);
+        } catch (\App\Exceptions\UserAlreadyInGroupException $e) {
+            return API::response(400, "You are already a group member.", []);
+        }
+    }
+
+    /**
+     * Accepts a user into a panel group by changing their status from requested to confirmed
+     *
+     * @param Group $group
+     * @param string $token
+     * @return void
+     */
+    public function acceptUser(Group $group, string $token)
+    {
+        $user = auth()->user();
+
+        if (Gate::allows('modify-group', $group)) {
+            $userRecord = $group->users()->wherePivot("token", "=", $token)->first();
+            // if user is already accepted, return to group page
+            if (!isset($userRecord)) return redirect('/group/' . $group->id);
+
+            $group->users()->updateExistingPivot($userRecord->id, ["status" => "confirmed", "token" => null]);
+            return redirect('/group/' . $group->id);
+        } else {
+            throw new \Exception("You are not permitted to perform this action.");
+        }
+    }
+
+    /**
+     * Change group cover photo
+     *
+     * @param Group $group
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changeCoverPhoto(Group $group, Request $request)
+    {
+        if (!Gate::allows('modify-group', $group)) {
+            abort(403, 'Access denied');
+        }
+
+        if (!$request->file('cover_photo')) {
+            return API::response(400, "No cover photo uploaded", []);
+        }
+
+        // Delete existing cover photo
+        if ($group->cover_photo !== null) {
+            Storage::disk('public')->delete('cover_photos/' . $group->cover_photo);
+        }
+
+        // Process the uploaded image
+        $filename = Str::random(20) . '.' . $request->file('cover_photo')->getClientOriginalExtension();
+        $request->file('cover_photo')->storeAs('cover_photos/', $filename, 'public');
+
+        // Update the group cover photo
+        $group->cover_photo = $filename;
+
+        if ($group->save()) {
+            return API::response(200, "Cover photo changed", [
+                "cover_photo" => $filename,
+            ]);
+        } else {
+            return API::response(500, "Failed to change cover photo", []);
         }
     }
 }

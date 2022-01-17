@@ -15,11 +15,11 @@ const defaultState = {
     sortOrder: null,
     onlyMyPanels: false,
     loading: true,
-    panelsLoaded: 0,
     panelsAvailable: 0,
     page: 0,
     nextPage: 1,
     lastPage: 1, // the default needs to be higher than the "page" variable above - to show that all pages haven't loaded
+    pageSize: 20,
     selectedPanels: [],
     editingCaption: false
 };
@@ -50,18 +50,15 @@ defaultState.expandedPanelDetail = Object.assign({}, defaultExpandedPanelState);
 const state = Object.assign({}, defaultState);
 
 const actions = {
-    fetchPanelList({ commit, state, rootState }) {
+    fetchPanelList({ commit, state, rootGetters }) {
         let params = { params: {} };
 
-        let searchUrl =
-            rootState.searchMode === "group"
-                ? "/groups/" + rootState.Groups.currentGroup.id + "/panels"
-                : "/users/me/panels";
+        let searchUrl = rootGetters.apiUrls.panels();
 
         //pagination
         params.params.paginate = state.paginate;
-        if (state.page < state.lastPage && state.page !== null)
-            params.params.page = state.nextPage;
+        if (state.page <= state.lastPage && state.page !== null)
+            params.params.page = state.page;
         if (state.searchText) params.params.search = state.searchText;
         if (state.searchTags) params.params.tags = state.searchTags;
         if (state.filterAuthors)
@@ -72,20 +69,18 @@ const actions = {
         if (state.onlyMyPanels) params.params.private = true;
 
         return Axios.get(searchUrl, params).then(response => {
-            commit("addToLoadedPanels", response.data);
+            commit("setLoadedPanels", response.data);
             commit("setPanelLoadingState", false);
 
             return response;
         });
     },
-    loadMorePanels({ commit, dispatch, state }) {
-        return dispatch("fetchPanelList");
-    },
     setLoadingState({ commit }, payload) {
         commit("setPanelLoadingState", payload);
     },
-    loadPanelDetail({ commit, state }, panelId) {
-        return Axios.get("/panels/" + panelId).then(response => {
+    loadPanelDetail({ commit, rootGetters }, panelId) {
+        let urlPanelDetails = rootGetters.apiUrls.panelDetail(panelId);
+        return Axios.get(urlPanelDetails).then(response => {
             commit("storeExpandedPanelDetail", response.data.DATA[0]);
             commit("storeComments", response.data.DATA[0].comments);
             commit("storeFiles", response.data.DATA[0].files);
@@ -244,6 +239,9 @@ const actions = {
 };
 
 const mutations = {
+    clearPanels(state) {
+        state = Object.assign(state, defaultState);
+    },
     setPanelLoadingState(state, value) {
         state.loading = value;
     },
@@ -254,14 +252,15 @@ const mutations = {
             state.editingCaption = !state.editingCaption;
         }
     },
-
-    addToLoadedPanels(state, payload) {
-        state.loadedPanels.push(...payload.DATA.data); //panels
-        state.panelsLoaded += payload.DATA.data.length;
+    setCurrentPage(state, value) {
+        state.page = value;
+    },
+    setLoadedPanels(state, payload) {
+        state.loadedPanels = payload.DATA.data; //panels
         state.panelsAvailable = payload.DATA.total;
         state.page = payload.DATA.current_page;
-        state.nextPage++;
         state.lastPage = payload.DATA.last_page;
+        state.pageSize = payload.DATA.per_page;
     },
     updateLoadedPanel(state, updatedPanel) {
         const index = _.findIndex(state.loadedPanels, oldPanel => {
@@ -283,15 +282,12 @@ const mutations = {
     },
     addNewlyCreatedPanelToStore(state, payload) {
         state.loadedPanels.unshift(payload.DATA);
-        // state.panelsLoaded++
         // state.panelsAvailable++
     },
     clearLoadedPanels(state) {
         state.loadedPanels = [];
-        state.panelsLoaded = 0;
         state.panelsAvailable = 0;
         state.page = 0;
-        state.nextPage = 1;
         state.lastPage = 0;
     },
     updateExpandedPanelId(state, panelId = null) {
@@ -436,15 +432,26 @@ const getters = {
     isLoadingPanels(state) {
         return state.loading;
     },
-
+    currentPage(state) {
+        return state.page;
+    },
+    pageSize(state) {
+        return state.pageSize;
+    },
+    paginate(state) {
+        return state.paginate;
+    },
+    totalPanels(state) {
+        return state.panelsAvailable;
+    },
     hasPanels(state) {
-        return state.panelsLoaded > 0;
+        return state.loadedPanels.length > 0;
     },
     loadedPanels(state) {
         return state.loadedPanels;
     },
     hasLoadedAllResults(state) {
-        return state.panelsLoaded >= state.panelsAvailable;
+        return state.loadedPanels.length >= state.panelsAvailable;
     },
     expandedPanelId(state) {
         return state.expandedPanelId;
@@ -452,17 +459,22 @@ const getters = {
     expandedPanel(state) {
         return state.expandedPanelDetail;
     },
-    expandedPanelAuthors(state) {
-
+    expandedPanelAuthors(state, getters) {
+        return getters.panelAuthors(state.expandedPanelDetail);
+    },
+    filterKeywords(state) {
+        return state.filterKeywords;
+    },
+    panelAuthors: (state) => (panel) => {
         if (
-            !state.expandedPanelDetail.authors
+            !panel.authors
             &&
-            !state.expandedPanelDetail.external_authors
+            !panel.external_authors
             ) {
                 return []
             };
 
-        const userAuthors = state.expandedPanelDetail.authors.reduce(
+        const userAuthors = panel.authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,
@@ -483,7 +495,7 @@ const getters = {
                   },
                   []
               );
-        const externalAuthors = state.expandedPanelDetail.external_authors.reduce(
+        const externalAuthors = panel.external_authors.reduce(
                   (accumulator, author) => {
                       accumulator.push({
                           firstname: author.firstname,
@@ -583,6 +595,17 @@ const getters = {
     },
     privatePanels(state) {
         return state.onlyMyPanels;
+    },
+    filtersAreApplied(state) {
+        if(
+            state.onlyMyPanels === false
+            && state.filterAuthors.length === 0
+            && state.filterKeywords.length === 0
+        ) {
+          return false;
+        }
+
+        return true;
     }
 };
 

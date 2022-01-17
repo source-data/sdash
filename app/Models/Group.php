@@ -13,8 +13,8 @@ class Group extends Model
      */
     protected $fillable = [
         'name',
-        'user_id',
         'description',
+        'cover_photo',
         'url',
         'is_public',
     ];
@@ -52,11 +52,6 @@ class Group extends Model
         return $this->belongsToMany('App\User')
             ->wherePivot('status', 'confirmed')
             ->wherePivot('role', 'admin');
-    }
-
-    public function owner()
-    {
-        return $this->hasOne('App\User');
     }
 
     public function comments()

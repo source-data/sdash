@@ -6,11 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
-use Laravel\Passport\HasApiTokens;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable;
+    use Notifiable;
 
     /**
      * The roles that a user can have on a panel
@@ -32,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'avatar',
         'institution_name',
         'institution_address',
         'department_name',
@@ -64,7 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function authoredPanels()
     {
-        return $this->belongsToMany('App\Models\Panel')->withPivot('role')->as('role');;
+        return $this->belongsToMany('App\Models\Panel')->withPivot('role')->as('role');
     }
 
     public function groups()
@@ -93,12 +94,23 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Send the password reset notification, taking into account that the URL will be a path that is rendered by Vue JS, not by Laravel
+     *
+     * @param string $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'
+        'password', 'remember_token', 'created_at', 'updated_at'
     ];
 
     /**

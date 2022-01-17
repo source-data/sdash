@@ -1,0 +1,29 @@
+name: Deploy SDash
+description: Deploys SDash to the given stage.
+
+inputs:
+  known-hosts:
+    description: The output of ssh-keyscan for the server where SDash should be deployed.
+    required: true
+  private-key:
+    description: The private key that allows access to the server where SDash should be deployed.
+    required: true
+  stage:
+    description: Stage to which SDash should be deployed, as defined in deploy.php.
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+    - name: Install Backend Dependencies
+      uses: ramsey/composer-install@v1
+    - name: Deploy
+      uses: deployphp/action@master
+      with:
+        dep: deploy ${{ inputs.stage }} -vvv
+        known-hosts: ${{ inputs.known-hosts }}
+        private-key: ${{ inputs.private-key }}

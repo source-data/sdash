@@ -14,7 +14,12 @@ class UserTest extends TestCase
 
     use RefreshDatabase;
 
-    public function testAUserCanBeCreatedAndStoredInDatabase()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_user_can_be_created_and_stored_in_database()
     {
         $user = factory(User::class)->create();
 
@@ -25,7 +30,12 @@ class UserTest extends TestCase
         $this->assertEquals($user->role, $dbUser->role);
     }
 
-    public function testUserModelCanIdentifyWhetherItsAnAdmin()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function the_user_model_can_identify_whether_it_is_an_admin()
     {
         $adminUser = factory(User::class)->create(['role' => 'admin']);
         $superUser = factory(User::class)->create(['role' => 'superadmin']);
@@ -37,7 +47,12 @@ class UserTest extends TestCase
         $this->assertFalse($normalUser->is_admin());
     }
 
-    public function testAUserCanOwnPanels()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_user_can_own_panels()
     {
         $user = factory(User::class)->create();
         $panel1 = factory(Panel::class)->create(['user_id' => $user->id]);
@@ -52,12 +67,17 @@ class UserTest extends TestCase
         $this->assertEquals(count($userPanels2), 2, "There should be two panels");
     }
 
-
-    public function testAUserCanJoinAGroupAsAPendingUser()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_user_can_join_a_group_as_a_pending_member()
     {
         $user = factory(User::class)->create();
         $owner = factory(User::class)->create(['id' => 99]);
-        $group = factory(Group::class)->create(['user_id' => $owner->id]);
+        $group = factory(Group::class)->create();
+        $owner->groups()->attach($group->id, ['status' => 'confirmed', 'role' => 'admin']);
         $user->groups()->attach($group->id, ['status' => 'pending']);
 
         $dbUser = User::find($user->id);
@@ -72,11 +92,17 @@ class UserTest extends TestCase
         $this->assertEquals($pendingGroups[0]->id, $group->id);
     }
 
-    public function testAUserCanJoinAGroupAsAConfirmedUser()
+    /**
+     * @test
+     *
+     * @return void
+     */
+    public function a_user_can_join_a_group_as_a_confirmed_user()
     {
         $user = factory(User::class)->create();
         $owner = factory(User::class)->create(['id' => 99]);
-        $group = factory(Group::class)->create(['user_id' => $owner->id]);
+        $group = factory(Group::class)->create();
+        $owner->groups()->attach($group->id, ['status' => 'confirmed', 'role' => 'admin']);
         $user->groups()->attach($group->id, ['status' => 'confirmed']);
 
         $dbUser = User::find($user->id);

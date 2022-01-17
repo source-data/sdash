@@ -1,98 +1,180 @@
-html, body {
-    background-color: #fbfbfb;
+/* =========================
+FORM CONTROLS
+==========================*/
+
+.sd-text-input {
+  font-size: 1rem;
+  font-weight: bold;
+  color: $very-dark-desaturated-blue;
+  padding: 1.8rem 1rem;
 }
 
-h1, h2, h3, h4, h5 {
-    color: #114685;
+.sd-text-input::placeholder {
+  font-size: 1rem;
+  font-weight: bold;
+  color: $very-dark-desaturated-blue;
 }
 
+.sd-big-checkbox {
 
-.dropdown-menu.dropdown-menu-right.show {
-    z-index:99999;
+  label {
+    padding-left: 0.875rem;
+    font-weight: bold;
+  }
 }
 
-.sd-grid-extra {
-    h1,h2,h3,h4,h5 {
-        color: #6e89aa;
+.sd-big-button {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1;
+  height: calc(2.5em + 1rem + 2px);
+  border-radius: 6px;
+
+
+  &.full-width {
+
+    width: 100%;
+
+  }
+
+  &.wide {
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
+}
+
+/*=========================================
+SDASH POPOVERS AND MODALS
+==========================================*/
+.sd-custom-popover {
+
+  .popover-body {
+    background-color: $mostly-white-gray;
+    color: $mostly-black-blue;
+  }
+
+  .popover-header {
+    background-color: $very-dark-desaturated-blue;
+    color: $mostly-white-gray;
+
+    .btn.close {
+      position: relative;
+      top: -5px;
     }
+  }
+
+  &.bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
+    border-bottom-color: $very-dark-desaturated-blue;
+  }
+
+  &.bs-popover-bottom .popover-header::before, .bs-popover-auto[x-placement^=bottom] .popover-header::before {
+    border-bottom-color: $very-dark-desaturated-blue;
+  }
+
+  .btn.close {
+    color: $mostly-white-gray;
+  }
+
+  a,
+  a:focus,
+  a:hover,
+  a:active {
+    color: $mostly-black-blue !important;
+    text-decoration: underline;
+  }
 }
 
-.sd-homepage {
-    width:100%;
-    min-height:100vh;
+.modal-content {
+  background-color: $very-dark-desaturated-blue;
+
+  .close {
+    color: inherit;
+  }
+
+  // A popover that is opened within a modal needs a different background color for its header to differentiate it from
+  // the modal's background color. Usually they're the same (see above).
+  .sd-custom-popover .popover-header {
+    background-color: $mostly-black-blue;
+  }
+}
+
+/*=========================================
+DETAILS BAR
+==========================================*/
+
+.details-bar {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('../images/cover-photo.jpg');
-    background-size: cover;
-    position:relative;
-}
+    flex-wrap: wrap;
+    align-content: space-between;
 
-.sd-title-container {
-    padding: 120px;
-    border: solid 2px white;
-    color: #fff;
-    text-align: center;
-    font-size: 4em;
-    background: rgba(0,0,0,0.3);
+    .selection-criteria {
+        flex-grow: 1;
 
-    h1, h2 {
-        color: #fff;
-        text-align: center;
+        .search {
+            display: inline-block;
+        }
     }
 
-    h1 {
-        font-size: 1.6em;
+    .tag {
+        display: inline-block;
+        margin-left: 5px;
+        padding: 0 5px;
+        background-color: $vivid-orange;
+
+        .close {
+            margin-left: 5px;
+            font-size: 1.2rem;
+            color: $mostly-white-gray;
+            text-shadow: none;
+            opacity: 1;
+        }
     }
 
-    h2 {
-        font-size: 1em;
+    .result-count {
+        text-align: right;
     }
 }
 
-.sd-image-credit {
+/*=========================================
+INFO VIEWS (About, Tutorial, ...)
+==========================================*/
 
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    color: #fff;
-    padding: 1.5em 1.5em 2em;
-    background-color: rgba(0,0,0,0.55);
-    width:100%
+.info-content {
+  font-size: $font-size-md;
+  margin: 2rem 5% 4rem;
+  max-width: 1095px;
 
+  h2, h3 {
+    color: $vivid-orange;
+  }
+  h2 {
+    font-size: $font-size-xl;
+  }
+  h3 {
+    font-size: $font-size-md;
+  }
+
+  section {
+    margin-top: 3rem;
+  }
+
+  img {
+    display: block;
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+    max-width: min(100%, 800px);
+  }
+
+  section p:last-child img {
+    margin-bottom: 0;
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }
-
-.sd-sidebar-logo--image {
-    max-width: 260px;
-    background-color: #193f80;
-    padding: 5px 10px;
-}
-
-.sd-sidebar--sfb-logo {
-    height: 100px;
-    width: auto;
-    padding-right: 0.5rem;
-}
-
-.sd-sidebar--sfb-text {
-    padding-left: 0.5rem;
-}
-
-.sd-sidebar--sfb-link {
-    display:flex;
-}
-
-.sd-sidebar--sib-logo {
-    max-width: 240px;
-}
-
-.sd-sidebar--substance-logo {
-    max-width: 240px;
-}
-
-.sdash-about--infographic {
-    display:block;
-    box-sizing: border-box;
-    max-width:75%;
-    margin: 3rem auto;
+@media (min-width: 768px) {
+  .info-content {
+      margin: 6rem 5% 10rem;
+  }
 }

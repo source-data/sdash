@@ -1,28 +1,29 @@
 <template>
-    <article class="sd-panel-grid-container">
-        <ul class="sd-panel-grid-container--inner list-unstyled py-4">
-            <panel-listing-grid-item v-for="panel in loadedPanels" :key="panel.id" :panel-id="panel.id"></panel-listing-grid-item>
+    <b-overlay :show="switchingPages" variant="dark">
+        <h3 hidden aria-hidden ref="anchor">Panels</h3>
+        <ul id="sd-panel-listing-grid" class="panel-grid list-unstyled">
+            <panel-listing-grid-item
+                v-for="panel in loadedPanels"
+                :key="panel.id"
+                :panel-id="panel.id"
+            ></panel-listing-grid-item>
         </ul>
 
-    <infinite-loading @infinite="addPanels">
-        <div slot="spinner">
-            <b-container>
-                <b-row>
-                    <b-col class="text-center">
-                        <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
-                    </b-col>
-                </b-row>
-            </b-container>
-        </div>
-        <div slot="no-more" class="font-weight-bold text-muted text-center">All results loaded</div>
-        <div slot="no-results" class="font-weight-bold text-muted text-center">No more results</div>
-    </infinite-loading>
-    </article>
+        <b-pagination
+            v-if="paginate"
+            v-model="currentPage"
+            :total-rows="totalPanels"
+            :per-page="pageSize"
+            @change="scrollToTop"
+            pills align="center"
+            aria-controls="sd-panel-listing-grid"
+        ></b-pagination>
+    </b-overlay>
 </template>
 
 <script>
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import InfiniteLoading from 'vue-infinite-loading'
 import PanelListingGridItem from './PanelListingGridItem'
 
@@ -32,46 +33,42 @@ export default {
     components: { PanelListingGridItem, InfiniteLoading },
     props: ['list_root'],
     data(){
-
         return {
-
+            switchingPages: false,
         }
-
     }, /* end of data */
 
-    methods:{ //run as event handlers, for example
+    methods:{
         ...mapActions([
-            'loadMorePanels',
-            'loadMoreGroupPanels',
+            'fetchPanelList',
         ]),
-        addPanels($state){
-            if(this.hasLoadedAllResults){
-                $state.complete()
-            } else {
-
-                if(this.list_root == 'group') {
-                    this.loadMoreGroupPanels().then(()=>{
-                        $state.loaded()
-                    })
-                } else {
-                    this.loadMorePanels().then(()=>{
-                        $state.loaded()
-                    })
-                }
-            }
-
+        ...mapMutations([
+            'setCurrentPage',
+            'setPanelLoadingState',
+        ]),
+        scrollToTop(page) {
+            window.scrollTo({top: 0, left: 0, behavior: "smooth"});
         }
     },
 
     computed:{
         ...mapGetters([
             'loadedPanels',
-            'hasLoadedAllResults',
-            'isLoadingPanels',
-            'isInfiniteScrollPaused',
+            'pageSize',
+            'paginate',
+            'totalPanels',
         ]),
-        imageThumbnailUrl(id){
-            return "/panels/" + id + "/image/thumbnail"
+        currentPage: {
+            set(page) {
+                this.setCurrentPage(page);
+                this.switchingPages = true;
+                this.fetchPanelList().then(response => {
+                    this.switchingPages = false;
+                });
+            },
+            get() {
+                return this.$store.getters.currentPage;
+            }
         }
 
     }
@@ -79,23 +76,15 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-    .sd-panel-grid-container {
-        width:100%;
-        padding: 10px 40px;
-        background-color: #d6dfee;
-    }
+<style lang="scss" scoped>
+.panel-grid {
+    position: relative;
+    width: 100%;
 
-    .sd-panel-grid-container--inner {
-        display:flex;
-        position: relative;
-        flex-wrap:wrap;
-		justify-content: stretch;
-        width:100%;
-        margin:0 auto;
-    }
-
-    .sd-panel-grid--info-bar {
-        border: solid 1px red;
-    }
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    column-gap: 16px;
+    row-gap: 1.5rem;
+}
 </style>

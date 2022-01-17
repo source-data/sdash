@@ -1,170 +1,205 @@
 <template>
-    <div>
-        <info-bar>
-            <template v-slot:title>
-                <h1>My Dashboard</h1>
-            </template>
-        </info-bar>
-        <b-container fluid class="mt-3" style="overflow: hidden;">
-            <div id="wrapper" class="wrapper">
-                <filter-bar class="sidebar" v-bind:class="{collapsed: !isSidebarExpanded}"></filter-bar>
-                <div id="content" class="content" v-bind:class="{expanded: !isSidebarExpanded}">
-                    <ul class="toolbar" v-bind:class="{expanded: !isSidebarExpanded}">
-                        <li class="sidebar-toggle">
-                            <b-link href="#" @click="toggleSidebar" v-bind:title="sidebarToggleText">
-                                <font-awesome-icon icon="chevron-left" v-if="isSidebarExpanded" />
-                                <font-awesome-icon icon="chevron-right" v-if="!isSidebarExpanded" />
-                            </b-link>
-                        </li>
-                        <li><font-awesome-icon icon="search" /></li>
-                        <li><font-awesome-icon icon="filter" /></li>
-                        <li><font-awesome-icon icon="users" /></li>
-                    </ul>
-                    <div v-if="isLoadingPanels" class="text-center">
-                        <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
-                    </div>
-                    <div v-if="hasPanels">
-                        <panel-listing-grid list_root="user"></panel-listing-grid>
-                    </div>
-                    <div v-if="!hasPanels && !isLoadingPanels">
-                        <b-alert show variant="danger" class="no-panel-alert">No Panels Found</b-alert>
+    <div :class="{ 'anonymous-user': !isLoggedIn }">
+        <panel-drop-zone></panel-drop-zone>
+
+        <panel-authors-edit-modal></panel-authors-edit-modal>
+
+        <filter-bar ref="filterBar"></filter-bar>
+
+        <header class="sd-view-title">
+            <panel-action-bar v-if="isLoggedIn"></panel-action-bar>
+
+            <section v-else id="sd-featured-jumbotron">
+                <h1 class="text-xl text-primary">
+                    Figures at the heart of scientific exchange
+                </h1>
+
+                <div class="text-md">
+                    Add SmartFigures to your dashboard, link them to the underlying source data and receive new ideas
+                    from your peers. SDash is a pilot platform developed by SourceData at EMBO.
+
+                    <p class="mt-2">
+                        Register now and let us know what you think.
+                    </p>
+                </div>
+            </section>
+
+            <h2 class="text-primary">
+                <span v-if="isLoggedIn">My Dashboard</span>
+                <span v-else>SmartFigures</span>
+            </h2>
+
+            <div class="details-bar">
+                <div class="selection-criteria">
+                    <div class="search" v-if="searchQuery">
+                        <font-awesome-icon icon="search" />
+                        <div class="tag">
+                            {{ searchQuery }}
+                            <button type="button" class="close" @click="clearSearch">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <div class="result-count">{{ numLoadedPanels }} SmartFigures</div>
             </div>
-        </b-container>
+        </header>
+
+        <div class="sd-view-content" ref="mainContent">
+            <div v-if="isLoadingPanels" class="text-center">
+                <b-spinner
+                    variant="primary"
+                    label="Spinning"
+                    class="m-5 text-center"
+                    style="width: 4rem; height: 4rem;"
+                ></b-spinner>
+            </div>
+
+            <panel-listing-grid
+                v-if="hasPanels"
+                list_root="user"
+            ></panel-listing-grid>
+
+            <b-alert
+                v-if="!hasPanels && !isLoadingPanels"
+                show
+                variant="danger"
+                class="no-panel-alert"
+            >
+                No Panels Found
+            </b-alert>
+        </div>
+
+        <info-footer></info-footer>
+
+        <lightbox
+            :visible="isLightboxOpen"
+            :imgs="'/panels/' + expandedPanel.id + '/image'"
+            @hide="toggleLightbox"
+        ></lightbox>
     </div>
 </template>
 
 <script>
-
-import store from '@/stores/store'
-import { mapGetters } from 'vuex'
-import FilterBar from './FilterBar'
-import InfoBar from './InfoBar'
-import PanelListingGrid from './PanelListingGrid'
-
+import store from "@/stores/store";
+import { mapGetters, mapActions } from "vuex";
+import FilterBar from "./FilterBar";
+import PanelActionBar from "./PanelActionBar";
+import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
+import InfoFooter from "@/components/InfoFooter";
+import PanelListingGrid from "./PanelListingGrid";
+import Lightbox from 'vue-easy-lightbox';
+import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
 export default {
+    name: "PanelGrid",
 
-    name: 'PanelGrid',
     components: {
         FilterBar,
+        InfoFooter,
+        PanelActionBar,
+        PanelAuthorsEditModal,
         PanelListingGrid,
-        InfoBar,
-      },
-    props: [''],
+        Lightbox,
+        PanelDropZone,
+    },
+
+    props: {
+        query: String
+    },
 
     data() {
         return {
-            isSidebarExpanded: true,
-        }
-    }, /* end of data */
-
+            searchQuery: "",
+        };
+    },
     computed: {
         ...mapGetters([
-            'isLoadingPanels',
-            'hasPanels',
-            'hasLoadedAllResults',
-        ]),
-        sidebarToggleText: function() {
-            return this.isSidebarExpanded ? 'Hide sidebar' : 'Show sidebar';
-        }
+            "isLoadingPanels",
+            "isLoggedIn",
+            "hasPanels",
+            "loadedPanels",
+            "isLightboxOpen",
+            "expandedPanel",
+            ]),
+        numLoadedPanels() {
+            return this.loadedPanels.length;
+        },
     },
 
     methods: {
-        toggleSidebar() {
-            this.isSidebarExpanded = !this.isSidebarExpanded;
+        ...mapActions([
+            'toggleLightbox',
+        ]),
+        reloadPanels() {
+            store.commit("clearLoadedPanels");
+            store.commit("setPagination", true);
+            store.commit("clearSelectedPanels");
+            store.commit("setSearchMode", "user");
+
+            // Click on main content block to hide open dropdowns
+            this.$refs.mainContent.click();
+
+            // Clear active filters
+            this.$refs.filterBar.clearFilters();
+
+            if (this.searchQuery) {
+                store.dispatch("setSearchString", this.searchQuery);
+            } else {
+                store.dispatch("setSearchString", "");
+            }
+
+            store.dispatch("fetchPanelList").catch(error => {
+                this.$snotify.error(
+                    "We couldn't find any panels for you.",
+                    "Sorry!"
+                );
+            });
+        },
+        clearSearch() {
+            this.$router.push({
+                name: 'dashboard',
+            }).catch(err => {});
         }
     },
 
     mounted() {
-        store.commit("clearLoadedPanels")
-        store.commit("setPagination", true)
-        store.commit("clearSelectedPanels")
-        store.commit("setSearchMode", "user")
-        store.dispatch("fetchFileCategories")
-        store.dispatch("fetchPanelList")
-        .catch((error) => {
-            this.$snotify.error("We couldn't find any panels for you.", "Sorry!")
-        })
-        if (localStorage.getItem("isSidebarExpanded") !== null) {
-            this.isSidebarExpanded = localStorage.getItem("isSidebarExpanded") === 'true'
-        }
+        this.searchQuery = this.query;
+        this.reloadPanels();
+        store.dispatch("fetchFileCategories");
     },
 
     watch: {
-        isSidebarExpanded(newStatus) {
-            localStorage.setItem("isSidebarExpanded", newStatus)
+        $route(to) {
+            this.searchQuery = to.query.q || "";
+            this.reloadPanels();
         }
     }
-}
+};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 .no-panel-alert {
-    max-width:480px;
+    max-width: 480px;
     margin: 0 auto;
 }
 
-.sd-filter-wrapper {
-    flex: 0 0 300px;
-    max-width: 300px;
+
+.anonymous-user {
+    background-image: url("/images/landing-page-bg.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
-.wrapper {
-    display: flex;
-    height: 100%;
+#sd-featured-jumbotron {
+    margin: 1.5rem 0;
+    max-width: 1200px;
 }
 
-.sidebar,
-.content {
-    min-height: 100%;
-}
-
-.sidebar {
-    flex: 0 0 300px;
-    padding-right: 15px;
-    transition: all .25s ease-in;
-}
-
-.sidebar.collapsed {
-    transform: translateX(-100%);
-}
-
-.content {
-    flex: auto;
-    position: relative;
-    transition: all .25s ease-in;
-}
-
-.content.expanded {
-    margin-left: -300px;
-}
-
-.toolbar {
-    position: absolute;
-    top: 40px;
-    left: -17px;
-    width: 40px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    background:#A6B2C6;
-    li,
-    li a {
-        color: white;
-    }
-    li {
-        padding: 2px;
-        text-align: center;
-        font-size: 20px;
-        opacity: 0.2;
-    }
-    li.sidebar-toggle {
-        opacity: 1;
-        font-size: 24px;
-
+@media (min-width: 768px) {
+    #sd-featured-jumbotron {
+        margin: 2rem 10vw;
     }
 }
-
 </style>

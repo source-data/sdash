@@ -1,6 +1,7 @@
 <template>
-    <section class="sd-smarttags-category-container">
-        <h4 class="sd-smarttags-category-container--title">{{ title }}</h4>
+    <div class="form-group sourcedata-tags" :class="'sourcedata-tags-' + type">
+        <label>{{ title }}</label>
+
         <vue-tags-input
             :placeholder="iCanEditTags ? 'Enter tags or use SmartTag' : 'Restricted to owner or admin'"
             :tags="combinedTags"
@@ -10,25 +11,25 @@
             @before-deleting-tag="deleteTag"
             :disabled="!iCanEditTags"
         >
-        <div
-            slot="tag-center"
-            slot-scope="props"
-        >
-            <span class="sd-tag-clickable" @click.stop="tagSearch(props.tag)">
-            {{props.tag.text}}
-            </span>
+            <div
+                slot="tag-center"
+                slot-scope="props"
+            >
+                <span class="sd-tag-clickable" @click.stop="tagSearch(props.tag)">
+                {{props.tag.text}}
+                </span>
 
-        </div>
-        <div
-            class="sd-validate-suggested-tag"
-            slot="tag-right"
-            slot-scope="tag"
+            </div>
+            <div
+                class="sd-validate-suggested-tag"
+                slot="tag-right"
+                slot-scope="tag"
 
-        >
-            <font-awesome-icon @click="validateSuggestion(tag)" v-if="showValidate(tag)" class="sd-validate-suggested-tag-icon" icon="check" size="sm" />
-        </div>
+            >
+                <font-awesome-icon @click="validateSuggestion(tag)" v-if="showValidate(tag)" class="sd-validate-suggested-tag-icon" icon="check" size="sm" />
+            </div>
         </vue-tags-input>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -151,9 +152,10 @@ export default {
 
         },
         tagSearch(tag){
+            const keyWord = {id: tag.tag_id, name: tag.text}
+            this.$store.commit("setKeywordFilter", [keyWord])
             this.$store.dispatch("setLoadingState", true)
             this.$store.dispatch("clearLoadedPanels")
-            this.$store.dispatch("setSearchString", tag.text)
             this.$store.dispatch("fetchPanelList")
         }
 
@@ -162,13 +164,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.sd-smarttags-category-container {
-    padding-bottom: 8px;
-}
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 
-.sd-smarttags-category-container--title {
-    font-size:1em;
+.form-group::v-deep .vue-tags-input {
+    background-color: $mostly-white-gray;
+    max-width: 100%;
 }
 
 .sd-suggested-tag {
@@ -197,6 +198,24 @@ export default {
 
 .sd-tag-clickable:hover {
     border: dotted 1px #cecece;
+}
+
+
+.sourcedata-tags::v-deep .ti-tag {
+    color: $mostly-white-gray;
+}
+.sourcedata-tags-assay::v-deep .ti-tag {
+    background-color: $sourcedata-color-assay;
+}
+.sourcedata-tags-intervention::v-deep .ti-tag {
+    background-color: $sourcedata-color-intervention;
+}
+.sourcedata-tags-method::v-deep .ti-tag {
+    background-color: $sourcedata-color-method;
+    color: $very-dark-blue;
+}
+.sourcedata-tags-other::v-deep .ti-tag {
+    background-color: $sourcedata-color-other;
 }
 
 </style>

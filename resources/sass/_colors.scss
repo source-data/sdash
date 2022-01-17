@@ -1,0 +1,62 @@
+// color names from colorhexa.com
+$very-dark-blue: #151b6e;
+$very-dark-desaturated-blue: #2f3150;
+
+$mostly-black-blue: #020126;
+$mostly-black-blue-hover: rgba(02, 01, 26, 0.6);
+
+$mostly-white-gray: #f7f7f7;
+$mostly-white-gray-opaque: rgba(247, 247, 247, 0.6);
+
+$very-light-gray: #e5e5e5;
+
+$dark-cyan: #2b9ea9;
+$vivid-orange: #f6ae06;
+
+$sourcedata-color-intervention: #cb5b3c;
+$sourcedata-color-assay: #6292d0;
+$sourcedata-color-method: #dcdcdc;
+$sourcedata-color-other: $very-dark-blue;
+
+$theme-colors: (
+    "light": $mostly-white-gray,
+    "dark": $mostly-black-blue,
+    "primary": $vivid-orange,
+    "info": $dark-cyan,
+    "dark-desat": $very-dark-desaturated-blue
+);
+$body-bg: $mostly-black-blue;
+$body-color: $mostly-white-gray;
+
+
+.bg-light-gray {
+    background-color: $very-light-gray !important;
+}
+
+a {
+    color: $mostly-white-gray;
+}
+a:active,
+a:focus,
+a:hover {
+    color: $very-light-gray;
+}
+.bg-light a {
+    color: $mostly-black-blue;
+}
+.bg-light a:active,
+.bg-light a:focus,
+.bg-light a:hover {
+    color: $mostly-black-blue-hover;
+}
+
+.btn-desat-blue {
+    color: $mostly-white-gray;
+    background-color: $very-dark-desaturated-blue;
+    border-color: $very-dark-desaturated-blue;
+}
+.btn-desat-blue:hover {
+    color: $mostly-white-gray;
+    background-color: $very-dark-desaturated-blue;
+    border-color: $very-dark-desaturated-blue;
+}

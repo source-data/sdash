@@ -51,11 +51,11 @@ class UserAddedToGroup extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Group Invitation')
-                    ->line('You have been invited to join a sharing group.')
-                    ->line('If you would like to join the group "' . $this->group->name . '", click below to confirm.')
-                    ->action('Join Group', $this->confirmationUrl())
-                    ->line('If you do not wish to join the group, feel free to ignore this message');
+            ->subject('Group Invitation')
+            ->line('You have been invited to join a sharing group.')
+            ->line('If you would like to join the group "' . $this->group->name . '", click below to confirm.')
+            ->action('Join Group', $this->confirmationUrl())
+            ->line('If you do not wish to join the group, feel free to ignore this message');
     }
 
     /**
@@ -73,6 +73,6 @@ class UserAddedToGroup extends Notification
 
     protected function confirmationUrl()
     {
-        return URL::signedRoute('group.join',['group' => $this->group->id, 'token' => $this->token]);
+        return URL::signedRoute('group.join', ['group' => $this->group->id, 'token' => $this->token]);
     }
 }

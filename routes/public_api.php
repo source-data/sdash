@@ -5,13 +5,11 @@
  * PUBLIC API ROUTES
  * ------------------
  * Routes defined in this file have the base URL
- * of /public-api
+ * of /api/public
  *
- * e.g. sdash.sourcedata.io/public-api/panels/1
+ * e.g. sdash.sourcedata.io/api/public/panels/1
  * would hit Route::get('/panels/1', ...)
  */
-
-use Illuminate\Http\Request;
 
 /**
  * These routes are publicly accessible
@@ -24,8 +22,8 @@ Route::get('/panels/{panel}/image/thumbnail', 'API\ImageController@showPanelThum
 Route::get('/files/categories', 'API\FileController@listFileCategories');
 Route::get('/tags', 'API\TagController@publicIndex');
 Route::get('/users', 'API\UserController@publicIndex');
-Route::get('/groups/{group}/panels', 'API\PanelController@listPublicGroupPanels');
 Route::get('/groups', 'API\GroupController@listPublicGroups');
+Route::get('/groups/{group}/panels', 'API\PanelController@listPublicGroupPanels');
 
 /**
  * These routes use a middleware to check that the Panel ID passed in the route refers to

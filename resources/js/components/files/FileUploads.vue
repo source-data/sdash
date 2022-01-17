@@ -1,166 +1,215 @@
 <template>
-    <div class="sd-file-uploads-container">
-        <div v-if="iCanEditThisPanel" class="sd-file-uploads-header">
-            <div class="sd-file-uploads--toggle-wrapper">
-                <toggle-button v-model="uploadToggle" @change="clearUploads" :disabled="pendingUpload"
-                    :color="{checked: '#666', unchecked: '#666'}" :labels="{checked:'URL', unchecked:'File'}" :width="80" :height="30" :font-size="14"/>
-            </div>
-            <div class="sd-file-uploads--category-wrapper">
-                <b-form-select class="sd-file-uploads--category-selector" v-model="categoryId" :options="fileCategories">
-                    <template v-slot:first>
-                        <b-form-select-option value="null">Select category</b-form-select-option>
-                    </template>
-                </b-form-select>
-            </div>
-            <div class="sd-file-uploads--file-wrapper" v-if="!uploadToggle">
-                <b-form-file @change="updatedFile" no-drop single v-model="file" :disabled="pendingUpload" placeholder="Select a file to attach"></b-form-file>
-            </div>
-            <div class="sd-file-uploads--url-wrapper" v-if="uploadToggle">
-                <b-form-input @change="updatedUrl" v-model="url" type="url" placeholder="Enter a URL to link remote resource"></b-form-input>
-            </div>
-            <div class="sd-file-uploads--submit-wrapper">
-                <b-button variant="success" @click.prevent="submitFile" :disabled="disableSubmit">
-                    <span v-if="!uploadToggle">Attach</span>
-                    <span v-if="uploadToggle">Link</span>
+    <div>
+        <div v-if="iCanEditThisPanel" class="add-source">
+            <div class="form-group attach-link">
+                <b-form-input
+                    v-model="url"
+                    size="sm"
+                    type="url"
+                    placeholder="Enter a URL"
+                ></b-form-input>
+
+                <b-button variant="primary" @click.prevent="sendUrl" :disabled="disableUrlSubmit">
+                    <span>Link source file</span>
                 </b-button>
             </div>
+
+            <div class="form-group upload-file">
+                <b-form-file
+                    no-drop
+                    single
+                    size="sm"
+                    v-model="file"
+                    :disabled="pendingUpload"
+                    @input="sendFile"
+                    placeholder="Upload source file"
+                ></b-form-file>
+            </div>
         </div>
+
         <!-- file list -->
-        <div class="sd-file-uploads--list-container">
+        <div class="panel-sources-list">
             <b-table
-                small
                 dark
-                class="sd-file-uploads--list-table"
-                striped
+                small
                 :items="getFiles"
                 :fields="fields"
                 primary-key="id"
                 ref="fileUploadsTable"
-             ><!--end of table definition-->
-                <template v-if="iCanEditThisPanel" v-slot:cell(action)="data">
-                    <b-button variant="link" class="text-light" :id="'delete-button-' + data.item.id"><font-awesome-icon icon="trash-alt" size="lg"/></b-button>
-                    <b-popover
-                        :ref="'delete-popover-' + data.item.id"
-                        :target="'delete-button-' + data.item.id"
-                        triggers="click"
-                        placement="top"
-                        @show="confirmDeletion(data.item.id)"
-                        @hidden="clearDeletion"
-                    >
-                    <template v-slot:title>
-                            Are you sure?
-                        <b-button @click="closeDeletePopover(data.item.id)" class="close" aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                        </b-button>
-                    </template>
-                        <div class="confirm-delete-content">
-                            <div class="delete-buttons">
-                                <b-button variant="danger" small @click="deleteFile">Delete it!</b-button>
-                                <b-button variant="outline-dark" small @click="closeDeletePopover(data.item.id)">Cancel</b-button>
-                            </div>
-                        </div>
-                    </b-popover>
+            >
+                <template v-if="showBatchActions" #head(action)>
+                    <b-form-checkbox :checked="allItemsSelected" @change="toggleSelectAll"></b-form-checkbox>
                 </template>
+
+                <template v-slot:cell(action)="data">
+                    <b-form-checkbox v-model="selectedItems" :value="data.item.id"></b-form-checkbox>
+                </template>
+
                 <template v-slot:cell(category)="data">
                     <template v-if="iCanEditThisPanel">
-                        <a href="#" @click.prevent class="custom-styled-link" :id="'edit-category-' + data.item.id" title="Edit category">
-                            <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
+                        <a
+                            href="#"
+                            @click.prevent
+                            class="custom-styled-link"
+                            :id="'edit-category-' + data.item.id"
+                            title="Edit category"
+                        >
+                            <span v-if="data.item.file_category_id">
+                                {{ getFileCategoryName(data.item.file_category_id) }}
+                            </span>
+
                             <span class="sd-edit-icon" v-if="!data.item.file_category_id">
                                 <font-awesome-icon icon="edit" title="Edit category" />
-                                Edit category
                             </span>
                         </a>
-                    </template>
-                    <template v-if="!iCanEditThisPanel">
-                        <span v-if="data.item.file_category_id">{{ getFileCategoryName(data.item.file_category_id) }}</span>
-                        <span v-if="!data.item.file_category_id" class="text-info">&mdash;</span>
-                    </template>
-                    <b-popover
-                        :ref="'edit-category-popover-' + data.item.id"
-                        :target="'edit-category-' + data.item.id"
-                        triggers="click"
-                        placement="top"
-                        @show="updateFileCategory(data.item.id, data.item.file_category_id)"
-                        @hidden="clearUpdate"
-                    >
-                    <template v-slot:title>
-                        Category
-                        <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                        </b-button>
-                    </template>
-                        <div class="update-file-category">
-                            <b-form-group
-                            :id="'update-category-form-group-' + data.item.id"
-                            :label-for="'update-category-input-' + data.item.id"
-                            >
-                            <b-form-select v-model="selectedCategoryId" :options="fileCategories">
-                                <template v-slot:first>
-                                    <b-form-select-option value="">(none)</b-form-select-option>
-                                </template>
-                            </b-form-select>
-                            </b-form-group>
 
-                            <div class="update-buttons">
-                                <b-button variant="success" small @click="saveFileCategory">Save</b-button>
-                                <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">Cancel</b-button>
-                            </div>
-                        </div>
-                    </b-popover>
-                </template>
-                <template v-slot:cell(description)="data">
-                    <template v-if="!iOwnThisPanel">
-                        <span v-if="data.item.description">{{ data.item.description }}</span>
-                    </template>
-                    <template v-if="iOwnThisPanel">
-                        <a href="#" @click.prevent class="custom-styled-link" :id="'edit-description-' + data.item.id" title="Edit description">
-                            <span v-if="data.item.description">{{ data.item.description }}</span>
-                            <span class="sd-edit-icon" v-if="!data.item.description">
-                                <font-awesome-icon icon="edit" title="Edit description" />
-                                Edit description
-                            </span>
-                        </a>
                         <b-popover
-                            :ref="'edit-description-popover-' + data.item.id"
-                            :target="'edit-description-' + data.item.id"
-                            triggers="click"
+                            :ref="'edit-category-popover-' + data.item.id"
+                            :target="'edit-category-' + data.item.id"
+                            triggers="click blur"
                             placement="top"
-                            @show="updateFileDescription(data.item.id, data.item.description)"
+                            @show="updateFileCategory(data.item.id, data.item.file_category_id)"
                             @hidden="clearUpdate"
+                            custom-class="sd-custom-popover"
                         >
                             <template v-slot:title>
-                                Description
-                                <b-button @click="closeDescriptionPopover(data.item.id)" class="close" aria-label="Close">
+                                Category
+                                <b-button @click="closeCategoryPopover(data.item.id)" class="close" aria-label="Close">
                                     <span class="d-inline-block" aria-hidden="true">&times;</span>
                                 </b-button>
                             </template>
-                            <div class="update-file-description">
+
+                            <div class="update-file-category">
                                 <b-form-group
-                                :id="'update-description-form-group-' + data.item.id"
-                                :label-for="'update-description-input-' + data.item.id"
+                                    :id="'update-category-form-group-' + data.item.id"
+                                    :label-for="'update-category-input-' + data.item.id"
                                 >
-                                <b-form-input id="input-1" v-model="fileDescriptionText" trim></b-form-input>
+                                    <b-form-select v-model="selectedCategoryId" :options="fileCategories">
+                                        <template v-slot:first>
+                                            <b-form-select-option value="">(none)</b-form-select-option>
+                                        </template>
+                                    </b-form-select>
                                 </b-form-group>
 
                                 <div class="update-buttons">
-                                    <b-button variant="success" small @click="saveFileDescription">Save</b-button>
-                                    <b-button variant="outline-dark" small @click="closeDescriptionPopover(data.item.id)">Cancel</b-button>
+                                    <b-button variant="primary" small @click="saveFileCategory">Save</b-button>
+
+                                    <b-button variant="outline-dark" small @click="closeCategoryPopover(data.item.id)">
+                                        Cancel
+                                    </b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                    </template>
+
+                    <template v-if="!iCanEditThisPanel">
+                        <span v-if="data.item.file_category_id">
+                            {{ getFileCategoryName(data.item.file_category_id) }}
+                        </span>
+
+                        <span v-else>&mdash;</span>
+                    </template>
+
+                </template>
+
+                <template v-slot:cell(description)="data">
+                    <template v-if="!iOwnThisPanel">
+                        <span v-if="data.item.description">{{ data.item.description }}</span>
+                        <span v-else>&mdash;</span>
+                    </template>
+
+                    <template v-if="iOwnThisPanel">
+                        <a
+                            href="#"
+                            @click.prevent
+                            class="custom-styled-link"
+                            :id="'edit-description-' + data.item.id"
+                            title="Edit description"
+                        >
+                            <span v-if="data.item.description">{{ data.item.description }}</span>
+
+                            <span class="sd-edit-icon" v-if="!data.item.description">
+                                <font-awesome-icon icon="edit" title="Edit description" />
+                            </span>
+                        </a>
+
+                        <b-popover
+                            :ref="'edit-description-popover-' + data.item.id"
+                            :target="'edit-description-' + data.item.id"
+                            triggers="click blur"
+                            placement="top"
+                            @show="updateFileDescription(data.item.id, data.item.description)"
+                            @hidden="clearUpdate"
+                            custom-class="sd-custom-popover"
+                        >
+                            <template v-slot:title>
+                                Description
+                                <b-button
+                                    @click="closeDescriptionPopover(data.item.id)"
+                                    class="close"
+                                    aria-label="Close"
+                                >
+                                    <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                </b-button>
+                            </template>
+
+                            <div class="update-file-description">
+                                <b-form-group
+                                    :id="'update-description-form-group-' + data.item.id"
+                                    :label-for="'update-description-input-' + data.item.id"
+                                >
+                                    <b-form-input id="input-1" v-model="fileDescriptionText" trim></b-form-input>
+                                </b-form-group>
+
+                                <div class="update-buttons">
+                                    <b-button variant="primary" small @click="saveFileDescription">
+                                        Save
+                                    </b-button>
+
+                                    <b-button
+                                        variant="outline-dark"
+                                        small
+                                        @click="closeDescriptionPopover(data.item.id)"
+                                    >
+                                        Cancel
+                                    </b-button>
                                 </div>
                             </div>
                         </b-popover>
                     </template>
                 </template>
+
                 <template v-slot:cell(link)="data">
-                    <a class="text-light" :href="data.item.url" v-b-tooltip.hover.left :title="data.item.url" target="_blank">{{data.item.url}}</a>
-                    <a class="text-light" v-b-tooltip.hover.left :title="data.item.original_filename" :href="'/files/' + data.item.id">{{data.item.original_filename}}</a>
+                    <a
+                        v-if="data.item.url"
+                        class="source-url"
+                        :href="data.item.url"
+                        v-b-tooltip.hover.left
+                        :title="data.item.url"
+                        target="_blank"
+                    >
+                        {{data.item.url}}
+                    </a>
+
+                    <a
+                        v-if="data.item.original_filename"
+                        class="source-file"
+                        v-b-tooltip.hover.left
+                        :title="data.item.original_filename"
+                        :href="'/files/' + data.item.id"
+                    >
+                        {{data.item.original_filename}}
+                    </a>
                 </template>
+
                 <template v-slot:cell(size)="data">
-                    <span v-if="data.item.file_size">{{formatBytes(data.item.file_size)}}</span>
+                    <span v-if="data.item.file_size">{{formatBytes(data.item.file_size, decimals=0)}}</span>
                 </template>
+
                 <template v-slot:custom-foot>
                     <b-tr v-if="pendingUpload">
                         <b-td class="text-center">
-                            <b-button variant="link" class="text-light">
+                            <b-button variant="link">
                                 <b-spinner small label="Uploading"></b-spinner>
                             </b-button>
                         </b-td>
@@ -168,13 +217,50 @@
                     </b-tr>
                 </template>
             </b-table>
+
+            <b-button
+                v-if="showBatchActions"
+                variant="danger"
+                class="text-light"
+                id="delete-selected-sources"
+                :disabled="selectedItems.length === 0"
+            >
+                <font-awesome-icon icon="trash-alt" /> Delete selected
+            </b-button>
+
+            <b-popover
+                v-if="showBatchActions"
+                ref="delete-popover"
+                target="delete-selected-sources"
+                triggers="click blur"
+                placement="top"
+                custom-class="sd-custom-popover"
+            >
+                <template v-slot:title>
+                    Are you sure?
+                    <b-button @click="closeDeletePopover()" class="close" aria-label="Close">
+                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                    </b-button>
+                </template>
+
+                <div class="confirm-delete-content">
+                    <div class="delete-buttons">
+                        <b-button variant="danger" small @click="deleteFiles">
+                            Delete it!
+                        </b-button>
+
+                        <b-button variant="outline-dark" small @click="closeDeletePopover()">
+                            Cancel
+                        </b-button>
+                    </div>
+                </div>
+            </b-popover>
         </div>
     </div>
 </template>
 
 <script>
 
-import store from '@/stores/store'
 import formatter from '@/services/formatter'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -186,19 +272,19 @@ export default {
             file: null,
             url:  null,
             categoryId: null,
-            uploadToggle: true,
             pendingUpload: false,
             fileToDelete: {},
             fileToUpdate: {},
-            fields:[
-                {key:'action', label:'', sortable: false},
-                {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
+            baseFields: [
                 {key:'description', label:'Description', sortable: true, sortByFormatted:true, formatter:"distillDescription"},
+                {key:'category', label:'Category', sortable: true, sortByFormatted:true, formatter:"distillCategoryName"},
                 {key:'link', label: 'Filename / URL', sortable: true, sortByFormatted:true, formatter:"distillResourceLink"},
                 {key:'size', label: 'Size', sortable: true, sortByFormatted:true, formatter:"distillFileSize"},
             ],
+            batchActionField: {key:'action', label:'', sortable: false},
             selectedCategoryId: null,
-            fileDescriptionText: ""
+            fileDescriptionText: "",
+            selectedItems: [],
         }
     }, /* end of data */
     mixins: [formatter],
@@ -213,8 +299,11 @@ export default {
         iCanEditThisPanel(){
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
         },
-        disableSubmit(){
-            return (this.file===null && this.url===null) || this.pendingUpload
+        disableUrlSubmit() {
+            return this.pendingUpload || this.url === null
+        },
+        disableFileSubmit() {
+            return this.pendingUpload || this.file === null
         },
         fileCategories(){
             let categories = this.getFileCategories.reduce((categories, category) => {
@@ -222,31 +311,46 @@ export default {
                 return categories
             },[])
             return categories
+        },
+        selectedFiles() {
+            let files = this.getFiles;
+            let selectedFiles = this.selectedItems.map(function getFile(id) {
+                let matchingFiles = files.filter(function idMatches(file) {
+                    return file.id === id;
+                });
+                if (matchingFiles.length === 1) {
+                    return matchingFiles[0];
+                } else {
+                    console.log('no attachment (or multiple) found for id', id)
+                }
+            });
+            return selectedFiles;
+        },
+        allItemsSelected() {
+            let numSelected = this.selectedItems.length;
+            return numSelected > 0 && numSelected === this.getFiles.length;
+        },
+        showBatchActions() {
+            return this.iCanEditThisPanel && this.getFiles.length > 0
+        },
+        fields() {
+            if (this.showBatchActions) {
+                // returns a new list and leaves baseFields unmodified
+                return [this.batchActionField, ...this.baseFields]
+            }
+            return this.baseFields
         }
     },
     methods:{ //run as event handlers, for example
-
-        updatedFile(){
-            this.url = null
-        },
-        updatedUrl(){
-            this.file = null
-        },
-        clearUploads(){
-            this.updatedFile()
-            this.updatedUrl()
-            this.categoryId = null
-        },
-        submitFile(){
-            if(this.file) this.sendFile()
-            if(this.url) this.sendUrl()
-        },
         sendFile(){
+            if (!this.file) {
+                return;
+            }
             this.pendingUpload = true
             this.$store.dispatch("storeFile", {file:this.file, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
-                this.clearUploads()
                 this.pendingUpload = false
+                this.file = null
             }).catch(error => {
                 this.$snotify.error(error.data.message, "Upload failed")
                 this.pendingUpload = false
@@ -255,34 +359,34 @@ export default {
         sendUrl(){
             this.$store.dispatch("storeUrl", {url:this.url, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "URL Stored")
-                this.clearUploads()
+                this.url = null
             }).catch(error => {
                 this.$snotify.error("Not a valid URL - did you include http(s)://?", "Upload failed")
             })
         },
-        deleteFile(){
-            if(!this.fileToDelete){
-
+        deleteFiles(){
+            if(!this.selectedFiles) {
                 this.$snoftify.error("Select a file to delete", "Deletion Failed")
                 return;
-
             }
-            this.closeDeletePopover(this.fileToDelete.id)
-            this.$store.dispatch("deleteFile", this.fileToDelete).then(response => {
-                this.$snotify.success(response.data.MESSAGE, "File Deleted")
-                this.clearDeletion()
-            }).catch(error => {
-                this.$snotify.error(error.data.message, "Deletion failed")
-                this.clearDeletion()
-            })
+            this.closeDeletePopover()
+            this.selectedFiles.forEach(file => {
+                this.$store.dispatch("deleteFile", file).then(response => {
+                    this.clearSelection()
+                }).catch(error => {
+                    this.$snotify.error(error.data.message, "Deletion failed")
+                    this.clearSelection()
+                })
+            });
 
         },
-        confirmDeletion(id){
-            let toDelete = this.getFiles.filter(file => file.id === id)[0]
-            this.fileToDelete = toDelete
+        clearSelection() {
+            this.selectedItems = []
         },
-        clearDeletion(){
-            this.fileToDelete = {}
+        toggleSelectAll() {
+            this.selectedItems = this.selectedItems.length === this.getFiles.length
+                ? [] // clear the selections if all attachments are selected
+                : this.getFiles.map(file => file.id); // select all files if none or only some are selected
         },
         clearUpdate(){
             this.fileToUpdate = {}
@@ -301,9 +405,9 @@ export default {
         distillDescription(value, key, item){
             return item.description || ""
         },
-        closeDeletePopover(id){
-            if(this.$refs["delete-popover-" + id]) {
-                this.$refs["delete-popover-" + id].$emit("close")
+        closeDeletePopover(){
+            if(this.$refs["delete-popover"]) {
+                this.$refs["delete-popover"].$emit("close")
             }
         },
         closeCategoryPopover(id){
@@ -374,92 +478,89 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
+@import 'resources/sass/_text.scss';
 
-.sd-file-uploads--list-container {
-    overflow-x: auto;
-}
-
-.sd-file-uploads--list-table td {
-    vertical-align: middle;
-}
-
-.sd-file-uploads--list-table td:first-child {
-    width: 1%;
-}
-
-.sd-file-uploads--list-table td:nth-child(4) {
-    max-width: 10rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sd-file-uploads--list-table th:nth-child(5),
-.sd-file-uploads--list-table td:nth-child(5) {
-    white-space: nowrap;
-    text-align: right;
-}
-
-.sd-file-uploads--list-table td a .text-info {
-    color: #65dd65 !important;
-}
-
-.sd-file-uploads-header {
+.add-source {
     display: flex;
-    flex-wrap: nowrap;
-    padding-bottom: 1em;
-    margin-bottom: 1em;
-    border-bottom: solid 1px #eee;
-}
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
 
-.sd-file-uploads-header > div {
-    flex-grow: 1;
-    align-items: center;
-}
+    .form-group {
+        // let the form fields grow to take the available space.
+        flex-grow: 1;
+        flex-shrink: 0;
 
-.sd-file-uploads--file-wrapper .custom-file-label {
-    padding-right: 79px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        margin-bottom: 0;
 
-.sd-file-uploads--or {
-    padding: 0 1em;
-    max-width: 45px;
-    text-align: center;
-    line-height: 2em;
-}
+        // "append" the button directly to the input field.
+        display: flex;
+        ::v-deep input.form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0 0.5rem;
+            white-space: nowrap;
+        }
 
-.sd-file-uploads--submit-wrapper {
-    text-align:center;
-    button {
-        margin:0 3px;
+        // trying to make sure the font-size set by the container sticks to all child components.
+        button,
+        ::v-deep input,
+        ::v-deep .b-custom-control-sm.custom-file,
+        ::v-deep .b-custom-control-sm .custom-file-input,
+        ::v-deep .b-custom-control-sm .custom-file-label,
+        ::v-deep .input-group-sm.custom-file,
+        ::v-deep .input-group-sm .custom-file-input,
+        ::v-deep .input-group-sm .custom-file-label {
+            font-size: inherit;
+        }
+    }
+
+    // The upload-file input needs less space than the attach-link part.
+    .form-group.upload-file {
+        flex-basis: 200px;
+    }
+    .form-group.attach-link {
+        flex-basis: 250px;
     }
 }
 
-.sd-file-uploads--toggle-wrapper {
-    display:flex;
-    align-items: center;
+.panel-sources-list {
+    overflow-x: auto;
+}
+.panel-sources-list::v-deep table {
+    background-color: inherit;
+    color: inherit;
+}
+.panel-sources-list::v-deep .table thead th {
+    border: none;
+}
+.panel-sources-list::v-deep .table th,
+.panel-sources-list::v-deep .table td {
+    border-top: solid 1px $mostly-white-gray;
 }
 
-.sd-file-uploads--category-wrapper {
-    padding: 0 1rem;
+@media (max-width: 600px) {
+    .panel-sources-list::v-deep td a {
+        max-width: 10vw;
+    }
 }
-
-label.vue-js-switch {
-    margin: 0;
+.panel-sources-list::v-deep td a {
+    display: inline-block;
+    max-width: 30vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-
-.custom-styled-link {
-    color: #b0cddb;
-    cursor: pointer;
-}
-
-.custom-styled-link:hover,
-.custom-styled-link:focus,
-.custom-styled-link:active {
-    color: darken(#b0cddb, 15%);
+@media (min-width: 1200px) {
+    .panel-sources-list::v-deep td a {
+        max-width: 10vw;
+    }
 }
 
 </style>

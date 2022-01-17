@@ -1,35 +1,36 @@
 <template>
-<multiselect
-class="sd-keyword-multiselect"
-@select="addKeyword"
-:id="id"
-label="name"
-track-by="id"
-placeholder="Type keyword to search"
-open-direction="bottom"
-:options="keywords"
-:multiple="false"
-:searchable="true"
-:loading="isLoading"
-:internal-search="false"
-:clear-on-select="true"
-:close-on-select="true"
-:reset-after="true"
-:options-limit="20"
-:max-height="600"
-:show-no-results="true"
-:hide-selected="true"
-@search-change="asyncFind">
-    <template slot="option" slot-scope="props">
-        <div class="sd-group-keywords-option">
-            <div class="sd-group-keywords--info">
-                <div class="sd-group-keywords--name">
-                    {{ props.option.content }}
+    <multiselect
+        @select="addKeyword"
+        :id="id"
+        label="name"
+        track-by="id"
+        placeholder="Keywords"
+        open-direction="bottom"
+        :options="keywords"
+        :multiple="false"
+        :loading="isLoading"
+        :internal-search="false"
+        :reset-after="true"
+        :options-limit="20"
+        :max-height="600"
+        :hide-selected="true"
+        @search-change="asyncFind"
+    >
+        <template slot="option" slot-scope="props">
+            <div class="sd-group-keywords-option">
+                <div class="sd-group-keywords--info">
+                    <div class="sd-group-keywords--name">
+                        {{ props.option.content }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </template>
-    <span slot="noResult">No matching keywords found.</span>
+        </template>
+
+        <span slot="caret" class="multiselect-caret">
+            <font-awesome-icon icon="search" />
+        </span>
+
+        <span slot="noResult">No matching keywords found.</span>
 </multiselect>
 
 </template>
@@ -71,7 +72,7 @@ export default {
                             if (!_.find(alreadySelected, (already) => {
                                 return (already.id === keyword.id);
                             })) {
-                                console.log(keyword, alreadySelected);
+                                // console.log(keyword, alreadySelected);
                                 selectList.push(keyword);
                             }
                         });
@@ -95,12 +96,8 @@ export default {
 </script>
 
 <style lang="scss">
-    .sd-keyword-multiselect {
+    .multiselect {
         margin: 1rem 0;
-    }
-
-    .multiselect.sd-keyword-multiselect .multiselect__tags {
-        border: solid 1px #ced4da;
     }
 
     .sd-group-keywords-option {
@@ -133,5 +130,11 @@ export default {
 
     .custom__remove {
         cursor: pointer;
+    }
+
+    .multiselect-caret {
+        position: absolute;
+        right: 20px;
+        top: 9px;
     }
 </style>

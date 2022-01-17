@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -34,9 +33,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('modify-group', 'App\Gates\GroupAccessGates@canModifyGroup');
         Gate::define('view-group', 'App\Gates\GroupAccessGates@canViewGroup');
         Gate::define('view-single-panel', 'App\Gates\PanelAccessGates@canViewSinglePanelPage');
-
-        Passport::routes();
-
-        Passport::cookie('sdash_token');
     }
 }

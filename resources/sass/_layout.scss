@@ -1,0 +1,21 @@
+// Navbar settings
+$navbar-content-height: 2rem;
+
+$navbar-padding-bottom: 1rem;
+$navbar-padding-left: 2vw;
+$navbar-padding-right: 4vw;
+$navbar-padding-top: 1rem;
+$navbar-height: $navbar-padding-top + $navbar-content-height + $navbar-padding-bottom;
+
+$navbar-padding-bottom-md: 1rem;
+$navbar-padding-left-md: 3vw;
+$navbar-padding-right-md: 3vw;
+$navbar-padding-top-md: 1rem;
+$navbar-height-md: $navbar-padding-top-md + $navbar-content-height + $navbar-padding-bottom-md;
+
+$navbar-z-index: 1000;
+$feedback-widget-z-index: 10;
+
+
+$left-sidebar-toggle-width: 0.75rem;
+$left-sidebar-toggle-width-md: 1.25rem;

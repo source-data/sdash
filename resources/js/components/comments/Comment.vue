@@ -1,83 +1,82 @@
 <template>
-    <div>
-        <li>
-            <article class="sd-user-comment" :id="'sd-user-comment-' + thisComment.id">
-                <header  class="sd-user-comment--header sd-user-comment--block">
-                    <strong class="sd-user-comment--user-name">
-                        {{ commentorName }}
-                    </strong>
-                     posted on {{ this.formattedPostDate }}
-                </header>
-                <div class="sd-user-comment--content sd-user-comment--block">
-                    <div v-if="thisComment.reply_to" class="sd-user-comment--reply-quote-block">
-                        <span class="sd-user-comment--reply-quote-meta">
-                            @{{ replyToCommentorName }} ({{ formattedReplyDate }})
-                        </span>
-                        <blockquote class="sd-user-comment--reply-quote-text">
-                            {{ replyToComment.comment }}
-                        </blockquote>
-                    </div>
-                    {{ thisComment.comment }}
-                    <hr>
-                </div>
-                <footer class="sd-user-comment--actions sd-user-comment--block">
-                    <b-button
-                        size="sm"
-                        variant="danger"
-                        v-b-tooltip.hover.left="{ customClass: 'sd-remove-comment-tooltip' }" title="Delete your comment"
-                        v-if="thisIsMyComment"
-                        :id="'remove-comment-' + thisComment.id"
-                    >
-                        <font-awesome-icon
-                            class="sd-delete-comment-icon"
-                            icon="trash-alt"
-                            title="Delete panel"
-                        />
-                    </b-button>
+    <li>
+        <article class="sd-user-comment" :id="'sd-user-comment-' + thisComment.id">
+            <header  class="sd-user-comment--header sd-user-comment--block">
+                <strong class="sd-user-comment--user-name">
+                    {{ commentorName }}
+                </strong>
 
-                    <!-- remove me popover-->
-                    <b-popover
-                        v-if="thisIsMyComment"
-                        :ref="'remove-comment-popover-' + thisComment.id"
-                        :target="'remove-comment-' + thisComment.id"
-                        triggers="click"
-                        placement="topleft"
-                    >
+                posted on {{ this.formattedPostDate }}
+            </header>
+
+            <div class="sd-user-comment--content sd-user-comment--block">
+                <div v-if="thisComment.reply_to" class="sd-user-comment--reply-quote-block">
+                    <span class="sd-user-comment--reply-quote-meta">
+                        @{{ replyToCommentorName }} ({{ formattedReplyDate }})
+                    </span>
+
+                    <blockquote class="sd-user-comment--reply-quote-text">
+                        {{ replyToComment.comment }}
+                    </blockquote>
+                </div>
+
+                {{ thisComment.comment }}
+            </div>
+
+            <footer class="sd-user-comment--actions sd-user-comment--block">
+                <b-button
+                    v-if="!isDeleted"
+                    size="xs"
+                    @click="setReply"
+                    v-b-tooltip.hover.top="{ customClass: 'sd-reply-to-tooltip' }" title="Reply to this comment"
+                    v-scroll-to="{
+                        el: '#sd-post-comment',
+                        container: '.comments .content'
+                    }"
+                >
+                    Reply
+                </b-button>
+
+                <b-button
+                    v-if="thisIsMyComment"
+                    size="xs"
+                    v-b-tooltip.hover.top="{ customClass: 'sd-remove-comment-tooltip' }" title="Delete your comment"
+                    :id="'remove-comment-' + thisComment.id"
+                >
+                    Delete
+                </b-button>
+
+                <!-- remove me popover-->
+                <b-popover
+                    v-if="thisIsMyComment"
+                    :ref="'remove-comment-popover-' + thisComment.id"
+                    :target="'remove-comment-' + thisComment.id"
+                    triggers="click blur"
+                    placement="right"
+                    custom-class="sd-custom-popover"
+                >
                     <template v-slot:title>
                             Delete Comment?
                         <b-button @click="closeDeleteCommentPopover" class="close" aria-label="Close">
                             <span class="d-inline-block" aria-hidden="true">&times;</span>
                         </b-button>
                     </template>
-                        <div class="confirm-refresh-link">
-                            <p>
-                                Are you sure you want to delete your comment?
-                            </p>
-                            <div class="refresh-buttons">
-                                <b-button variant="danger" small @click="deleteThisComment">Delete it!</b-button>
-                                <b-button variant="outline-dark" small @click="closeDeleteCommentPopover">Cancel</b-button>
-                            </div>
+
+                    <div class="confirm-refresh-link">
+                        <p>
+                            Are you sure you want to delete your comment?
+                        </p>
+
+                        <div class="refresh-buttons">
+                            <b-button variant="danger" small @click="deleteThisComment">Delete it!</b-button>
+                            <b-button variant="outline-dark" small @click="closeDeleteCommentPopover">Cancel</b-button>
                         </div>
-                    </b-popover>
-                    <!-- end of remove me popover -->
-
-                    <b-button
-                        v-if="!isDeleted"
-                        type="submit"
-                        size="sm"
-                        variant="light"
-                        @click="setReply"
-                        v-scroll-to="{
-                            el: '#sd-post-comment',
-                            container: '.sd-panel-detail-tab-card .card-text'
-                        }"
-                        >Reply
-                    </b-button>
-                </footer>
-
-            </article>
-        </li>
-    </div>
+                    </div>
+                </b-popover>
+                <!-- end of remove me popover -->
+            </footer>
+        </article>
+    </li>
 </template>
 
 <script>
@@ -157,54 +156,37 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'resources/sass/_colors.scss';
 
-    .sd-user-comment {
-        background-color:#2f2f2f;
-        margin-bottom: 0.5em;
-    }
-
-    .sd-user-comment--block {
-        padding: 3px 6px;
-
-        hr {
-            margin: 6px 12px 0;
-            border-top: solid 1px #6c6c6c;
-        }
-    }
-
-
-    .sd-user-comment--user-name {
-        color: #6e89aa;
-    }
-
-    .sd-user-comment--header {
-        background-color: #2e3746;
-    }
-
-    .sd-user-comment--actions {
-        text-align:right;
-    }
-
-    .sd-user-comment--reply-quote-block {
-        margin: 0.5em;
-        padding: 0.25em;
-        background-color: #4f4f4f;
-    }
-
-    .sd-user-comment--reply-quote-meta {
-        font-style:italic;
-    }
-
-.sd-remove-comment-tooltip {
-    .tooltip-inner {
-        background-color:#eee;
-        color: #333;
-    }
-    .arrow:before {
-        border-left-color:#eee;
-    }
-
+.sd-user-comment {
+    margin-bottom: 0.5rem;
 }
 
+.sd-user-comment--reply-quote-block {
+    margin-bottom: 0.2rem;
+    margin-left: 1rem;
+    border-left: 0.3rem solid $mostly-white-gray-opaque;
+    padding-left: 0.3rem;
+}
+.sd-user-comment--reply-quote-block blockquote {
+    margin: 0;
+}
+
+.sd-user-comment--actions {
+    line-height: 0.5rem;
+}
+.sd-user-comment--actions button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 0.65rem;
+    padding: 0;
+}
+
+.sd-user-comment--actions button:active,
+.sd-user-comment--actions button:focus,
+.sd-user-comment--actions button:hover {
+    text-decoration: underline;
+}
 </style>

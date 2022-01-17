@@ -1,121 +1,345 @@
 <template>
     <div>
-        <info-bar v-if="user">
-            <template v-slot:above-title v-if="isAuthorized">
-                <router-link :to="{path: '/user/' + user.id + '/edit'}" class="sd-edit-icon sd-user-edit-link">
+        <article v-if="user" id="user-profile">
+            <header>
+                <h2>{{ fullName }}</h2>
+
+                <router-link
+                    v-if="isAuthorized"
+                    :to="{ name: 'useredit', params: { user_id: user.id } }"
+                    id="link-to-edit-user-profile"
+                    class="btn btn-desat-blue"
+                >
                     <font-awesome-icon icon="edit" title="Edit user details" />
                     Edit profile
                 </router-link>
-            </template>
-            <template v-slot:title>
-                <h1 class="pb-0 mb-0">{{ user.firstname + ' ' + user.surname }}</h1>
-                <p v-if="user.institution_name">{{ user.institution_name }}</p>
-            </template>
-            <template v-slot:text>
-                <dl class="row mt-3">
-                    <template v-if="user.email">
-                        <dt class="col-sm-4">Email</dt>
-                        <dd class="col-sm-8">
-                            <a :href="'mailto:' + user.email" target="_blank" class="pb-2">{{ user.email }}</a>
-                        </dd>
-                    </template>
-                    <template v-if="user.orcid">
-                        <dt class="col-sm-4">ORCID</dt>
-                        <dd class="col-sm-8">
-                            <a :href="'https://orcid.org/' + user.orcid" target="_blank" class="pb-2">{{ user.orcid }}</a>
-                        </dd>
-                    </template>
-                    <template v-if="user.institution_name">
-                        <dt class="col-sm-4">Institution Name</dt>
-                        <dd class="col-sm-8">{{ user.institution_name }}</dd>
-                    </template>
-                    <template v-if="user.institution_address">
-                        <dt class="col-sm-4">Institution Address</dt>
-                        <dd class="col-sm-8">{{ user.institution_address }}</dd>
-                    </template>
-                    <template v-if="user.department_name">
-                        <dt class="col-sm-4">Department Name</dt>
-                        <dd class="col-sm-8">{{ user.department_name }}</dd>
-                    </template>
-                    <template v-if="user.linkedin">
-                        <dt class="col-sm-4">LinkedIn</dt>
-                        <dd class="col-sm-8">
-                            <a :href="user.linkedin" target="_blank" class="pb-2">{{ user.linkedin }}</a>
-                        </dd>
-                    </template>
-                    <template v-if="user.twitter">
-                        <dt class="col-sm-4">Twitter</dt>
-                        <dd class="col-sm-8">
-                            <a :href="user.twitter" target="_blank" class="pb-2">{{ user.twitter }}</a>
-                        </dd>
-                    </template>
-                </dl>
-            </template>
-        </info-bar>
-        <b-container v-if="loading" fluid class="mt-3">
-            <b-row>
-                <b-col class="text-center">
-                    <b-spinner variant="primary" label="Spinning" class="m-5" style="width: 4rem; height: 4rem;"></b-spinner>
-                </b-col>
-            </b-row>
-        </b-container>
+            </header>
+
+            <b-container fluid="lg" id="user-profile-info">
+                <b-row v-if="user.email">
+                    <b-col>
+                        Email
+                    </b-col>
+
+                    <b-col md="auto">
+                        <a
+                            class="text-info"
+                            :href="'mailto:' + user.email"
+                            target="_blank"
+                        >
+                            {{ user.email }}
+                        </a>
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="user.orcid">
+                    <b-col>
+                        ORCID
+                    </b-col>
+
+                    <b-col md="auto">
+                        <a
+                            class="text-info"
+                            :href="'https://orcid.org/' + user.orcid"
+                            target="_blank"
+                        >
+                            {{ user.orcid }}
+                        </a>
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="user.institution_name">
+                    <b-col>
+                        Institution Name
+                    </b-col>
+
+                    <b-col md="auto">
+                        {{ user.institution_name }}
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="user.institution_address">
+                    <b-col>
+                        Institution Address
+                    </b-col>
+
+                    <b-col md="auto">
+                        {{ user.institution_address }}
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="user.department_name">
+                    <b-col>
+                        Department Name
+                    </b-col>
+
+                    <b-col md="auto">
+                        {{ user.department_name }}
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="user.linkedin">
+                    <b-col>
+                        LinkedIn
+                    </b-col>
+
+                    <b-col md="auto">
+                        <a
+                            class="text-info"
+                            :href="user.linkedin"
+                            target="_blank"
+                        >
+                            {{ user.linkedin }}
+                        </a>
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="user.twitter">
+                    <b-col>
+                        Twitter
+                    </b-col>
+
+                    <b-col md="auto">
+                        <a
+                            class="text-info"
+                            :href="user.twitter"
+                            target="_blank"
+                        >
+                            {{ user.twitter }}
+                        </a>
+                    </b-col>
+                </b-row>
+
+                <b-row>
+                    <b-col>
+                        Profile Image
+                    </b-col>
+
+                    <b-col md="auto">
+                        <image-uploader
+                            field="avatar"
+                            ref="avatarUploader"
+                            @crop-upload-success="avatarUploadSuccess"
+                            v-model="showAvatarUploadDialog"
+                            :width="300"
+                            :height="300"
+                            :url="avatarUploadUrl"
+                            :method="requestMethod"
+                            :headers="requestHeaders"
+                            :params="requestParams"
+                            :no-square="true"
+                            lang-type="en"
+                            img-format="jpg"
+                        ></image-uploader>
+                        <div class="avatar">
+                            <img
+                                :src="avatarUrl"
+                                :alt="'Avatar of ' + fullName"
+                            />
+                            <button
+                                class="edit text-xxs"
+                                v-if="isAuthorized"
+                                @click="toggleAvatarUploadDialog"
+                                title="Change avatar"
+                            >
+                                <font-awesome-icon icon="pen" />
+                            </button>
+                        </div>
+                    </b-col>
+                </b-row>
+            </b-container>
+
+            <footer v-if="isProfileOfLoggedInUser">
+                To delete your account, please send an email to
+                <a
+                    class="text-info"
+                    href="'mailto:sourcedata@embo.org'"
+                    target="_blank"
+                >
+                    sourcedata@embo.org </a
+                >.
+            </footer>
+        </article>
+
+        <div class="spinner-container">
+            <b-spinner
+                v-if="loading"
+                variant="primary"
+                label="Spinning"
+            ></b-spinner>
+        </div>
     </div>
 </template>
 
 <script>
-
-import Axios from "axios"
-import InfoBar from '../InfoBar'
-import { mapGetters, mapActions } from 'vuex'
+import Axios from "axios";
+import ImageUploader from "vue-image-crop-upload/upload-2.vue";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
-    name: 'UserProfile',
+    name: "UserProfile",
     components: {
-        InfoBar,
+        ImageUploader
     },
-    props: ['user_id'],
+    props: ["user_id"],
     data() {
         return {
             loading: false,
             user: null,
-            error: null
-        }
+            error: null,
+            showAvatarUploadDialog: false,
+            requestMethod: "POST",
+            requestHeaders: {
+                "X-XSRF-TOKEN": this.$cookies.get("XSRF-TOKEN")
+            },
+            requestParams: {
+                _method: "PATCH"
+            }
+        };
     },
     computed: {
-        ...mapGetters([
-            'currentUser'
-        ]),
+        ...mapGetters(["currentUser"]),
+        isProfileOfLoggedInUser() {
+            return this.currentUser.id === this.user.id;
+        },
         isAuthorized() {
-            return (this.currentUser.id === this.user.id) || (this.currentUser.role === 'superadmin')
+            return (
+                this.isProfileOfLoggedInUser ||
+                this.currentUser.role === "superadmin"
+            );
+        },
+        fullName() {
+            return this.user.firstname + " " + this.user.surname;
+        },
+        avatarUrl() {
+            return this.user.avatar
+                ? "/storage/avatars/" + this.user.avatar
+                : "/images/default_avatar.jpg";
+        },
+        avatarUploadUrl() {
+            return (
+                process.env.MIX_API_URL + "/users/" + this.user.id + "/avatar"
+            );
+        }
+    },
+    watch: {
+        user_id: function updateDisplayedUser() {
+            this.fetchData();
         }
     },
     created() {
-        this.fetchData()
+        this.fetchData();
     },
     methods: {
+        ...mapMutations(["setCurrentUser"]),
         fetchData() {
-            this.error = this.user = null
-            this.loading = true
+            this.error = this.user = null;
+            this.loading = true;
             return Axios.get("/users/" + this.user_id)
                 .then(response => {
-                    return this.user = response.data.DATA;
+                    return (this.user = response.data.DATA);
                 })
                 .catch(error => {
-                    this.error = error
+                    this.error = error;
                 })
                 .then(() => {
-                    this.loading = false
-                })
+                    this.loading = false;
+                });
+        },
+        toggleAvatarUploadDialog() {
+            this.showAvatarUploadDialog = !this.showAvatarUploadDialog;
+        },
+        avatarUploadSuccess(response) {
+            this.user.avatar = response.DATA.avatar;
+            if (this.isProfileOfLoggedInUser) {
+                this.setCurrentUser(this.user);
+            }
+            this.showAvatarUploadDialog = false;
+            this.$refs.avatarUploader.setStep(1);
         }
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+@import "resources/sass/_colors.scss";
+@import "resources/sass/_text.scss";
+
+#user-profile {
+    font-size: $font-size-md;
+    margin: 2rem 5%;
+}
+@media (min-width: 768px) {
+    #user-profile {
+        margin: 6rem 5%;
     }
 }
 
-</script>
+header {
+    margin-bottom: 3rem;
 
-<style lang="scss">
-    .sd-user-edit-link {
-        font-size: 1rem;
+    h2 {
+        color: $vivid-orange;
+        flex: auto;
+        margin: 0;
         padding: 0.5rem 0;
-        color: #459939;
     }
+
+    #link-to-edit-user-profile {
+        font-size: $font-size-sm;
+        padding: 0.75rem 1rem;
+    }
+}
+@media (min-width: 768px) {
+    header {
+        display: flex;
+        margin-bottom: 6rem;
+    }
+}
+
+#user-profile-info {
+    padding: 0;
+    margin-left: 0;
+
+    .row:not(:last-child) {
+        padding-bottom: 1.5rem;
+    }
+
+    .row .col:first-child {
+        max-width: 250px;
+    }
+
+    .avatar {
+        margin-bottom: 5px;
+        position: relative;
+        width: 150px;
+    }
+
+    .avatar img {
+        width: 100%;
+    }
+
+    .avatar button.edit {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        color: white;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+    .avatar button.edit,
+    .avatar button.edit * {
+        border: none;
+        outline: none;
+    }
+}
+
+footer {
+    margin-top: 100px;
+}
+
+.spinner-container {
+    margin-top: 5rem;
+    text-align: center;
+}
 </style>

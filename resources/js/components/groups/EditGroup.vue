@@ -56,10 +56,11 @@
                     label-cols-sm="3"
                     label-cols-lg="2"
                     members="Select the group members."
-                    label="Group members"
+                    label="Group Members"
                     label-for="sd-new-group-members-input"
                     description="Note: removing a member will also remove their panels"
                     >
+                        <div class="sd-group-members-message text-info small" v-if="membershipRequestCount">{{membershipRequestCount}} membership request(s) awaiting approval.</div>
                         <user-multiselect id="sd-new-group-members-input" v-if="loaded" :initialusers="groupMembers" @userdataChange="updatedUserdata">
                         </user-multiselect>
                     </b-form-group>
@@ -92,7 +93,7 @@
                     <section v-if="selectedPanels" class="sd-group-panel-list">
                         <div v-for="panel in selectedPanelDetails" class="sd-group-panel-list-panel-wrapper" :key="panel.id">
                             <button class="remove-panel-from-group-button error" @click.prevent="deselectPanel(panel.id)">X</button>
-                            <img class="sd-group-panel-list-grid-image" v-lazy="'/panels/' + panel.id + '/image/thumbnail'">
+                            <img class="sd-group-panel-list-grid-image" v-lazy="thumbnailUrl(panel)">
                         </div>
 
                     </section>
@@ -130,13 +131,17 @@ export default {
             groupMembers: [],
             isPublicGroup: false,
             loaded: false,
+            membershipRequestCount: 0,
         }
     },
     computed: {
         ...mapGetters([
+            'apiUrls',
             'selectedPanels',
             'loadedPanels',
             'currentGroup',
+            'isGroupDescriptionValid',
+            'groupDescriptionMaxLength',
         ]),
         selectedPanelDetails(){
             return this.loadedPanels.filter((item) => this.selectedPanels.indexOf(item.id) >= 0)
@@ -173,14 +178,20 @@ export default {
             let regex = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)
             return this.groupUrl.match(regex) ? true : false
         },
-        groupDescriptionState(){
-            return this.groupDescription.length > 0 ? true : false
+        groupDescriptionState() {
+            return this.isGroupDescriptionValid(this.groupDescription);
         },
         groupDescriptionValid(){
-            return  this.groupDescriptionState === true ? 'Group description is valid' : ''
+            return this.groupDescriptionState === true ? 'Group description is valid' : ''
         },
         groupDescriptionInvalid(){
-            return (this.groupDescriptionState === false) ? 'Group description is required' : ''
+            if (this.groupDescriptionState === true) {
+                return ''
+            }
+            if (this.groupDescription) {
+                return `Group description must be ${this.groupDescriptionMaxLength} characters or fewer`
+            }
+            return 'Group description is required'
         },
         disableSubmission(){
             return !(this.groupNameValid && this.groupDescriptionValid && this.groupUrlValid)
@@ -210,6 +221,7 @@ export default {
                 members.push({
                     id: member.id,
                     admin: member.isGroupAdmin,
+                    status: member.pivot ? member.pivot.status : 'pending',
                 })
             })
 
@@ -232,10 +244,10 @@ export default {
             }).catch(err => {
                 this.$snotify.error(err.data.MESSAGE, "Sorry!")
             })
-
-        }
-
-
+        },
+        thumbnailUrl(panel) {
+            return this.apiUrls.panelThumbnail(panel);
+        },
     },
     beforeMount() {
         // only allow authorized users to view the edit screen
@@ -246,7 +258,8 @@ export default {
             this.groupUrl =  group.url || ""
             this.groupDescription =  group.description
             this.isPublicGroup = !!group.is_public
-            this.groupMembers = group.users
+            this.groupMembers = group.users.sort((user1, user2)=> user1.pivot.status === 'requested' ? -1 : 0 )
+            this.membershipRequestCount = this.groupMembers.filter((item) => item.pivot.status === 'requested').length
             this.loaded = true
 
             this.$store.commit("clearLoadedPanels")
@@ -275,8 +288,11 @@ export default {
                 this.$router.push({path: '/'})
             }
         })
+    },
+    destroyed() {
+        // deselect all the panels we selected in beforeMount()
+        this.$store.commit('clearSelectedPanels');
     }
-
 }
 </script>
 

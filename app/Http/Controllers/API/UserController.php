@@ -6,13 +6,12 @@ use API;
 use App\User;
 use App\Models\Group;
 use App\Models\UserConsent;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -158,7 +157,7 @@ class UserController extends Controller
                 $query->with(['confirmedUsers' => function ($query) {
                     $query->withPivot(['role']);
                 }]);
-                $query->withCount(['confirmedUsers', 'panels']);
+                $query->withCount(['confirmedUsers', 'requestedUsers', 'panels']);
                 $query->withPivot(['role', 'token', 'status']);
             }])
             ->first();
@@ -178,14 +177,8 @@ class UserController extends Controller
 
             /*
             User should not be removed from group if:
-                1. They are group owner
-                2. They are last remaining admin
+                They are last remaining admin
             */
-
-            // 1.
-            if ($loggedInUser->id === $group->user_id) return API::response(403, "Group owner cannot leave group.", []);
-
-            // 2.
             if ($group->users()->wherePivot("role", "admin")->count() < 2 && $group->users()->where("user_id", $loggedInUser->id)->wherePivot("role", "admin")->exists()) return API::response(403, "A group must have an administrator", []);
 
             $group->users()->detach($loggedInUser->id);
@@ -205,6 +198,74 @@ class UserController extends Controller
             return API::response(200, "{$loggedInUser->firstname} {$loggedInUser->surname} removed from group", []);
         } else {
             return API::response(403, "You are forbidden from removing this user from the group.", []);
+        }
+    }
+
+    /**
+     * Allow logged-in user to modify their own password
+     *
+     * @param User $user
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changePassword(User $user, Request $request)
+    {
+        $request->validate([
+            'existingPassword'  => ['required', 'password'],
+            'newPassword1'      => ['required', 'same:newPassword2', 'min:8'],
+            'newPassword2'      => ['required', 'same:newPassword1', 'min:8']
+        ]);
+
+        $loggedInUser = auth()->user();
+
+        if (!$loggedInUser->id === $user->id) return API::response(403, "You cannot change another user's password.", ["success" => false]);
+
+        $user->password = Hash::make($request->input('newPassword1'));
+        $user->save();
+
+        return API::response(200, "Password changed", ["success" => true]);
+
+        return $request;
+    }
+
+    /**
+     * Change user avatar
+     *
+     * @param User $user
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changeAvatar(User $user, Request $request)
+    {
+        $loggedInUser = auth()->user();
+
+        if (($loggedInUser->id !== $user->id)
+            && !$loggedInUser->is_superadmin()) {
+            abort(403, 'Access denied');
+        }
+
+        if (!$request->file('avatar')) {
+            return API::response(400, "No avatar uploaded", []);
+        }
+
+        // Delete existing avatar
+        if ($user->avatar !== null) {
+            Storage::disk('public')->delete('avatars/' . $user->avatar);
+        }
+
+        // Process the uploaded image
+        $filename = Str::random(20) . '.' . $request->file('avatar')->getClientOriginalExtension();
+        $request->file('avatar')->storeAs('avatars/', $filename, 'public');
+
+        // Update the user avatar
+        $user->avatar = $filename;
+
+        if ($user->save()) {
+            return API::response(200, "Avatar changed", [
+                "avatar" => $filename,
+            ]);
+        } else {
+            return API::response(500, "Failed to change avatar", []);
         }
     }
 }

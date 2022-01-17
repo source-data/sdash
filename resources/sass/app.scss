@@ -3,7 +3,9 @@
 @import "~font-awesome/scss/font-awesome.scss";
 
 // Variables
-@import "variables";
+@import "colors";
+@import "layout";
+@import "text";
 
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
@@ -22,6 +24,3 @@
 
 //overrides
 @import "custom";
-
-//single panel page
-@import "singlepanelpage";
