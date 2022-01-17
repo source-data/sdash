@@ -273,6 +273,7 @@
             <panel-listing-grid
                 v-if="hasPanels"
                 list_root="user"
+                batchSelectDisabled="true"
             ></panel-listing-grid>
 
             <b-alert

@@ -10,7 +10,7 @@
                     <button
                         class="panel-select-button"
                         v-on:click.stop="toggleSelected"
-                        v-if="IOwnThisPanel"
+                        v-if="!batchSelectDisabled && IOwnThisPanel"
                     >
                         <transition name="fade">
                             <font-awesome-layers
@@ -114,7 +114,8 @@ export default {
     name: "PanelListingGridItem",
     components: { PanelDetail },
     props: {
-        panelId: Number
+        panelId: Number,
+        batchSelectDisabled: Boolean,
     },
 
     data() {

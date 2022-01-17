@@ -6,6 +6,7 @@
                 v-for="panel in loadedPanels"
                 :key="panel.id"
                 :panel-id="panel.id"
+                :batchSelectDisabled="batchSelectDisabled"
             ></panel-listing-grid-item>
         </ul>
 
@@ -31,7 +32,13 @@ export default {
 
     name: 'PanelListingGrid',
     components: { PanelListingGridItem, InfiniteLoading },
-    props: ['list_root'],
+    props: {
+        list_root: String,
+        batchSelectDisabled: {
+            type: Boolean,
+            default: false,
+        },
+    },
     data(){
         return {
             switchingPages: false,
