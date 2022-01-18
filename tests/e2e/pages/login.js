@@ -12,7 +12,8 @@ var loginCommands = {
         this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_after-submit-enabled.png`)
         this.click('@submit')
         this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_after-submit-clicked.png`)
-
+        this.waitForElementVisible('@notification', 10000)
+        this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_notification.png`)
         return this.waitForElementVisible('#sd-panel-listing-grid', 10000)
     }
 };
@@ -26,5 +27,8 @@ module.exports = {
         userName: 'input#login-email',
         password: 'input#login-password',
         submit: 'button[type="submit"]',
+        notification: '.snotifyToast',
+        successNotification: '.snotifyToast.snotify-success',
+        errorNotification: '.snotifyToast.snotify-error',
     }
 };
