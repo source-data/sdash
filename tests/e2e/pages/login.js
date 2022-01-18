@@ -2,15 +2,18 @@ var loginCommands = {
     login: function() {
         let userName = 'user@example.org',
             password = 'password';
-        return this
-            .verify.visible('@userName')
+        this.verify.visible('@userName')
             .verify.visible('@password')
             .verify.visible('@submit')
             .setValue('@userName', userName)
-            .setValue('@password', password)
-            .assert.enabled('@submit')
-            .click('@submit')
-            .waitForElementVisible('#sd-panel-listing-grid', 10000)
+            .setValue('@password', password);
+        this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_after-values-set.png`)
+        this.assert.enabled('@submit')
+        this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_after-submit-enabled.png`)
+        this.click('@submit')
+        this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_after-submit-clicked.png`)
+
+        return this.waitForElementVisible('#sd-panel-listing-grid', 10000)
     }
 };
 
