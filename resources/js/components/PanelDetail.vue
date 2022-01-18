@@ -189,10 +189,69 @@
                             role="tabpanel"
                             aria-labelledby="panel-keywords-tab"
                         >
-                            <smart-tags-category title="Measured Variables" type="assay"></smart-tags-category>
-                            <smart-tags-category title="Controlled Variables" type="intervention"></smart-tags-category>
-                            <smart-tags-category title="Instruments / Methods" type="method"></smart-tags-category>
-                            <smart-tags-category title="General Keywords" type="other"></smart-tags-category>
+                            <div>
+                                <label>
+                                    Measured Variables
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Variables that were observed, measured or  described in this experiment"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="assay"></smart-tags-category>
+                            </div>
+                        
+                            <div>
+                                <label>
+                                    Controlled Variables
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Variables tested by controlled experimentation for their potential causal effect on (some of) the measured variables (controlled pharmacological treatment, genetic perturbation, surgical intervention, ...)"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="intervention"></smart-tags-category>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Instruments / Methods
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Methods, measurement platforms, experimental assays"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="method"></smart-tags-category>
+                            </div>
+
+                            <div>
+                                <label>
+                                    General Keywords
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Free text keywords"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="other"></smart-tags-category>
+                            </div>
                             <copy-tags></copy-tags>
                         </section>
                     </div>
