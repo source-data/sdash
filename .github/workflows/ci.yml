@@ -29,6 +29,8 @@ jobs:
     # End-to-end tests
     - name: Start the server for the end-to-end tests
       run: php artisan serve --port 8080 &
+    - name: Reset the database state
+      run: php artisan migrate:fresh
     - name: Seed the database
       run: php artisan db:seed
     - name: Run end-to-end tests
