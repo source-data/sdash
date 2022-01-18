@@ -9,8 +9,12 @@ var loginCommands = {
             .setValue('@password', password)
             .assert.enabled('@submit')
             .click('@submit')
-            .waitForElementVisible('@notification', 10000);
-        this.api.saveScreenshot(`tests/e2e/output/${Date.now()}_login-notification.png`);
+            .waitForElementVisible(
+                '@notification',
+                2000,
+                false, /* don't fail if the notification doesn't become visible, the login might still have worked */
+            );
+        this.api.saveScreenshot(`tests/e2e/output/login/${Date.now()}_login-notification.png`);
         return this.waitForElementVisible('#sd-panel-listing-grid', 10000);
     }
 };
