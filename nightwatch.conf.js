@@ -8,7 +8,7 @@ module.exports = {
     src_folders: `${baseFolder}/specs`,
     page_objects_path: `${baseFolder}/pages`,
     output_folder: outputFolder,
-
+    silent: false,
     screenshots: {
         enabled: true,
         path: outputFolder,

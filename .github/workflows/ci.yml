@@ -30,7 +30,7 @@ jobs:
     - name: Start the server for the end-to-end tests
       run: php artisan serve --port 8080 &
     - name: Run end-to-end tests
-      run: npx nightwatch --headless --env firefox,chrome
+      run: npm run tests | tee tests/e2e/output/nightwatch.log
     - name: Archive test results
       if: always() # even after test failure
       uses: actions/upload-artifact@v2
