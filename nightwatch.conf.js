@@ -1,17 +1,23 @@
 const dotenv = require("dotenv")
 dotenv.config()
 
-const output_folder = "tests/e2e/output"
+const baseFolder = "tests/e2e"
+const outputFolder = `${baseFolder}/output`
 
 module.exports = {
-    src_folders: ["tests/e2e/specs"],
-    page_objects_path: ['tests/e2e/pages'],
-    output_folder: output_folder,
+    src_folders: `${baseFolder}/specs`,
+    page_objects_path: `${baseFolder}/pages`,
+    output_folder: outputFolder,
+
+    screenshots: {
+        enabled: true,
+        path: outputFolder,
+    },
 
     // Common configuration options for the webdriver
     webdriver: {
-        log_path: output_folder,
-        start_process: true
+        log_path: outputFolder,
+        start_process: true,
     },
 
     test_settings: {
