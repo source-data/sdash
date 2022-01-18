@@ -31,6 +31,12 @@ jobs:
       run: php artisan serve --port 8080 &
     - name: Run end-to-end tests
       run: npx nightwatch --headless --env firefox,chrome
+    - name: Archive test results
+      if: always() # even after test failure
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        path: tests/e2e/output
 
   release-dev:
     name: Release frontend build artifact for the dev server
