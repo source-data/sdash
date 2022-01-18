@@ -45,7 +45,3 @@ runs:
     - name: Generate key and passport encryption keys
       run: php artisan key:generate
       shell: bash
-
-    - name: Seed the database
-      run: php artisan db:seed
-      shell: bash
