@@ -9,22 +9,17 @@
                 <header class="sd-grid-item--image-header">
                     <button
                         class="panel-select-button"
+                        :class="{'bg-success': panelSelected}"
                         v-on:click.stop="toggleSelected"
                         v-if="!batchSelectDisabled && IOwnThisPanel"
                     >
-                        <transition name="fade">
-                            <font-awesome-layers
-                                class="fa-2x panel-select-button--icon text-success"
-                                v-if="panelSelected"
-                            >
-                                <font-awesome-icon icon="circle" />
-                                <font-awesome-icon
-                                    icon="check"
-                                    transform="shrink-6"
-                                    :style="{ color: 'white' }"
-                                />
-                            </font-awesome-layers>
-                        </transition>
+
+                        <font-awesome-icon
+                            v-if="panelSelected"
+                            icon="check"
+                            transform="shrink-5"
+                            :style="{ color: 'white' }"
+                        />
                     </button>
                 </header>
 
@@ -402,16 +397,29 @@ $authors-height: $font-size-sm;
 }
 
 .panel-select-button {
+    // vertically align the green checkmark inside the button
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // position the button within the header
     position: absolute;
     top: 6px;
     right: 6px;
     padding: 0;
     margin: 0;
-    background: none;
-    border: solid 2px $mostly-white-gray;
+
     width: 40px;
     height: 40px;
+
+    background-color: $very-light-gray-opaque;
+    border: solid 3px $very-light-gray;
     border-radius: 50%;
+}
+.panel-select-button:hover,
+.panel-select-button:focus {
+    background-color: $mostly-white-gray-opaque;
+    border: solid 3px $mostly-white-gray;
 }
 
 .sd-grid-item::v-deep .modal-dialog {
