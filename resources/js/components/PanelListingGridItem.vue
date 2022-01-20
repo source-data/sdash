@@ -414,13 +414,13 @@ $authors-height: $font-size-sm;
     height: 40px;
 
     background-color: $very-light-gray-opaque;
-    border: solid 3px $very-light-gray;
+    border: solid 3px $mostly-white-gray;
     border-radius: 50%;
 }
 .panel-select-button:hover,
 .panel-select-button:focus {
     background-color: $mostly-white-gray-opaque;
-    border: solid 3px $mostly-white-gray;
+    border: solid 3px $very-light-gray;
 }
 
 .sd-grid-item::v-deep .modal-dialog {
