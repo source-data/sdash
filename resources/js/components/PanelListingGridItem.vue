@@ -7,7 +7,8 @@
                 tabindex="0"
             >
                 <header class="sd-grid-item--image-header">
-                    <button
+                    <label
+                        type="button"
                         class="panel-select-button"
                         :class="{'bg-success': panelSelected}"
                         v-on:click.stop="toggleSelected"
@@ -20,7 +21,7 @@
                             transform="shrink-5"
                             :style="{ color: 'white' }"
                         />
-                    </button>
+                    </label>
                 </header>
 
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
