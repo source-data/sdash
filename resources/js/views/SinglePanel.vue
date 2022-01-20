@@ -171,10 +171,10 @@
 
             <footer>
                 <p v-if="expandedPanel.is_public">
-                    &copy; 2021 The Authors. This figure is licensed under the terms of the
-                    <a class="text-info" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License</a>,
-                    which permits use, distribution and reproduction in any medium, provided the original work is
-                    properly cited.
+                    <font-awesome-icon :icon="['fab', 'creative-commons']" /> 2022 The Authors. This figure is licensed
+                    under the terms of the <a class="text-info" href="https://creativecommons.org/licenses/by/4.0/">
+                    Creative Commons Attribution License</a>, which permits use, distribution and reproduction in any
+                    medium, provided the original work is properly cited.
                 </p>
 
                 <p>
