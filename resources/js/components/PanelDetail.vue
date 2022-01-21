@@ -121,8 +121,8 @@
 
                     <span class="sd-license-notice text-xxs" v-if="isPublic">
                         <font-awesome-icon :icon="['fab', 'creative-commons']" /> 2022 The Authors. Published under the
-                        terms of the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0
-                        </a> license.
+                        terms of the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>
+                        license.
                     </span>
                 </section>
 
