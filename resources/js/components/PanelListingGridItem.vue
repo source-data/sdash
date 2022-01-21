@@ -397,6 +397,7 @@ $authors-height: $font-size-sm;
     color:#634782;
 }
 
+$panel-select-button-diameter: $image-height * 0.1;
 .panel-select-button {
     // vertically align the green checkmark inside the button
     display: flex;
@@ -410,17 +411,17 @@ $authors-height: $font-size-sm;
     padding: 0;
     margin: 0;
 
-    width: 40px;
-    height: 40px;
+    width: $panel-select-button-diameter;
+    height: $panel-select-button-diameter;
 
     background-color: $very-light-gray-opaque;
-    border: solid 3px $mostly-white-gray;
+    border: solid 1px $mostly-white-gray;
     border-radius: 50%;
 }
 .panel-select-button:hover,
 .panel-select-button:focus {
     background-color: $mostly-white-gray-opaque;
-    border: solid 3px $very-light-gray;
+    border: solid 1px $very-light-gray;
 }
 
 .sd-grid-item::v-deep .modal-dialog {
