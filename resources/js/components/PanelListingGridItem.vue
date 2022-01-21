@@ -414,14 +414,14 @@ $panel-select-button-diameter: $image-height * 0.1;
     width: $panel-select-button-diameter;
     height: $panel-select-button-diameter;
 
-    background-color: $very-light-gray-opaque;
-    border: solid 1px $mostly-white-gray;
+    background-color: $mostly-white-gray-opaque;
+    border: solid 1px $very-light-gray;
     border-radius: 50%;
 }
 .panel-select-button:hover,
 .panel-select-button:focus {
-    background-color: $mostly-white-gray-opaque;
-    border: solid 1px $very-light-gray;
+    background-color: $very-light-gray-opaque;
+    border: solid 1px $light-gray;
 }
 
 .sd-grid-item::v-deep .modal-dialog {
