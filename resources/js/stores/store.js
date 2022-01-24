@@ -68,6 +68,12 @@ export default new Vuex.Store({
         tagSearch() {
           return getters.isLoggedIn ? '/tags' : '/public/tags';
         },
+        avatar(user) {
+          return user.avatar ? "/storage/avatars/" + user.avatar : "/images/default_avatar.jpg";
+        },
+        deleteAvatar(user) {
+          return "/users/" + user.id + "/avatar";
+        }
       }
     },
    },

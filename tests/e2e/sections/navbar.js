@@ -30,6 +30,8 @@ module.exports = {
         searchBar: 'input[type="search"]',
         // the secondary navigation links on the right when logged in
         userMenuToggle: '#navbarUserProfileMenuLink',
+        customUserProfileImage: 'img.profile-picture[src^="/storage/avatars/"]',
+        defaultUserProfileImage: 'img.profile-picture[src$="default_avatar.jpg"]',
         linkToUserProfile: 'a[href^="/user/"]',
         linkToLogoutPage: 'a[href="/logout"]',
     }

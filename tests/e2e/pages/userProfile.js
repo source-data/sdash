@@ -1,3 +1,5 @@
+const navbar = require('../sections/navbar.js');
+
 var userProfileCommands = {
     deleteAvatar: function() {
         this.verify.visible('@deleteAvatarButton')
@@ -14,7 +16,7 @@ var userProfileCommands = {
             .setValue('@changeAvatarInput', newAvatar)
             .click('@changeAvatarConfirmButton');
         return this.waitForElementVisible('@customAvatar', 10000);
-    }
+    },
 };
 
 module.exports = {
@@ -22,6 +24,9 @@ module.exports = {
     url: function() {
         // User #2 is user@example.org, see UsersTableSeeder.php. We're logging in as that user as well in login.js.
         return this.api.launchUrl + '/user/2';
+    },
+    sections: {
+        navbar: navbar,
     },
     elements: {
         customAvatar: '.avatar img[src^="/storage/avatars/"]', // src attribute starts with "/storage/avatars/"

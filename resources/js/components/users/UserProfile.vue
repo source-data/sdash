@@ -222,7 +222,7 @@
 <script>
 import Axios from "axios";
 import ImageUploader from "vue-image-crop-upload/upload-2.vue";
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
     name: "UserProfile",
@@ -248,7 +248,10 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["currentUser"]),
+        ...mapGetters([
+            "apiUrls",
+            "currentUser",
+        ]),
         isProfileOfLoggedInUser() {
             return this.currentUser.id === this.user.id;
         },
@@ -262,9 +265,7 @@ export default {
             return this.user.firstname + " " + this.user.surname;
         },
         avatarUrl() {
-            return this.user.avatar
-                ? "/storage/avatars/" + this.user.avatar
-                : "/images/default_avatar.jpg";
+            return this.apiUrls.avatar(this.user);
         },
         avatarUploadUrl() {
             return (
@@ -281,6 +282,7 @@ export default {
         this.fetchData();
     },
     methods: {
+        ...mapActions(["deleteUserAvatar"]),
         ...mapMutations(["setCurrentUser"]),
         fetchData() {
             this.error = this.user = null;
@@ -313,7 +315,7 @@ export default {
         deleteAvatar() {
             this.changingAvatar = true;
             this.toggleAvatarDeleteDialog();
-            return Axios.delete("/users/" + this.user_id + "/avatar")
+            return this.deleteUserAvatar()
                 .then(response => {
                     this.user.avatar = null;
                 })
@@ -321,6 +323,7 @@ export default {
                     this.error = error;
                 })
                 .then(() => {
+                    // always executed
                     this.changingAvatar = false;
                 });
         },

@@ -26,7 +26,6 @@ const state = {
 
 
 const actions = {
-
     fetchCurrentUser({ commit }){
         return Axios.get('/users/me')
         .then((response)=>{
@@ -40,11 +39,14 @@ const actions = {
         return Axios.get(userSearchUrl, { params: { name: searchString } }).then(response =>{
             return response
         })
-
-
     },
-
-
+    deleteUserAvatar({commit, rootGetters, state}) {
+        let deleteAvatarUrl = rootGetters.apiUrls.deleteAvatar(state.user);
+        return Axios.delete(deleteAvatarUrl)
+            .then(response => {
+                commit('deleteAvatar');
+            });
+    },
 }
 
 const mutations = {
@@ -70,6 +72,9 @@ const mutations = {
     expireCurrentUser(state) {
         state.user = Object.assign({}, defaultUserState);
     },
+    deleteAvatar(state) {
+        state.user.avatar = null;
+    }
 }
 
 const getters = {

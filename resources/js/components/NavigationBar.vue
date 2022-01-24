@@ -109,7 +109,7 @@
 <script>
 import SearchBar from "@/components/SearchBar";
 import AuthService from '@/services/AuthService';
-import {mapMutations} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
     name: "NavigationBar",
@@ -133,6 +133,7 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['apiUrls']),
         isGuest() {
             return this.user.id === null;
         },
@@ -140,9 +141,7 @@ export default {
             return this.isGuest ? '' : (this.user.firstname + ' ' + this.user.surname);
         },
         avatarUrl() {
-            return this.user.avatar
-                ? "/storage/avatars/" + this.user.avatar
-                : "/images/default_avatar.jpg";
+            return this.apiUrls.avatar(this.user);
         },
     },
     methods: {
