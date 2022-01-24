@@ -268,4 +268,29 @@ class UserController extends Controller
             return API::response(500, "Failed to change avatar", []);
         }
     }
+
+    /**
+     * Delete user avatar
+     *
+     * @param User $user
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteAvatar(User $user, Request $request)
+    {
+        $loggedInUser = auth()->user();
+
+        if (($loggedInUser->id !== $user->id)
+            && !$loggedInUser->is_superadmin()) {
+            abort(403, 'Access denied');
+        }
+
+        $user->avatar = null;
+
+        if ($user->save()) {
+            return API::response(200, "Avatar deleted", []);
+        } else {
+            return API::response(500, "Failed to delete avatar", []);
+        }
+    }
 }

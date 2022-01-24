@@ -24,6 +24,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/users/{user}', 'API\UserController@show');
     Route::patch('/users/{user}', 'API\UserController@update');
     Route::patch('/users/{user}/avatar', 'API\UserController@changeAvatar');
+    Route::delete('/users/{user}/avatar', 'API\UserController@deleteAvatar');
     Route::patch('/users/{user}/consent', 'API\UserController@updateConsent');
     Route::delete('/users/{user}', 'API\UserController@destroy');
     Route::patch('/users/me/groups/{group}/apply', 'API\GroupController@apply');

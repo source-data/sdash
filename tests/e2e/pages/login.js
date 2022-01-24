@@ -1,5 +1,6 @@
 var loginCommands = {
     login: function() {
+        // We're logging in as User #2 from UsersTableSeeder.php, Joseph Matrix.
         let userName = 'user@example.org',
             password = 'password';
         this.verify.visible('@userName')
