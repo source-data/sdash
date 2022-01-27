@@ -14,7 +14,7 @@ class AddCoverPhotoToGroupsTable extends Migration
     public function up()
     {
         Schema::table('groups', function (Blueprint $table) {
-            $table->string('cover_photo', 100)->after('user_id')->nullable();
+            $table->string('cover_photo', 100)->after('url')->nullable();
         });
     }
 
