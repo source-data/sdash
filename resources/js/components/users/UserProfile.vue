@@ -6,7 +6,7 @@
 
                 <router-link
                     v-if="isAuthorized"
-                    :to="{ name: 'useredit', params: { user_id: user.id } }"
+                    :to="{ name: 'useredit', params: { user_slug: user.user_slug } }"
                     id="link-to-edit-user-profile"
                     class="btn btn-desat-blue"
                 >
@@ -229,7 +229,7 @@ export default {
     components: {
         ImageUploader
     },
-    props: ["user_id"],
+    props: ["user_slug"],
     data() {
         return {
             changingAvatar: false,
@@ -253,7 +253,7 @@ export default {
             "currentUser",
         ]),
         isProfileOfLoggedInUser() {
-            return this.currentUser.id === this.user.id;
+            return this.currentUser.user_slug === this.user.user_slug;
         },
         isAuthorized() {
             return (
@@ -269,12 +269,12 @@ export default {
         },
         avatarUploadUrl() {
             return (
-                process.env.MIX_API_URL + "/users/" + this.user.id + "/avatar"
+                process.env.MIX_API_URL + "/users/" + this.user.user_slug + "/avatar"
             );
         }
     },
     watch: {
-        user_id: function updateDisplayedUser() {
+        user_slug: function updateDisplayedUser() {
             this.fetchData();
         }
     },
@@ -287,7 +287,7 @@ export default {
         fetchData() {
             this.error = this.user = null;
             this.loading = true;
-            return Axios.get("/users/" + this.user_id)
+            return Axios.get("/users/" + this.user_slug)
                 .then(response => {
                     return (this.user = response.data.DATA);
                 })
