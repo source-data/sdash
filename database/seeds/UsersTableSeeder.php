@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
@@ -30,6 +31,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => \date('Y-m-d H:i:s'),
                 'email_verified_at' => \date('Y-m-d H:i:s'),
                 'has_consented' => true,
+                'user_slug' => Str::uuid(),
             ],
             [
                 'firstname' => 'Joseph',
@@ -47,6 +49,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => \date('Y-m-d H:i:s'),
                 'email_verified_at' => \date('Y-m-d H:i:s'),
                 'has_consented' => true,
+                'user_slug' => Str::uuid(),
             ],
             [
                 'firstname' => 'Hasiao-Chun',
@@ -64,6 +67,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => \date('Y-m-d H:i:s'),
                 'email_verified_at' => \date('Y-m-d H:i:s'),
                 'has_consented' => true,
+                'user_slug' => Str::uuid(),
             ],
             [
                 'firstname' => 'Bosco',
@@ -81,6 +85,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => \date('Y-m-d H:i:s'),
                 'email_verified_at' => \date('Y-m-d H:i:s'),
                 'has_consented' => true,
+                'user_slug' => Str::uuid(),
             ],
             [
                 'firstname' => 'Anthony',
@@ -98,6 +103,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => \date('Y-m-d H:i:s'),
                 'email_verified_at' => \date('Y-m-d H:i:s'),
                 'has_consented' => true,
+                'user_slug' => Str::uuid(),
             ],
             [
                 'firstname' => 'Rodrigo',
@@ -115,6 +121,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => \date('Y-m-d H:i:s'),
                 'email_verified_at' => \date('Y-m-d H:i:s'),
                 'has_consented' => true,
+                'user_slug' => Str::uuid(),
             ]
         ]);
     }
