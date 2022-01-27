@@ -25,7 +25,7 @@ class UserTest extends TestCase
         if ($actor) {
             $base = $this->actingAs($actor, 'sanctum');
         }
-        return $base->deleteJson('/api/users/' . $target->id . '/avatar');
+        return $base->deleteJson('/api/users/' . $target->user_slug . '/avatar');
     }
     private function deleteAvatar(User $user)
     {
