@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Query\Expression;
+use Illuminate\Support\Facades\DB;
 
 class AddUuidFieldToUsersTable extends Migration
 {
@@ -15,8 +15,13 @@ class AddUuidFieldToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->uuid('user_slug')->unique()->default(new Expression('(UUID())'));
-            $table->index('user_slug');
+            $table->uuid('user_slug');
+        });
+
+        DB::statement('UPDATE users SET user_slug = UUID()');
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->unique('user_slug');
         });
     }
 
