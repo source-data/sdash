@@ -165,7 +165,7 @@
                                         target="sd-delete-avatar-button"
                                         triggers="click blur"
                                     >
-                                        <div class="confirm-close-author-modal">
+                                        <div>
                                             <p>
                                                 Do you really want to delete your avatar?
                                             </p>

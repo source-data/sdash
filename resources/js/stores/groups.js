@@ -196,7 +196,15 @@ const actions = {
             commit("setPublicGroups", response.data.DATA);
             return response;
         });
-    }
+    },
+    deleteCoverPhoto({ commit }, group) {
+        return Axios.delete(
+            "/groups/" + group.id + "/cover"
+        ).then((response) => {
+            group.cover_photo = undefined;
+            commit("updateUserGroup", group);
+        });
+    },
 };
 
 const mutations = {
@@ -244,7 +252,7 @@ const mutations = {
     },
     setCurrentGroupFromApi(state, group) {
         state.currentGroup = group;
-    }
+    },
 };
 
 const getters = {

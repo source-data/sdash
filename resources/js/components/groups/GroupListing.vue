@@ -34,40 +34,86 @@
             ></image-uploader>
 
             <div class="group-header-image">
-                <img
-                    :src="coverPhotoUrl"
-                    :alt="'Cover photo of ' + currentGroup.name"
-                    draggable="false"
-                />
+                <b-overlay :show="changingCoverPhoto" variant="dark">
+                    <img
+                        :src="coverPhotoUrl"
+                        :alt="'Cover photo of ' + currentGroup.name"
+                        draggable="false"
+                    />
 
-                <button
-                    class="edit text-xxs"
-                    v-if="isGroupAdmin"
-                    @click="toggleCoverPhotoUploadDialog"
-                    title="Change cover photo"
-                >
-                    <font-awesome-icon icon="pen" />
-                </button>
+                    <div v-if="isGroupAdmin && currentGroup.cover_photo">
+                        <button
+                            id="sd-delete-cover-photo-button"
+                            class="delete-cover-photo text-xxs"
+                            @click="toggleCoverPhotoDeleteDialog"
+                            title="Delete cover photo"
+                        >
+                            <font-awesome-icon icon="trash-alt" />
+                        </button>
 
-                <div class="apply-to-join">
-                    <b-button
-                        v-if="!isGroupMember && !hasRequestedMembership"
-                        variant="primary"
-                        :disabled="sendingMembershipRequest"
-                        @click="applyToJoin"
+                        <b-popover
+                            custom-class="sd-custom-popover"
+                            placement="top"
+                            show.sync="showCoverPhotoDeleteDialog"
+                            target="sd-delete-cover-photo-button"
+                            triggers="click blur"
+                        >
+                            <div>
+                                <p>
+                                    Do you really want to delete this group's cover photo?
+                                </p>
+
+                                <div class="delete-buttons">
+                                    <b-button
+                                        id="sd-delete-cover-photo-confirm-button"
+                                        variant="primary"
+                                        small
+                                        @click="deleteGroupCoverPhoto"
+                                    >
+                                        Delete it!
+                                    </b-button>
+
+                                    <b-button
+                                        variant="outline-dark"
+                                        small
+                                        @click="toggleCoverPhotoDeleteDialog"
+                                    >
+                                        Cancel
+                                    </b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                    </div>
+
+                    <button
+                        class="edit text-xxs"
+                        v-if="isGroupAdmin"
+                        @click="toggleCoverPhotoUploadDialog"
+                        title="Change cover photo"
                     >
-                        <font-awesome-icon icon="plus" />
-                        Apply to join this group
-                    </b-button>
+                        <font-awesome-icon icon="pen" />
+                    </button>
 
-                    <b-alert
-                        show
-                        v-if="hasRequestedMembership"
-                        variant="primary"
-                    >
-                        Your request to join this group is pending approval
-                    </b-alert>
-                </div>
+                    <div class="apply-to-join">
+                        <b-button
+                            v-if="!isGroupMember && !hasRequestedMembership"
+                            variant="primary"
+                            :disabled="sendingMembershipRequest"
+                            @click="applyToJoin"
+                        >
+                            <font-awesome-icon icon="plus" />
+                            Apply to join this group
+                        </b-button>
+
+                        <b-alert
+                            show
+                            v-if="hasRequestedMembership"
+                            variant="primary"
+                        >
+                            Your request to join this group is pending approval
+                        </b-alert>
+                    </div>
+                </b-overlay>
             </div>
 
             <div class="group-description text-lg">
@@ -273,7 +319,7 @@
             <panel-listing-grid
                 v-if="hasPanels"
                 list_root="user"
-                batchSelectDisabled="true"
+                batchSelectDisabled
             ></panel-listing-grid>
 
             <b-alert
@@ -329,6 +375,8 @@ export default {
 
     data() {
         return {
+            changingCoverPhoto: false,
+            showCoverPhotoDeleteDialog: false,
             isSidebarExpanded: true,
             sendingMembershipRequest: false,
             showImageUploadDialog: false,
@@ -407,8 +455,10 @@ export default {
         ...mapActions([
             "removeUserFromGroup",
             "deleteUserGroup",
+            "deleteCoverPhoto",
             "fetchCurrentGroup",
-            "toggleLightbox"
+            "toggleLightbox",
+            "modifyGroup"
         ]),
         fetchPanels() {
             store
@@ -486,6 +536,18 @@ export default {
             this.currentGroup.cover_photo = response.DATA.cover_photo;
             this.showImageUploadDialog = false;
             this.$refs.coverPhotoUploader.setStep(1);
+        },
+        toggleCoverPhotoDeleteDialog() {
+            this.showCoverPhotoDeleteDialog = !this.showCoverPhotoDeleteDialog;
+        },
+        deleteGroupCoverPhoto() {
+            this.changingCoverPhoto = true;
+            this.toggleCoverPhotoDeleteDialog();
+            this.deleteCoverPhoto(this.currentGroup).catch(err => {
+                this.$snotify.error(err.data.MESSAGE, "Failed to change cover photo. Please try again later.")
+            }).then(() => {
+                this.changingCoverPhoto = false;
+            })
         }
     },
     created() {
@@ -546,17 +608,22 @@ header {
             width: 100%;
         }
 
-        button.edit {
+        button {
             position: absolute;
             top: 0.25rem;
-            right: 0.25rem;
             color: white;
             border-radius: 50%;
             background-color: rgba(0, 0, 0, 0.25);
         }
+        button.edit {
+            right: 0.25rem;
+        }
+        button.delete-cover-photo {
+            left: 0.25rem;
+        }
 
-        button.edit,
-        button.edit * {
+        button,
+        button * {
             border: none;
             outline: none;
         }
