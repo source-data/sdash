@@ -3,6 +3,19 @@
         <header class="sd-view-title">
             <h2 class="text-primary">Groups</h2>
 
+            <!-- create group button -->
+                <b-button
+                    :to="{name: 'creategroup'}"
+                    id="sd-create-group-button"
+                    variant="primary"
+                    class="create-group-button text-md float-right"
+                    v-b-tooltip.hover.top
+                    title="Create new group"
+                >
+                    <font-awesome-icon icon="users" class="sd-group-icon"/>
+                    <font-awesome-icon icon="plus-circle" class="sd-plus-icon"/>
+                </b-button>
+
             <div class="details-bar">
                 <div class="selection-criteria">
                     <div class="search" v-if="searchQuery">
@@ -224,8 +237,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$action-bar-height: 55px;
+
 header {
     padding-top: 6rem;
+}
+
+.create-group-button {
+    position: absolute;
+    top: 96px;
+    right: 48px;
+    border: none;
+    border-radius: 100%;
+    width: $action-bar-height;
+    height: $action-bar-height;
+    margin-right: 2vw;
+    outline: none;
+    z-index: 100;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    .sd-group-icon {
+        position: absolute;
+        top: 14px;
+        font-size: 23px;
+        left: 11px;
+    }
+    .sd-plus-icon {
+        position: absolute;
+        right: 9px;
+        bottom: 9px;
+        font-size: 15px;
+    }
 }
 
 .sd-group-grid {
@@ -286,5 +329,7 @@ header {
     .group-img-container img.transparent {
         opacity: 0.8;
     }
+
+
 }
 </style>

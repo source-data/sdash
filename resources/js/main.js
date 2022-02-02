@@ -9,7 +9,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faChevronDown, faCircle, faCopy, faDownload,
     faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages, faInfoCircle,
-    faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faQrcode, faSave, faSearch, faSearchPlus,
+    faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faPlusCircle,faQrcode, faSave, faSearch, faSearchPlus,
     faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser, faUserCog, faUserPlus, faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import { faCreativeCommons, faOrcid } from "@fortawesome/free-brands-svg-icons";
@@ -63,7 +63,7 @@ Vue.use(LoadScript);
 library.add([
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faChevronDown, faCircle, faCopy,
     faCreativeCommons, faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome,
-    faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faOrcid, faPaste, faPen, faPlus, faQrcode,
+    faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faOrcid, faPaste, faPen, faPlus, faPlusCircle, faQrcode,
     faSave, faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser,
     faUserCog, faUserPlus, faUsers,
 ])
