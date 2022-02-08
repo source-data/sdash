@@ -204,9 +204,7 @@ $navbar-box-shadow-size: 1px;
 }
 @media (min-width: 768px) {
     .navbar-brand {
-        margin-bottom: $navbar-padding-bottom-md;
         margin-left: $navbar-padding-left-md;
-        margin-top: $navbar-padding-top-md;
     }
 }
 
@@ -223,8 +221,8 @@ $navbar-box-shadow-size: 1px;
 }
 @media (min-width: 768px) {
     .nav-item {
-        padding-bottom: $navbar-padding-bottom-md;
-        padding-top: $navbar-padding-top-md;
+        padding-bottom: $navbar-padding-bottom;
+        padding-top: $navbar-padding-top;
         padding-left: 2vw;
         padding-right: 2vw;
     }
@@ -240,10 +238,10 @@ $navbar-box-shadow-size: 1px;
     /* Dropdown nav-items need margins instead of padding to correctly position their dropdown menus close to them. */
     .nav-item.dropdown {
         padding: 0;
-        margin-bottom: $navbar-padding-bottom-md;
+        margin-bottom: $navbar-padding-bottom;
         margin-left: 2vw;
         margin-right: 2vw;
-        margin-top: $navbar-padding-top-md;
+        margin-top: $navbar-padding-top;
     }
     .nav-item.dropdown:last-child {
         padding: 0;
@@ -311,7 +309,7 @@ img.profile-picture {
         /* The registration link is positioned right below the navbar. For that we have to use absolute positioning and
          * calculate the correct positioning relative to the navbar itself.
          */
-        top: $navbar-height-md;
+        top: $navbar-height;
         right: 0;
         z-index: 10; /* Lets the registration link appear in front of the panels. */
     }

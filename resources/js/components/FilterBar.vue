@@ -391,12 +391,6 @@ $sidebar-z-index: $navbar-z-index - 2;
     // Position the sidebar above all content except for the navbar.
     z-index: $sidebar-z-index;
 }
-@media (min-width: 768px) {
-    #sd-panel-filters::v-deep .b-sidebar-outer,
-    #sd-panel-filters::v-deep .b-sidebar {
-        padding-top: $navbar-height-md;
-    }
-}
 
 #sd-panel-filters::v-deep .b-sidebar {
     width: $panel-filters-sidebar-width;
