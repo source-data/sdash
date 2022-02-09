@@ -215,7 +215,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { mapGetters, mapMutations } from "vuex"
 import AuthorMultiselect from '@/components/helpers/AuthorMultiselect';
 import KeywordMultiselect from '@/components/helpers/KeywordMultiselect';
 
@@ -268,6 +268,7 @@ export default {
         },
     },
     methods: {
+        ...mapMutations(["setSidebarPresent"]),
         toggleAccess(value) {
             this.$store.dispatch("setLoadingState", true);
             this.$store.dispatch("clearLoadedPanels");
@@ -364,6 +365,7 @@ export default {
             this.isSidebarExpanded =
                 localStorage.getItem("isSidebarExpanded") === "true";
         }
+        this.setSidebarPresent(true)
     },
     watch: {
         isSidebarExpanded(newStatus) {
@@ -372,6 +374,7 @@ export default {
     },
     destroyed() {
         this.clearFilters();
+        this.setSidebarPresent(false);
     }
 };
 </script>

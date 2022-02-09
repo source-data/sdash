@@ -25,7 +25,7 @@
 
     <!-- vue router mounts components here -->
     <main id="sd-content">
-        <div id="sd-beta-testing-banner">Beta Testing</div>
+        <beta-testing-badge></beta-testing-badge>
 
         <router-view v-if="applicationIsLoaded"></router-view>
     </main>
@@ -73,11 +73,15 @@ import NavigationBar from '@/components/NavigationBar'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 import FeedbackWidget from '@/components/FeedbackWidget';
+import BetaTestingBadge from '@/components/BetaTestingBadge';
 
 export default {
-
     name: 'Application',
-    components: {NavigationBar, FeedbackWidget, },
+    components: {
+        NavigationBar,
+        FeedbackWidget,
+        BetaTestingBadge,
+    },
     data() {
         return {
             confCheckbox1: false,
@@ -145,27 +149,6 @@ export default {
 @media (min-height: 500px) {
     #sd-content {
         padding-top: $navbar-height;
-    }
-}
-
-#sd-beta-testing-banner {
-    background-color: $vivid-orange;
-    box-shadow: 0 -1px 0.2rem $vivid-orange, // box shadow at the top ...
-                0  1px 0.2rem $vivid-orange; // ... and the bottom of the banner
-    color: $mostly-black-blue;
-    padding: 0.35rem;
-
-    position: absolute;
-    top: 85px;
-    left: -35px;
-
-    text-align: center;
-    transform: rotate(-35deg);
-    width: 200px;
-}
-@media (min-width: 768px) {
-    #sd-beta-testing-banner {
-        left: -30px;
     }
 }
 
