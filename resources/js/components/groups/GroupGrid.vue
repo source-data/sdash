@@ -114,10 +114,7 @@
                                             "
                                             class="text-light"
                                             href="#"
-                                        >
-                                            {{ user.firstname }}
-                                            {{ user.surname }}
-                                        </b-link>
+                                        >{{ user.firstname }} {{ user.surname }}</b-link>
                                     </li>
                                 </ul>
                             </li>
