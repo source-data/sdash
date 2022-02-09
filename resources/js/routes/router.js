@@ -71,7 +71,7 @@ const router = new Router({
             }
         },
         {
-            path: "/user/:user_id",
+            path: "/user/:user_slug",
             name: "user",
             component: UserProfile,
             props: true,
@@ -80,7 +80,7 @@ const router = new Router({
             }
         },
         {
-            path: "/user/:user_id/edit",
+            path: "/user/:user_slug/edit",
             name: "useredit",
             component: EditUser,
             props: true,

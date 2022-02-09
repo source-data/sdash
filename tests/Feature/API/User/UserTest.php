@@ -25,7 +25,7 @@ class UserTest extends TestCase
         if ($actor) {
             $base = $this->actingAs($actor, 'sanctum');
         }
-        return $base->deleteJson('/api/users/' . $target->id . '/avatar');
+        return $base->deleteJson('/api/users/' . $target->user_slug . '/avatar');
     }
     private function deleteAvatar(User $user)
     {
@@ -136,5 +136,50 @@ class UserTest extends TestCase
         $this->assertAvatarPresent($user, 'expected user to have an avatar before deletion');
         $this->deleteAvatarAsUser($user, $actor)->assertForbidden();
         $this->assertAvatarPresent($user, 'expected user to still have an avatar after forbidden deletion');
+    }
+
+    /**
+     *  @test
+     *
+     *  @return void
+     */
+    public function a_user_cannot_get_another_users_data_using_the_user_id()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->getJson("/api/users/{$this->userWithAvatar->id}");
+        $response->assertNotFound();
+    }
+
+    /**
+     *  @test
+     *
+     *  @return void
+     */
+    public function a_user_can_get_another_users_data_using_the_user_slug()
+    {
+        $response = $this->actingAs($this->user, 'sanctum')->getJson("/api/users/{$this->userWithAvatar->user_slug}");
+        $response->assertOK();
+        $this->assertEquals($response['DATA']['id'], $this->userWithAvatar->id);
+    }
+
+    /**
+     *  @test
+     *
+     *  @return void
+     */
+    public function a_guest_cannot_get_another_users_profile_data_with_the_user_id()
+    {
+        $response = $this->getJson("/api/users/{$this->userWithAvatar->id}");
+        $response->assertUnauthorized();
+    }
+
+    /**
+     *  @test
+     *
+     *  @return void
+     */
+    public function a_guest_cannot_get_another_users_profile_data_with_the_user_slug()
+    {
+        $response = $this->getJson("/api/users/{$this->userWithAvatar->user_slug}");
+        $response->assertUnauthorized();
     }
 }

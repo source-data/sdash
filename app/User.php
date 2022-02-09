@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -41,6 +42,21 @@ class User extends Authenticatable implements MustVerifyEmail
         'orcid',
         'has_consented',
     ];
+
+    /**
+     * Set user_slug to a random UUID on creation
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // auto-sets values on creation
+        static::creating(function ($query) {
+            $query->user_slug = Str::uuid();
+        });
+    }
 
     public function is_superadmin()
     {

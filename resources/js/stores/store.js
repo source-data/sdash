@@ -73,7 +73,7 @@ export default new Vuex.Store({
           return user.avatar ? "/storage/avatars/" + user.avatar : "/images/default_avatar.jpg";
         },
         deleteAvatar(user) {
-          return "/users/" + user.id + "/avatar";
+          return "/users/" + user.user_slug + "/avatar";
         }
       }
     },

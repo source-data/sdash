@@ -79,7 +79,7 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
-                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_id: user.id }}">
+                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_slug: user.user_slug }}">
                             Profile
                         </router-link>
 

@@ -16,6 +16,7 @@ const defaultUserState = {
     orcid: null,
     has_consented: null,
     email_verified_at: null,
+    user_slug: null,
 }
 
 //initial state
@@ -67,6 +68,7 @@ const mutations = {
             orcid: user.orcid,
             has_consented: user.has_consented,
             email_verified_at: user.email_verified_at,
+            user_slug: user.user_slug,
         };
     },
     expireCurrentUser(state) {

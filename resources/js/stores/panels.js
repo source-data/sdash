@@ -487,6 +487,7 @@ const getters = {
                           author_role: author.author_role.role,
                           order: author.author_role.order,
                           id: author.id,
+                          user_slug: author.user_slug,
                           corresponding:
                               author.author_role.role ===
                               AuthorTypes.CORRESPONDING
@@ -508,6 +509,7 @@ const getters = {
                           author_role: author.author_role.role,
                           order: author.author_role.order,
                           id: author.id,
+                          user_slug: null,
                           corresponding:
                               author.author_role.role ===
                               AuthorTypes.CORRESPONDING

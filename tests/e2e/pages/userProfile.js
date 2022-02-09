@@ -22,8 +22,8 @@ var userProfileCommands = {
 module.exports = {
     commands: [userProfileCommands],
     url: function() {
-        // User #2 is user@example.org, see UsersTableSeeder.php. We're logging in as that user as well in login.js.
-        return this.api.launchUrl + '/user/2';
+        // User 3fd2dcde-5743-4497-bc7a-b88d0c253c60 is user@example.org, see UsersTableSeeder.php. We're logging in as that user as well in login.js.
+        return this.api.launchUrl + '/user/3fd2dcde-5743-4497-bc7a-b88d0c253c60';
     },
     sections: {
         navbar: navbar,
