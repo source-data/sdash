@@ -24,14 +24,14 @@
                     v-if="!isEditingTitle"
                     :href="panelUrl"
                     target="_blank"
-                    title="Open panel in a new tab"
+                    title="Open SmartFigure in a new tab"
                 >{{ expandedPanel.title }}</a>
 
                 <button
                     class='edit text-xxs'
                     v-if="iCanEditThisPanel && !isEditingTitle"
                     @click="editPanelTitle"
-                    title="Edit panel title"
+                    title="Edit SmartFigure title"
                 >
                     <font-awesome-icon icon="pen" />
                 </button>
@@ -45,7 +45,7 @@
                     class='edit text-xxs'
                     v-if="iCanEditThisPanel"
                     @click="editAuthorList"
-                    title="Edit panel authors"
+                    title="Edit SmartFigure authors"
                 >
                     <font-awesome-icon icon="pen" />
                 </button>
@@ -114,7 +114,7 @@
                         class='edit text-xxs'
                         v-if="!editingCaption && iCanEditThisPanel"
                         @click="editPanelCaption"
-                        title="Edit panel description"
+                        title="Edit SmartFigure description"
                     >
                         <font-awesome-icon icon="pen" />
                     </button>
@@ -203,7 +203,7 @@
 
                                 <smart-tags-category type="assay"></smart-tags-category>
                             </div>
-                        
+
                             <div>
                                 <label>
                                     Controlled Variables
@@ -429,7 +429,7 @@ export default {
                     .catch(error => {
                         this.$snotify.error(
                             error.message,
-                            "Panel Update Failed"
+                            "SmartFigure Update Failed"
                         );
                     });
             }
@@ -480,11 +480,11 @@ export default {
                 .then(response => {
                     this.$snotify.success(
                         response.data.MESSAGE,
-                        "Panel Updated"
+                        "SmartFigure Updated"
                     );
                 })
                 .catch(error => {
-                    this.$snotify.error("Could not update panel", "Failed");
+                    this.$snotify.error("Could not update SmartFigure", "Failed");
                 });
         },
         editAuthorList(){

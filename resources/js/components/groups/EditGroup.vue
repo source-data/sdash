@@ -58,7 +58,7 @@
                     members="Select the group members."
                     label="Group Members"
                     label-for="sd-new-group-members-input"
-                    description="Note: removing a member will also remove their panels"
+                    description="Note: removing a member will also remove their SmartFigures"
                     >
                         <div class="sd-group-members-message text-info small" v-if="membershipRequestCount">{{membershipRequestCount}} membership request(s) awaiting approval.</div>
                         <user-multiselect id="sd-new-group-members-input" v-if="loaded" :initialusers="groupMembers" @userdataChange="updatedUserdata">
@@ -85,7 +85,7 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <h2 class="py-4">Panels in Group</h2>
+                    <h2 class="py-4">SmartFigures in Group</h2>
                 </b-col>
             </b-row>
             <b-row>

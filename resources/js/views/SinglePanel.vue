@@ -1,7 +1,7 @@
 <template>
     <div class="sd-view-content">
         <div v-if="notAllowed">
-            You are not allowed to view this panel.
+            You are not allowed to view this SmartFigure.
         </div>
 
         <div v-if="otherError">
@@ -18,7 +18,7 @@
             </header>
 
             <section class="panel-image">
-                <h2 hidden>Panel Image</h2>
+                <h2 hidden>SmartFigure Image</h2>
 
                 <img :src="panelImageUrl" :alt="'image for ' + expandedPanel.title" />
             </section>
@@ -96,7 +96,7 @@
                             {{ tag.content }}
                         </span>
                     </div>
-            
+
                     <div class="panel-keyword-category">
                         Controlled Variables
                     </div>
@@ -106,7 +106,7 @@
                             {{ tag.content }}
                         </span>
                     </div>
-            
+
                     <div class="panel-keyword-category">
                         Instruments / Methods
                     </div>

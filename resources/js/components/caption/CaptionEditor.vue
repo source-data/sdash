@@ -12,7 +12,7 @@
                 <label for="smart-tag-toggle-switch">
                     Suggest SmartTags?
                 </label>
-                
+
                 <toggle-button
                     id="smart-tag-toggle-switch"
                     :sync="true"
@@ -85,7 +85,7 @@ export default {
                     this.$snotify.success(response.data.MESSAGE, "Update succeeded")
                     this.$store.commit("toggleEditingCaption", false)
                 }).catch(error => {
-                    this.$snotify.error(error.message, "Panel Update Failed")
+                    this.$snotify.error(error.message, "SmartFigure Update Failed")
                 })
 
         },

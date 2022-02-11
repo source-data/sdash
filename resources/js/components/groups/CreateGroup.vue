@@ -75,7 +75,7 @@
         </b-row>
         <b-row>
             <b-col>
-                <h2 class="py-4">Panels in Group</h2>
+                <h2 class="py-4">SmartFigures in Group</h2>
             </b-col>
         </b-row>
         <b-row>

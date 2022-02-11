@@ -140,7 +140,7 @@ const actions = {
             throw {
                 data: {
                     MESSAGE:
-                        "A panel must be expanded before generating a public link."
+                        "A SmartFigure must be expanded before generating a public link."
                 }
             };
         return Axios.post("/panels/" + state.expandedPanelId + "/tokens").then(
@@ -155,7 +155,7 @@ const actions = {
             throw {
                 data: {
                     MESSAGE:
-                        "A panel must be expanded before revoking a public link."
+                        "A SmartFigure must be expanded before revoking a public link."
                 }
             };
         return Axios.delete(

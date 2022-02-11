@@ -35,8 +35,8 @@
                         v-model="privacyLevel"
                         id="sd-panel-privacy-group"
                     >
-                        <b-form-radio value="all">Show all panels</b-form-radio>
-                        <b-form-radio value="private">Show my own panels</b-form-radio>
+                        <b-form-radio value="all">Show all SmartFigures</b-form-radio>
+                        <b-form-radio value="private">Show my own SmartFigures</b-form-radio>
                     </b-form-radio-group>
                 </div>
             </section>

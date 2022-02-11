@@ -54,11 +54,11 @@
                     key entities of your experiment from the text you enter. The smart tags will be categorized as
                     "measured variable", "controlled variable", "Instrument/Methods" characterizing your experiment. You
                     can also add any keyword to your figure which can allow you to search and filter your results according
-                    to keywords. 
+                    to keywords.
 
                     <img
                         src="/images/tutorial/03_panel-detail-view.png"
-                        alt="The panel detail view with more information about a single SmartFigure.">
+                        alt="The SmartFigure detail view with more information about a single SmartFigure.">
                 </p>
 
                 <p>
