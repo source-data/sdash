@@ -33,6 +33,7 @@
                         stacked
                         name="toggle-panel-list-privacy"
                         v-model="privacyLevel"
+                        id="sd-panel-privacy-group"
                     >
                         <b-form-radio value="all">Show all panels</b-form-radio>
                         <b-form-radio value="private">Show my own panels</b-form-radio>

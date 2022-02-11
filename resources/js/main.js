@@ -22,6 +22,7 @@ import ToggleButton from 'vue-js-toggle-button'
 import VueTagsInput from '@johmun/vue-tags-input'
 import LoadScript from 'vue-plugin-load-script';
 import CheckUserLoginService from '@/services/CheckUserLoginService';
+import VueTour from 'vue-tour';
 
 //set Axios base url
 window.axios.defaults.baseURL = process.env.MIX_API_URL;
@@ -58,6 +59,9 @@ Vue.use(VueScrollTo)
 
 // Include a method for injection of remote scripts
 Vue.use(LoadScript);
+
+// Include Vue Tour for guided tour on first login
+Vue.use(VueTour);
 
 // Add Fontawesome to the global Vue App
 library.add([
