@@ -19,7 +19,7 @@
         "cross-env": "^5.1",
         "geckodriver": "^2.0.4",
         "jquery": "^3.5.1",
-        "laravel-mix": "^6.0.39",
+        "laravel-mix": "^6.0.42",
         "lodash": "^4.17.20",
         "mix-env-file": "^0.1.1",
         "nightwatch": "^1.7.13",
