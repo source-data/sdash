@@ -411,7 +411,7 @@ $panel-select-button-diameter: $image-height * 0.1;
     left: 0;
     z-index: 2;
     width: 100%;
-    padding: 3px 6px;
+    padding: 12px 6px 3px;
 
     .private {
         color: #882323;
@@ -424,6 +424,14 @@ $panel-select-button-diameter: $image-height * 0.1;
     .group {
         color: #235588;
     }
+}
+.sd-grid-image-container-inner:hover .sd-grid-item--image-footer {
+    background-image: linear-gradient(
+        to top,
+        rgba(255, 255, 255, .60),
+        rgba(255, 255, 255, .30),
+        transparent
+    );
 }
 
 .sd-grid-item--author-icon {
