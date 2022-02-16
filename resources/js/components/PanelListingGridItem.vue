@@ -66,11 +66,11 @@
         </div>
 
         <div class="sd-grid-item-text">
-            <h6 class="panel-title">
+            <h6 class="panel-title" :title="thisPanel.title">
                 {{ thisPanel.title }}
             </h6>
 
-            <address class="panel-authors">
+            <address class="panel-authors" :title="panelAuthorsAbbreviated">
                 {{ panelAuthorsAbbreviated }}
             </address>
         </div>
