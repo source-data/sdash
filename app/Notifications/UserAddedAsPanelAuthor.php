@@ -52,11 +52,11 @@ class UserAddedAsPanelAuthor extends Notification
     {
         return (new MailMessage)
             ->subject('You Have Been Added As An Author')
-            ->greeting("You have been added as a panel author.")
-            ->line("{$this->user->firstname} {$this->user->surname} has given you an author credit on the panel \"{$this->panel->title}\".")
+            ->greeting("You have been added as a SmartFigure author.")
+            ->line("{$this->user->firstname} {$this->user->surname} has given you an author credit on the SmartFigure \"{$this->panel->title}\".")
             ->line("You have been given the role: {$this->role}.")
-            ->line("You will see the panel on your dashboard next time you log in or by clicking on the button below.")
-            ->action('View Panel', $this->panelUrl());
+            ->line("You will see the SmartFigure on your dashboard next time you log in or by clicking on the button below.")
+            ->action('View SmartFigure', $this->panelUrl());
     }
 
     /**
