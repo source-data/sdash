@@ -17,6 +17,18 @@
 
                         <font-awesome-icon icon="check" size="xs" />
                     </label>
+
+                    <label
+                        v-else
+                        class="panel-select-button panel-select-explanation"
+                        v-on:click.stop.prevent
+                        v-b-popover.hover.top="{
+                            customClass: 'sd-custom-popover',
+                            content: 'You cannot select this panel because you are not its owner.'
+                        }"
+                    >
+                        <font-awesome-icon icon="question" size="xs" />
+                    </label>
                 </header>
 
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
@@ -366,6 +378,14 @@ $panel-select-button-diameter: $image-height * 0.1;
     height: $panel-select-button-diameter * 2;
     width: 100%;
     padding: 6px;
+
+    .panel-select-explanation {
+        background-color: transparent;
+
+        svg {
+            color: transparent;
+        }
+    }
 }
 .sd-grid-image-container-inner:hover .sd-grid-item--image-header {
     background-image: linear-gradient(
@@ -374,6 +394,14 @@ $panel-select-button-diameter: $image-height * 0.1;
         rgba(0, 0, 0, .30),
         transparent
     );
+
+    .panel-select-explanation {
+        background-color: $light-gray;
+
+        svg {
+            color: gray;
+        }
+    }
 }
 
 .sd-grid-item--image-footer {
