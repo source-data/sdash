@@ -15,12 +15,7 @@
                         v-if="!batchSelectDisabled && IOwnThisPanel"
                     >
 
-                        <font-awesome-icon
-                            v-if="panelSelected"
-                            icon="check"
-                            transform="shrink-5"
-                            :style="{ color: 'white' }"
-                        />
+                        <font-awesome-icon icon="check" size="xs" />
                     </label>
                 </header>
 
@@ -361,14 +356,24 @@ $authors-height: $font-size-sm;
     right: 2vw;
     opacity: 1;
 }
+
+$panel-select-button-diameter: $image-height * 0.1;
 .sd-grid-item--image-header {
-    cursor: auto;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 2;
+    height: $panel-select-button-diameter * 2;
     width: 100%;
     padding: 6px;
+}
+.sd-grid-image-container-inner:hover .sd-grid-item--image-header {
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, .50),
+        rgba(0, 0, 0, .30),
+        transparent
+    );
 }
 
 .sd-grid-item--image-footer {
@@ -397,7 +402,6 @@ $authors-height: $font-size-sm;
     color:#634782;
 }
 
-$panel-select-button-diameter: $image-height * 0.1;
 .panel-select-button {
     // vertically align the green checkmark inside the button
     display: flex;
@@ -414,14 +418,26 @@ $panel-select-button-diameter: $image-height * 0.1;
     width: $panel-select-button-diameter;
     height: $panel-select-button-diameter;
 
-    background-color: $mostly-white-gray-opaque;
-    border: solid 1px $very-light-gray;
+    background-color: $mostly-white-gray;
     border-radius: 50%;
+
+    svg {
+        color: $light-gray;
+    }
 }
 .panel-select-button:hover,
 .panel-select-button:focus {
-    background-color: $very-light-gray-opaque;
-    border: solid 1px $light-gray;
+    background-color: $very-light-gray;
+
+    svg {
+        color: gray;
+    }
+}
+.panel-select-button.bg-success svg {
+    color: $mostly-white-gray;
+}
+.panel-select-button.bg-success:hover svg {
+    color: $very-light-gray;
 }
 
 .sd-grid-item::v-deep .modal-dialog {
