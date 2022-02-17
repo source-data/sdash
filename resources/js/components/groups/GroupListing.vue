@@ -608,7 +608,8 @@ header {
             width: 100%;
         }
 
-        button {
+        button.edit,
+        button.delete-cover-photo {
             position: absolute;
             top: 0.25rem;
             color: white;
