@@ -47,13 +47,13 @@
                         :class="panelAccessReason"
                         icon="lock"
                         v-if="panelAccessReason == 'private'"
-                        title="Private panel"
+                        title="Private SmartFigure"
                     />
                     <font-awesome-icon
                         :class="panelAccessReason"
                         icon="lock-open"
                         v-if="panelAccessReason == 'public'"
-                        title="Public panel"
+                        title="Public SmartFigure"
                     />
                     <font-awesome-icon
                         :class="panelAccessReason"
