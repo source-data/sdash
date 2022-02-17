@@ -411,7 +411,7 @@ $panel-select-button-diameter: $image-height * 0.1;
     left: 0;
     z-index: 2;
     width: 100%;
-    padding: 12px 6px 3px;
+    padding: 14px 6px 3px;
 
     .private {
         color: #882323;
@@ -428,8 +428,8 @@ $panel-select-button-diameter: $image-height * 0.1;
 .sd-grid-image-container-inner:hover .sd-grid-item--image-footer {
     background-image: linear-gradient(
         to top,
-        rgba(255, 255, 255, .60),
-        rgba(255, 255, 255, .30),
+        rgba(0, 0, 0, .50),
+        rgba(0, 0, 0, .30),
         transparent
     );
 }
