@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-md bg-light">
+    <nav id="sd-navbar" class="navbar navbar-expand-md bg-light">
         <router-link class="navbar-brand" :to="{ name: 'dashboard'}">
             <img src="/images/logos/sdash.svg" alt="SDash" loading="lazy">
         </router-link>
@@ -79,12 +79,12 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserProfileMenuLink">
-                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_id: user.id }}">
+                        <router-link class="dropdown-item" :to="{name: 'user', params: { user_slug: user.user_slug }}">
                             Profile
                         </router-link>
 
                         <a
-                            class="dropdown-item" href="#"
+                            class="dropdown-item" href="/logout"
                             @click.prevent="logOut"
                         >
                             Logout
@@ -109,7 +109,7 @@
 <script>
 import SearchBar from "@/components/SearchBar";
 import AuthService from '@/services/AuthService';
-import {mapMutations} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
     name: "NavigationBar",
@@ -133,6 +133,7 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['apiUrls']),
         isGuest() {
             return this.user.id === null;
         },
@@ -140,9 +141,7 @@ export default {
             return this.isGuest ? '' : (this.user.firstname + ' ' + this.user.surname);
         },
         avatarUrl() {
-            return this.user.avatar
-                ? "/storage/avatars/" + this.user.avatar
-                : "/images/default_avatar.jpg";
+            return this.apiUrls.avatar(this.user);
         },
     },
     methods: {
@@ -205,9 +204,7 @@ $navbar-box-shadow-size: 1px;
 }
 @media (min-width: 768px) {
     .navbar-brand {
-        margin-bottom: $navbar-padding-bottom-md;
         margin-left: $navbar-padding-left-md;
-        margin-top: $navbar-padding-top-md;
     }
 }
 
@@ -224,8 +221,8 @@ $navbar-box-shadow-size: 1px;
 }
 @media (min-width: 768px) {
     .nav-item {
-        padding-bottom: $navbar-padding-bottom-md;
-        padding-top: $navbar-padding-top-md;
+        padding-bottom: $navbar-padding-bottom;
+        padding-top: $navbar-padding-top;
         padding-left: 2vw;
         padding-right: 2vw;
     }
@@ -241,10 +238,10 @@ $navbar-box-shadow-size: 1px;
     /* Dropdown nav-items need margins instead of padding to correctly position their dropdown menus close to them. */
     .nav-item.dropdown {
         padding: 0;
-        margin-bottom: $navbar-padding-bottom-md;
+        margin-bottom: $navbar-padding-bottom;
         margin-left: 2vw;
         margin-right: 2vw;
-        margin-top: $navbar-padding-top-md;
+        margin-top: $navbar-padding-top;
     }
     .nav-item.dropdown:last-child {
         padding: 0;
@@ -312,7 +309,7 @@ img.profile-picture {
         /* The registration link is positioned right below the navbar. For that we have to use absolute positioning and
          * calculate the correct positioning relative to the navbar itself.
          */
-        top: $navbar-height-md;
+        top: $navbar-height;
         right: 0;
         z-index: 10; /* Lets the registration link appear in front of the panels. */
     }

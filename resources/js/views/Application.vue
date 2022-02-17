@@ -25,6 +25,8 @@
 
     <!-- vue router mounts components here -->
     <main id="sd-content">
+        <beta-testing-badge></beta-testing-badge>
+
         <router-view v-if="applicationIsLoaded"></router-view>
     </main>
 
@@ -71,11 +73,15 @@ import NavigationBar from '@/components/NavigationBar'
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import queryStringDehasher from '@/services/queryStringDehasher';
 import FeedbackWidget from '@/components/FeedbackWidget';
+import BetaTestingBadge from '@/components/BetaTestingBadge';
 
 export default {
-
     name: 'Application',
-    components: {NavigationBar, FeedbackWidget, },
+    components: {
+        NavigationBar,
+        FeedbackWidget,
+        BetaTestingBadge,
+    },
     data() {
         return {
             confCheckbox1: false,
@@ -143,11 +149,6 @@ export default {
 @media (min-height: 500px) {
     #sd-content {
         padding-top: $navbar-height;
-    }
-}
-@media (min-width: 768px) {
-    #sd-content {
-        padding-top: $navbar-height-md;
     }
 }
 

@@ -6,7 +6,7 @@
 
                 <router-link
                     v-if="isAuthorized"
-                    :to="{ name: 'useredit', params: { user_id: user.id } }"
+                    :to="{ name: 'useredit', params: { user_slug: user.user_slug } }"
                     id="link-to-edit-user-profile"
                     class="btn btn-desat-blue"
                 >
@@ -131,19 +131,67 @@
                             lang-type="en"
                             img-format="jpg"
                         ></image-uploader>
+
                         <div class="avatar">
-                            <img
-                                :src="avatarUrl"
-                                :alt="'Avatar of ' + fullName"
-                            />
-                            <button
-                                class="edit text-xxs"
-                                v-if="isAuthorized"
-                                @click="toggleAvatarUploadDialog"
-                                title="Change avatar"
-                            >
-                                <font-awesome-icon icon="pen" />
-                            </button>
+                            <b-overlay :show="changingAvatar" variant="dark">
+                                <img
+                                    :src="avatarUrl"
+                                    :alt="'Avatar of ' + fullName"
+                                />
+
+                                <button
+                                    class="edit-avatar text-xxs"
+                                    v-if="isAuthorized"
+                                    @click="toggleAvatarUploadDialog"
+                                    title="Change avatar"
+                                >
+                                    <font-awesome-icon icon="pen" />
+                                </button>
+
+                                <div v-if="isAuthorized && user.avatar">
+                                    <button
+                                        id="sd-delete-avatar-button"
+                                        class="delete-avatar text-xxs"
+                                        @click="toggleAvatarDeleteDialog"
+                                        title="Delete avatar"
+                                    >
+                                        <font-awesome-icon icon="trash-alt" />
+                                    </button>
+
+                                    <b-popover
+                                        custom-class="sd-custom-popover"
+                                        placement="top"
+                                        show.sync="showAvatarDeleteDialog"
+                                        target="sd-delete-avatar-button"
+                                        triggers="click blur"
+                                    >
+                                        <div>
+                                            <p>
+                                                Do you really want to delete your avatar?
+                                            </p>
+
+                                            <div class="delete-buttons">
+                                                <b-button
+                                                    id="sd-delete-avatar-confirm-button"
+                                                    variant="primary"
+                                                    small
+                                                    @click="deleteAvatar"
+                                                >
+                                                    Delete the avatar
+                                                </b-button>
+
+                                                <b-button
+                                                    variant="outline-dark"
+                                                    small
+                                                    @click="toggleAvatarDeleteDialog"
+                                                >
+                                                    Cancel
+                                                </b-button>
+                                            </div>
+                                        </div>
+                                    </b-popover>
+                                </div>
+                            </b-overlay>
                         </div>
                     </b-col>
                 </b-row>
@@ -174,20 +222,22 @@
 <script>
 import Axios from "axios";
 import ImageUploader from "vue-image-crop-upload/upload-2.vue";
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
     name: "UserProfile",
     components: {
         ImageUploader
     },
-    props: ["user_id"],
+    props: ["user_slug"],
     data() {
         return {
+            changingAvatar: false,
             loading: false,
             user: null,
             error: null,
             showAvatarUploadDialog: false,
+            showAvatarDeleteDialog: false,
             requestMethod: "POST",
             requestHeaders: {
                 "X-XSRF-TOKEN": this.$cookies.get("XSRF-TOKEN")
@@ -198,9 +248,12 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["currentUser"]),
+        ...mapGetters([
+            "apiUrls",
+            "currentUser",
+        ]),
         isProfileOfLoggedInUser() {
-            return this.currentUser.id === this.user.id;
+            return this.currentUser.user_slug === this.user.user_slug;
         },
         isAuthorized() {
             return (
@@ -212,18 +265,16 @@ export default {
             return this.user.firstname + " " + this.user.surname;
         },
         avatarUrl() {
-            return this.user.avatar
-                ? "/storage/avatars/" + this.user.avatar
-                : "/images/default_avatar.jpg";
+            return this.apiUrls.avatar(this.user);
         },
         avatarUploadUrl() {
             return (
-                process.env.MIX_API_URL + "/users/" + this.user.id + "/avatar"
+                process.env.MIX_API_URL + "/users/" + this.user.user_slug + "/avatar"
             );
         }
     },
     watch: {
-        user_id: function updateDisplayedUser() {
+        user_slug: function updateDisplayedUser() {
             this.fetchData();
         }
     },
@@ -231,11 +282,12 @@ export default {
         this.fetchData();
     },
     methods: {
+        ...mapActions(["deleteUserAvatar"]),
         ...mapMutations(["setCurrentUser"]),
         fetchData() {
             this.error = this.user = null;
             this.loading = true;
-            return Axios.get("/users/" + this.user_id)
+            return Axios.get("/users/" + this.user_slug)
                 .then(response => {
                     return (this.user = response.data.DATA);
                 })
@@ -256,7 +308,25 @@ export default {
             }
             this.showAvatarUploadDialog = false;
             this.$refs.avatarUploader.setStep(1);
-        }
+        },
+        toggleAvatarDeleteDialog() {
+            this.showAvatarDeleteDialog = !this.showAvatarDeleteDialog;
+        },
+        deleteAvatar() {
+            this.changingAvatar = true;
+            this.toggleAvatarDeleteDialog();
+            return this.deleteUserAvatar()
+                .then(response => {
+                    this.user.avatar = null;
+                })
+                .catch(error => {
+                    this.error = error;
+                })
+                .then(() => {
+                    // always executed
+                    this.changingAvatar = false;
+                });
+        },
     }
 };
 </script>
@@ -319,18 +389,23 @@ header {
         width: 100%;
     }
 
-    .avatar button.edit {
+    .avatar button {
         position: absolute;
         top: 0.25rem;
-        right: 0.25rem;
         color: white;
         border-radius: 50%;
         background-color: rgba(0, 0, 0, 0.25);
     }
-    .avatar button.edit,
-    .avatar button.edit * {
+    .avatar button,
+    .avatar button * {
         border: none;
         outline: none;
+    }
+    .avatar button.edit-avatar {
+        right: 0.25rem;
+    }
+    .avatar button.delete-avatar {
+        left: 0.25rem;
     }
 }
 

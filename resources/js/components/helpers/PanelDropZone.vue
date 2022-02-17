@@ -63,7 +63,7 @@ export default {
         uploadPanel(formData, files){
             this.uploadNewPanel(formData)
             .then(response => {
-                this.$snotify.success("New panel created", "Uploaded")
+                this.$snotify.success("New SmartFigure created", "Uploaded")
                 if(this.currentGroup) {
                     this.$store.commit("clearSelectedPanels")
                     this.$store.commit("addPanelToSelections", response.data.DATA.id)
@@ -72,10 +72,10 @@ export default {
                         target: "selected",
                         groupId: this.currentGroup.id
                     }).then(response => {
-                        this.$snotify.success("Panel added to this group", "Group updated")
+                        this.$snotify.success("SmartFigure added to this group", "Group updated")
                     }).catch(error => {
                         console.log(error)
-                        this.$snotify.error("Cannot add panel to this group", "Update failed")
+                        this.$snotify.error("Cannot add SmartFigure to this group", "Update failed")
                     })
                 }
             })

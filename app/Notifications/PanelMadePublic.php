@@ -49,11 +49,11 @@ class PanelMadePublic extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Your Panel Has Been Made Public')
-            ->greeting("Your panel has been made public.")
-            ->line("{$this->user->firstname} {$this->user->surname} made the panel \"{$this->panel->title}\" publicly available on SDash.")
-            ->line("You will see the panel on the public dashboard or by clicking on the button below.")
-            ->action('View Panel', $this->panelUrl());
+            ->subject('Your SmartFigure Has Been Made Public')
+            ->greeting("Your SmartFigure has been made public.")
+            ->line("{$this->user->firstname} {$this->user->surname} made the SmartFigure \"{$this->panel->title}\" publicly available on SDash.")
+            ->line("You will see the SmartFigure on the public dashboard or by clicking on the button below.")
+            ->action('View SmartFigure', $this->panelUrl());
     }
 
     /**

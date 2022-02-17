@@ -113,12 +113,12 @@
                 </template>
 
                 <template v-slot:cell(description)="data">
-                    <template v-if="!iOwnThisPanel">
+                    <template v-if="!iCanEditThisPanel">
                         <span v-if="data.item.description">{{ data.item.description }}</span>
                         <span v-else>&mdash;</span>
                     </template>
 
-                    <template v-if="iOwnThisPanel">
+                    <template v-if="iCanEditThisPanel">
                         <a
                             href="#"
                             @click.prevent

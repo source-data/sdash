@@ -62,7 +62,18 @@ class ImagesTableSeeder extends Seeder
             ob_start();
 
             $image = imagecreate($width, $height);
-            $background_color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255));
+            $background_randomization = rand(0, 2);
+            if ($background_randomization == 0) {
+                // plain white background for 33 % of images
+                $background_color = imagecolorallocate($image, 255, 255, 255);
+            } else if ($background_randomization == 1) {
+                // totally random background color for another 33 % of images
+                $background_color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255));
+            } else {
+                // a random grey background color for the rest
+                $bg = rand(0, 255);
+                $background_color = imagecolorallocate($image, $bg, $bg, $bg);
+            }
 
             $shapes_size = min($width, $height) / 2;
             $shapes_margin = $shapes_size / 5;

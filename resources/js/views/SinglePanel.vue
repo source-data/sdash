@@ -1,7 +1,7 @@
 <template>
     <div class="sd-view-content">
         <div v-if="notAllowed">
-            You are not allowed to view this panel.
+            You are not allowed to view this SmartFigure.
         </div>
 
         <div v-if="otherError">
@@ -18,7 +18,7 @@
             </header>
 
             <section class="panel-image">
-                <h2 hidden>Panel Image</h2>
+                <h2 hidden>SmartFigure Image</h2>
 
                 <img :src="panelImageUrl" :alt="'image for ' + expandedPanel.title" />
             </section>
@@ -96,7 +96,7 @@
                             {{ tag.content }}
                         </span>
                     </div>
-            
+
                     <div class="panel-keyword-category">
                         Controlled Variables
                     </div>
@@ -106,7 +106,7 @@
                             {{ tag.content }}
                         </span>
                     </div>
-            
+
                     <div class="panel-keyword-category">
                         Instruments / Methods
                     </div>
@@ -171,10 +171,10 @@
 
             <footer>
                 <p v-if="expandedPanel.is_public">
-                    &copy; 2021 The Authors. This figure is licensed under the terms of the
-                    <a class="text-info" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License</a>,
-                    which permits use, distribution and reproduction in any medium, provided the original work is
-                    properly cited.
+                    <font-awesome-icon :icon="['fab', 'creative-commons']" /> 2022 The Authors. This figure is licensed
+                    under the terms of the <a class="text-info" href="https://creativecommons.org/licenses/by/4.0/">
+                    Creative Commons Attribution License</a>, which permits use, distribution and reproduction in any
+                    medium, provided the original work is properly cited.
                 </p>
 
                 <p>

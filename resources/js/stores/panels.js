@@ -140,7 +140,7 @@ const actions = {
             throw {
                 data: {
                     MESSAGE:
-                        "A panel must be expanded before generating a public link."
+                        "A SmartFigure must be expanded before generating a public link."
                 }
             };
         return Axios.post("/panels/" + state.expandedPanelId + "/tokens").then(
@@ -155,7 +155,7 @@ const actions = {
             throw {
                 data: {
                     MESSAGE:
-                        "A panel must be expanded before revoking a public link."
+                        "A SmartFigure must be expanded before revoking a public link."
                 }
             };
         return Axios.delete(
@@ -487,6 +487,7 @@ const getters = {
                           author_role: author.author_role.role,
                           order: author.author_role.order,
                           id: author.id,
+                          user_slug: author.user_slug,
                           corresponding:
                               author.author_role.role ===
                               AuthorTypes.CORRESPONDING
@@ -508,6 +509,7 @@ const getters = {
                           author_role: author.author_role.role,
                           order: author.author_role.order,
                           id: author.id,
+                          user_slug: null,
                           corresponding:
                               author.author_role.role ===
                               AuthorTypes.CORRESPONDING

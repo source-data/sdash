@@ -226,7 +226,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
     name: 'EditUser',
-    props: ["user_id"],
+    props: ["user_slug"],
     data() {
         return {
             user: {},
@@ -276,8 +276,8 @@ export default {
         },
     },
     created() {
-        let userId = parseInt(this.user_id);
-        if (!this.currentUser || ((this.currentUser.id !== userId) && (this.currentUser.role !== 'superadmin'))) {
+        let user_slug = this.user_slug;
+        if (!this.currentUser || ((this.currentUser.user_slug !== user_slug) && (this.currentUser.role !== 'superadmin'))) {
             this.$snotify.error("You don't have permission to do that", "Access Denied")
             this.$router.push({path: '/'})
             return
@@ -288,21 +288,21 @@ export default {
         // set the global user record
         ...mapMutations(['setCurrentUser']),
         getUserData() {
-            Axios.get("/users/" + this.user_id)
+            Axios.get("/users/" + this.user_slug)
                 .then(response => {
                     this.user = response.data.DATA
                 })
         },
         updateUserData() {
             this.submiting = true
-            Axios.patch("/users/" + this.user_id, this.user)
+            Axios.patch("/users/" + this.user_slug, this.user)
                 .then(response => {
                     this.errors = {}
                     this.submiting = false
-                    if(parseInt(this.user_id) === parseInt(this.currentUser.id)) {
+                    if(this.user_slug === this.currentUser.user_slug) {
                         this.setCurrentUser(response.data.DATA);
                     }
-                    this.$router.push({path: `/user/${this.user_id}`})
+                    this.$router.push({path: `/user/${this.user_slug}`})
                 })
                 .catch(error => {
                     this.errors = error.data.errors
@@ -312,7 +312,7 @@ export default {
         },
         updatePassword() {
             this.submitting = true;
-            Axios.patch('/users/' + this.user_id + '/password', {existingPassword: this.existingPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2}).then(response => {
+            Axios.patch('/users/' + this.user_slug + '/password', {existingPassword: this.existingPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2}).then(response => {
                 this.passwordErrors = {};
                 this.submiting = false;
                 this.clearPasswords();
@@ -333,7 +333,7 @@ export default {
             }
         },
         cancelEdit() {
-            this.$router.push({path: `/user/${this.user_id}`})
+            this.$router.push({path: `/user/${this.user_slug}`})
         },
         clearPasswords() {
             this.passwordErrors = {};

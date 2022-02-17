@@ -20,12 +20,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/feedback', 'API\FeedbackController@send');
     Route::get('/users/me/panels', 'API\PanelController@listUserPanels');
     Route::get('/users', 'API\UserController@index');
-    Route::patch('/users/{user}/password', 'API\UserController@changePassword');
-    Route::get('/users/{user}', 'API\UserController@show');
-    Route::patch('/users/{user}', 'API\UserController@update');
-    Route::patch('/users/{user}/avatar', 'API\UserController@changeAvatar');
-    Route::patch('/users/{user}/consent', 'API\UserController@updateConsent');
-    Route::delete('/users/{user}', 'API\UserController@destroy');
+    Route::patch('/users/{user:user_slug}/password', 'API\UserController@changePassword');
+    Route::get('/users/{user:user_slug}', 'API\UserController@show');
+    Route::patch('/users/{user:user_slug}', 'API\UserController@update');
+    Route::patch('/users/{user:user_slug}/avatar', 'API\UserController@changeAvatar');
+    Route::delete('/users/{user:user_slug}/avatar', 'API\UserController@deleteAvatar');
+    Route::patch('/users/{user:user_slug}/consent', 'API\UserController@updateConsent');
+    Route::delete('/users/{user:user_slug}', 'API\UserController@destroy');
     Route::patch('/users/me/groups/{group}/apply', 'API\GroupController@apply');
     Route::patch('/users/me/groups/{group}/join/{token}', 'API\GroupController@joinViaApi');
     Route::delete('/users/me/groups/{group}/join/{token}', 'API\GroupController@declineGroupInvitation');
@@ -54,6 +55,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/groups/{group}', 'API\GroupController@show');
     Route::put('/groups/{group}', 'API\GroupController@replace');
     Route::patch('/groups/{group}/cover', 'API\GroupController@changeCoverPhoto');
+    Route::delete('/groups/{group}/cover', 'API\GroupController@deleteCoverPhoto');
     Route::patch('/groups/{group}/panels', 'API\GroupController@managePanels');
     Route::delete('/groups/{group}/users', 'API\UserController@removeFromGroup');
     Route::delete('/groups/{group}', 'API\GroupController@destroy');

@@ -123,7 +123,7 @@
                         </template>
 
                         <template>
-                            Once a link has been revoked it cannot be restored, only a new link can be created. Anyone with the revoked link cannot access the panel any longer.
+                            Once a link has been revoked it cannot be restored, only a new link can be created. Anyone with the revoked link cannot access the SmartFigure any longer.
                         </template>
 
                         <div class="sd-popover-content">
@@ -145,7 +145,7 @@
 
             <b-row v-if="!loading && !iCanEditThisPanel && !hasLinks">
                 <b-col v-if="!loading && !hasLinks">
-                    The panel owner has not created a public link.
+                    The SmartFigure owner has not created a public link.
                 </b-col>
             </b-row>
 
@@ -236,7 +236,7 @@
             <b-row v-if="isPublic && !loadingStatus">
                 <b-col>
                     <p>
-                        This panel is publicly visible to all on SDash at<br />
+                        This SmartFigure is publicly visible to all on SDash at<br />
                         <a :href="panelUrl">{{panelUrl}}</a>
                     </p>
 
@@ -369,7 +369,7 @@ export default {
                 this.$refs['sd-share-modal'].hide()
             })
             .catch(error => {
-                this.$snotify.error("The panel could not be added to group", "Failure")
+                this.$snotify.error("The SmartFigure could not be added to group", "Failure")
             })
         },
         removePanelFromGroup(groupId){
@@ -379,7 +379,7 @@ export default {
                 groupId
             })
             .catch(error => {
-                this.$snotify.error("The panel could not be removed from group", "Failure")
+                this.$snotify.error("The SmartFigure could not be removed from group", "Failure")
             })
         },
         createGroup(){
@@ -398,7 +398,7 @@ export default {
             .then(response => {
                 this.loadingStatus = false
                 const status = response.data.DATA ? "public" : "private"
-                this.$snotify.success("The panel is now " + status, "Success!")
+                this.$snotify.success("The SmartFigure is now " + status, "Success!")
             })
             .catch(error => {
                 this.loadingStatus = false

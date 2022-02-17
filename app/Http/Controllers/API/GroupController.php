@@ -516,4 +516,26 @@ class GroupController extends Controller
             return API::response(500, "Failed to change cover photo", []);
         }
     }
+
+    /**
+     * Delete group cover photo
+     *
+     * @param Group $group
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteCoverPhoto(Group $group, Request $request)
+    {
+        if (!Gate::allows('modify-group', $group)) {
+            abort(403, 'Access denied');
+        }
+
+        $group->cover_photo = null;
+
+        if ($group->save()) {
+            return API::response(200, "Cover photo deleted", []);
+        } else {
+            return API::response(500, "Failed to delete cover photo", []);
+        }
+    }
 }

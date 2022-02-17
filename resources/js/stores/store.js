@@ -25,6 +25,7 @@ export default new Vuex.Store({
     showAuthorSidebar: false,
     applicationLoaded: false,
     showEmailConfirmationNotice: false,
+    sidebarPresent: false,
   },
   getters: {
     isLightboxOpen(state) {
@@ -68,8 +69,17 @@ export default new Vuex.Store({
         tagSearch() {
           return getters.isLoggedIn ? '/tags' : '/public/tags';
         },
+        avatar(user) {
+          return user.avatar ? "/storage/avatars/" + user.avatar : "/images/default_avatar.jpg";
+        },
+        deleteAvatar(user) {
+          return "/users/" + user.user_slug + "/avatar";
+        }
       }
     },
+    isSidebarPresent(state) {
+      return state.sidebarPresent;
+    }
    },
   actions: {
     toggleLightbox({commit}){
@@ -95,7 +105,9 @@ export default new Vuex.Store({
     },
     setEmailConfirmationNotice(state, value) {
       state.showEmailConfirmationNotice = value;
-    }
-
+    },
+    setSidebarPresent(state, value) {
+      state.sidebarPresent = value;
+    },
   }
 })

@@ -41,3 +41,7 @@ runs:
     - name: Generate key and passport encryption keys
       run: php artisan key:generate
       shell: bash
+
+    - name: Generate key and passport encryption keys
+      run: php artisan key:generate
+      shell: bash

@@ -24,14 +24,14 @@
                     v-if="!isEditingTitle"
                     :href="panelUrl"
                     target="_blank"
-                    title="Open panel in a new tab"
+                    title="Open SmartFigure in a new tab"
                 >{{ expandedPanel.title }}</a>
 
                 <button
                     class='edit text-xxs'
                     v-if="iCanEditThisPanel && !isEditingTitle"
                     @click="editPanelTitle"
-                    title="Edit panel title"
+                    title="Edit SmartFigure title"
                 >
                     <font-awesome-icon icon="pen" />
                 </button>
@@ -45,7 +45,7 @@
                     class='edit text-xxs'
                     v-if="iCanEditThisPanel"
                     @click="editAuthorList"
-                    title="Edit panel authors"
+                    title="Edit SmartFigure authors"
                 >
                     <font-awesome-icon icon="pen" />
                 </button>
@@ -114,16 +114,15 @@
                         class='edit text-xxs'
                         v-if="!editingCaption && iCanEditThisPanel"
                         @click="editPanelCaption"
-                        title="Edit panel description"
+                        title="Edit SmartFigure description"
                     >
                         <font-awesome-icon icon="pen" />
                     </button>
 
                     <span class="sd-license-notice text-xxs" v-if="isPublic">
-                        <font-awesome-icon :icon="['fab', 'creative-commons']" />
-                        2021 The Authors. Published under the terms of the
-                        <a href="https://creativecommons.org/licenses/by/4.0/"
-                            target="_blank">CC BY 4.0</a> license.
+                        <font-awesome-icon :icon="['fab', 'creative-commons']" /> 2022 The Authors. Published under the
+                        terms of the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>
+                        license.
                     </span>
                 </section>
 
@@ -189,10 +188,69 @@
                             role="tabpanel"
                             aria-labelledby="panel-keywords-tab"
                         >
-                            <smart-tags-category title="Measured Variables" type="assay"></smart-tags-category>
-                            <smart-tags-category title="Controlled Variables" type="intervention"></smart-tags-category>
-                            <smart-tags-category title="Instruments / Methods" type="method"></smart-tags-category>
-                            <smart-tags-category title="General Keywords" type="other"></smart-tags-category>
+                            <div>
+                                <label>
+                                    Measured Variables
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Variables that were observed, measured or  described in this experiment"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="assay"></smart-tags-category>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Controlled Variables
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Variables tested by controlled experimentation for their potential causal effect on (some of) the measured variables (controlled pharmacological treatment, genetic perturbation, surgical intervention, ...)"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="intervention"></smart-tags-category>
+                            </div>
+
+                            <div>
+                                <label>
+                                    Instruments / Methods
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Methods, measurement platforms, experimental assays"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="method"></smart-tags-category>
+                            </div>
+
+                            <div>
+                                <label>
+                                    General Keywords
+
+                                    <a
+                                        href="#"
+                                        v-b-tooltip.hover.click.blur.top
+                                        title="Free text keywords"
+                                    >
+                                        <font-awesome-icon icon="info-circle" />
+                                    </a>
+                                </label>
+
+                                <smart-tags-category type="other"></smart-tags-category>
+                            </div>
                             <copy-tags></copy-tags>
                         </section>
                     </div>
@@ -371,7 +429,7 @@ export default {
                     .catch(error => {
                         this.$snotify.error(
                             error.message,
-                            "Panel Update Failed"
+                            "SmartFigure Update Failed"
                         );
                     });
             }
@@ -422,11 +480,11 @@ export default {
                 .then(response => {
                     this.$snotify.success(
                         response.data.MESSAGE,
-                        "Panel Updated"
+                        "SmartFigure Updated"
                     );
                 })
                 .catch(error => {
-                    this.$snotify.error("Could not update panel", "Failed");
+                    this.$snotify.error("Could not update SmartFigure", "Failed");
                 });
         },
         editAuthorList(){

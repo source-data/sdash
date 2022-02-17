@@ -65,6 +65,17 @@
                     </a>
                 </p>
             </section>
+            <section>
+                <h2>Credits</h2>
+                <p>SDash is created and developed by the <a href="https://sourcedata.embo.org/" target="_blank" rel="noopener noreferrer">SourceData</a> team at <a href="https://www.embo.org/" target="_blank" rel="noopener noreferrer">EMBO</a> with the <a href="https://www.sib.swiss/">Swiss Insitute of Bioinformatics</a>.</p>
+                <div class="sd-credits-box">
+                    <team-profile-card src="/images/team/thomas_l.jpg" name="Thomas Lemberger" affiliation="Head of SourceData, EMBO"></team-profile-card>
+                    <team-profile-card src="/images/team/hannah_s.jpg" name="Hannah Sonntag" affiliation="Project Co-ordination, EMBO"></team-profile-card>
+                    <team-profile-card src="/images/team/stephen_p.jpg" name="Stephen Pewter" affiliation="Web Development, EMBO"></team-profile-card>
+                    <team-profile-card src="/images/team/thomas_e.jpg" name="Thomas Eidens" affiliation="Web Development, EMBO"></team-profile-card>
+                    <team-profile-card src="/images/team/orlin_t.jpg" name="Orlin Topalov" affiliation="Web Development, SIB"></team-profile-card>
+                </div>
+            </section>
         </article>
 
         <info-footer></info-footer>
@@ -73,10 +84,11 @@
 
 <script>
 import InfoFooter from "@/components/InfoFooter";
+import TeamProfileCard from "@/components/TeamProfileCard";
 
 export default {
   name: "About",
-  components: { InfoFooter },
+  components: { InfoFooter, TeamProfileCard },
   data() {
     return {};
   },
@@ -116,5 +128,11 @@ img {
     margin-bottom: 3rem;
     margin-top: 2rem;
     width: 100%;
+}
+
+.sd-credits-box {
+    margin-top: 3rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
 }
 </style>

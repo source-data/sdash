@@ -18,14 +18,22 @@ class GroupUserTest extends TestCase
   protected $privateGroup1;
   protected $privateGroup2Details;
 
+  private function createGroup(Array $groupDetails, User $admin, User $member): Group
+  {
+    $group = factory(Group::class)->create($groupDetails);
+    $group->users()->attach($admin->id, ['role' => 'admin', 'status' => 'confirmed']);
+    $group->users()->attach($member->id, ['role' => 'user', 'status' => 'confirmed']);
+
+    return $group;
+  }
+
   public function setUp(): void
   {
     parent::setUp();
     $this->groupCreator = factory(User::class)->create(); //randomly generated user will have id = 0
     $this->groupMember = factory(User::class)->create(); //randomly generated user will have id = 1
-    $this->privateGroup1 = factory(Group::class)->create([
-      'is_public' => false
-    ]);
+    $this->privateGroup1 = $this->createGroup(['is_public' => false], $this->groupCreator, $this->groupMember);
+
     $this->privateGroup2Details = [
       'name'          => $this->faker->sentence(2),
       'description'   => $this->faker->sentence(8),
@@ -39,8 +47,9 @@ class GroupUserTest extends TestCase
         ]
       ]
     ];
-    $this->privateGroup1->users()->attach($this->groupCreator->id, ['role' => 'admin', 'status' => 'confirmed']);
-    $this->privateGroup1->users()->attach($this->groupMember->id, ['role' => 'user', 'status' => 'confirmed']);
+
+    $this->groupWithCoverPhotoCreator = factory(User::class)->create();
+    $this->groupWithCoverPhoto = $this->createGroup(['cover_photo' => 'cover_photo.jpg'], $this->groupWithCoverPhotoCreator, $this->groupMember);
   }
 
   /**
@@ -176,5 +185,107 @@ class GroupUserTest extends TestCase
     ]);
 
     $response->assertForbidden();
+  }
+
+  private function getGroupDetails(Group $group, User $actor)
+  {
+    return $this->actingAs($actor, 'sanctum')
+                ->getJson('/api/groups/' . $group->id);
+  }
+
+  private function deleteCoverPhoto(Group $group, $actor)
+  {
+    $base = $this;
+    if ($actor) {
+        $base = $this->actingAs($actor, 'sanctum');
+    }
+    return $base->deleteJson('/api/groups/' . $group->id . '/cover');
+  }
+
+  private function assertCoverPhotoPresent(Group $group, String $message)
+  {
+    $groupDetails = $this->getGroupDetails($group, $group->administrators->first());
+    $this->assertEquals($groupDetails['DATA']['cover_photo'], $group->cover_photo, $message);
+  }
+
+  private function assertNoCoverPhoto(Group $group, String $message)
+  {
+    $groupDetails = $this->getGroupDetails($group, $group->administrators->first());
+    $this->assertEmpty($groupDetails['DATA']['cover_photo'], $message);
+  }
+
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function a_group_admin_can_delete_the_cover_photo()
+  {
+    $group = $this->groupWithCoverPhoto;
+    $user = $group->administrators->first();
+
+    $this->assertCoverPhotoPresent($group, 'expected group to have a cover photo before deletion');
+    $this->deleteCoverPhoto($group, $user)->assertStatus(200);
+    $this->assertNoCoverPhoto($group, 'expected group to not have a cover photo after deletion');
+  }
+
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function a_group_admin_can_delete_a_nonexistent_cover_photo()
+  {
+    $group = $this->privateGroup1;
+    $user = $group->administrators->first();
+
+    $this->assertNoCoverPhoto($group, 'expected group to not have a cover photo before deletion');
+    $this->deleteCoverPhoto($group, $user)->assertStatus(200);
+    $this->assertNoCoverPhoto($group, 'expected group to still not have a cover photo after deletion');
+  }
+
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function a_group_member_cannot_delete_the_cover_photo()
+  {
+    $group = $this->groupWithCoverPhoto;
+    $user = $group->confirmedUsers()->wherePivot('role', 'user')->first();
+
+    $this->assertCoverPhotoPresent($group, 'expected group to have a cover photo before deletion');
+    $this->deleteCoverPhoto($group, $user)->assertForbidden();
+    $this->assertCoverPhotoPresent($group, 'expected group to still have a cover photo after deletion');
+  }
+
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function an_unauthenticated_user_cannot_delete_the_cover_photo()
+  {
+    $group = $this->groupWithCoverPhoto;
+    $user = null;
+
+    $this->deleteCoverPhoto($group, $user)->assertUnauthorized();
+    $this->assertCoverPhotoPresent($group, 'expected group to still have a cover photo after deletion');
+  }
+
+  /**
+   * @test
+   *
+   * @return void
+   */
+  public function a_group_admin_cannot_delete_another_groups_cover_photo()
+  {
+    $group = $this->groupWithCoverPhoto;
+    $user = $this->groupCreator;
+    $this->assertNotContains($user, $group->administrators);
+
+    $this->assertCoverPhotoPresent($group, 'expected group to have a cover photo before deletion');
+    $this->deleteCoverPhoto($group, $user)->assertForbidden();
+    $this->assertCoverPhotoPresent($group, 'expected group to still have a cover photo after deletion');
   }
 }

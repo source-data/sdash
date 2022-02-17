@@ -66,7 +66,7 @@
                 variant="danger"
                 class="no-panel-alert"
             >
-                No Panels Found
+                No SmartFigures Found
             </b-alert>
         </div>
 

@@ -54,7 +54,7 @@ class NewReplyToYourPanelComment extends Notification
         return (new MailMessage)
             ->subject('New Reply to Your Comment on SDASH')
             ->greeting("New Reply Notification")
-            ->line("{$this->user->firstname} {$this->user->surname} has replied to your comment on the panel \"{$this->panel->title}\"")
+            ->line("{$this->user->firstname} {$this->user->surname} has replied to your comment on the SmartFigure \"{$this->panel->title}\"")
             ->line('Their reply says:')
             ->line($this->comment->comment);
     }

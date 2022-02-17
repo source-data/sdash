@@ -33,9 +33,10 @@
                         stacked
                         name="toggle-panel-list-privacy"
                         v-model="privacyLevel"
+                        id="sd-panel-privacy-group"
                     >
-                        <b-form-radio value="all">Show all panels</b-form-radio>
-                        <b-form-radio value="private">Show my own panels</b-form-radio>
+                        <b-form-radio value="all">Show all SmartFigures</b-form-radio>
+                        <b-form-radio value="private">Show my own SmartFigures</b-form-radio>
                     </b-form-radio-group>
                 </div>
             </section>
@@ -215,7 +216,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { mapGetters, mapMutations } from "vuex"
 import AuthorMultiselect from '@/components/helpers/AuthorMultiselect';
 import KeywordMultiselect from '@/components/helpers/KeywordMultiselect';
 
@@ -268,6 +269,7 @@ export default {
         },
     },
     methods: {
+        ...mapMutations(["setSidebarPresent"]),
         toggleAccess(value) {
             this.$store.dispatch("setLoadingState", true);
             this.$store.dispatch("clearLoadedPanels");
@@ -364,6 +366,7 @@ export default {
             this.isSidebarExpanded =
                 localStorage.getItem("isSidebarExpanded") === "true";
         }
+        this.setSidebarPresent(true)
     },
     watch: {
         isSidebarExpanded(newStatus) {
@@ -372,6 +375,7 @@ export default {
     },
     destroyed() {
         this.clearFilters();
+        this.setSidebarPresent(false);
     }
 };
 </script>
@@ -390,12 +394,6 @@ $sidebar-z-index: $navbar-z-index - 2;
     padding-top: $navbar-height;
     // Position the sidebar above all content except for the navbar.
     z-index: $sidebar-z-index;
-}
-@media (min-width: 768px) {
-    #sd-panel-filters::v-deep .b-sidebar-outer,
-    #sd-panel-filters::v-deep .b-sidebar {
-        padding-top: $navbar-height-md;
-    }
 }
 
 #sd-panel-filters::v-deep .b-sidebar {

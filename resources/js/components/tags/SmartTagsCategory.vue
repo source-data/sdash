@@ -1,7 +1,5 @@
 <template>
     <div class="form-group sourcedata-tags" :class="'sourcedata-tags-' + type">
-        <label>{{ title }}</label>
-
         <vue-tags-input
             :placeholder="iCanEditTags ? 'Enter tags or use SmartTag' : 'Restricted to owner or admin'"
             :tags="combinedTags"
@@ -41,7 +39,7 @@ export default {
 
     name: 'SmartTagsCategory',
     components: { },
-    props: ['title', 'type'],
+    props: ['type'],
 
     data(){
 

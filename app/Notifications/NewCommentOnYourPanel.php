@@ -53,11 +53,11 @@ class NewCommentOnYourPanel extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('New Comment on Your Panel on SDASH')
-                    ->greeting("New Comment Notification")
-                    ->line("{$this->user->firstname} {$this->user->surname} has added a comment to your panel \"{$this->panel->title}\"")
-                    ->line('The comment says:')
-                    ->line($this->comment->comment);
+            ->subject('New Comment on Your SmartFigure on SDASH')
+            ->greeting("New Comment Notification")
+            ->line("{$this->user->firstname} {$this->user->surname} has added a comment to your SmartFigure \"{$this->panel->title}\"")
+            ->line('The comment says:')
+            ->line($this->comment->comment);
     }
 
     /**

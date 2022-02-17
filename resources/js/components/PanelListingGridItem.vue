@@ -7,25 +7,28 @@
                 tabindex="0"
             >
                 <header class="sd-grid-item--image-header">
-                    <button
+                    <label
+                        type="button"
                         class="panel-select-button"
+                        :class="{'bg-success': panelSelected}"
                         v-on:click.stop="toggleSelected"
-                        v-if="IOwnThisPanel"
+                        v-if="!batchSelectDisabled && IOwnThisPanel"
                     >
-                        <transition name="fade">
-                            <font-awesome-layers
-                                class="fa-2x panel-select-button--icon text-success"
-                                v-if="panelSelected"
-                            >
-                                <font-awesome-icon icon="circle" />
-                                <font-awesome-icon
-                                    icon="check"
-                                    transform="shrink-6"
-                                    :style="{ color: 'white' }"
-                                />
-                            </font-awesome-layers>
-                        </transition>
-                    </button>
+
+                        <font-awesome-icon icon="check" size="xs" />
+                    </label>
+
+                    <label
+                        v-else
+                        class="panel-select-button panel-select-explanation"
+                        v-on:click.stop.prevent
+                        v-b-popover.hover.top="{
+                            customClass: 'sd-custom-popover',
+                            content: 'You cannot select this SmartFigure because you are not its owner.'
+                        }"
+                    >
+                        <font-awesome-icon icon="question" size="xs" />
+                    </label>
                 </header>
 
                 <img class="sd-grid-image" v-lazy="thumbnailUrl" draggable="false"/>
@@ -44,13 +47,13 @@
                         :class="panelAccessReason"
                         icon="lock"
                         v-if="panelAccessReason == 'private'"
-                        title="Private panel"
+                        title="Private SmartFigure"
                     />
                     <font-awesome-icon
                         :class="panelAccessReason"
                         icon="lock-open"
                         v-if="panelAccessReason == 'public'"
-                        title="Public panel"
+                        title="Public SmartFigure"
                     />
                     <font-awesome-icon
                         :class="panelAccessReason"
@@ -63,11 +66,11 @@
         </div>
 
         <div class="sd-grid-item-text">
-            <h6 class="panel-title">
+            <h6 class="panel-title" :title="thisPanel.title">
                 {{ thisPanel.title }}
             </h6>
 
-            <address class="panel-authors">
+            <address class="panel-authors" :title="panelAuthorsAbbreviated">
                 {{ panelAuthorsAbbreviated }}
             </address>
         </div>
@@ -114,7 +117,8 @@ export default {
     name: "PanelListingGridItem",
     components: { PanelDetail },
     props: {
-        panelId: Number
+        panelId: Number,
+        batchSelectDisabled: Boolean,
     },
 
     data() {
@@ -364,14 +368,40 @@ $authors-height: $font-size-sm;
     right: 2vw;
     opacity: 1;
 }
+
+$panel-select-button-diameter: $image-height * 0.1;
 .sd-grid-item--image-header {
-    cursor: auto;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 2;
+    height: $panel-select-button-diameter * 2;
     width: 100%;
     padding: 6px;
+
+    .panel-select-explanation {
+        background-color: transparent;
+
+        svg {
+            color: transparent;
+        }
+    }
+}
+.sd-grid-image-container-inner:hover .sd-grid-item--image-header {
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, .50),
+        rgba(0, 0, 0, .30),
+        transparent
+    );
+
+    .panel-select-explanation {
+        background-color: $light-gray;
+
+        svg {
+            color: gray;
+        }
+    }
 }
 
 .sd-grid-item--image-footer {
@@ -381,7 +411,7 @@ $authors-height: $font-size-sm;
     left: 0;
     z-index: 2;
     width: 100%;
-    padding: 3px 6px;
+    padding: 14px 6px 3px;
 
     .private {
         color: #882323;
@@ -395,22 +425,55 @@ $authors-height: $font-size-sm;
         color: #235588;
     }
 }
+.sd-grid-image-container-inner:hover .sd-grid-item--image-footer {
+    background-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, .50),
+        rgba(0, 0, 0, .30),
+        transparent
+    );
+}
 
 .sd-grid-item--author-icon {
     color:#634782;
 }
 
 .panel-select-button {
+    // vertically align the green checkmark inside the button
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // position the button within the header
     position: absolute;
     top: 6px;
     right: 6px;
     padding: 0;
     margin: 0;
-    background: none;
-    border: solid 2px $mostly-white-gray;
-    width: 40px;
-    height: 40px;
+
+    width: $panel-select-button-diameter;
+    height: $panel-select-button-diameter;
+
+    background-color: $mostly-white-gray;
     border-radius: 50%;
+
+    svg {
+        color: $light-gray;
+    }
+}
+.panel-select-button:hover,
+.panel-select-button:focus {
+    background-color: $very-light-gray;
+
+    svg {
+        color: gray;
+    }
+}
+.panel-select-button.bg-success svg {
+    color: $mostly-white-gray;
+}
+.panel-select-button.bg-success:hover svg {
+    color: $very-light-gray;
 }
 
 .sd-grid-item::v-deep .modal-dialog {

@@ -29,8 +29,18 @@ jobs:
     # End-to-end tests
     - name: Start the server for the end-to-end tests
       run: php artisan serve --port 8080 &
+    - name: Reset the database state
+      run: php artisan migrate:fresh
+    - name: Seed the database
+      run: php artisan db:seed
     - name: Run end-to-end tests
-      run: npx nightwatch --headless --env firefox,chrome
+      run: npm run tests
+    - name: Archive test results
+      if: always() # even after test failure
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        path: tests/e2e/output
 
   release-dev:
     name: Release frontend build artifact for the dev server

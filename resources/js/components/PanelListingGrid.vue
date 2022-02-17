@@ -6,6 +6,7 @@
                 v-for="panel in loadedPanels"
                 :key="panel.id"
                 :panel-id="panel.id"
+                :batchSelectDisabled="batchSelectDisabled"
             ></panel-listing-grid-item>
         </ul>
 
@@ -18,6 +19,7 @@
             pills align="center"
             aria-controls="sd-panel-listing-grid"
         ></b-pagination>
+        <guided-tour v-if="showGuidedTour"></guided-tour>
     </b-overlay>
 </template>
 
@@ -26,15 +28,24 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import InfiniteLoading from 'vue-infinite-loading'
 import PanelListingGridItem from './PanelListingGridItem'
+import GuidedTour from './helpers/GuidedTour';
+import {getShowGuidedTour} from '@/services/GuidedTourService';
 
 export default {
 
     name: 'PanelListingGrid',
-    components: { PanelListingGridItem, InfiniteLoading },
-    props: ['list_root'],
+    components: { PanelListingGridItem, InfiniteLoading, GuidedTour },
+    props: {
+        list_root: String,
+        batchSelectDisabled: {
+            type: Boolean,
+            default: false,
+        },
+    },
     data(){
         return {
             switchingPages: false,
+            showGuidedTour: false,
         }
     }, /* end of data */
 
@@ -57,6 +68,7 @@ export default {
             'pageSize',
             'paginate',
             'totalPanels',
+            'isLoggedIn',
         ]),
         currentPage: {
             set(page) {
@@ -71,6 +83,9 @@ export default {
             }
         }
 
+    },
+    mounted() {
+        this.showGuidedTour = (getShowGuidedTour() && this.isLoggedIn);
     }
 
 }

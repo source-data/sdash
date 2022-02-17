@@ -16,6 +16,7 @@ const defaultUserState = {
     orcid: null,
     has_consented: null,
     email_verified_at: null,
+    user_slug: null,
 }
 
 //initial state
@@ -26,7 +27,6 @@ const state = {
 
 
 const actions = {
-
     fetchCurrentUser({ commit }){
         return Axios.get('/users/me')
         .then((response)=>{
@@ -40,11 +40,14 @@ const actions = {
         return Axios.get(userSearchUrl, { params: { name: searchString } }).then(response =>{
             return response
         })
-
-
     },
-
-
+    deleteUserAvatar({commit, rootGetters, state}) {
+        let deleteAvatarUrl = rootGetters.apiUrls.deleteAvatar(state.user);
+        return Axios.delete(deleteAvatarUrl)
+            .then(response => {
+                commit('deleteAvatar');
+            });
+    },
 }
 
 const mutations = {
@@ -65,11 +68,15 @@ const mutations = {
             orcid: user.orcid,
             has_consented: user.has_consented,
             email_verified_at: user.email_verified_at,
+            user_slug: user.user_slug,
         };
     },
     expireCurrentUser(state) {
         state.user = Object.assign({}, defaultUserState);
     },
+    deleteAvatar(state) {
+        state.user.avatar = null;
+    }
 }
 
 const getters = {

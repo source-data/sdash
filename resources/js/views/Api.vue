@@ -28,7 +28,7 @@
                     </div>
 
                     <!-- Panel List [START] -->
-                    <h4>Panel List</h4>
+                    <h4>SmartFigure List</h4>
                     <div class="card">
                         <h5 class="card-header">Endpoint</h5>
                         <div class="card-body">
@@ -66,7 +66,7 @@
                                         <td><code>body</code></td>
                                         <td><code>optional</code></td>
                                         <td>
-                                            search panel titles, tags, authors and
+                                            search SmartFigure titles, tags, authors and
                                             captions for the given string
                                         </td>
                                     </tr>
@@ -229,10 +229,10 @@
                         "orcid": "0000-0003-2219-5841"
                     },
                     "groups": [
-                        
+
                     ],
                     "tags": [
-                        
+
                     ],
                     "authors": [
                         {
@@ -251,7 +251,7 @@
                         }
                     ],
                     "external_authors": [
-                        
+
                     ]
                 }
             ],
@@ -311,14 +311,14 @@
                         <h5 class="card-header">Response</h5>
                         <div class="card-body">
                             <div class="alert alert-primary" role="alert">
-                                The same response as that of a Panel List.
+                                The same response as that of a SmartFigure List.
                             </div>
                         </div>
                     </div>
                     <!-- Group Panel List [END] -->
 
                     <!-- Single Panel [START] -->
-                    <h4>Single Panel</h4>
+                    <h4>Single SmartFigure</h4>
                     <div class="card">
                         <h5 class="card-header">Endpoint</h5>
                         <div class="card-body">
@@ -468,7 +468,7 @@
                     <!-- Single Panel [END] -->
 
                     <!-- Panel File List [START] -->
-                    <h4>Panel File List</h4>
+                    <h4>SmartFigure File List</h4>
                     <div class="card">
                         <h5 class="card-header">Endpoint</h5>
                         <div class="card-body">
@@ -526,7 +526,7 @@
                     <!-- Panel File List [END] -->
 
                     <!-- Panel Image [START] -->
-                    <h4>Panel Image</h4>
+                    <h4>SmartFigure Image</h4>
                     <div class="card">
                         <h5 class="card-header">Endpoint</h5>
                         <div class="card-body">
@@ -552,7 +552,7 @@
                     <!-- Panel Image [END] -->
 
                     <!-- Panel Thumbnail [START] -->
-                    <h4>Panel Thumbnail</h4>
+                    <h4>SmartFigure Thumbnail</h4>
                     <div class="card">
                         <h5 class="card-header">Endpoint</h5>
                         <div class="card-body">
@@ -795,11 +795,6 @@ export default {
     position: sticky;
     top: $navbar-height + 1.5rem;
     z-index: 1000;
-}
-@media (min-width: 768px) {
-    #toc {
-        top: $navbar-height-md + 1.5rem;
-    }
 }
 
 code[class*="language-"],
