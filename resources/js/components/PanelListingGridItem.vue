@@ -24,7 +24,7 @@
                         v-on:click.stop.prevent
                         v-b-popover.hover.top="{
                             customClass: 'sd-custom-popover',
-                            content: 'You cannot select this panel because you are not its owner.'
+                            content: 'You cannot select this SmartFigure because you are not its owner.'
                         }"
                     >
                         <font-awesome-icon icon="question" size="xs" />
