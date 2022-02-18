@@ -270,6 +270,8 @@ $image-height: 233px;
 }
 
 .sd-grid-image-container-inner {
+    // transparent images get a white background
+    background-color: white;
     // indicate that the image can be interacted with
     cursor: pointer;
     // needed to position <header> with the panel select button and the panel access reasons in the <footer> at the
