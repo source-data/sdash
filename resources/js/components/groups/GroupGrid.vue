@@ -92,6 +92,9 @@
                                 />
                                 {{ group.panels_count }}
                             </li>
+                            <li v-if="group.is_public">
+                                <font-awesome-icon icon="lock-open" title="Public group" />
+                            </li>
                             <li>
                                 <font-awesome-icon
                                     icon="envelope"
@@ -303,7 +306,7 @@ header {
 
         > li + li::before {
             content: "|";
-            padding: 0 0.35em;
+            padding: 0 0.5em 0 0.15em
         }
 
         .group-admins,
