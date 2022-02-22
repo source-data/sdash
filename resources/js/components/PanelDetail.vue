@@ -599,16 +599,29 @@ section.image {
     padding: 0;
     /* Makes the absolutely positioned icons (see below) relative to this container. */
     position: relative;
-}
 
-section.image .content {
-    max-height: 40rem;
-}
-section.image img {
-    display: block;
-    margin: auto;
-    max-width: 100%;
-    max-height: 40rem;
+    .content {
+        max-height: 40rem;
+    }
+
+    img {
+        // transparent images get a white background
+        background-color: white;
+        display: block;
+        margin: auto;
+        max-width: 100%;
+        max-height: 40rem;
+    }
+
+    button.edit {
+        background-color: $mostly-black-blue;
+        border-radius: 50%;
+        height: 2rem;
+        width: 2rem;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
 }
 
 $zoom-icon-size: 1rem;
@@ -635,16 +648,6 @@ $zoom-icon-bottom: -1 * (
     right: $zoom-icon-size;
 
     cursor: pointer;
-}
-
-section.image button.edit {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-section.image button.edit,
-section.image button.edit * {
-    background-color: transparent;
 }
 
 /*********************

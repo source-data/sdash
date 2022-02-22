@@ -202,4 +202,9 @@ export default {
         margin: 2rem 10vw;
     }
 }
+
+// transparent images get a white background
+::v-deep .vel-img {
+    background-color: white;
+}
 </style>
