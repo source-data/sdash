@@ -92,47 +92,6 @@
         </section>
 
         <section class="container-fluid get-link">
-            <b-row v-if="iCanEditThisPanel">
-                <h3 class="col-7">
-                    Share with anyone via a link:
-                </h3>
-
-                <b-col cols="5">
-                    <b-button v-if="!hasLinks" variant="primary" @click="generateLink">
-                        <font-awesome-icon icon="link" /> Get Link + QR Code
-                    </b-button>
-
-                    <b-button v-else id="sd-revoke-link-button" ref="sd-revoke-link-button" variant="danger">
-                        <font-awesome-icon icon="unlink" /> Revoke Link
-                    </b-button>
-
-                    <b-popover
-                        ref="sd-revoke-link-popover"
-                        target="sd-revoke-link-button"
-                        triggers="click blur"
-                        placement="top"
-                        selector="sd-revoke-link-button"
-                        custom-class="sd-custom-popover"
-                    >
-                        <template v-slot:title>
-                            Are you sure?
-
-                            <b-button @click="closeRevokeLinkPopover" class="close" aria-label="Close">
-                                <span class="d-inline-block" aria-hidden="true">&times;</span>
-                            </b-button>
-                        </template>
-
-                        <template>
-                            Once a link has been revoked it cannot be restored, only a new link can be created. Anyone with the revoked link cannot access the SmartFigure any longer.
-                        </template>
-
-                        <div class="sd-popover-content">
-                            <b-button variant="primary" small @click="revokeLink">Revoke it!</b-button>
-                        </div>
-                    </b-popover>
-                </b-col>
-            </b-row>
-
             <b-row v-if="loading">
                 <b-col class="text-center">
                     <b-spinner
@@ -143,38 +102,89 @@
                 </b-col>
             </b-row>
 
-            <b-row v-if="!loading && !iCanEditThisPanel && !hasLinks">
-                <b-col v-if="!loading && !hasLinks">
-                    The SmartFigure owner has not created a public link.
-                </b-col>
-            </b-row>
+            <template v-else>
+                <b-row>
+                    <template v-if="iCanEditThisPanel">
+                        <h3 class="col-7">
+                            Share with anyone via a link:
+                        </h3>
 
-            <b-row v-if="!loading && hasLinks" class="copy-link">
-                <b-col cols="12">
-                    <b-input-group>
-                        <b-form-input
-                            :value="tokenizedPanelUrl"
-                            id="sd-public-link"
-                            readonly></b-form-input>
-
-                        <b-input-group-append>
-                            <b-button variant="light" @click="copyLink">
-                                <font-awesome-icon icon="copy" />
+                        <b-col cols="5">
+                            <b-button v-if="!hasLinks" variant="primary" @click="generateLink">
+                                <font-awesome-icon icon="link" /> Get Link + QR Code
                             </b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                </b-col>
 
-                <b-col class="download-link">
-                    <a
-                        class="text-light"
-                        :href="'/panels/' + expandedPanel.id + '/token/qr'"
-                        download="qr_code.jpg"
-                    >
-                        <font-awesome-icon icon="qrcode" /> Download link as QR code
-                    </a>
-                </b-col>
-            </b-row>
+                            <b-button v-else id="sd-revoke-link-button" ref="sd-revoke-link-button" variant="danger">
+                                <font-awesome-icon icon="unlink" /> Revoke Link
+                            </b-button>
+
+                            <b-popover
+                                ref="sd-revoke-link-popover"
+                                target="sd-revoke-link-button"
+                                triggers="click blur"
+                                placement="top"
+                                selector="sd-revoke-link-button"
+                                custom-class="sd-custom-popover"
+                            >
+                                <template v-slot:title>
+                                    Are you sure?
+
+                                    <b-button @click="closeRevokeLinkPopover" class="close" aria-label="Close">
+                                        <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                    </b-button>
+                                </template>
+
+                                <template>
+                                    Once a link has been revoked it cannot be restored, only a new link can be created. Anyone with the revoked link cannot access the SmartFigure any longer.
+                                </template>
+
+                                <div class="sd-popover-content">
+                                    <b-button variant="primary" small @click="revokeLink">Revoke it!</b-button>
+                                </div>
+                            </b-popover>
+                        </b-col>
+                    </template>
+
+                    <template v-else-if="isPublic">
+                        <b-col>
+                            This SmartFigure is publicly available at <a :href="panelUrl" target="_blank">{{ panelUrl }}</a>.
+                        </b-col>
+                    </template>
+
+                    <template v-else>
+                        <b-col>
+                            The SmartFigure owner has not created a public link.
+                        </b-col>
+                    </template>
+                </b-row>
+
+                <b-row v-if="hasLinks" class="copy-link">
+                    <b-col cols="12">
+                        <b-input-group>
+                            <b-form-input
+                                :value="tokenizedPanelUrl"
+                                id="sd-public-link"
+                                readonly></b-form-input>
+
+                            <b-input-group-append>
+                                <b-button variant="light" @click="copyLink">
+                                    <font-awesome-icon icon="copy" />
+                                </b-button>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-col>
+
+                    <b-col class="download-link">
+                        <a
+                            class="text-light"
+                            :href="'/panels/' + expandedPanel.id + '/token/qr'"
+                            download="qr_code.jpg"
+                        >
+                            <font-awesome-icon icon="qrcode" /> Download link as QR code
+                        </a>
+                    </b-col>
+                </b-row>
+            </template>
         </section>
 
         <section v-if="iCanEditThisPanel" class="container-fluid make-public">
@@ -289,7 +299,6 @@ export default {
         return {
             loading: false,
             loadingStatus: false,
-            link_base: process.env.MIX_API_PANEL_URL,
             selectedSharingGroupId: null,
             fields:[
                 {key:'action', label:'', sortable: false},
@@ -300,7 +309,13 @@ export default {
     }, /* end of data */
 
     computed: {
-        ...mapGetters(['expandedPanel', 'iOwnThisPanel', 'iHaveAuthorPrivileges', 'userGroups']),
+        ...mapGetters([
+            'expandedPanel',
+            'iOwnThisPanel',
+            'iHaveAuthorPrivileges',
+            'userGroups',
+            'viewUrls',
+        ]),
         iCanEditThisPanel(){
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
         },
@@ -314,7 +329,7 @@ export default {
             return window.location.origin + '/dashboard'
         },
         panelUrl(){
-            return this.link_base + '/' + this.expandedPanel.id
+            return this.viewUrls.panel(this.expandedPanel);
         },
         tokenizedPanelUrl(){
             return this.panelUrl + '?token=' + this.expandedPanel.access_token.token
@@ -325,7 +340,7 @@ export default {
                 return myGroups
             },[])
             return groups
-        }
+        },
     },
 
     methods:{ //run as event handlers, for example

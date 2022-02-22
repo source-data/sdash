@@ -359,7 +359,6 @@ export default {
     },
     data() {
         return {
-            link_base: process.env.MIX_API_PANEL_URL,
             isEditingTitle: false,
             titleText: "",
             showDeleteConfirmation: false,
@@ -376,9 +375,10 @@ export default {
             "fileCount",
             "editingCaption",
             "expandedPanelAuthors",
+            "viewUrls",
         ]),
         panelUrl(){
-            return this.link_base + '/' + this.expandedPanel.id
+            return this.viewUrls.panel(this.expandedPanel);
         },
         fullImageUrl() {
             return this.apiUrls.panelImage(this.expandedPanel);

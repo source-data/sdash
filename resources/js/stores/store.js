@@ -43,6 +43,13 @@ export default new Vuex.Store({
     showEmailConfirmationNotice(state){
       return state.showEmailConfirmationNotice;
     },
+    viewUrls(state, getters) {
+      return {
+        panel(panel) {
+          return `${process.env.MIX_API_PANEL_URL}/${panel.id}`;
+        }
+      }
+    },
     apiUrls(state, getters) {
       return {
         panels() {
