@@ -22,7 +22,8 @@
         "obiefy/api-response": "^0.2.5",
         "phpoffice/phppresentation": "^0.9.0",
         "spatie/pdf-to-image": "^1.8",
-        "tecnickcom/tcpdf": "^6.3"
+        "tecnickcom/tcpdf": "^6.3",
+        "guzzlehttp/guzzle": "^7.0.1"
     },
     "require-dev": {
         "deployer/dist": "^6.7",
