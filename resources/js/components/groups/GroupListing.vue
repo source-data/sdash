@@ -348,7 +348,7 @@ import ImageUploader from "vue-image-crop-upload/upload-2.vue";
 import store from "@/stores/store";
 import { mapGetters, mapActions } from "vuex";
 import FilterBar from "../FilterBar";
-import PanelListingGrid from "../PanelListingGrid";
+import PanelListingGrid from "@/components/panel-grid/PanelListingGrid";
 import InfoFooter from "@/components/InfoFooter";
 import GroupTitleIcon from "../helpers/GroupTitleIcon";
 import GroupMemberRequestIcon from "../helpers/GroupMemberRequestIcon";

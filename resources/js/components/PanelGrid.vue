@@ -83,11 +83,11 @@
 <script>
 import store from "@/stores/store";
 import { mapGetters, mapActions } from "vuex";
-import FilterBar from "./FilterBar";
-import PanelActionBar from "./PanelActionBar";
+import FilterBar from "@/components/FilterBar";
+import PanelActionBar from "@/components/PanelActionBar";
 import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
 import InfoFooter from "@/components/InfoFooter";
-import PanelListingGrid from "./PanelListingGrid";
+import PanelListingGrid from "@/components/panel-grid/PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
 import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 

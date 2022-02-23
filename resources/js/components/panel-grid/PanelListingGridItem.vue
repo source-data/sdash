@@ -3,8 +3,8 @@
         <div class="sd-grid-image-container">
             <div
                 class="sd-grid-image-container-inner"
-                v-b-modal="modalId"
                 tabindex="0"
+                @click="showPanelDetail"
             >
                 <header class="sd-grid-item--image-header">
                     <label
@@ -35,7 +35,7 @@
 
                 <footer
                     class="sd-grid-item--image-footer"
-                    :id="'scroll-anchor-' + panelId"
+                    :id="'scroll-anchor-' + panel.id"
                 >
                     <font-awesome-icon
                         class="sd-grid-item--author-icon"
@@ -66,58 +66,26 @@
         </div>
 
         <div class="sd-grid-item-text">
-            <h6 class="panel-title" :title="thisPanel.title">
-                {{ thisPanel.title }}
+            <h6 class="panel-title" :title="panel.title">
+                {{ panel.title }}
             </h6>
 
             <address class="panel-authors" :title="panelAuthorsAbbreviated">
                 {{ panelAuthorsAbbreviated }}
             </address>
         </div>
-
-        <b-modal
-            :id="modalId"
-            hide-header hide-footer
-            static lazy
-            @show="showPanel" @hidden="hidePanel"
-        >
-            <div class="sd-grid-extra">
-                <button
-                    type="button"
-                    aria-label="Close"
-                    class="close sd-grid-extra--close text-light"
-                    @click="$bvModal.hide(modalId)"
-                >
-                    <span aria-hidden="true">&#10005;</span>
-                </button>
-
-                <b-row v-if="!hasPanelDetail">
-                    <b-col class="text-center">
-                        <b-spinner
-                            variant="primary"
-                            label="Spinning"
-                            class="m-5"
-                            style="width: 4rem; height: 4rem;"
-                        ></b-spinner>
-                    </b-col>
-                </b-row>
-
-                <panel-detail v-if="hasPanelDetail" @resized="updatePanelDetailHeight"></panel-detail>
-            </div>
-        </b-modal>
     </li>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import AuthorTypes from "@/definitions/AuthorTypes";
-import PanelDetail from "./PanelDetail";
 
 export default {
     name: "PanelListingGridItem",
-    components: { PanelDetail },
+    components: {},
     props: {
-        panelId: Number,
+        panel: Object,
         batchSelectDisabled: Boolean,
     },
 
@@ -129,14 +97,12 @@ export default {
         ...mapGetters([
             "apiUrls",
             "currentUser",
-            "expandedPanelId",
-            "hasPanelDetail",
             "loadedPanels",
             "panelAuthors",
             "selectedPanels",
         ]),
         panelAuthorsAbbreviated() {
-            let authors = this.panelAuthors(this.thisPanel).filter(
+            let authors = this.panelAuthors(this.panel).filter(
                 author => author.author_role !== AuthorTypes.CURATOR
             );
             if (authors.length <= 0) {
@@ -159,22 +125,13 @@ export default {
             return `${nameFirstAuthor} [...] ${nameLastAuthor}`;
         },
         thumbnailUrl() {
-            return this.apiUrls.panelThumbnail(this.thisPanel);
-        },
-        thisPanel() {
-            let thisPanel = this.loadedPanels.filter(
-                panel => panel.id === this.panelId
-            );
-            if (thisPanel) {
-                return thisPanel[0];
-            }
-            return false;
+            return this.apiUrls.panelThumbnail(this.panel);
         },
         itemId() {
-            return "grid-item-" + this.panelId;
+            return "grid-item-" + this.panel.id;
         },
         panelAccessReason() {
-            let thisPanel = this.thisPanel;
+            let thisPanel = this.panel;
             if (
                 !thisPanel.is_public &&
                 thisPanel.groups.length === 0 &&
@@ -185,10 +142,10 @@ export default {
             if (thisPanel.groups.length > 0) return "group";
         },
         IOwnThisPanel() {
-            return this.thisPanel.user_id === this.currentUser.id;
+            return this.panel.user_id === this.currentUser.id;
         },
         IAmAnAuthor() {
-            let thisPanel = this.thisPanel
+            let thisPanel = this.panel
             if (thisPanel.authors && thisPanel.authors.length > 0) {
                 return (thisPanel.authors.filter(({id}) => id === this.currentUser.id).length > 0)
             }
@@ -197,31 +154,21 @@ export default {
         },
         panelSelected() {
             if (this.selectedPanels.length === 0) return false;
-            return _.includes(this.selectedPanels, this.panelId);
+            return _.includes(this.selectedPanels, this.panel.id);
         },
-        modalId() {
-            return "panel-detail-modal-" + this.panelId;
-        }
     },
 
     methods: {
         //run as event handlers, for example
-        showPanel() {
-            this.$store.dispatch("expandPanel", this.panelId);
-            this.$store.dispatch("loadPanelDetail", this.panelId);
-        },
-        hidePanel() {
-            this.$store.dispatch("closeExpandedPanels");
-        },
         toggleSelected() {
             if (this.panelSelected) {
-                this.$store.dispatch("deselectPanel", this.panelId);
+                this.$store.dispatch("deselectPanel", this.panel.id);
             } else {
-                this.$store.dispatch("selectPanel", this.panelId);
+                this.$store.dispatch("selectPanel", this.panel.id);
             }
         },
-        updatePanelDetailHeight(newHeight) {
-            this.panelDetailHeight = newHeight ? newHeight : false;
+        showPanelDetail() {
+            this.$emit('show-panel-detail', this.panel.id);
         },
     },
 };
@@ -359,18 +306,6 @@ $authors-height: $font-size-sm;
     }
 }
 
-.sd-grid-extra {
-    width: 100%;
-    background-color: $very-dark-desaturated-blue;
-}
-.sd-grid-extra--close {
-    position: absolute;
-    font-size: 1.5em;
-    top: 1rem;
-    right: 2vw;
-    opacity: 1;
-}
-
 $panel-select-button-diameter: $image-height * 0.1;
 .sd-grid-item--image-header {
     position: absolute;
@@ -476,18 +411,5 @@ $panel-select-button-diameter: $image-height * 0.1;
 }
 .panel-select-button.bg-success:hover svg {
     color: $very-light-gray;
-}
-
-.sd-grid-item::v-deep .modal-dialog {
-    max-width: initial;
-    margin: 5rem 0;
-}
-@media (min-width: 768px) {
-    .sd-grid-item::v-deep .modal-dialog {
-        margin: 5rem 1rem;
-    }
-}
-.sd-grid-item::v-deep .modal-body {
-    padding: 0;
 }
 </style>
