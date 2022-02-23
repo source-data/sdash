@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\User;
-use App\Model\Panel;
-use App\Model\Comment;
+use App\Models\Panel;
+use App\Models\Comment;
 
 class PanelsTableSeeder extends Seeder
 {
