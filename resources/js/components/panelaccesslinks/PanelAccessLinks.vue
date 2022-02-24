@@ -114,34 +114,36 @@
                                 <font-awesome-icon icon="link" /> Get Link + QR Code
                             </b-button>
 
-                            <b-button v-else id="sd-revoke-link-button" ref="sd-revoke-link-button" variant="danger">
-                                <font-awesome-icon icon="unlink" /> Revoke Link
-                            </b-button>
+                            <template v-else>
+                                <b-button id="sd-revoke-link-button" ref="sd-revoke-link-button" variant="danger">
+                                    <font-awesome-icon icon="unlink" /> Revoke Link
+                                </b-button>
 
-                            <b-popover
-                                ref="sd-revoke-link-popover"
-                                target="sd-revoke-link-button"
-                                triggers="click blur"
-                                placement="top"
-                                selector="sd-revoke-link-button"
-                                custom-class="sd-custom-popover"
-                            >
-                                <template v-slot:title>
-                                    Are you sure?
+                                <b-popover
+                                    ref="sd-revoke-link-popover"
+                                    target="sd-revoke-link-button"
+                                    triggers="click blur"
+                                    placement="top"
+                                    selector="sd-revoke-link-button"
+                                    custom-class="sd-custom-popover"
+                                >
+                                    <template v-slot:title>
+                                        Are you sure?
 
-                                    <b-button @click="closeRevokeLinkPopover" class="close" aria-label="Close">
-                                        <span class="d-inline-block" aria-hidden="true">&times;</span>
-                                    </b-button>
-                                </template>
+                                        <b-button @click="closeRevokeLinkPopover" class="close" aria-label="Close">
+                                            <span class="d-inline-block" aria-hidden="true">&times;</span>
+                                        </b-button>
+                                    </template>
 
-                                <template>
-                                    Once a link has been revoked it cannot be restored, only a new link can be created. Anyone with the revoked link cannot access the SmartFigure any longer.
-                                </template>
+                                    <template>
+                                        Once a link has been revoked it cannot be restored, only a new link can be created. Anyone with the revoked link cannot access the SmartFigure any longer.
+                                    </template>
 
-                                <div class="sd-popover-content">
-                                    <b-button variant="primary" small @click="revokeLink">Revoke it!</b-button>
-                                </div>
-                            </b-popover>
+                                    <div class="sd-popover-content">
+                                        <b-button variant="primary" small @click="revokeLink">Revoke it!</b-button>
+                                    </div>
+                                </b-popover>
+                            </template>
                         </b-col>
                     </template>
 
