@@ -16,11 +16,8 @@
 
                 <div class="text-md">
                     Add SmartFigures to your dashboard, link them to the underlying source data and receive new ideas
-                    from your peers. SDash is a pilot platform developed by SourceData at EMBO.
-
-                    <p class="mt-2">
-                        Register now and let us know what you think.
-                    </p>
+                    from your peers. SDash is a pilot platform developed by SourceData at EMBO. Register now and let us
+                    know what you think.
                 </div>
             </section>
 
