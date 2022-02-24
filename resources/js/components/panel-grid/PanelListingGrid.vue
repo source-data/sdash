@@ -73,7 +73,11 @@ export default {
         GuidedTour,
     },
     props: {
-        list_root: String,
+        // the details of the panel with this id will be opened when loading the page
+        idPanel: {
+            type: Number,
+            default: null,
+        },
         batchSelectDisabled: {
             type: Boolean,
             default: false,
@@ -133,6 +137,9 @@ export default {
     },
     mounted() {
         this.showGuidedTour = (getShowGuidedTour() && this.isLoggedIn);
+        if (this.idPanel) {
+            this.showPanelDetail(this.idPanel)
+        }
     }
 
 }

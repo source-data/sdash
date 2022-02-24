@@ -54,7 +54,7 @@
 
             <panel-listing-grid
                 v-if="hasPanels"
-                list_root="user"
+                :idPanel="idPanel"
             ></panel-listing-grid>
 
             <b-alert
@@ -102,7 +102,11 @@ export default {
     },
 
     props: {
-        query: String
+        query: String,
+        idPanel: {
+            type: Number,
+            default: null,
+        },
     },
 
     data() {

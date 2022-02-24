@@ -29,7 +29,11 @@ const router = new Router({
             path: "/",
             name: "dashboard",
             component: PanelGrid,
-            props: route => ({ query: route.query.q }),
+            props: route => ({
+                query: route.query.q,
+                // the detail view for the panel with this id will be opened
+                idPanel: parseInt(route.query.panel, 10)
+            }),
             meta: {
                 access: UserLevels.GUEST
             }
