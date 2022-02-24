@@ -57,7 +57,13 @@ class NewCommentOnYourPanel extends Notification
             ->greeting("New Comment Notification")
             ->line("{$this->user->firstname} {$this->user->surname} has added a comment to your SmartFigure \"{$this->panel->title}\"")
             ->line('The comment says:')
-            ->line($this->comment->comment);
+            ->line($this->comment->comment)
+            ->action('View SmartFigure', $this->panelDetailUrl());
+    }
+
+    protected function panelDetailUrl()
+    {
+        return url('/?panel=' . $this->panel->id);
     }
 
     /**
