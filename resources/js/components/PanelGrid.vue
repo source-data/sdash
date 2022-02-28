@@ -190,7 +190,7 @@ export default {
 }
 
 #sd-featured-jumbotron {
-    margin: 1.5rem 0;
+    margin: 2rem 0;
     max-width: 1200px;
 }
 
