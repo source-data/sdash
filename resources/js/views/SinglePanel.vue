@@ -357,6 +357,8 @@ section {
     padding: 0;
 
     img {
+        // transparent images get a white background
+        background-color: white;
         width: 100%;
     }
 }
