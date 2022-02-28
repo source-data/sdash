@@ -1,7 +1,8 @@
 <template>
     <div class="form-group sourcedata-tags" :class="'sourcedata-tags-' + type">
         <vue-tags-input
-            :placeholder="iCanEditTags ? 'Enter tags or use SmartTag' : 'Restricted to owner or admin'"
+            v-if="iCanEditTags"
+            placeholder="Enter tags or use SmartTag"
             :tags="combinedTags"
             v-model="newTag"
             :add-on-key="[13,',']"
@@ -27,13 +28,18 @@
                 <font-awesome-icon @click="validateSuggestion(tag)" v-if="showValidate(tag)" class="sd-validate-suggested-tag-icon" icon="check" size="sm" />
             </div>
         </vue-tags-input>
+
+        <div class="panel-keywords">
+            <span class="panel-keyword" v-for="tag in combinedTags" :key="tag.id">
+                {{ tag.text }}
+            </span>
+        </div>
     </div>
 </template>
 
 <script>
 
 import { mapGetters, mapActions } from 'vuex'
-import store from '@/stores/store'
 
 export default {
 
@@ -199,21 +205,41 @@ export default {
 }
 
 
-.sourcedata-tags::v-deep .ti-tag {
+.sourcedata-tags::v-deep .ti-tag,
+.sourcedata-tags .panel-keyword {
     color: $mostly-white-gray;
 }
-.sourcedata-tags-assay::v-deep .ti-tag {
+.sourcedata-tags-assay::v-deep .ti-tag,
+.sourcedata-tags-assay .panel-keyword {
     background-color: $sourcedata-color-assay;
 }
-.sourcedata-tags-intervention::v-deep .ti-tag {
+.sourcedata-tags-intervention::v-deep .ti-tag,
+.sourcedata-tags-intervention .panel-keyword {
     background-color: $sourcedata-color-intervention;
 }
-.sourcedata-tags-method::v-deep .ti-tag {
+.sourcedata-tags-method::v-deep .ti-tag,
+.sourcedata-tags-method .panel-keyword {
     background-color: $sourcedata-color-method;
     color: $very-dark-blue;
 }
-.sourcedata-tags-other::v-deep .ti-tag {
+.sourcedata-tags-other::v-deep .ti-tag,
+.sourcedata-tags-other .panel-keyword {
     background-color: $sourcedata-color-other;
 }
 
+.panel-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    .panel-keyword {
+        border-radius: 0.5rem;
+    }
+}
+.panel-keyword-category,
+.panel-keyword {
+    line-height: 1rem;
+    padding: 0.2rem 0.75rem 0.3rem;
+}
 </style>
