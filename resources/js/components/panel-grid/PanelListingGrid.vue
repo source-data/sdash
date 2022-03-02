@@ -73,14 +73,18 @@ export default {
         GuidedTour,
     },
     props: {
+        batchSelectDisabled: {
+            type: Boolean,
+            default: false,
+        },
         // the details of the panel with this id will be opened when loading the page
         idPanel: {
             type: Number,
             default: null,
         },
-        batchSelectDisabled: {
-            type: Boolean,
-            default: false,
+        page: {
+            type: Number,
+            default: 0,
         },
     },
     data(){
@@ -140,8 +144,12 @@ export default {
         if (this.idPanel) {
             this.showPanelDetail(this.idPanel)
         }
-    }
-
+    },
+    created() {
+        if (this.page) {
+            this.currentPage = this.page;
+        }
+    },
 }
 </script>
 

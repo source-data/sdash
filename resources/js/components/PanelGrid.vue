@@ -55,6 +55,7 @@
             <panel-listing-grid
                 v-if="hasPanels"
                 :idPanel="idPanel"
+                :page="page"
             ></panel-listing-grid>
 
             <b-alert
@@ -106,6 +107,10 @@ export default {
         idPanel: {
             type: Number,
             default: null,
+        },
+        page: {
+            type: Number,
+            default: 0,
         },
     },
 

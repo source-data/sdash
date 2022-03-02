@@ -32,7 +32,8 @@ const router = new Router({
             props: route => ({
                 query: route.query.q,
                 // the detail view for the panel with this id will be opened
-                idPanel: parseInt(route.query.panel, 10)
+                idPanel: parseInt(route.query.panel, 10),
+                page: parseInt(route.query.page, 10),
             }),
             meta: {
                 access: UserLevels.GUEST
