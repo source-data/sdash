@@ -29,10 +29,14 @@
             </div>
         </vue-tags-input>
 
-        <div class="panel-keywords">
+        <div v-else-if="combinedTags.length" class="panel-keywords">
             <span class="panel-keyword" v-for="tag in combinedTags" :key="tag.id">
                 {{ tag.text }}
             </span>
+        </div>
+
+        <div v-else class="panel-keywords">
+            <span>-</span>
         </div>
     </div>
 </template>
