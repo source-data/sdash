@@ -6,6 +6,7 @@ use App\User;
 use App\Models\Panel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 
@@ -24,7 +25,6 @@ class DashboardTest extends TestCase
          * setUp(), thus the data providers cannot access any variables here. Instead, they return indexes for the user
          * and panel arrays.
          */
-
         $user1 = factory(User::class)->create();
         $user2 = factory(User::class)->create();
         $this->users = [$user1, $user2];
@@ -40,6 +40,22 @@ class DashboardTest extends TestCase
              */
             factory(Panel::class, 30)->create(['user_id' => $user2->id, 'is_public' => true])->toArray(),
         );
+
+        /* Ensure that the panels fetched from the database during tests are in the same order as we expect them here.
+         * Their primary ordering is by the `updated_at` field, which almost always holds the same value for all panels
+         * because they were created at the same time. Setting that field to clearly different values solves this
+         * problem.
+         */
+        for ($i = 0; $i < count($this->panels); ++$i)
+        {
+            $panel = Panel::find($this->panels[$i]['id']);
+            $panel->updated_at = Date::now()->subDays($i);
+            /* the `updated_at` field is usually set during the call to save(). Setting `timestamps` to false disables
+             * that behavior.
+             */
+            $panel->timestamps = false;
+            $panel->save();
+        }
     }
 
     /**
