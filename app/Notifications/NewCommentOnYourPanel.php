@@ -8,15 +8,15 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Panel;
 use App\Models\Comment;
+use App\Notifications\PanelUrls;
 use App\User;
 
 
 class NewCommentOnYourPanel extends Notification
 {
-    use Queueable;
+    use Queueable, PanelUrls;
 
     protected $user;
-    protected $panel;
     protected $comment;
 
     /**
@@ -59,11 +59,6 @@ class NewCommentOnYourPanel extends Notification
             ->line('The comment says:')
             ->line($this->comment->comment)
             ->action('View SmartFigure', $this->panelDetailUrl());
-    }
-
-    protected function panelDetailUrl()
-    {
-        return url('/?panel=' . $this->panel->id);
     }
 
     /**
