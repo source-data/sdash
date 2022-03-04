@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\User;
 use App\Models\Panel;
+use App\Notifications\PanelUrls;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,11 +12,10 @@ use Illuminate\Notifications\Notification;
 
 class UserAddedAsPanelAuthor extends Notification
 {
-    use Queueable;
+    use Queueable, PanelUrls;
 
     private $user;
     private $author;
-    private $panel;
     private $role;
 
     /**
@@ -70,10 +70,5 @@ class UserAddedAsPanelAuthor extends Notification
         return [
             //
         ];
-    }
-
-    protected function panelUrl()
-    {
-        return url('/panel/' . $this->panel->id);
     }
 }

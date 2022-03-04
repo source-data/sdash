@@ -14,7 +14,7 @@
 
         <b-pagination
             v-if="paginate"
-            v-model="currentPage"
+            v-model="page"
             :total-rows="totalPanels"
             :per-page="pageSize"
             @change="scrollToTop"
@@ -73,10 +73,14 @@ export default {
         GuidedTour,
     },
     props: {
-        list_root: String,
         batchSelectDisabled: {
             type: Boolean,
             default: false,
+        },
+        // the details of the panel with this id will be opened when loading the page
+        idPanel: {
+            type: Number,
+            default: null,
         },
     },
     data(){
@@ -111,6 +115,7 @@ export default {
 
     computed:{
         ...mapGetters([
+            'currentPage',
             'hasPanelDetail',
             'isLoggedIn',
             'loadedPanels',
@@ -118,7 +123,7 @@ export default {
             'paginate',
             'totalPanels',
         ]),
-        currentPage: {
+        page: {
             set(page) {
                 this.setCurrentPage(page);
                 this.switchingPages = true;
@@ -127,14 +132,16 @@ export default {
                 });
             },
             get() {
-                return this.$store.getters.currentPage;
+                return this.currentPage;
             }
         },
     },
     mounted() {
         this.showGuidedTour = (getShowGuidedTour() && this.isLoggedIn);
-    }
-
+        if (this.idPanel) {
+            this.showPanelDetail(this.idPanel)
+        }
+    },
 }
 </script>
 

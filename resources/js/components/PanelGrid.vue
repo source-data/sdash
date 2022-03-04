@@ -54,7 +54,7 @@
 
             <panel-listing-grid
                 v-if="hasPanels"
-                list_root="user"
+                :idPanel="idPanel"
             ></panel-listing-grid>
 
             <b-alert
@@ -79,7 +79,7 @@
 
 <script>
 import store from "@/stores/store";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import FilterBar from "@/components/FilterBar";
 import PanelActionBar from "@/components/PanelActionBar";
 import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
@@ -102,7 +102,15 @@ export default {
     },
 
     props: {
-        query: String
+        query: String,
+        idPanel: {
+            type: Number,
+            default: null,
+        },
+        page: {
+            type: Number,
+            default: 0,
+        },
     },
 
     data() {
@@ -128,6 +136,9 @@ export default {
         ...mapActions([
             'toggleLightbox',
         ]),
+        ...mapMutations([
+            'setCurrentPage',
+        ]),
         reloadPanels() {
             store.commit("clearLoadedPanels");
             store.commit("setPagination", true);
@@ -146,6 +157,7 @@ export default {
                 store.dispatch("setSearchString", "");
             }
 
+            this.setCurrentPage(this.page);
             store.dispatch("fetchPanelList").catch(error => {
                 this.$snotify.error(
                     "We couldn't find any panels for you.",

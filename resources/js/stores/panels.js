@@ -16,9 +16,9 @@ const defaultState = {
     onlyMyPanels: false,
     loading: true,
     panelsAvailable: 0,
-    page: 0,
-    nextPage: 1,
-    lastPage: 1, // the default needs to be higher than the "page" variable above - to show that all pages haven't loaded
+    page: 1,
+    nextPage: 2,
+    lastPage: 10, // the default needs to be higher than the "page" variable above - to show that all pages haven't loaded
     pageSize: 20,
     selectedPanels: [],
     editingCaption: false
@@ -287,8 +287,8 @@ const mutations = {
     clearLoadedPanels(state) {
         state.loadedPanels = [];
         state.panelsAvailable = 0;
-        state.page = 0;
-        state.lastPage = 0;
+        state.page = 1;
+        state.lastPage = 10;
     },
     updateExpandedPanelId(state, panelId = null) {
         state.expandedPanelId = panelId;

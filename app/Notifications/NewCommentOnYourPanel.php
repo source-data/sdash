@@ -8,15 +8,15 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Panel;
 use App\Models\Comment;
+use App\Notifications\PanelUrls;
 use App\User;
 
 
 class NewCommentOnYourPanel extends Notification
 {
-    use Queueable;
+    use Queueable, PanelUrls;
 
     protected $user;
-    protected $panel;
     protected $comment;
 
     /**
@@ -57,7 +57,8 @@ class NewCommentOnYourPanel extends Notification
             ->greeting("New Comment Notification")
             ->line("{$this->user->firstname} {$this->user->surname} has added a comment to your SmartFigure \"{$this->panel->title}\"")
             ->line('The comment says:')
-            ->line($this->comment->comment);
+            ->line($this->comment->comment)
+            ->action('View SmartFigure', $this->panelDetailUrl());
     }
 
     /**

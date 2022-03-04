@@ -8,14 +8,14 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Panel;
 use App\Models\Comment;
+use App\Notifications\PanelUrls;
 use App\User;
 
 class NewReplyToYourPanelComment extends Notification
 {
-    use Queueable;
+    use Queueable, PanelUrls;
 
     protected $user;
-    protected $panel;
     protected $comment;
 
     /**
@@ -56,7 +56,8 @@ class NewReplyToYourPanelComment extends Notification
             ->greeting("New Reply Notification")
             ->line("{$this->user->firstname} {$this->user->surname} has replied to your comment on the SmartFigure \"{$this->panel->title}\"")
             ->line('Their reply says:')
-            ->line($this->comment->comment);
+            ->line($this->comment->comment)
+            ->action('View SmartFigure', $this->panelDetailUrl());
     }
 
     /**
