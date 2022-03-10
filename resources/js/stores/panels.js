@@ -80,7 +80,7 @@ const actions = {
     },
     loadPanelDetail({ commit, rootGetters }, {panelId, token}) {
         let urlPanelDetails = rootGetters.apiUrls.panelDetail(panelId);
-        let payload = token ? {params: {token}} : null; console.log("payload", payload);
+        let payload = token ? {params: {token}} : null;
         return Axios.get(urlPanelDetails, payload).then(response => {
             commit("storeExpandedPanelDetail", response.data.DATA[0]);
             commit("storeComments", response.data.DATA[0].comments);
