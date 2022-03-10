@@ -132,6 +132,9 @@ const router = new Router({
             path: "/panel/:panel_id",
             name: "singlepanel",
             component: SinglePanel,
+            props: route => ({
+                token: route.query.token
+            }),
             meta: {
                 access: UserLevels.GUEST
             }

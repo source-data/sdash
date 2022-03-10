@@ -78,9 +78,10 @@ const actions = {
     setLoadingState({ commit }, payload) {
         commit("setPanelLoadingState", payload);
     },
-    loadPanelDetail({ commit, rootGetters }, panelId) {
+    loadPanelDetail({ commit, rootGetters }, {panelId, token}) {
         let urlPanelDetails = rootGetters.apiUrls.panelDetail(panelId);
-        return Axios.get(urlPanelDetails).then(response => {
+        let payload = token ? {params: {token}} : null; console.log("payload", payload);
+        return Axios.get(urlPanelDetails, payload).then(response => {
             commit("storeExpandedPanelDetail", response.data.DATA[0]);
             commit("storeComments", response.data.DATA[0].comments);
             commit("storeFiles", response.data.DATA[0].files);

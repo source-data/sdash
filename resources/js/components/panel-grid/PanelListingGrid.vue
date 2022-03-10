@@ -104,7 +104,7 @@ export default {
         },
         showPanelDetail(panelId) {
             this.$store.dispatch("expandPanel", panelId);
-            this.$store.dispatch("loadPanelDetail", panelId);
+            this.$store.dispatch("loadPanelDetail", {panelId});
             this.$bvModal.show(this.idPanelDetailModal);
         },
         hidePanelDetail() {

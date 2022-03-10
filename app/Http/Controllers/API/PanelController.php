@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Notifications\PanelMadePublic;
+use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
 
@@ -121,7 +122,7 @@ class PanelController extends Controller
      * @param Request $request
      * @return void
      */
-    public function listPublicGroupPanels(Request$request, Group $group)
+    public function listPublicGroupPanels(Request $request, Group $group)
     {
         if (!$group->is_public) {
             return API::response(401, "Access denied.", []);
@@ -208,9 +209,18 @@ class PanelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showPublic(Panel $panel)
+    public function showPublic(Request $request, Panel $panel)
     {
-        if (Gate::allows('view-panel', $panel)) {
+        $validator = Validator::make(
+            $request->all(),
+            ['token' => ['string', 'exists:panel_access_tokens,token']]
+        );
+
+        if ($validator->fails()) abort(401, "Access Denied");
+
+        $token = $request->get('token', null);
+
+        if (Gate::allows('view-single-panel', [$panel, $token])) {
             $panels = Panel::where('id', $panel->id)
                 ->with([
                     'user' => function ($query) {
@@ -262,7 +272,7 @@ class PanelController extends Controller
 
         if (Gate::allows('view-panel', $panel)) {
             $files = Panel::where('id', $panel->id)->first()->files();
-            
+
             if ($categoryId) {
                 $files->where('file_category_id', '=', $categoryId);
             }
@@ -338,7 +348,7 @@ class PanelController extends Controller
             if ($request->has("is_public")) $toUpdate["is_public"] = $request->input("is_public");
 
             $licenseId = null;
-            
+
             if ($toUpdate["is_public"]) {
                 $license = License::where('code', 'CC BY 4.0')->firstOrFail();
                 $licenseId = $license->id;
