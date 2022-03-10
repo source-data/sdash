@@ -176,6 +176,15 @@ export default {
         this.searchQuery = this.query;
         this.reloadPanels();
         store.dispatch("fetchFileCategories");
+
+    },
+    created() {
+        if (this.idPanel) {
+            const url = new URL(window.location);
+            url.searchParams.delete('panel');
+            url.searchParams.delete('page');
+            window.history.replaceState({}, '', url);
+        }
     },
 
     watch: {
