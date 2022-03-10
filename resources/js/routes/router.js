@@ -132,21 +132,33 @@ const router = new Router({
             path: "/panel/:panel_id",
             name: "singlepanel",
             component: SinglePanel,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "/about",
             name: "about",
-            component: About
+            component: About,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "/tutorial",
             name: "tutorial",
-            component: Tutorial
+            component: Tutorial,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "/docs/api",
             name: "api",
-            component: Api
+            component: Api,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "*",
