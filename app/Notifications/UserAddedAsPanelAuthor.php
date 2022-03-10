@@ -56,7 +56,7 @@ class UserAddedAsPanelAuthor extends Notification
             ->line("{$this->user->firstname} {$this->user->surname} has given you an author credit on the SmartFigure \"{$this->panel->title}\".")
             ->line("You have been given the role: {$this->role}.")
             ->line("You will see the SmartFigure on your dashboard next time you log in or by clicking on the button below.")
-            ->action('View SmartFigure', $this->panelUrl());
+            ->action('View SmartFigure', $this->panelDetailUrl());
     }
 
     /**

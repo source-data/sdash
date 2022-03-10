@@ -53,7 +53,7 @@ class PanelMadePublic extends Notification
             ->greeting("Your SmartFigure has been made public.")
             ->line("{$this->user->firstname} {$this->user->surname} made the SmartFigure \"{$this->panel->title}\" publicly available on SDash.")
             ->line("You will see the SmartFigure on the public dashboard or by clicking on the button below.")
-            ->action('View SmartFigure', $this->panelUrl());
+            ->action('View SmartFigure', $this->panelDetailUrl());
     }
 
     /**
