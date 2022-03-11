@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\RestoreBackup::class,
+        \App\Console\Commands\SDashStats::class,
     ];
 
     /**
