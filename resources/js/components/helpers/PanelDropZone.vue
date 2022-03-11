@@ -1,9 +1,9 @@
 <template>
     <vue-full-screen-file-drop
-        @drop='uploadPanel'
+        @drop='uploadFile'
         formFieldName="file"
         v-if="panelDropEnabled">
-        <div class="vue-full-screen-file-drop__content text-primary text-xl font-weight-bold">
+        <div v-if="!expandedPanelId" class="vue-full-screen-file-drop__content text-primary text-xl font-weight-bold">
             <p>
                 Please drop a
                 <br>
@@ -16,12 +16,21 @@
                 + Upload SmartFigure
             </button>
         </div>
+        <div v-if="expandedPanelId" class="vue-full-screen-file-drop__content text-primary text-xl font-weight-bold">
+            <p>
+                Please drop a file to attach to this SmartFigure
+            </p>
+
+            <button class="btn btn-primary text-md font-weight-bold">
+                + Upload File
+            </button>
+        </div>
 
     </vue-full-screen-file-drop>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import VueFullScreenFileDrop from 'vue-full-screen-file-drop';
 
 export default {
@@ -38,6 +47,8 @@ export default {
             "isLoggedIn",
             "mayAddPanelToGroup",
             "showAuthorSidebar",
+            "expandedPanelId",
+            "pendingUpload",
         ]),
         panelDropEnabled() {
             // no file upload if not logged in.
@@ -48,19 +59,33 @@ export default {
             if (this.showAuthorSidebar) {
                 return false;
             }
+            // if a pending upload is in progress, don't allow another file drop
+            if (this.pendingUpload) {
+                return false;
+            }
             // Disallow file dropping if we're on a group's page and not allowed to add panels to it.
             if (this.currentGroup && ! this.mayAddPanelToGroup) {
                 return false;
             }
             return true;
-        },
+        }
     },
     methods: {
         ...mapActions([
             'uploadNewPanel',
             'addSelectedPanelsToGroup',
+            'storeFile',
         ]),
-        uploadPanel(formData, files){
+
+        ...mapMutations([ 'setPendingUpload', ]),
+        uploadFile(formData, files){
+            if(this.expandedPanelId) {
+                this.attachFileToSmartFigure(formData, files);
+            } else {
+                this.uploadSmartFigure(formData, files);
+            }
+        },
+        uploadSmartFigure(formData, files) {
             this.uploadNewPanel(formData)
             .then(response => {
                 this.$snotify.success("New SmartFigure created", "Uploaded")
@@ -83,6 +108,17 @@ export default {
                 this.$snotify.error(error.data.errors.file[0], "Upload failed")
             })
         },
+        attachFileToSmartFigure(formData, files) {
+            this.setPendingUpload(true);
+            this.storeFile({file: files[0], file_category_id: null})
+                .then(response => {
+                    this.$snotify.success(response.data.MESSAGE, "File Uploaded")
+                }).catch(error => {
+                    this.$snotify.error(error.data.message, "Upload failed")
+                }).finally(() => {
+                   this.setPendingUpload(false);
+                });
+        }
     },
 }
 </script>

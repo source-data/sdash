@@ -4,7 +4,8 @@ import { deepStrictEqual } from "assert"
 //initial state
 const state = {
     categories: [],
-    expandedPanelFiles: []
+    expandedPanelFiles: [],
+    pendingUpload: false,
 }
 
 
@@ -76,6 +77,9 @@ const mutations = {
         let index = _.findIndex(state.expandedPanelFiles, function(oldFile){ return oldFile.id == file.id })
         state.expandedPanelFiles[index] = file
     },
+    setPendingUpload(state, value) {
+        state.pendingUpload = !!value;
+    }
 
 }
 
@@ -91,7 +95,10 @@ const getters = {
     },
     fileCount(state){
         return state.expandedPanelFiles.length
-    }
+    },
+    pendingUpload(state) {
+        return state.pendingUpload;
+    },
 }
 
 export default {

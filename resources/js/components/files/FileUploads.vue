@@ -213,7 +213,7 @@
                                 <b-spinner small label="Uploading"></b-spinner>
                             </b-button>
                         </b-td>
-                        <b-td colspan="4">Uploading <span class="font-italic">{{ file.name }}</span></b-td>
+                        <b-td colspan="4" v-if="file">Uploading <span class="font-italic">{{ file.name }}</span></b-td>
                     </b-tr>
                 </template>
             </b-table>
@@ -272,7 +272,6 @@ export default {
             file: null,
             url:  null,
             categoryId: null,
-            pendingUpload: false,
             fileToDelete: {},
             fileToUpdate: {},
             baseFields: [
@@ -294,7 +293,8 @@ export default {
             'iOwnThisPanel',
             'iHaveAuthorPrivileges',
             'getFileCategories',
-            'getFileCategoryById'
+            'getFileCategoryById',
+            'pendingUpload',
         ]),
         iCanEditThisPanel(){
             return (this.iOwnThisPanel || this.iHaveAuthorPrivileges)
@@ -346,14 +346,14 @@ export default {
             if (!this.file) {
                 return;
             }
-            this.pendingUpload = true
+            this.$store.commit('setPendingUpload', true);
             this.$store.dispatch("storeFile", {file:this.file, file_category_id:this.categoryId}).then(response => {
                 this.$snotify.success(response.data.MESSAGE, "File Uploaded")
-                this.pendingUpload = false
+                this.$store.commit('setPendingUpload', false);
                 this.file = null
             }).catch(error => {
                 this.$snotify.error(error.data.message, "Upload failed")
-                this.pendingUpload = false
+                this.$store.commit('setPendingUpload', false);
             })
         },
         sendUrl(){
