@@ -106,7 +106,7 @@ export default {
         submitConsent() {
             const user = this.currentUser;
             user.has_consented = 1;
-            Axios.patch('/users/' + user.id + '/consent', {
+            Axios.patch('/users/' + user.user_slug + '/consent', {
                     has_consented: user.has_consented
                 })
                 .then(response => {
