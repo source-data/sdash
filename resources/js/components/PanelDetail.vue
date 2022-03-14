@@ -272,12 +272,12 @@
                     </h2>
 
                     <div class="content row">
-                        <b-col>
+                        <b-col cols="8">
                             <b-button
                                 v-if="iCanEditThisPanel"
                                 id="sd-delete-panel"
                                 variant="danger"
-                                class="float-left"
+                                class="float-left mr-2"
                             >
                                 <font-awesome-icon
                                     class="sd-delete-panel-icon"
@@ -322,6 +322,21 @@
                                     </div>
                                 </div>
                             </b-popover>
+
+                            <!-- report post -->
+                            <b-button
+                            v-b-tooltip.hover.click.blur.top
+                            title="Report inappropriate content"
+                            variant="secondary"
+                            :href="reportLinkContent"
+                            class="float-left sd-report-content-button"
+                            >
+                                <font-awesome-icon
+                                class="sd-report-content-icon"
+                                icon="exclamation-triangle"
+                                title="Report content" />
+                                Report
+                            </b-button>
                         </b-col>
 
                         <b-col>
@@ -391,7 +406,13 @@ export default {
         },
         isPublic(){
             return !!(this.expandedPanel.is_public);
-        }
+        },
+        reportLinkContent() {
+            let link = 'mailto:' + process.env.MIX_FEEDBACK_RECIPIENT + '?subject=';
+            link += encodeURI('[Panel ID ' + this.expandedPanel.id + '] ') + 'Report%20of%20Inappropriate%20SDash%20Content&body=';
+            link += encodeURI('The panel: "' + this.expandedPanel.title + '" contains innapropriate content.\r\n\r\n Please review.\r\n\r\n' + this.viewUrls.panel(this.expandedPanel));
+            return link;
+        },
     },
     methods: {
         //run as event handlers, for example
