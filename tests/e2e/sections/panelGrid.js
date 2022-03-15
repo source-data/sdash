@@ -1,6 +1,7 @@
 var panelGridCommands = {
   clickFirstPanel: function() {
     return this.verify.visible('@firstPanelLink')
+    .moveToElement('@firstPanelLink')
     .click('@firstPanelLink');
   }
 
