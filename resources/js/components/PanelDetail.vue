@@ -70,7 +70,9 @@
                             tabindex="0"
                             @click="openLightBox"
                             style="cursor:pointer"
-                            draggable="false" />
+                            draggable="false"
+                            class="sd-panel-main-image"
+                            />
 
                         <font-awesome-icon
                             @click="openLightBox"
