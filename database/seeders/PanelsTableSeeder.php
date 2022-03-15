@@ -36,6 +36,7 @@ class PanelsTableSeeder extends Seeder
 
         //create public panels
         factory(Panel::class, 5)->create(["is_public" => true])->each(function ($panel) {
+            $panel->authors()->attach(1, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 1]);
             factory(Comment::class, 6)->create(['panel_id' => $panel->id]);
         });
     }
