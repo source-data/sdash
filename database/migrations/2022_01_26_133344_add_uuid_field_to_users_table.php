@@ -33,7 +33,7 @@ class AddUuidFieldToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex('users_user_slug_index');
+            $table->dropIndex('users_user_slug_unique');
             $table->dropColumn('user_slug');
         });
     }
