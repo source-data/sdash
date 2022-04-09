@@ -41,7 +41,7 @@
         "@johmun/vue-tags-input": "^2.1.0",
         "bootstrap-vue": "^2.21.2",
         "font-awesome": "^4.7.0",
-        "moment": "^2.25.3",
+        "moment": "^2.29.2",
         "vue-avatar": "^2.2.0",
         "vue-cookies": "^1.7.4",
         "vue-easy-lightbox": "^0.5.0",
