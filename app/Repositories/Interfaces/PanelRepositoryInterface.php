@@ -13,4 +13,5 @@ interface PanelRepositoryInterface
     public function publicPanels(string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true);
     public function publicGroupPanels(Group $group, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true);
     public function destroyPanel(Panel $panel);
+    public function duplicate(Panel $panel);
 }

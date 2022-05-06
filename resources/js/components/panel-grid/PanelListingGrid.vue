@@ -50,7 +50,7 @@
                     </b-col>
                 </b-row>
 
-                <panel-detail v-if="hasPanelDetail"></panel-detail>
+                <panel-detail v-if="hasPanelDetail" @sd-panel-deleted="hidePanelDetail"></panel-detail>
             </div>
         </b-modal>
     </b-overlay>

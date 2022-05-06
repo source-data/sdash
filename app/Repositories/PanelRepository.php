@@ -3,9 +3,11 @@
 namespace App\Repositories;
 
 use App\User;
+use Carbon\Carbon;
 use App\Models\Panel;
 use App\Models\Group;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 
@@ -109,13 +111,65 @@ class PanelRepository implements PanelRepositoryInterface
     }
 
     /**
+     * Create a duplicate of a panel along with the authors, keywords and tags
+     * but no image.
+     *
+     * @param Panel $panel
+     * @return void
+     */
+    function duplicate(Panel $panel): Panel
+    {
+        $createTime = Carbon::now();
+        $oldPanelTags = $panel->tags()->withPivot(['origin', 'role', 'type', 'category'])->get();
+        $oldPanelAuthors = $panel->authors()->get();
+        $oldPanelExternalAuthors = $panel->externalAuthors()->get();
+        $newPanelTags = [];
+        $newPanelAuthors = [];
+        $newPanelExternalAuthors = [];
+        foreach ($oldPanelTags as $tag) {
+            $newPanelTags[$tag->id] = [
+                'origin' => $tag["meta"]["origin"],
+                'role'   => $tag["meta"]["role"],
+                'type'   => $tag["meta"]["type"],
+                'category'   => $tag["meta"]["category"]
+            ];
+        }
+
+        foreach ($oldPanelAuthors as $author) {
+            $newPanelAuthors[$author->id] = [
+                'role' => $author->author_role->role,
+                'order' => $author->author_role->order
+            ];
+        }
+
+        foreach ($oldPanelExternalAuthors as $externalAuthor) {
+            $createdAuthor = $externalAuthor->replicate()
+                ->fill(['created_at' => $createTime]);
+            $createdAuthor->save();
+            $newPanelExternalAuthors[$createdAuthor->id] = [
+                'role' => $createdAuthor->author_role->role,
+                'order' => $createdAuthor->author_role->order
+            ];
+        }
+
+        $newPanel = $panel->replicate()->fill(['created_at' => $createTime]);
+        $newPanel->save();
+        $newPanelImage = $panel->image->replicate()->fill(['created_at' => $createTime, 'panel_id' => $newPanel->id])->save();
+        $newPanel->authors()->attach($newPanelAuthors);
+        $newPanel->externalAuthors()->attach($newPanelExternalAuthors);
+        $newPanel->tags()->attach($newPanelTags);
+        $newPanel->load(['groups', 'tags', 'user', 'authors', 'externalAuthors']);
+        return $newPanel;
+    }
+
+    /**
      * Find the page that the panel is on.
-     * 
+     *
      * Returns the 1-based index of the page that the panel is on, if the given user is allowed to view the panel.
      * If the user is not allowed to view the panel `null` is returned.
-     * 
+     *
      * Assumes default ordering of the panels.
-     * 
+     *
      * @param Panel $panel The panel whose page should be returned.
      * @param User $user The user for whose view the page should be returned. If `null` is given, an anonymous user is presumed.
      * @return int The page that the given panel is on.

@@ -339,6 +339,15 @@
                                 title="Report content" />
                                 Report
                             </b-button>
+                            <b-button
+                            v-b-tooltip.hover.click.blur.top
+                            title="Make a copy of this panel"
+                            variant="secondary"
+                            class="float-left sd-report-content-button"
+                            @click.prevent="duplicateThisPanel"
+                            >
+                                Duplicate Panel
+                            </b-button>
                         </b-col>
 
                         <b-col>
@@ -418,7 +427,7 @@ export default {
     },
     methods: {
         //run as event handlers, for example
-
+        ...mapActions(['duplicatePanel']),
         openLightBox() {
             this.$store.commit("toggleLightbox");
         },
@@ -491,6 +500,7 @@ export default {
             this.$store
                 .dispatch("deleteExpandedPanel")
                 .then(response => {
+                    this.$emit("sd-panel-deleted");
                     this.$snotify.success(response.data.MESSAGE, "Deleted");
                 })
                 .catch(error => {
@@ -515,6 +525,9 @@ export default {
         },
         emitResizeEvent() {
             this.$emit('resized', this.$el.clientHeight);
+        },
+        duplicateThisPanel() {
+            this.duplicatePanel().then(response => { console.log(response) });
         },
     },
     mounted: function() {
