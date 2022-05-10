@@ -7,6 +7,7 @@ use App\User;
 use Tests\TestCase;
 use App\Models\Panel;
 use App\Models\Group;
+use App\Models\Image;
 use App\Models\Tag;
 use App\Repositories\ImageRepository;
 use App\Repositories\FileRepository;
@@ -14,6 +15,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 
 class PanelDuplicationTest extends TestCase
@@ -25,6 +27,7 @@ class PanelDuplicationTest extends TestCase
   protected $panelAuthor;
   protected $panelExternalAuthor;
   protected $panel;
+  protected $panelImage;
   protected $tags;
 
   public function setUp(): void
@@ -34,10 +37,11 @@ class PanelDuplicationTest extends TestCase
     $this->mock(FileRepository::class, function (MockInterface $mock) {
       $mock->allows('duplicatePanelFiles');
     });
-    $this->panelCreator = factory(User::class)->create(); //randomly generated user will have id = 0
-    $this->panelAuthor = factory(User::class)->create();
+    $this->panelCreator = factory(User::class)->create(['role' => User::USER_ROLE_USER]); //randomly generated user will have id = 0
+    $this->panelAuthor = factory(User::class)->create(['role' => User::USER_ROLE_USER]);
     $this->panelExternalAuthor = factory(ExternalAuthor::class)->create();
     $this->panel = factory(Panel::class)->create(['user_id' => $this->panelCreator->id]);
+    $this->panelImage = factory(Image::class)->create(['panel_id' => $this->panel->id]);
     $this->panel->authors()->attach($this->panelAuthor, ['role' => User::PANEL_ROLE_CORRESPONDING_AUTHOR, 'order' => 0]);
     $this->panel->externalAuthors()->attach($this->panelExternalAuthor, ['order' => 1]);
 
@@ -135,7 +139,7 @@ class PanelDuplicationTest extends TestCase
    */
   public function a_user_with_no_modify_privileges_cannot_duplicate_a_panel()
   {
-    $unprivilegedUser = factory(User::class)->create();
+    $unprivilegedUser = factory(User::class)->create(['role' => User::USER_ROLE_USER]);
     $response = $this->actingAs($unprivilegedUser, 'sanctum')->post('/api/panels/' . $this->panel->id . '/duplicate');
     $response->assertUnauthorized();
   }
@@ -147,7 +151,7 @@ class PanelDuplicationTest extends TestCase
    */
   public function a_user_who_is_a_regular_author_cannot_duplicate_a_panel()
   {
-    $regularAuthor = factory(User::class)->create();
+    $regularAuthor = factory(User::class)->create(['role' => User::USER_ROLE_USER]);
     $this->panel->authors()->attach($regularAuthor, ['role' => User::PANEL_ROLE_AUTHOR, 'order' => 2]);
     $response = $this->actingAs($regularAuthor, 'sanctum')->post('/api/panels/' . $this->panel->id . '/duplicate');
     $response->assertUnauthorized();
