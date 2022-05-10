@@ -279,7 +279,7 @@
                                 v-if="iCanEditThisPanel"
                                 id="sd-delete-panel"
                                 variant="danger"
-                                class="float-left mr-2"
+                                class="float-left mr-2 mb-2"
                             >
                                 <font-awesome-icon
                                     class="sd-delete-panel-icon"
@@ -331,7 +331,7 @@
                             title="Report inappropriate content"
                             variant="secondary"
                             :href="reportLinkContent"
-                            class="float-left sd-report-content-button"
+                            class="float-left sd-report-content-button mb-2"
                             >
                                 <font-awesome-icon
                                 class="sd-report-content-icon"
@@ -339,13 +339,20 @@
                                 title="Report content" />
                                 Report
                             </b-button>
+
+                            <!-- duplicate this panel -->
                             <b-button
+                            v-if="iCanEditThisPanel"
                             v-b-tooltip.hover.click.blur.top
-                            title="Make a copy of this panel"
-                            variant="secondary"
-                            class="float-left sd-report-content-button"
+                            title="Make a copy of this panel along with groups, tags and authors"
+                            variant="primary"
+                            class="float-left sd-duplicate-panel-button mb-2"
                             @click.prevent="duplicateThisPanel"
                             >
+                                <font-awesome-icon
+                                class="sd-report-content-icon"
+                                icon="plus-circle"
+                                title="Duplicate panel" />
                                 Duplicate Panel
                             </b-button>
                         </b-col>
