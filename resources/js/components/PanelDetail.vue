@@ -537,6 +537,7 @@ export default {
             this.duplicatePanel().then(response => {
                 this.closeExpandedPanels();
                 this.$emit("sd-request-close-expanded-panel");
+                this.$emit('show-panel-detail', response.data.DATA.id);
                 this.$snotify.success(response.data.MESSAGE, 'Panel Duplicated')
              }).catch( error => {
                  this.$snotify.error('Could not copy the panel', 'Failed');
