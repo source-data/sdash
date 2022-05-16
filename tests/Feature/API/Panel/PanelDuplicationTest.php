@@ -66,8 +66,8 @@ class PanelDuplicationTest extends TestCase
 
     $response->assertOk();
 
-    // the new panel should have the same title
-    $response->assertJsonPath('DATA.title', $this->panel->title);
+    // the new panel should have the same title (but with "copy of" in the copy)
+    $response->assertJsonPath('DATA.title', 'Copy of: ' . $this->panel->title);
 
     // the new panel should have an id
     $response->assertJsonStructure(['DATA' => ['id']]);
