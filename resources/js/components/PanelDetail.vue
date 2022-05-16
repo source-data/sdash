@@ -434,7 +434,7 @@ export default {
     },
     methods: {
         //run as event handlers, for example
-        ...mapActions(['duplicatePanel']),
+        ...mapActions(['duplicatePanel', 'closeExpandedPanels']),
         openLightBox() {
             this.$store.commit("toggleLightbox");
         },
@@ -507,7 +507,7 @@ export default {
             this.$store
                 .dispatch("deleteExpandedPanel")
                 .then(response => {
-                    this.$emit("sd-panel-deleted");
+                    this.$emit("sd-request-close-expanded-panel");
                     this.$snotify.success(response.data.MESSAGE, "Deleted");
                 })
                 .catch(error => {
@@ -534,7 +534,13 @@ export default {
             this.$emit('resized', this.$el.clientHeight);
         },
         duplicateThisPanel() {
-            this.duplicatePanel().then(response => { console.log(response) });
+            this.duplicatePanel().then(response => {
+                this.closeExpandedPanels();
+                this.$emit("sd-request-close-expanded-panel");
+                this.$snotify.success(response.data.MESSAGE, 'Panel Duplicated')
+             }).catch( error => {
+                 this.$snotify.error('Could not copy the panel', 'Failed');
+             });
         },
     },
     mounted: function() {

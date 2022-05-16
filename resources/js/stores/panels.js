@@ -188,6 +188,7 @@ const actions = {
     },
     duplicatePanel({ state, commit }) {
         return Axios.post("/panels/" + state.expandedPanelId + "/duplicate").then(response => {
+            commit("addNewlyCreatedPanelToStore", response.data);
             return response;
         });
     },

@@ -451,12 +451,19 @@ class PanelController extends Controller
         return API::response(200, "Panels deleted", []);
     }
 
+    /**
+     * Make a copy of an existing panel and assign ownership to the person
+     * making the request - but only if they have permission to edit the panel.
+     *
+     * @param Panel $panel
+     * @return APIResponse
+     */
     public function duplicate(Panel $panel)
     {
         if (Gate::allows('modify-panel', $panel)) {
             $newPanel = $this->panelRepository->duplicate($panel);
             $this->fileRepository->duplicatePanelFiles($panel, $newPanel);
-            return API::response(200, 'Panel duplicated', $newPanel);
+            return API::response(200, 'Panel duplicated', $newPanel->load(['groups', 'user', 'authors', 'accessToken', 'externalAuthors']));
         } else {
             return API::response(401, "Permission denied for panel {$panel->id}.", []);
         }
