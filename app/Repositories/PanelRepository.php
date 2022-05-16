@@ -152,7 +152,7 @@ class PanelRepository implements PanelRepositoryInterface
             ];
         }
 
-        $newPanel = $panel->replicate()->fill(['created_at' => $createTime]);
+        $newPanel = $panel->replicate()->fill(['title' => 'Copy of: ' . $panel->title, 'created_at' => $createTime]);
         $newPanel->save();
         $newPanelImage = $panel->image->replicate()->fill(['created_at' => $createTime, 'panel_id' => $newPanel->id])->save();
         $newPanel->authors()->attach($newPanelAuthors);
