@@ -331,7 +331,7 @@
                             title="Report inappropriate content"
                             variant="secondary"
                             :href="reportLinkContent"
-                            class="float-left sd-report-content-button mb-2"
+                            class="float-left sd-report-content-button mb-2 mr-2"
                             >
                                 <font-awesome-icon
                                 class="sd-report-content-icon"
