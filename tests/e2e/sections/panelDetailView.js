@@ -1,5 +1,7 @@
 var panelDetailViewCommands = {
-
+  clickDuplicatePanelButton: function() {
+    return this.click('@duplicatePanelButton');
+  }
 };
 
 module.exports = {
