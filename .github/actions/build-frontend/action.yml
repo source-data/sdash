@@ -19,6 +19,10 @@ runs:
       run: npm ci
       shell: bash
 
+    - name: Install the latest chromedriver version
+      run: npm install chromedriver@latest
+      shell: bash
+
     - name: Build frontend
       run: ENV_FILE=${{ inputs.env_file }} npm run production
       shell: bash
