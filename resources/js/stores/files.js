@@ -26,7 +26,15 @@ const actions = {
             return response
         })
     },
-    storeFile({commit, state, rootState}, payload){
+    storeFile({ commit, rootState, rootGetters }, payload) {
+        let fileSizeInBytes = payload.file.size,
+            validationFailed = rootGetters.validateFileUpload(
+                fileSizeInBytes,
+                (maxFileSizeInMegaBytes) => `Source files may not be larger than ${maxFileSizeInMegaBytes} MB`
+            );
+        if (validationFailed) {
+            return validationFailed;
+        }
         let panelId = rootState.Panels.expandedPanelId
         let form = new FormData()
         form.append('file', payload.file)

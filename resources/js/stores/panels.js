@@ -200,7 +200,15 @@ const actions = {
         commit("clearSuggestedTags");
         commit("toggleEditingCaption", false);
     },
-    uploadNewPanel({ commit }, newPanel) {
+    uploadNewPanel({ commit, rootGetters }, newPanel) {
+        let fileSizeInBytes = newPanel.get('file').size,
+            validationFailed = rootGetters.validateFileUpload(
+                fileSizeInBytes,
+                (maxFileSizeInMegaBytes) => `SmartFigure images may not be larger than ${maxFileSizeInMegaBytes} MB`
+            );
+        if (validationFailed) {
+            return validationFailed;
+        }
         return Axios.post("/panels", newPanel).then(response => {
             commit("addNewlyCreatedPanelToStore", response.data);
             return response;
