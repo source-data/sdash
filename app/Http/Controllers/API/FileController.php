@@ -46,10 +46,15 @@ class FileController extends Controller
     {
         $user = auth()->user();
 
-        $request->validate([
-            'file'  => ['required_without:url', 'max:4096'],
-            'url'   => ['required_without:file', 'url']
-        ]);
+        $maxFileSizeInMB = 4;
+        $maxFileSizeInBytes = 4 * 1000;
+        $rules = [
+            'file' => ['required', 'mimes:jpeg,png,jpg,gif,pdf,tif', "max:$maxFileSizeInBytes"],
+        ];
+        $messages = [
+            'file.max' => "Source files may not be larger than $maxFileSizeInMB MB",
+        ];
+        $this->validate($request, $rules, $messages);
 
         if (Gate::allows('modify-panel', $panel)) {
             

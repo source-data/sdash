@@ -145,9 +145,16 @@ class PanelController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => ['required', 'mimes:jpeg,png,jpg,gif,pdf,tif', 'max:4096']
-        ]);
+        $maxFileSizeInMegaBytes = 4;
+        $maxFileSizeInKiloBytes = 4 * 1000;
+        $rules = [
+            'file' => ['required_without:url', "max:$maxFileSizeInKiloBytes"],
+            'url'  => ['required_without:file', 'url'],
+        ];
+        $messages = [
+            'file.max' => "SmartFigure images may not be larger than $maxFileSizeInMegaBytes MB",
+        ];
+        $this->validate($request, $rules, $messages);
 
         $user = auth()->user();
 

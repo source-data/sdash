@@ -352,7 +352,7 @@ export default {
                 this.$store.commit('setPendingUpload', false);
                 this.file = null
             }).catch(error => {
-                this.$snotify.error(error.data.message, "Upload failed")
+                this.$snotify.error(error.data.errors.file[0], "Upload failed")
                 this.$store.commit('setPendingUpload', false);
             })
         },
