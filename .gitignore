@@ -21,3 +21,4 @@ capistrano.log
 /log
 tests/e2e/output/*
 *.noupload.*
+/php/local.ini
