@@ -344,7 +344,7 @@
                             <b-button
                             v-if="iCanEditThisPanel"
                             v-b-tooltip.hover.click.blur.top
-                            title="Make a copy of this panel along with description, tags and authors"
+                            title="Make a copy of this panel along with description, groups, tags and authors"
                             variant="primary"
                             class="float-left sd-duplicate-panel-button mb-2"
                             @click.prevent="duplicateThisPanel"

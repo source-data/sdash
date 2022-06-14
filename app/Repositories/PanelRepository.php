@@ -123,9 +123,12 @@ class PanelRepository implements PanelRepositoryInterface
         $oldPanelTags = $panel->tags()->withPivot(['origin', 'role', 'type', 'category'])->get();
         $oldPanelAuthors = $panel->authors()->get();
         $oldPanelExternalAuthors = $panel->externalAuthors()->get();
+        $oldPanelGroups = $panel->groups()->get();
         $newPanelTags = [];
         $newPanelAuthors = [];
         $newPanelExternalAuthors = [];
+        $newPanelGroups = [];
+
         foreach ($oldPanelTags as $tag) {
             $newPanelTags[$tag->id] = [
                 'origin' => $tag["meta"]["origin"],
@@ -152,12 +155,17 @@ class PanelRepository implements PanelRepositoryInterface
             ];
         }
 
+        foreach ($oldPanelGroups as $group) {
+            $newPanelGroups[] = $group->id;
+        }
+
         $newPanel = $panel->replicate()->fill(['title' => 'Copy of: ' . $panel->title, 'created_at' => $createTime]);
         $newPanel->save();
         $newPanelImage = $panel->image->replicate()->fill(['created_at' => $createTime, 'panel_id' => $newPanel->id])->save();
         $newPanel->authors()->attach($newPanelAuthors);
         $newPanel->externalAuthors()->attach($newPanelExternalAuthors);
         $newPanel->tags()->attach($newPanelTags);
+        $newPanel->groups()->attach($newPanelGroups);
         $newPanel->load(['groups', 'tags', 'user', 'authors', 'externalAuthors']);
         return $newPanel;
     }
