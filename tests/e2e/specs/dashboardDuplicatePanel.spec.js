@@ -31,7 +31,6 @@ describe("SDash test the duplicate panel function", function() {
     var originalTitle;
     dashboard.section.panelDetailView.getText('article.panel-detail > header > h1', function(result){
       originalTitle = result.value;
-      console.table(result);
     });
 
     dashboard.section.panelDetailView.clickDuplicatePanelButton();
@@ -42,7 +41,6 @@ describe("SDash test the duplicate panel function", function() {
 
     dashboard.section.panelDetailView.getText('article.panel-detail > header > h1', function(result){
 
-      console.table({'new value':result.value, 'test value': 'Copy of: ' + originalTitle, 'original value':originalTitle});
       browser.assert.ok(result.value === 'Copy of: ' + originalTitle, "Panel title has been duplicated into a new panel");
 
     });
