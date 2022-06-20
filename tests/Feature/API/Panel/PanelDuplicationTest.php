@@ -97,7 +97,6 @@ class PanelDuplicationTest extends TestCase
   public function a_duplicated_panel_also_duplicates_the_authors()
   {
     $originalPanelAuthors = $this->panel->authors()->get()->toArray();
-    // var_dump($originalPanelAuthors);
     $response = $this->actingAs($this->panelCreator, 'sanctum')->post('/api/panels/' . $this->panel->id . '/duplicate');
 
     $response->assertOk();
@@ -120,7 +119,6 @@ class PanelDuplicationTest extends TestCase
   public function a_duplicated_panel_also_duplicates_the_external_authors()
   {
     $originalExternalAuthors = $this->panel->externalAuthors()->get()->toArray();
-    // var_dump($originalExternalAuthors);
     $response = $this->actingAs($this->panelCreator, 'sanctum')->post('/api/panels/' . $this->panel->id . '/duplicate');
 
     $response->assertOk();
@@ -151,8 +149,6 @@ class PanelDuplicationTest extends TestCase
     $response = $this->actingAs($this->panelCreator, 'sanctum')->post('/api/panels/' . $this->panel->id . '/duplicate');
 
     $response->assertOk();
-
-    var_dump($response['DATA']);
 
     foreach ($response['DATA']['groups'] as $group) {
       $this->assertTrue(in_array($group['id'], $originalGroups), "The group ID {$group['id']} has been attached to the duplicated panel.");
