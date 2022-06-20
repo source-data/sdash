@@ -20,6 +20,13 @@ class User extends Authenticatable implements MustVerifyEmail
     const PANEL_ROLE_CURATOR = 'curator';
     const PANEL_ROLE_CORRESPONDING_AUTHOR = 'corresponding';
 
+    /**
+     * General user roles
+     */
+    const USER_ROLE_ADMIN = 'admin';
+    const USER_ROLE_SUPERADMIN = 'superadmin';
+    const USER_ROLE_USER = 'user';
+
     const ORCID_REGEX = '/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/';
 
     /**

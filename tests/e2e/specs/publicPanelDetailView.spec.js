@@ -25,7 +25,8 @@ describe('Panel detail view on public dashboard', function () {
         .assert.elementPresent('@panelTitle', 'The panel title is present')
         .assert.elementPresent('@reportContentButton', 'The report content button is present')
         .assert.elementPresent("@mainImage", "The main panel image is present")
-        .assert.elementPresent("@authorList", "The list of authors is present");
+        .assert.elementPresent("@authorList", "The list of authors is present")
+        .assert.not.elementPresent("@duplicatePanelButton", "The duplicate panel button is correctly not shown");
 
   });
 

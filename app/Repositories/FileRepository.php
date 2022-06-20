@@ -6,8 +6,9 @@ use App\User;
 use App\Models\Panel;
 use App\Models\Image;
 use App\Models\File;
-use \Illuminate\Http\UploadedFile;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File as FileFacade;
 use App\Repositories\Interfaces\FileRepositoryInterface;
 
 class FileRepository implements FileRepositoryInterface
@@ -65,5 +66,12 @@ class FileRepository implements FileRepositoryInterface
         $file->delete();
 
         return true;
+    }
+
+    public function duplicatePanelFiles(Panel $oldPanel, Panel $newPanel)
+    {
+        $sourcePath = Storage::path($oldPanel->id);
+        $destinationPath = Storage::path($newPanel->id);
+        return FileFacade::copyDirectory($sourcePath, $destinationPath);
     }
 }

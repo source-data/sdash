@@ -13,23 +13,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Notifications\PanelMadePublic;
+use App\Repositories\Interfaces\FileRepositoryInterface;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PanelController extends Controller
 {
 
     protected $panelRepository;
     protected $imageRepository;
+    protected $fileRepository;
 
     /**
      * Use the PanelRepository to abstract the complexity of the panel request
      */
-    public function __construct(ImageRepositoryInterface $imageRepository, PanelRepositoryInterface $panelRepository)
+    public function __construct(ImageRepositoryInterface $imageRepository, PanelRepositoryInterface $panelRepository, FileRepositoryInterface $fileRepository)
     {
         $this->panelRepository = $panelRepository;
         $this->imageRepository = $imageRepository;
+        $this->fileRepository = $fileRepository;
     }
 
     /**
@@ -451,5 +456,23 @@ class PanelController extends Controller
         }
 
         return API::response(200, "Panels deleted", []);
+    }
+
+    /**
+     * Make a copy of an existing panel and assign ownership to the person
+     * making the request - but only if they have permission to edit the panel.
+     *
+     * @param Panel $panel
+     * @return APIResponse
+     */
+    public function duplicate(Panel $panel)
+    {
+        if (Gate::allows('modify-panel', $panel)) {
+            $newPanel = $this->panelRepository->duplicate($panel);
+            $this->fileRepository->duplicatePanelFiles($panel, $newPanel);
+            return API::response(200, 'Panel duplicated', $newPanel->load(['groups', 'user', 'authors', 'accessToken', 'externalAuthors']));
+        } else {
+            return API::response(401, "Permission denied for panel {$panel->id}.", []);
+        }
     }
 }

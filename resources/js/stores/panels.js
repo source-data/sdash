@@ -117,7 +117,6 @@ const actions = {
         return Axios.delete("/panels/" + state.expandedPanelId)
             .then(response => {
                 commit("removePanelFromStore", state.expandedPanelId);
-                commit("closeExpandedPanels");
                 commit("setPanelLoadingState", false);
                 return response;
             });
@@ -184,6 +183,12 @@ const actions = {
         return Axios.delete(
             "/panels/" + state.expandedPanelId + "/users/me"
         ).then(response => {
+            return response;
+        });
+    },
+    duplicatePanel({ state, commit }) {
+        return Axios.post("/panels/" + state.expandedPanelId + "/duplicate").then(response => {
+            commit("addNewlyCreatedPanelToStore", response.data);
             return response;
         });
     },

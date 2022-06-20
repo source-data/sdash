@@ -279,7 +279,7 @@
                                 v-if="iCanEditThisPanel"
                                 id="sd-delete-panel"
                                 variant="danger"
-                                class="float-left mr-2"
+                                class="float-left mr-2 mb-2"
                             >
                                 <font-awesome-icon
                                     class="sd-delete-panel-icon"
@@ -331,13 +331,29 @@
                             title="Report inappropriate content"
                             variant="secondary"
                             :href="reportLinkContent"
-                            class="float-left sd-report-content-button"
+                            class="float-left sd-report-content-button mb-2 mr-2"
                             >
                                 <font-awesome-icon
                                 class="sd-report-content-icon"
                                 icon="exclamation-triangle"
                                 title="Report content" />
                                 Report
+                            </b-button>
+
+                            <!-- duplicate this panel -->
+                            <b-button
+                            v-if="iCanEditThisPanel"
+                            v-b-tooltip.hover.click.blur.top
+                            title="Make a copy of this panel along with description, groups, tags and authors"
+                            variant="primary"
+                            class="float-left sd-duplicate-panel-button mb-2"
+                            @click.prevent="duplicateThisPanel"
+                            >
+                                <font-awesome-icon
+                                class="sd-report-content-icon"
+                                icon="plus-circle"
+                                title="Duplicate panel" />
+                                Duplicate Panel
                             </b-button>
                         </b-col>
 
@@ -418,7 +434,7 @@ export default {
     },
     methods: {
         //run as event handlers, for example
-
+        ...mapActions(['duplicatePanel', 'closeExpandedPanels']),
         openLightBox() {
             this.$store.commit("toggleLightbox");
         },
@@ -491,6 +507,7 @@ export default {
             this.$store
                 .dispatch("deleteExpandedPanel")
                 .then(response => {
+                    this.$emit("sd-request-close-expanded-panel");
                     this.$snotify.success(response.data.MESSAGE, "Deleted");
                 })
                 .catch(error => {
@@ -515,6 +532,16 @@ export default {
         },
         emitResizeEvent() {
             this.$emit('resized', this.$el.clientHeight);
+        },
+        duplicateThisPanel() {
+            this.duplicatePanel().then(response => {
+                this.closeExpandedPanels();
+                this.$emit("sd-request-close-expanded-panel");
+                this.$emit('show-panel-detail', response.data.DATA.id);
+                this.$snotify.success(response.data.MESSAGE, 'Panel Duplicated')
+             }).catch( error => {
+                 this.$snotify.error('Could not copy the panel', 'Failed');
+             });
         },
     },
     mounted: function() {
