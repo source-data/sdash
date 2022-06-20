@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 
+use function PHPUnit\Framework\assertTrue;
+
 class PanelDuplicationTest extends TestCase
 {
 
@@ -131,6 +133,29 @@ class PanelDuplicationTest extends TestCase
       $this->assertEquals($response['DATA']['external_authors'][$i]['email'], $originalExternalAuthors[$i]['email']);
       $this->assertEquals($response['DATA']['external_authors'][$i]['author_role']['role'], $originalExternalAuthors[$i]['author_role']['role']);
       $this->assertEquals($response['DATA']['external_authors'][$i]['author_role']['order'], $originalExternalAuthors[$i]['author_role']['order']);
+    }
+  }
+
+  /**
+   * @test
+   */
+  public function a_duplicated_panel_also_duplicates_the_panel_groups()
+  {
+    $originalGroups = [
+      factory(Group::class)->create()->id,
+      factory(Group::class)->create()->id
+    ];
+
+    $this->panel->groups()->attach($originalGroups);
+
+    $response = $this->actingAs($this->panelCreator, 'sanctum')->post('/api/panels/' . $this->panel->id . '/duplicate');
+
+    $response->assertOk();
+
+    var_dump($response['DATA']);
+
+    foreach ($response['DATA']['groups'] as $group) {
+      $this->assertTrue(in_array($group['id'], $originalGroups), "The group ID {$group['id']} has been attached to the duplicated panel.");
     }
   }
 
