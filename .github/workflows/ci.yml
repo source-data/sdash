@@ -33,6 +33,10 @@ jobs:
       run: php artisan migrate:fresh
     - name: Seed the database
       run: php artisan db:seed
+    - name: CI debugging
+      run: |
+            sudo ls -ahl /usr/local/share/
+            sudo ls -ahl /usr/bin/chromedriver
     - name: Run end-to-end tests
       run: sudo npm run tests  # sudo to allow use of chromedriver
     - name: Archive test results
