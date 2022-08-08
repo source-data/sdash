@@ -20,7 +20,7 @@ runs:
       shell: bash
 
     - name: Install the latest chromedriver version
-      run: npm install chromedriver@104.0.0
+      run: npm install chromedriver@latest
       shell: bash
 
     - name: Build frontend
