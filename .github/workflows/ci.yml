@@ -33,12 +33,8 @@ jobs:
       run: php artisan migrate:fresh
     - name: Seed the database
       run: php artisan db:seed
-    - name: CI debugging
-      run: |
-            sudo ls -ahl /usr/local/share/
-            sudo ls -ahl /usr/bin/chromedriver
     - name: Run end-to-end tests
-      run: sudo npm run tests  # sudo to allow use of chromedriver
+      run: CHROMEWEBDRIVER="/usr/bin/chromedriver" npm run tests
     - name: Archive test results
       if: always() # even after test failure
       uses: actions/upload-artifact@v2
