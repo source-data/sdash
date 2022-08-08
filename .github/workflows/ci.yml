@@ -34,7 +34,7 @@ jobs:
     - name: Seed the database
       run: php artisan db:seed
     - name: Run end-to-end tests
-      run: npm run tests
+      run: sudo npm run tests  # sudo to allow use of chromedriver
     - name: Archive test results
       if: always() # even after test failure
       uses: actions/upload-artifact@v2
