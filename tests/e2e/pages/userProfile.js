@@ -10,10 +10,12 @@ var userProfileCommands = {
     },
     changeAvatar: function() {
         let newAvatar = require('path').resolve(__dirname + '/../resources/test-image.jpg');
+        browser.execute(() => {document.querySelector(".vue-image-crop-upload input[type='file']").style="display:block;"});
         this.verify.visible('@changeAvatarButton')
             .click('@changeAvatarButton')
             .waitForElementVisible('@changeAvatarModal', 1000)
             .setValue('@changeAvatarInput', newAvatar)
+            .waitForElementVisible('@changeAvatarConfirmButton', 1000)
             .click('@changeAvatarConfirmButton');
         return this.waitForElementVisible('@customAvatar', 10000);
     },
