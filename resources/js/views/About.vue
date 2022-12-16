@@ -101,7 +101,7 @@ export default {
 
 #about-content {
     font-size: $font-size-md;
-    margin: 2rem 5%;
+    margin: 4rem 5%;
 }
 @media (min-width: 768px) {
     #about-content {

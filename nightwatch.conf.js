@@ -4,6 +4,14 @@ dotenv.config()
 const baseFolder = "tests/e2e"
 const outputFolder = `${baseFolder}/output`
 
+
+if (process.env.CHROMEWEBDRIVER) {
+    chromedriver_path = process.env.CHROMEWEBDRIVER;
+} else {
+    chromedriver_path = require("chromedriver").path;
+}
+console.log("Using chromedriver from", chromedriver_path)
+
 module.exports = {
     src_folders: `${baseFolder}/specs`,
     page_objects_path: `${baseFolder}/pages`,
@@ -30,7 +38,7 @@ module.exports = {
             },
             webdriver: {
                 port: 9515,
-                server_path: require("chromedriver").path,
+                server_path: chromedriver_path,
             },
         },
         firefox: {

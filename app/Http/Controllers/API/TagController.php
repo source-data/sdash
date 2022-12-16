@@ -47,8 +47,8 @@ class TagController extends Controller
         if ($request->query('name')) {
 
             $tagList = Tag::whereHas('panels', function ($query) {
-                    $query->where('is_public', true);
-                })
+                $query->where('is_public', true);
+            })
                 ->where(\DB::raw("content"), 'like', '%' . $request->query('name') . '%')
                 ->limit(40)->get();
 
@@ -145,7 +145,7 @@ class TagController extends Controller
 
         $newTags = $request->get('tags');
         $existingTags = $panel->tags()->withPivot(['category', 'origin', 'role', 'type'])->get()->toArray();
-        Log::debug($existingTags);
+        // Log::debug($existingTags);
 
         // loop through submitted tags and only attach
         // tags that are not already attached

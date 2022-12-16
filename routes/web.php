@@ -23,7 +23,7 @@ Route::get('/panels/{panel}/pdf', 'DownloadController@downloadPdf');
 Route::get('/panels/{panel}/powerpoint', 'DownloadController@downloadPowerpoint');
 Route::get('/panels/{panel}/zip', 'DownloadController@downloadZip');
 Route::get('/panels/{panel}/dar', 'DownloadController@downloadDar');
-Route::get('/panels/{panel}', 'DownloadController@downloadOriginal');
+Route::get('/panels/{panel}/original', 'DownloadController@downloadOriginal');
 Route::get('/files/{file}', 'API\FileController@download');
 
 // Allow user to join groups or admin to authorise new members

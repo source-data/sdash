@@ -1,8 +1,11 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\Tag;
 use App\Models\Panel;
+use Illuminate\Support\Facades\DB;
 
 class TagsTableSeeder extends Seeder
 {

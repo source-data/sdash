@@ -28,7 +28,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'feedback_recipient' => env('FEEDBACK_RECIPIENT', 'stephen.pewter@embo.org'),
+    'feedback_recipient' => env('FEEDBACK_RECIPIENT', 'sourcedata@embo.org'),
 
     /*
     |--------------------------------------------------------------------------

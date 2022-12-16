@@ -16,11 +16,8 @@
 
                 <div class="text-md">
                     Add SmartFigures to your dashboard, link them to the underlying source data and receive new ideas
-                    from your peers. SDash is a pilot platform developed by SourceData at EMBO.
-
-                    <p class="mt-2">
-                        Register now and let us know what you think.
-                    </p>
+                    from your peers. SDash is a pilot platform developed by SourceData at EMBO. Register now and let us
+                    know what you think.
                 </div>
             </section>
 
@@ -57,7 +54,7 @@
 
             <panel-listing-grid
                 v-if="hasPanels"
-                list_root="user"
+                :idPanel="idPanel"
             ></panel-listing-grid>
 
             <b-alert
@@ -82,12 +79,12 @@
 
 <script>
 import store from "@/stores/store";
-import { mapGetters, mapActions } from "vuex";
-import FilterBar from "./FilterBar";
-import PanelActionBar from "./PanelActionBar";
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import FilterBar from "@/components/FilterBar";
+import PanelActionBar from "@/components/PanelActionBar";
 import PanelAuthorsEditModal from "@/components/authors/PanelAuthorsEditModal";
 import InfoFooter from "@/components/InfoFooter";
-import PanelListingGrid from "./PanelListingGrid";
+import PanelListingGrid from "@/components/panel-grid/PanelListingGrid";
 import Lightbox from 'vue-easy-lightbox';
 import PanelDropZone from '@/components/helpers/PanelDropZone.vue';
 
@@ -105,7 +102,15 @@ export default {
     },
 
     props: {
-        query: String
+        query: String,
+        idPanel: {
+            type: Number,
+            default: null,
+        },
+        page: {
+            type: Number,
+            default: 0,
+        },
     },
 
     data() {
@@ -131,6 +136,9 @@ export default {
         ...mapActions([
             'toggleLightbox',
         ]),
+        ...mapMutations([
+            'setCurrentPage',
+        ]),
         reloadPanels() {
             store.commit("clearLoadedPanels");
             store.commit("setPagination", true);
@@ -149,6 +157,7 @@ export default {
                 store.dispatch("setSearchString", "");
             }
 
+            this.setCurrentPage(this.page);
             store.dispatch("fetchPanelList").catch(error => {
                 this.$snotify.error(
                     "We couldn't find any panels for you.",
@@ -167,6 +176,15 @@ export default {
         this.searchQuery = this.query;
         this.reloadPanels();
         store.dispatch("fetchFileCategories");
+
+    },
+    created() {
+        if (this.idPanel) {
+            const url = new URL(window.location);
+            url.searchParams.delete('panel');
+            url.searchParams.delete('page');
+            window.history.replaceState({}, '', url);
+        }
     },
 
     watch: {
@@ -193,7 +211,7 @@ export default {
 }
 
 #sd-featured-jumbotron {
-    margin: 1.5rem 0;
+    margin: 2rem 0;
     max-width: 1200px;
 }
 
@@ -201,5 +219,10 @@ export default {
     #sd-featured-jumbotron {
         margin: 2rem 10vw;
     }
+}
+
+// transparent images get a white background
+::v-deep .vel-img {
+    background-color: white;
 }
 </style>

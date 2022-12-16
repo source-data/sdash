@@ -13,22 +13,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Notifications\PanelMadePublic;
+use App\Repositories\Interfaces\FileRepositoryInterface;
+use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 use App\Repositories\Interfaces\ImageRepositoryInterface;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PanelController extends Controller
 {
 
     protected $panelRepository;
     protected $imageRepository;
+    protected $fileRepository;
 
     /**
      * Use the PanelRepository to abstract the complexity of the panel request
      */
-    public function __construct(ImageRepositoryInterface $imageRepository, PanelRepositoryInterface $panelRepository)
+    public function __construct(ImageRepositoryInterface $imageRepository, PanelRepositoryInterface $panelRepository, FileRepositoryInterface $fileRepository)
     {
         $this->panelRepository = $panelRepository;
         $this->imageRepository = $imageRepository;
+        $this->fileRepository = $fileRepository;
     }
 
     /**
@@ -121,7 +127,7 @@ class PanelController extends Controller
      * @param Request $request
      * @return void
      */
-    public function listPublicGroupPanels(Request$request, Group $group)
+    public function listPublicGroupPanels(Request $request, Group $group)
     {
         if (!$group->is_public) {
             return API::response(401, "Access denied.", []);
@@ -144,9 +150,16 @@ class PanelController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => ['required', 'mimes:jpeg,png,jpg,gif,pdf,tif', 'max:4096']
-        ]);
+        $maxFileSizeInMegaBytes = 4;
+        $maxFileSizeInKiloBytes = 4 * 1000;
+        $rules = [
+            'file' => ['required_without:url', "max:$maxFileSizeInKiloBytes"],
+            'url'  => ['required_without:file', 'url'],
+        ];
+        $messages = [
+            'file.max' => "SmartFigure images may not be larger than $maxFileSizeInMegaBytes MB",
+        ];
+        $this->validate($request, $rules, $messages);
 
         $user = auth()->user();
 
@@ -208,9 +221,18 @@ class PanelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showPublic(Panel $panel)
+    public function showPublic(Request $request, Panel $panel)
     {
-        if (Gate::allows('view-panel', $panel)) {
+        $validator = Validator::make(
+            $request->all(),
+            ['token' => ['string', 'exists:panel_access_tokens,token']]
+        );
+
+        if ($validator->fails()) abort(401, "Access Denied");
+
+        $token = $request->get('token', null);
+
+        if (Gate::allows('view-single-panel', [$panel, $token])) {
             $panels = Panel::where('id', $panel->id)
                 ->with([
                     'user' => function ($query) {
@@ -262,7 +284,7 @@ class PanelController extends Controller
 
         if (Gate::allows('view-panel', $panel)) {
             $files = Panel::where('id', $panel->id)->first()->files();
-            
+
             if ($categoryId) {
                 $files->where('file_category_id', '=', $categoryId);
             }
@@ -338,7 +360,7 @@ class PanelController extends Controller
             if ($request->has("is_public")) $toUpdate["is_public"] = $request->input("is_public");
 
             $licenseId = null;
-            
+
             if ($toUpdate["is_public"]) {
                 $license = License::where('code', 'CC BY 4.0')->firstOrFail();
                 $licenseId = $license->id;
@@ -434,5 +456,23 @@ class PanelController extends Controller
         }
 
         return API::response(200, "Panels deleted", []);
+    }
+
+    /**
+     * Make a copy of an existing panel and assign ownership to the person
+     * making the request - but only if they have permission to edit the panel.
+     *
+     * @param Panel $panel
+     * @return APIResponse
+     */
+    public function duplicate(Panel $panel)
+    {
+        if (Gate::allows('modify-panel', $panel)) {
+            $newPanel = $this->panelRepository->duplicate($panel);
+            $this->fileRepository->duplicatePanelFiles($panel, $newPanel);
+            return API::response(200, 'Panel duplicated', $newPanel->load(['groups', 'user', 'authors', 'accessToken', 'externalAuthors']));
+        } else {
+            return API::response(401, "Permission denied for panel {$panel->id}.", []);
+        }
     }
 }

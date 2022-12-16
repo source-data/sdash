@@ -8,7 +8,9 @@ services:
     image: digitalocean.com/php
     volumes:
        - ./:/var/www
-       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+       - type: bind
+         source: ./php/local.ini
+         target: /usr/local/etc/php/conf.d/local.ini
 
   webserver:
     image: nginx:alpine

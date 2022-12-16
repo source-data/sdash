@@ -70,7 +70,9 @@
                             tabindex="0"
                             @click="openLightBox"
                             style="cursor:pointer"
-                            draggable="false" />
+                            draggable="false"
+                            class="sd-panel-main-image"
+                            />
 
                         <font-awesome-icon
                             @click="openLightBox"
@@ -272,12 +274,12 @@
                     </h2>
 
                     <div class="content row">
-                        <b-col>
+                        <b-col cols="8">
                             <b-button
                                 v-if="iCanEditThisPanel"
                                 id="sd-delete-panel"
                                 variant="danger"
-                                class="float-left"
+                                class="float-left mr-2 mb-2"
                             >
                                 <font-awesome-icon
                                     class="sd-delete-panel-icon"
@@ -322,6 +324,37 @@
                                     </div>
                                 </div>
                             </b-popover>
+
+                            <!-- report post -->
+                            <b-button
+                            v-b-tooltip.hover.click.blur.top
+                            title="Report inappropriate content"
+                            variant="secondary"
+                            :href="reportLinkContent"
+                            class="float-left sd-report-content-button mb-2 mr-2"
+                            >
+                                <font-awesome-icon
+                                class="sd-report-content-icon"
+                                icon="exclamation-triangle"
+                                title="Report content" />
+                                Report
+                            </b-button>
+
+                            <!-- duplicate this panel -->
+                            <b-button
+                            v-if="iCanEditThisPanel"
+                            v-b-tooltip.hover.click.blur.top
+                            title="Make a copy of this panel along with description, groups, tags and authors"
+                            variant="primary"
+                            class="float-left sd-duplicate-panel-button mb-2"
+                            @click.prevent="duplicateThisPanel"
+                            >
+                                <font-awesome-icon
+                                class="sd-report-content-icon"
+                                icon="plus-circle"
+                                title="Duplicate panel" />
+                                Duplicate Panel
+                            </b-button>
                         </b-col>
 
                         <b-col>
@@ -359,7 +392,6 @@ export default {
     },
     data() {
         return {
-            link_base: process.env.MIX_API_PANEL_URL,
             isEditingTitle: false,
             titleText: "",
             showDeleteConfirmation: false,
@@ -376,9 +408,10 @@ export default {
             "fileCount",
             "editingCaption",
             "expandedPanelAuthors",
+            "viewUrls",
         ]),
         panelUrl(){
-            return this.link_base + '/' + this.expandedPanel.id
+            return this.viewUrls.panel(this.expandedPanel);
         },
         fullImageUrl() {
             return this.apiUrls.panelImage(this.expandedPanel);
@@ -391,11 +424,17 @@ export default {
         },
         isPublic(){
             return !!(this.expandedPanel.is_public);
-        }
+        },
+        reportLinkContent() {
+            let link = 'mailto:' + process.env.MIX_FEEDBACK_RECIPIENT + '?subject=';
+            link += encodeURI('[Panel ID ' + this.expandedPanel.id + '] ') + 'Report%20of%20Inappropriate%20SDash%20Content&body=';
+            link += encodeURI('The panel: "' + this.expandedPanel.title + '" contains innapropriate content.\r\n\r\n Please review.\r\n\r\n' + this.viewUrls.panel(this.expandedPanel));
+            return link;
+        },
     },
     methods: {
         //run as event handlers, for example
-
+        ...mapActions(['duplicatePanel', 'closeExpandedPanels']),
         openLightBox() {
             this.$store.commit("toggleLightbox");
         },
@@ -468,6 +507,7 @@ export default {
             this.$store
                 .dispatch("deleteExpandedPanel")
                 .then(response => {
+                    this.$emit("sd-request-close-expanded-panel");
                     this.$snotify.success(response.data.MESSAGE, "Deleted");
                 })
                 .catch(error => {
@@ -492,6 +532,16 @@ export default {
         },
         emitResizeEvent() {
             this.$emit('resized', this.$el.clientHeight);
+        },
+        duplicateThisPanel() {
+            this.duplicatePanel().then(response => {
+                this.closeExpandedPanels();
+                this.$emit("sd-request-close-expanded-panel");
+                this.$emit('show-panel-detail', response.data.DATA.id);
+                this.$snotify.success(response.data.MESSAGE, 'Panel Duplicated')
+             }).catch( error => {
+                 this.$snotify.error('Could not copy the panel', 'Failed');
+             });
         },
     },
     mounted: function() {
@@ -599,16 +649,29 @@ section.image {
     padding: 0;
     /* Makes the absolutely positioned icons (see below) relative to this container. */
     position: relative;
-}
 
-section.image .content {
-    max-height: 40rem;
-}
-section.image img {
-    display: block;
-    margin: auto;
-    max-width: 100%;
-    max-height: 40rem;
+    .content {
+        max-height: 40rem;
+    }
+
+    img {
+        // transparent images get a white background
+        background-color: white;
+        display: block;
+        margin: auto;
+        max-width: 100%;
+        max-height: 40rem;
+    }
+
+    button.edit {
+        background-color: $mostly-black-blue;
+        border-radius: 50%;
+        height: 2rem;
+        width: 2rem;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
 }
 
 $zoom-icon-size: 1rem;
@@ -635,16 +698,6 @@ $zoom-icon-bottom: -1 * (
     right: $zoom-icon-size;
 
     cursor: pointer;
-}
-
-section.image button.edit {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-section.image button.edit,
-section.image button.edit * {
-    background-color: transparent;
 }
 
 /*********************

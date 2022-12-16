@@ -19,7 +19,7 @@ describe('SDash Homepage', function() {
       .assert.not.elementPresent('@userMenuToggle', 'the dropdown toggle for the user menu is not present')
       .assert.not.elementPresent('@linkToLogoutPage', 'the link to log out is not present')
       .assert.not.elementPresent('@linkToUserProfile', 'the link to the user profile is not present');
-    
+
     dashboard.section.header
       .assert.visible('@jumbotron', 'the jumbotron with SDash info is visible')
 
@@ -56,5 +56,34 @@ describe('SDash Homepage', function() {
     dashboard.section.header
       .assert.not.elementPresent('@jumbotron', 'the jumbotron with SDash info is not present')
     browser.end()
+  })
+
+  test('check that the guided tour is displayed on first login', function(browser) {
+    browser.page.login()
+      .navigate()
+      .login();
+
+    let dashboard = browser.page.dashboard();
+    dashboard.navigate()
+    .waitForElementVisible(dashboard.section.guidedTour, 2000)
+    .assert.elementPresent(dashboard.section.guidedTour, 'the guided tour is displayed')
+    ;
+    dashboard.section.guidedTour
+      .assert.visible('@nextButton', 'the guided tour has a next button')
+      .assert.visible('@skipButton', 'the guided tour has a skip button')
+      .clickNext()
+      .waitForElementVisible('@prevButton', 1000)
+      .assert.visible('@prevButton', 'the guided tour has skipped to the next step')
+      .clickPrev()
+      .waitForElementVisible('@nextButton', 1000)
+      .assert.visible('@nextButton', 'the guided tour can skip to the previous step')
+      .clickNext()
+      .waitForElementVisible('@stopButton', 1000)
+      .assert.visible('@stopButton', 'the guided tour has arrived at the final step')
+      .clickStop()
+      .waitForElementNotPresent('.v-step', 1000)
+      .assert.not.elementPresent('.v-step', 'the guided tour has been closed');
+
+
   })
 })

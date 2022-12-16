@@ -138,31 +138,31 @@
 
                 <div class="content">
                     <div class="panel-download-link">
-                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/zip'">
+                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/zip' + (this.token ? '?token=' + this.token : '')">
                             Archive containing all files (.zip)
                         </a>
                     </div>
 
                     <div class="panel-download-link">
-                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/dar'">
+                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/dar' + (this.token ? '?token=' + this.token : '')">
                             SmartFigure Editor document (.smartfigure)
                         </a>
                     </div>
 
                     <div class="panel-download-link">
-                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/pdf'">
+                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/pdf' + (this.token ? '?token=' + this.token : '')">
                             Adobe Acrobat Reader file (.pdf)
                         </a>
                     </div>
 
                     <div class="panel-download-link">
-                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/powerpoint'">
+                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/powerpoint' + (this.token ? '?token=' + this.token : '')">
                             Microsoft PowerPoint slide (.pptx)
                         </a>
                     </div>
 
                     <div class="panel-download-link">
-                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/original'">
+                        <a class="text-info" :href="'/panels/' + expandedPanel.id + '/original' + (this.token ? '?token=' + this.token : '')">
                             Original image file
                         </a>
                     </div>
@@ -194,6 +194,13 @@ export default {
     components: {
         AuthorList,
     },
+    props: {
+        token: {
+            type: String,
+            required: false,
+            default: null,
+        }
+    },
     data() {
         return {
             notAllowed: false,
@@ -206,14 +213,13 @@ export default {
             "expandedPanel",
             "getFiles",
             "getFileCategoryById",
-            // tags
             "methodTags",
             "interventionTags",
             "assayTags",
             "otherTags",
         ]),
         panelImageUrl() {
-            return this.apiUrls.panelImage(this.expandedPanel);
+            return this.apiUrls.panelImage(this.expandedPanel) + (this.token ? '&token=' + this.token : '');
         },
         showDescription() {
             return this.notEmpty(this.expandedPanel.caption);
@@ -246,7 +252,7 @@ export default {
             return ""
         },
         fetchPanel: function() {
-            this.loadPanelDetail(this.$route.params.panel_id).catch(error => {
+            this.loadPanelDetail({panelId: this.$route.params.panel_id, token: this.token}).catch(error => {
                 if (error.status == 401) {
                     this.notAllowed = true;
                 } else {
@@ -357,6 +363,8 @@ section {
     padding: 0;
 
     img {
+        // transparent images get a white background
+        background-color: white;
         width: 100%;
     }
 }

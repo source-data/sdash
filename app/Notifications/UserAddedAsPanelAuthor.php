@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\User;
 use App\Models\Panel;
+use App\Notifications\PanelUrls;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,11 +12,10 @@ use Illuminate\Notifications\Notification;
 
 class UserAddedAsPanelAuthor extends Notification
 {
-    use Queueable;
+    use Queueable, PanelUrls;
 
     private $user;
     private $author;
-    private $panel;
     private $role;
 
     /**
@@ -56,7 +56,7 @@ class UserAddedAsPanelAuthor extends Notification
             ->line("{$this->user->firstname} {$this->user->surname} has given you an author credit on the SmartFigure \"{$this->panel->title}\".")
             ->line("You have been given the role: {$this->role}.")
             ->line("You will see the SmartFigure on your dashboard next time you log in or by clicking on the button below.")
-            ->action('View SmartFigure', $this->panelUrl());
+            ->action('View SmartFigure', $this->panelDetailUrl());
     }
 
     /**
@@ -70,10 +70,5 @@ class UserAddedAsPanelAuthor extends Notification
         return [
             //
         ];
-    }
-
-    protected function panelUrl()
-    {
-        return url('/panel/' . $this->panel->id);
     }
 }

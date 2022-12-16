@@ -85,12 +85,12 @@
         </b-row>
     </b-container>
     <b-modal
-    centered
-    v-model="showEmailResend"
-    hide-footer
-    title="Please confirm your email address"
+        centered
+        v-model="showEmailResend"
+        hide-footer
+        title="Please verify your email address"
     >
-    <EmailConfirmationNotice></EmailConfirmationNotice>
+        <EmailConfirmationNotice :email="email" />
     </b-modal>
   </section>
 </template>

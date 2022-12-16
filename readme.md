@@ -104,6 +104,12 @@ Start SDash locally, then run the actual tests in Chrome & Firefox:
 npx nightwatch --env firefox,chrome
 ```
 
+To run a single test, for example during debugging, pass the path to the test spec:
+
+```
+npx nightwatch ./tests/e2e/specs/userProfile.spec.js --env firefox --testcase 'check that a user without an avatar can change and delete it'
+```
+
 ## API Endpoints Needed
 
 ## User

@@ -29,7 +29,12 @@ const router = new Router({
             path: "/",
             name: "dashboard",
             component: PanelGrid,
-            props: route => ({ query: route.query.q }),
+            props: route => ({
+                query: route.query.q,
+                // the detail view for the panel with this id will be opened
+                idPanel: parseInt(route.query.panel, 10),
+                page: parseInt(route.query.page, 10),
+            }),
             meta: {
                 access: UserLevels.GUEST
             }
@@ -127,21 +132,36 @@ const router = new Router({
             path: "/panel/:panel_id",
             name: "singlepanel",
             component: SinglePanel,
+            props: route => ({
+                token: route.query.token
+            }),
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "/about",
             name: "about",
-            component: About
+            component: About,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "/tutorial",
             name: "tutorial",
-            component: Tutorial
+            component: Tutorial,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "/docs/api",
             name: "api",
-            component: Api
+            component: Api,
+            meta: {
+                access: UserLevels.GUEST
+            }
         },
         {
             path: "*",

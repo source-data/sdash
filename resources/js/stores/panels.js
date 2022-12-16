@@ -16,9 +16,9 @@ const defaultState = {
     onlyMyPanels: false,
     loading: true,
     panelsAvailable: 0,
-    page: 0,
-    nextPage: 1,
-    lastPage: 1, // the default needs to be higher than the "page" variable above - to show that all pages haven't loaded
+    page: 1,
+    nextPage: 2,
+    lastPage: 10, // the default needs to be higher than the "page" variable above - to show that all pages haven't loaded
     pageSize: 20,
     selectedPanels: [],
     editingCaption: false
@@ -78,9 +78,10 @@ const actions = {
     setLoadingState({ commit }, payload) {
         commit("setPanelLoadingState", payload);
     },
-    loadPanelDetail({ commit, rootGetters }, panelId) {
+    loadPanelDetail({ commit, rootGetters }, {panelId, token}) {
         let urlPanelDetails = rootGetters.apiUrls.panelDetail(panelId);
-        return Axios.get(urlPanelDetails).then(response => {
+        let payload = token ? {params: {token}} : null;
+        return Axios.get(urlPanelDetails, payload).then(response => {
             commit("storeExpandedPanelDetail", response.data.DATA[0]);
             commit("storeComments", response.data.DATA[0].comments);
             commit("storeFiles", response.data.DATA[0].files);
@@ -116,7 +117,6 @@ const actions = {
         return Axios.delete("/panels/" + state.expandedPanelId)
             .then(response => {
                 commit("removePanelFromStore", state.expandedPanelId);
-                commit("closeExpandedPanels");
                 commit("setPanelLoadingState", false);
                 return response;
             });
@@ -186,6 +186,12 @@ const actions = {
             return response;
         });
     },
+    duplicatePanel({ state, commit }) {
+        return Axios.post("/panels/" + state.expandedPanelId + "/duplicate").then(response => {
+            commit("addNewlyCreatedPanelToStore", response.data);
+            return response;
+        });
+    },
     expandPanel({ commit }, panelId) {
         commit("toggleEditingCaption", false);
         commit("updateExpandedPanelId", panelId);
@@ -199,7 +205,15 @@ const actions = {
         commit("clearSuggestedTags");
         commit("toggleEditingCaption", false);
     },
-    uploadNewPanel({ commit }, newPanel) {
+    uploadNewPanel({ commit, rootGetters }, newPanel) {
+        let fileSizeInBytes = newPanel.get('file').size,
+            validationFailed = rootGetters.validateFileUpload(
+                fileSizeInBytes,
+                (maxFileSizeInMegaBytes) => `SmartFigure images may not be larger than ${maxFileSizeInMegaBytes} MB`
+            );
+        if (validationFailed) {
+            return validationFailed;
+        }
         return Axios.post("/panels", newPanel).then(response => {
             commit("addNewlyCreatedPanelToStore", response.data);
             return response;
@@ -287,8 +301,8 @@ const mutations = {
     clearLoadedPanels(state) {
         state.loadedPanels = [];
         state.panelsAvailable = 0;
-        state.page = 0;
-        state.lastPage = 0;
+        state.page = 1;
+        state.lastPage = 10;
     },
     updateExpandedPanelId(state, panelId = null) {
         state.expandedPanelId = panelId;

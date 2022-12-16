@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Http\Testing\File;
 
@@ -9,7 +11,7 @@ use App\Repositories\Interfaces\ImageRepositoryInterface;
 
 /**
  * Adds an image of to each panel currently in the database.
- * 
+ *
  * Already existing images are overwritten. The dimensions and background color of the new image are randomized.
  */
 class ImagesTableSeeder extends Seeder
@@ -56,7 +58,8 @@ class ImagesTableSeeder extends Seeder
     // basic functionality copied from Laravel's FileFactory but with added randomness for width & height and
     // background color.
     // https://github.com/laravel/framework/blob/7.x/src/Illuminate/Http/Testing/FileFactory.php
-    protected function generateImage($dimensions) {
+    protected function generateImage($dimensions)
+    {
         [$width, $height] = $dimensions[array_rand($dimensions)];
         return tap(tmpfile(), function ($temp) use ($width, $height) {
             ob_start();

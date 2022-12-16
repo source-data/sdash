@@ -8,7 +8,7 @@ import './bootstrap';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faChevronDown, faCircle,
-    faCopy, faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages,
+    faCopy, faDownload, faEdit, faEnvelope, faExchangeAlt, faExclamationTriangle, faExternalLinkAlt, faFilter, faGlobe, faHome, faImages,
     faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faPaste, faPen, faPlus, faPlusCircle, faQuestion, faQrcode,
     faSave, faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar, faTimes, faTrashAlt, faUnlink, faUser,
     faUserCog, faUserPlus, faUsers,
@@ -67,7 +67,7 @@ Vue.use(VueTour);
 // Add Fontawesome to the global Vue App
 library.add([
     faAngleDoubleUp, faBars, faBook, faBuilding, faCheck, faChevronLeft, faChevronRight, faChevronDown, faCircle,
-    faCopy, faCreativeCommons, faDownload, faEdit, faEnvelope, faExchangeAlt, faExternalLinkAlt, faFilter, faGlobe,
+    faCopy, faCreativeCommons, faDownload, faEdit, faEnvelope, faExchangeAlt, faExclamationTriangle, faExternalLinkAlt, faFilter, faGlobe,
     faHome, faImages, faInfoCircle, faLayerGroup, faLink, faLock, faLockOpen, faOrcid, faPaste, faPen, faPlus,
     faPlusCircle, faQuestion, faQrcode, faSave, faSearch, faSearchPlus, faSignOutAlt, faSitemap, faSlidersH, faStar,
     faTimes, faTrashAlt, faUnlink, faUser, faUserCog, faUserPlus, faUsers,

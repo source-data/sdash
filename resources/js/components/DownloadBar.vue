@@ -51,7 +51,7 @@ export default {
                     suffix = 'dar'
                     break
                 default:
-                    suffix = ''
+                    suffix = 'original'
                     break
             }
 

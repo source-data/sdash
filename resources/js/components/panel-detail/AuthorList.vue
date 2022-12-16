@@ -1,5 +1,5 @@
 <template>
-    <ul class="d-inline list-unstyled list-inline">
+    <ul class="d-inline list-unstyled list-inline sd-panel-author-list">
         <li
             class="sd-panel-author-list--item list-inline-item"
             v-for="author in authors"

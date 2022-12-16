@@ -3,14 +3,18 @@
 namespace App\Repositories;
 
 use App\User;
+use Carbon\Carbon;
 use App\Models\Panel;
 use App\Models\Group;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\Interfaces\PanelRepositoryInterface;
 
 class PanelRepository implements PanelRepositoryInterface
 {
+    protected $defaultPageSize = 20;
+
     /**
      * return all panels accessible to this user, either through group membership, ownership, or if the panel is public
      *
@@ -24,20 +28,7 @@ class PanelRepository implements PanelRepositoryInterface
     public function userPanels(User $user, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $private = false, bool $paginate = true)
     {
 
-        $panelQuery = Panel::where(
-            function ($query) use ($user, $private) {
-                $query->where('user_id', $user->id);
-                if (!$private) {
-                    $query->orWhere('is_public', true)->orWhereHas('groups', function ($query) use ($user) {
-                        $query->whereHas('confirmedUsers', function ($query) use ($user) {
-                            $query->where('users.id', $user->id);
-                        });
-                    })->orWhereHas('authors', function ($query) use ($user) {
-                        $query->where('users.id', $user->id);
-                    });
-                }
-            }
-        ); //Grouped query select ... where (x and y and z) and a and b;
+        $panelQuery = userPanelsQuery($user, $private);
 
         insertQueryConditions($panelQuery, $search, $authors, $tags);
 
@@ -45,7 +36,7 @@ class PanelRepository implements PanelRepositoryInterface
 
         insertOrderByClause($panelQuery, $sortOrder);
 
-        return ($paginate) ? $panelQuery->with('user')->paginate(20) : $panelQuery->with('user')->get();
+        return ($paginate) ? $panelQuery->with('user')->paginate($this->defaultPageSize) : $panelQuery->with('user')->get();
     }
 
     public function groupPanels(User $user, Group $group, string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $private = false, bool $paginate = true)
@@ -63,7 +54,7 @@ class PanelRepository implements PanelRepositoryInterface
 
         insertOrderByClause($panelQuery, $sortOrder);
 
-        return ($paginate) ? $panelQuery->with('user')->paginate(20) : ["data" => $panelQuery->with('user')->get()];
+        return ($paginate) ? $panelQuery->with('user')->paginate($this->defaultPageSize) : ["data" => $panelQuery->with('user')->get()];
     }
 
     public function publicPanels(string $search = null, array $tags = null, array $authors = null, string $sortOrder = null, bool $paginate = true)
@@ -76,7 +67,7 @@ class PanelRepository implements PanelRepositoryInterface
 
         insertOrderByClause($panelQuery, $sortOrder);
 
-        $panels = ($paginate) ? $panelQuery->paginate(20) : $panelQuery->get();
+        $panels = ($paginate) ? $panelQuery->paginate($this->defaultPageSize) : $panelQuery->get();
 
         foreach ($panels as $i => $panel) {
             foreach ($panel['authors'] as $j => $author) {
@@ -101,7 +92,7 @@ class PanelRepository implements PanelRepositoryInterface
 
         insertOrderByClause($panelQuery, $sortOrder);
 
-        return ($paginate) ? $panelQuery->paginate(20) : $panelQuery->get();
+        return ($paginate) ? $panelQuery->paginate($this->defaultPageSize) : $panelQuery->get();
     }
 
     public function destroyPanel(Panel $panel)
@@ -118,6 +109,118 @@ class PanelRepository implements PanelRepositoryInterface
 
         return true;
     }
+
+    /**
+     * Create a duplicate of a panel along with the authors, keywords and tags
+     * but no image.
+     *
+     * @param Panel $panel
+     * @return void
+     */
+    function duplicate(Panel $panel): Panel
+    {
+        $createTime = Carbon::now();
+        $oldPanelTags = $panel->tags()->withPivot(['origin', 'role', 'type', 'category'])->get();
+        $oldPanelAuthors = $panel->authors()->get();
+        $oldPanelExternalAuthors = $panel->externalAuthors()->get();
+        $oldPanelGroups = $panel->groups()->get();
+        $newPanelTags = [];
+        $newPanelAuthors = [];
+        $newPanelExternalAuthors = [];
+        $newPanelGroups = [];
+
+        foreach ($oldPanelTags as $tag) {
+            $newPanelTags[$tag->id] = [
+                'origin' => $tag["meta"]["origin"],
+                'role'   => $tag["meta"]["role"],
+                'type'   => $tag["meta"]["type"],
+                'category'   => $tag["meta"]["category"]
+            ];
+        }
+
+        foreach ($oldPanelAuthors as $author) {
+            $newPanelAuthors[$author->id] = [
+                'role' => $author->author_role->role,
+                'order' => $author->author_role->order
+            ];
+        }
+
+        foreach ($oldPanelExternalAuthors as $externalAuthor) {
+            $createdAuthor = $externalAuthor->replicate()
+                ->fill(['created_at' => $createTime]);
+            $createdAuthor->save();
+            $newPanelExternalAuthors[$createdAuthor->id] = [
+                'role' => $createdAuthor->author_role->role,
+                'order' => $createdAuthor->author_role->order
+            ];
+        }
+
+        foreach ($oldPanelGroups as $group) {
+            $newPanelGroups[] = $group->id;
+        }
+
+        $newPanel = $panel->replicate()->fill(['title' => 'Copy of: ' . $panel->title, 'created_at' => $createTime]);
+        $newPanel->save();
+        $newPanelImage = $panel->image->replicate()->fill(['created_at' => $createTime, 'panel_id' => $newPanel->id])->save();
+        $newPanel->authors()->attach($newPanelAuthors);
+        $newPanel->externalAuthors()->attach($newPanelExternalAuthors);
+        $newPanel->tags()->attach($newPanelTags);
+        $newPanel->groups()->attach($newPanelGroups);
+        $newPanel->load(['groups', 'tags', 'user', 'authors', 'externalAuthors']);
+        return $newPanel;
+    }
+
+    /**
+     * Find the page that the panel is on.
+     *
+     * Returns the 1-based index of the page that the panel is on, if the given user is allowed to view the panel.
+     * If the user is not allowed to view the panel `null` is returned.
+     *
+     * Assumes default ordering of the panels.
+     *
+     * @param Panel $panel The panel whose page should be returned.
+     * @param User $user The user for whose view the page should be returned. If `null` is given, an anonymous user is presumed.
+     * @return int The page that the given panel is on.
+     */
+    public function pageOfPanel(Panel $panel, User $user = null)
+    {
+        if (is_null($user)) {
+            $panelQuery = Panel::where('is_public', true);
+        } else {
+            $panelQuery = userPanelsQuery($user, false);
+        }
+        $sortOrder = null;
+        insertOrderByClause($panelQuery, $sortOrder);
+        $userPanels = $panelQuery->select('id')->get()->map(function ($item, $key) {
+            return $item['id'];
+        });
+
+        $indexOfPanel = array_search($panel->id, $userPanels->toArray());
+        if ($indexOfPanel === false) {
+            // panel is not in user panels
+            return null;
+        }
+        $indexOfPage = intval(floor($indexOfPanel / $this->defaultPageSize)) + 1;
+        return $indexOfPage;
+    }
+}
+
+function userPanelsQuery(User $user, bool $private)
+{
+    return Panel::where(
+        function ($query) use ($user, $private) {
+            $query->where('user_id', $user->id);
+            if (!$private) {
+                $query->orWhere('is_public', true)->orWhereHas('groups', function ($query) use ($user) {
+                    $query->whereHas('confirmedUsers', function ($query) use ($user) {
+                        $query->where('users.id', $user->id);
+                    });
+                })->orWhereHas('authors', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                });
+            }
+        }
+    );
 }
 
 function loadRelatedModels(&$panelQuery)
@@ -190,7 +293,7 @@ function insertOrderByClause(&$panelQuery, $sortOrder)
             $panelQuery->orderByCreated($useAscendingOrder);
             break;
         default:
-            $panelQuery->orderByUpdated($useAscendingOrder);
+            $panelQuery->orderByUpdated($useAscendingOrder)->orderBy('id');
     }
 }
 

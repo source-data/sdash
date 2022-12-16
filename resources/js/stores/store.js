@@ -26,6 +26,7 @@ export default new Vuex.Store({
     applicationLoaded: false,
     showEmailConfirmationNotice: false,
     sidebarPresent: false,
+    fileUploadMaxSizeInMB: 4,
   },
   getters: {
     isLightboxOpen(state) {
@@ -42,6 +43,13 @@ export default new Vuex.Store({
     },
     showEmailConfirmationNotice(state){
       return state.showEmailConfirmationNotice;
+    },
+    viewUrls(state, getters) {
+      return {
+        panel(panel) {
+          return `${process.env.MIX_API_PANEL_URL}/${panel.id}`;
+        }
+      }
     },
     apiUrls(state, getters) {
       return {
@@ -79,8 +87,14 @@ export default new Vuex.Store({
     },
     isSidebarPresent(state) {
       return state.sidebarPresent;
-    }
-   },
+    },
+    validateFileUpload: (state) => (fileSizeInBytes, messageFn) => {
+      let maxFileSizeInBytes = state.fileUploadMaxSizeInMB * (10 ** 6);
+      if (fileSizeInBytes > maxFileSizeInBytes) {
+        return Promise.reject({ data: { errors: { file: [messageFn(state.fileUploadMaxSizeInMB)] } } })
+      }
+    },
+  },
   actions: {
     toggleLightbox({commit}){
       commit("toggleLightbox")
