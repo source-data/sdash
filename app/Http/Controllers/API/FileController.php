@@ -49,7 +49,8 @@ class FileController extends Controller
         $maxFileSizeInMB = 4;
         $maxFileSizeInBytes = 4 * 1000;
         $rules = [
-            'file' => ['required', 'mimes:jpeg,png,jpg,gif,pdf,tif', "max:$maxFileSizeInBytes"],
+            'file' => ['required_without:url', 'mimes:jpeg,png,jpg,gif,pdf,tif', "max:$maxFileSizeInBytes"],
+            'url'   => ['required_without:file', 'url']
         ];
         $messages = [
             'file.max' => "Source files may not be larger than $maxFileSizeInMB MB",
