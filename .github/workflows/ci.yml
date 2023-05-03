@@ -7,7 +7,7 @@ on:
 jobs:
   tests:
     name: Unit & E2E tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     # Setup steps
@@ -46,7 +46,7 @@ jobs:
     name: Release frontend build artifact for the dev server
     needs: tests
     if: ${{ github.ref_name == 'master' }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
@@ -65,7 +65,7 @@ jobs:
     name: Release frontend build artifact for the prod server
     needs: tests
     if: ${{ github.ref_name == 'prod_server' }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
@@ -84,7 +84,7 @@ jobs:
     if: "false" # disable deployment job for now
     name: Deployment to dev
     needs: release-dev
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
